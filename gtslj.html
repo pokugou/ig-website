@@ -107,6 +107,14 @@
     .footer-bottom a { color: var(--gray2); text-decoration: none; }
     .footer-bottom a:hover { color: var(--gray); }
 
+
+    /* HAMBURGER */
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: transform 0.28s, opacity 0.28s; transform-origin: center; }
+    .hamburger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
     @media (max-width: 1024px) {
       .specs-grid { grid-template-columns: repeat(2, 1fr); }
       .features-grid { grid-template-columns: repeat(2, 1fr); }
@@ -117,7 +125,16 @@
       .cta-section { padding: 4rem 2rem; }
     }
     @media (max-width: 768px) {
-      nav ul li:not(:nth-child(3)):not(:last-child) { display: none; }
+      .hamburger { display: flex; }
+      nav ul { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(8,8,8,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 0.5rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--border); }
+      nav ul.is-open { display: flex; }
+      nav ul > li { display: block !important; width: 100%; border-bottom: 1px solid var(--border); }
+      nav ul > li > a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; }
+      .has-drop:hover .dropdown { display: none; }
+      .has-drop.is-open .dropdown { display: block; }
+      .dropdown { position: static; border: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.03); min-width: unset; }
+      .dropdown li a { padding: 0.75rem 2rem; }
+      .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
       .hero-content { padding: 0 1.5rem 4rem; }
       .specs-grid { grid-template-columns: repeat(2, 1fr); }
       .features-grid { grid-template-columns: 1fr; }
@@ -158,6 +175,7 @@
     <li><a href="company.html">事業概要</a></li>
     <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
 </nav>
 
 <!-- HERO -->
@@ -322,5 +340,33 @@
   </div>
 </footer>
 
+<script>
+(function(){
+  var ham = document.getElementById('hamburger');
+  var ul  = document.querySelector('nav ul');
+  if (!ham) return;
+  ham.addEventListener('click', function(){
+    ham.classList.toggle('is-active');
+    ul.classList.toggle('is-open');
+  });
+  // Dropdown toggle on mobile
+  document.querySelectorAll('.has-drop > a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        a.parentElement.classList.toggle('is-open');
+      }
+    });
+  });
+  // Close menu when a leaf link is tapped
+  document.querySelectorAll('.dropdown a, nav ul > li:not(.has-drop) > a').forEach(function(a){
+    a.addEventListener('click', function(){
+      ham.classList.remove('is-active');
+      ul.classList.remove('is-open');
+      document.querySelectorAll('.has-drop').forEach(function(d){ d.classList.remove('is-open'); });
+    });
+  });
+})();
+</script>
 </body>
 </html>
