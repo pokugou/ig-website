@@ -115,9 +115,12 @@
     /* gold label */
     .gold-lbl { color: var(--gold); font-size: 0.82rem; font-weight: 700; margin-bottom: 1rem; }
 
-    /* chart image block */
-    .chart-block { background: #fff; border-radius: 4px; overflow: hidden; cursor: zoom-in; }
-    .chart-block img { width: 100%; display: block; }
+    /* swatch grid */
+    .sw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+    .sw-item { display: flex; flex-direction: column; gap: 0.3rem; }
+    .sw-img { width: 100%; aspect-ratio: 3/2; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.08); display: block; }
+    .sw-name { font-size: 0.62rem; color: rgba(248,248,248,0.55); }
+    .sw-cat-mini { font-size: 0.62rem; font-weight: 700; color: var(--red2); letter-spacing: 0.08em; margin: 0.75rem 0 0.4rem; }
     .sw-more { display: flex; align-items: center; justify-content: center; gap: 0.5rem; height: 44px; border-radius: 6px; border: 1px dashed rgba(245,208,98,0.35); font-size: 0.78rem; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; text-decoration: none; transition: background 0.2s, border-color 0.2s; margin-top: 0.75rem; }
     .sw-more:hover { background: rgba(245,208,98,0.08); border-color: rgba(245,208,98,0.6); }
     .sw-note { font-size: 0.64rem; color: var(--gray2); margin-top: 0.6rem; }
@@ -278,11 +281,33 @@
     <div class="two-col">
       <div>
         <div class="gold-lbl">ブランクスカラー塗装オプション</div>
-        <div class="chart-block lb-trigger" data-lb="color-chart-blanks.png">
-          <img src="color-chart-blanks.png" alt="ブランクスカラー塗装オプション" />
+        <div class="sw-cat-mini">フラット通常色 ¥8,000UP</div>
+        <div class="sw-grid">
+          <div class="sw-item"><img class="sw-img" src="swatches/b001.jpg" alt="001 ホワイト"><div class="sw-name">001 ホワイト</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b002.jpg" alt="002 ブラック"><div class="sw-name">002 ブラック</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b003.jpg" alt="003 ブルー"><div class="sw-name">003 ブルー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b004.jpg" alt="004 レッド"><div class="sw-name">004 レッド</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b005.jpg" alt="005 イエロー"><div class="sw-name">005 イエロー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b006.jpg" alt="006 グリーン"><div class="sw-name">006 グリーン</div></div>
+        </div>
+        <div class="sw-cat-mini">フラットメタリック色 ¥9,500UP</div>
+        <div class="sw-grid">
+          <div class="sw-item"><img class="sw-img" src="swatches/b007.jpg" alt="007 シルバー"><div class="sw-name">007 シルバー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b008.jpg" alt="008 ゴールド"><div class="sw-name">008 ゴールド</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b009.jpg" alt="009 ブルー"><div class="sw-name">009 ブルー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b010.jpg" alt="010 レッド"><div class="sw-name">010 レッド</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b011.jpg" alt="011 グリーン"><div class="sw-name">011 グリーン</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b012.jpg" alt="012 オレンジ"><div class="sw-name">012 オレンジ</div></div>
+        </div>
+        <div class="sw-cat-mini">フラット蛍光色 ¥9,000UP</div>
+        <div class="sw-grid">
+          <div class="sw-item"><img class="sw-img" src="swatches/b013.jpg" alt="013 グリーン"><div class="sw-name">013 グリーン</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b014.jpg" alt="014 イエロー"><div class="sw-name">014 イエロー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b015.jpg" alt="015 ピンク"><div class="sw-name">015 ピンク</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b016.jpg" alt="016 オレンジ"><div class="sw-name">016 オレンジ</div></div>
         </div>
         <a href="color.html" class="sw-more">スレッドカラーも含む全カラーチャートを見る &rarr;</a>
-        <p class="sw-note">※ 画面上の色味は実物と異なる場合があります。別途マジョーラカラーなど対応可。詳しくはお問い合わせください。</p>
+        <p class="sw-note">※ 画面上の色味は実物と異なる場合があります。マジョーラカラーなど調色も別途対応可。</p>
       </div>
       <div class="step-photo lb-trigger" data-lb="custom-diagram.png">
         <img src="custom-diagram.png" alt="ブランクスカラー参考" />

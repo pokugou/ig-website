@@ -59,11 +59,16 @@
 
     /* CHART */
     .chart-wrap { margin-bottom: 3rem; }
-    .chart-img-block { background: #fff; border-radius: 4px; overflow: hidden; cursor: zoom-in; position: relative; display: inline-block; width: 100%; }
-    .chart-img-block img { width: 100%; display: block; }
-    .chart-img-block::after { content: '🔍 クリックで拡大'; position: absolute; bottom: 1rem; right: 1rem; font-size: 0.72rem; background: rgba(0,0,0,0.65); color: #fff; padding: 0.3rem 0.7rem; border-radius: 3px; opacity: 0; transition: opacity 0.2s; }
-    .chart-img-block:hover::after { opacity: 1; }
-    .chart-note { font-size: 0.75rem; color: var(--gray2); margin-top: 1rem; line-height: 1.8; }
+    .chart-note { font-size: 0.75rem; color: var(--gray2); margin-top: 1.5rem; line-height: 1.8; }
+
+    /* SWATCH */
+    .sw-section { margin-bottom: 2.5rem; }
+    .sw-cat { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; color: var(--gray2); padding: 0.4rem 0.75rem; border-left: 2px solid var(--red); margin-bottom: 1rem; background: rgba(255,255,255,0.03); }
+    .sw-cat span { color: var(--red2); margin-left: 0.75rem; font-weight: 400; }
+    .sw-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.75rem; }
+    .sw-item { display: flex; flex-direction: column; gap: 0.35rem; }
+    .sw-img { width: 100%; aspect-ratio: 3/2; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.08); display: block; }
+    .sw-name { font-size: 0.65rem; color: rgba(248,248,248,0.6); line-height: 1.3; }
 
     /* LIGHTBOX */
     .lb-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); backdrop-filter: blur(6px); align-items: center; justify-content: center; cursor: zoom-out; padding: 2rem; }
@@ -159,17 +164,97 @@
 
 <div class="main-wrap">
 
-  <!-- CHART IMAGE -->
+  <!-- CHART -->
   <div class="chart-wrap">
     <div class="eyebrow">Color Chart</div>
     <h2 class="section-heading">カラーチャート（スレッド・ブランクス）</h2>
-    <div class="chart-img-block" id="chart-trigger">
-      <img src="color-chart.png" alt="カラーチャート スレッド・ブランクスカラー" />
+
+    <!-- スレッド -->
+    <div class="sw-section">
+      <div style="font-size:0.8rem;font-weight:800;margin-bottom:1.25rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">【スレッド】<span style="font-size:0.72rem;font-weight:400;color:var(--red2);margin-left:0.75rem;">※スレッドカラー変更は追加料金ナシ</span></div>
+
+      <div class="sw-cat">ダルスレッド</div>
+      <div class="sw-grid">
+        <div class="sw-item"><img class="sw-img" src="swatches/t101.jpg" alt="101 ホワイト"><div class="sw-name">101 ホワイト</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t102.jpg" alt="102 ブラック"><div class="sw-name">102 ブラック</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t112.jpg" alt="112 ダークグレー"><div class="sw-name">112 ダークグレー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t118lg.jpg" alt="118 ライトグレー"><div class="sw-name">118 ライトグレー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t172.jpg" alt="172 ライトグリーン"><div class="sw-name">172 ライトグリーン</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t202g.jpg" alt="202 グリーン"><div class="sw-name">202 グリーン</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t103.jpg" alt="103 レッド"><div class="sw-name">103 レッド</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t104.jpg" alt="104 オレンジ"><div class="sw-name">104 オレンジ</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t166.jpg" alt="166 パープル"><div class="sw-name">166 パープル</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t109.jpg" alt="109 ターコイズ"><div class="sw-name">109 ターコイズ</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t145.jpg" alt="145 ライトブルー"><div class="sw-name">145 ライトブルー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t118b.jpg" alt="118 ブルー"><div class="sw-name">118 ブルー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t105.jpg" alt="105 イエロー"><div class="sw-name">105 イエロー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t106.jpg" alt="106 ネイビー"><div class="sw-name">106 ネイビー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t107.jpg" alt="107 ピンク"><div class="sw-name">107 ピンク</div></div>
+      </div>
+
+      <div class="sw-cat" style="margin-top:1.5rem;">メタリックカラー</div>
+      <div class="sw-grid">
+        <div class="sw-item"><img class="sw-img" src="swatches/t201.jpg" alt="201 シルバー"><div class="sw-name">201 シルバー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t202go.jpg" alt="202 ゴールド"><div class="sw-name">202 ゴールド</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t237.jpg" alt="237 ピンク"><div class="sw-name">237 ピンク</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t203.jpg" alt="203 レッド"><div class="sw-name">203 レッド</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t206.jpg" alt="206 Dピンク"><div class="sw-name">206 Dピンク</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t207.jpg" alt="207 パープル"><div class="sw-name">207 パープル</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t208.jpg" alt="208 ブルー"><div class="sw-name">208 ブルー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t209.jpg" alt="209 ライトブルー"><div class="sw-name">209 ライトブルー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t210.jpg" alt="210 グリーン"><div class="sw-name">210 グリーン</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t211.jpg" alt="211 カッパー"><div class="sw-name">211 カッパー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t212.jpg" alt="212 ブラウン"><div class="sw-name">212 ブラウン</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t213.jpg" alt="213 ブロンズ"><div class="sw-name">213 ブロンズ</div></div>
+      </div>
+
+      <div class="sw-cat" style="margin-top:1.5rem;">蛍光色</div>
+      <div class="sw-grid">
+        <div class="sw-item"><img class="sw-img" src="swatches/t105.jpg" alt="301 イエロー"><div class="sw-name">301 イエロー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t302.jpg" alt="302 オレンジ"><div class="sw-name">302 オレンジ</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t303.jpg" alt="303 グリーン"><div class="sw-name">303 グリーン</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t304.jpg" alt="304 レッド"><div class="sw-name">304 レッド</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/t305.jpg" alt="305 ピンク"><div class="sw-name">305 ピンク</div></div>
+      </div>
     </div>
+
+    <!-- ブランクス -->
+    <div class="sw-section" style="margin-top:3rem;padding-top:2.5rem;border-top:1px solid var(--border);">
+      <div style="font-size:0.8rem;font-weight:800;margin-bottom:1.25rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">【ブランクスカラー塗装オプション】</div>
+
+      <div class="sw-cat">フラット通常色 <span>¥8,000UP</span></div>
+      <div class="sw-grid">
+        <div class="sw-item"><img class="sw-img" src="swatches/b001.jpg" alt="001 ホワイト"><div class="sw-name">001 ホワイト</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b002.jpg" alt="002 ブラック"><div class="sw-name">002 ブラック</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b003.jpg" alt="003 ブルー"><div class="sw-name">003 ブルー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b004.jpg" alt="004 レッド"><div class="sw-name">004 レッド</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b005.jpg" alt="005 イエロー"><div class="sw-name">005 イエロー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b006.jpg" alt="006 グリーン"><div class="sw-name">006 グリーン</div></div>
+      </div>
+
+      <div class="sw-cat" style="margin-top:1.5rem;">フラットメタリック色 <span>¥9,500UP</span></div>
+      <div class="sw-grid">
+        <div class="sw-item"><img class="sw-img" src="swatches/b007.jpg" alt="007 シルバー"><div class="sw-name">007 シルバー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b008.jpg" alt="008 ゴールド"><div class="sw-name">008 ゴールド</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b009.jpg" alt="009 ブルー"><div class="sw-name">009 ブルー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b010.jpg" alt="010 レッド"><div class="sw-name">010 レッド</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b011.jpg" alt="011 グリーン"><div class="sw-name">011 グリーン</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b012.jpg" alt="012 オレンジ"><div class="sw-name">012 オレンジ</div></div>
+      </div>
+
+      <div class="sw-cat" style="margin-top:1.5rem;">フラット蛍光色 <span>¥9,000UP</span></div>
+      <div class="sw-grid">
+        <div class="sw-item"><img class="sw-img" src="swatches/b013.jpg" alt="013 グリーン"><div class="sw-name">013 グリーン</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b014.jpg" alt="014 イエロー"><div class="sw-name">014 イエロー</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b015.jpg" alt="015 ピンク"><div class="sw-name">015 ピンク</div></div>
+        <div class="sw-item"><img class="sw-img" src="swatches/b016.jpg" alt="016 オレンジ"><div class="sw-name">016 オレンジ</div></div>
+      </div>
+    </div>
+
     <p class="chart-note">
       ※ スレッドカラーの変更は追加料金なし。<br>
-      ※ ブランクスカラー塗装は追加オプション（フラット通常色 ¥8,000UP / フラットメタリック ¥9,500UP / フラット蛍光色 ¥9,000UP）。<br>
-      ※ 上記以外のカラーご希望の場合はご相談ください。画面上の色味は実物と異なる場合があります。
+      ※ 上記以外のカラーご希望の場合はご相談ください。マジョーラカラーなど調色も対応可（別途ご相談）。<br>
+      ※ 画面上の色味は実物と異なる場合があります。細かく指定される場合はカラーサンプルをご用意ください。
     </p>
   </div>
 
