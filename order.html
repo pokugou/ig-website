@@ -163,6 +163,63 @@
       .cm-body { padding: 1rem; gap: 1.5rem; }
     }
 
+    /* CONFIRMATION OVERLAY */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.93); z-index: 600; overflow-y: auto; padding: 2rem 1rem 3rem; }
+    .confirm-overlay.open { display: block; }
+    .confirm-box { background: var(--dark); border: 1px solid var(--border2); max-width: 720px; width: 100%; margin: 0 auto; animation: fadeInUp 0.25s ease; }
+    .confirm-head { padding: 2rem 2rem 1.25rem; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border); }
+    .confirm-eyebrow { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.3rem; }
+    .confirm-title { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; }
+    .confirm-back-top { background: none; border: 1px solid var(--border2); color: rgba(248,248,248,0.4); padding: 0.4rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; line-height: 0; border-radius: 4px; flex-shrink: 0; margin-left: 1rem; }
+    .confirm-back-top:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+    .confirm-lead { padding: 0.75rem 2rem; font-size: 0.82rem; color: var(--gray2); border-bottom: 1px solid var(--border); line-height: 1.7; }
+    .confirm-body { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .confirm-section { }
+    .confirm-section-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+    .confirm-section-label::before { content: ''; display: block; width: 16px; height: 1px; background: var(--red); }
+    .confirm-row { display: flex; align-items: flex-start; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+    .confirm-row:last-child { border-bottom: none; }
+    .confirm-row-label { color: var(--gray2); min-width: 130px; flex-shrink: 0; font-size: 0.78rem; padding-top: 0.15rem; }
+    .confirm-row-val { color: var(--white); font-weight: 500; display: flex; align-items: center; gap: 0.5rem; flex: 1; word-break: break-all; }
+    .confirm-swatch { width: 32px; height: 32px; object-fit: cover; border-radius: 3px; flex-shrink: 0; border: 1px solid var(--border2); }
+    .confirm-swatch-thread { width: 40px; height: 26px; object-fit: cover; border-radius: 3px; flex-shrink: 0; border: 1px solid var(--border2); }
+    .confirm-price-box { background: var(--dark2); border: 1px solid var(--border2); padding: 1.25rem 1.5rem; }
+    .confirm-price-title { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray2); margin-bottom: 0.75rem; }
+    .confirm-price-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--gray); }
+    .confirm-price-row .cpv { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); }
+    .confirm-price-total { display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem; margin-top: 0.25rem; border-top: 1px solid var(--border2); }
+    .confirm-price-total .cpl { font-size: 0.9rem; font-weight: 700; color: var(--white); }
+    .confirm-price-total .cpv { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--gold); }
+    .confirm-actions { padding: 1.5rem 2rem 2rem; display: flex; gap: 0.75rem; border-top: 1px solid var(--border); }
+    .confirm-btn-back { flex: 1; padding: 0.9rem 1rem; background: transparent; border: 1px solid var(--border2); color: var(--gray); font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: border-color 0.15s, color 0.15s; }
+    .confirm-btn-back:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+    .confirm-btn-send { flex: 2; padding: 0.9rem 1rem; background: var(--red); border: none; color: var(--white); font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; letter-spacing: 0.05em; transition: background 0.2s, box-shadow 0.2s; box-shadow: 0 0 20px rgba(204,34,0,0.3); }
+    .confirm-btn-send:hover { background: var(--red2); box-shadow: 0 0 35px rgba(204,34,0,0.5); }
+
+    /* SUCCESS OVERLAY */
+    .success-overlay { display: none; position: fixed; inset: 0; background: var(--black); z-index: 700; align-items: center; justify-content: center; padding: 2rem; }
+    .success-overlay.open { display: flex; animation: fadeInUp 0.3s ease; }
+    .success-box { max-width: 460px; width: 100%; text-align: center; }
+    .success-check { width: 68px; height: 68px; background: rgba(204,34,0,0.1); border: 2px solid var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+    .success-check svg { color: var(--red); }
+    .success-eyebrow { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.75rem; }
+    .success-h { font-size: 1.5rem; font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .success-p { font-size: 0.88rem; color: var(--gray2); line-height: 1.9; margin-bottom: 0.75rem; }
+    .success-note { font-size: 0.78rem; color: rgba(248,248,248,0.5); background: var(--dark2); border: 1px solid var(--border2); padding: 0.85rem 1.1rem; margin: 0 auto 2rem; line-height: 1.8; max-width: 380px; }
+    .success-note strong { color: var(--gold); }
+    .success-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; background: transparent; border: 1px solid var(--border2); color: var(--gray); font-family: inherit; font-size: 0.88rem; font-weight: 600; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+    .success-btn:hover { border-color: rgba(255,255,255,0.4); color: var(--white); }
+
+    @media (max-width: 600px) {
+      .confirm-head { padding: 1.25rem 1.25rem 1rem; }
+      .confirm-lead { padding: 0.75rem 1.25rem; }
+      .confirm-body { padding: 1rem 1.25rem; gap: 1rem; }
+      .confirm-actions { flex-direction: column-reverse; padding: 1rem 1.25rem 1.25rem; }
+      .confirm-row-label { min-width: 100px; }
+      .confirm-title { font-size: 1.2rem; }
+    }
+
     /* SWATCH PICKER (スレッド) */
     .sp-wrap { border: 1px solid var(--border2); padding: 1.25rem; background: var(--dark); margin-top: 0.4rem; }
     .sp-cat-lbl { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; color: var(--red2); margin-bottom: 0.6rem; margin-top: 1rem; }
@@ -858,6 +915,53 @@
   </div>
 </div>
 
+<!-- CONFIRMATION OVERLAY -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-head">
+      <div>
+        <div class="confirm-eyebrow">Order Confirmation</div>
+        <h2 class="confirm-title">注文内容の確認</h2>
+      </div>
+      <button type="button" class="confirm-back-top" id="confirm-back-top" aria-label="閉じる">
+        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="confirm-lead">以下の内容でご注文を承ります。内容をご確認のうえ、送信ボタンを押してください。</p>
+    <div class="confirm-body" id="confirm-body"></div>
+    <div class="confirm-actions">
+      <button type="button" class="confirm-btn-back" id="confirm-btn-back">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+        戻って修正する
+      </button>
+      <button type="button" class="confirm-btn-send" id="confirm-btn-send">
+        この内容で送信する
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-box">
+    <div class="success-check">
+      <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <div class="success-eyebrow">Order Sent</div>
+    <h2 class="success-h">ご注文ありがとうございます</h2>
+    <p class="success-p">メールアプリが起動しました。<br>内容をご確認のうえ、送信ボタンを押してください。</p>
+    <div class="success-note">
+      メールアプリが開かない場合は<br>
+      <strong>info@ig-rod.jp</strong> まで直接ご連絡ください
+    </div>
+    <a href="index.html" class="success-btn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      トップページへ戻る
+    </a>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -1062,42 +1166,143 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
 document.getElementById('sel-guide').addEventListener('change', calcPrice);
 document.getElementById('sel-grip').addEventListener('change', calcPrice);
 
-// --- フォーム送信（Netlify Forms or mailto fallback） ---
+// --- フォーム送信 → 確認画面へ ---
 document.getElementById('order-form').addEventListener('submit', function(e) {
   e.preventDefault();
-  const form = e.target;
-  const data = new FormData(form);
-  const entries = [...data.entries()];
+  var form = e.target;
 
   // バリデーション
-  let ok = true;
-  // 通常の必須フィールド
-  form.querySelectorAll('input[required]:not([type="hidden"]), select[required], textarea[required]').forEach(el => {
+  var ok = true;
+  form.querySelectorAll('input[required]:not([type="hidden"]), select[required], textarea[required]').forEach(function(el) {
     el.style.borderColor = '';
     if (!el.value.trim()) { el.style.borderColor = 'var(--red2)'; ok = false; }
   });
-  // カラーモーダル必須（ブランクス・ティップ）
   ['blank-color','tip-color'].forEach(function(field) {
     var hiddenEl = document.getElementById('f-' + field);
     var wrapEl   = document.getElementById('cm-wrap-' + field);
-    if (hiddenEl && !hiddenEl.value) {
-      if (wrapEl) wrapEl.classList.add('cm-error');
-      ok = false;
-    }
+    if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); ok = false; }
   });
-  // スレッドカラー必須
   ['thread-main','thread-tip','thread-pin'].forEach(function(field) {
     var hiddenEl = document.getElementById('f-' + field);
     var wrapEl   = document.getElementById('cm-wrap-' + field);
-    if (hiddenEl && !hiddenEl.value) {
-      if (wrapEl) wrapEl.classList.add('cm-error');
-      ok = false;
-    }
+    if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); ok = false; }
   });
   if (!ok) { alert('必須項目を入力してください。'); return; }
 
-  // mailto形式でメール作成（暫定送信）
-  const labels = {
+  showConfirm();
+});
+
+// --- 確認画面を生成して表示 ---
+function showConfirm() {
+  var form      = document.getElementById('order-form');
+  var data      = new FormData(form);
+  var modelEl   = document.getElementById('sel-model');
+  var guideEl   = document.getElementById('sel-guide');
+  var gripEl    = document.getElementById('sel-grip');
+  var shippEl   = form.querySelector('[name="shipping"]');
+  var payEl     = form.querySelector('[name="payment"]');
+
+  var modelText = modelEl.selectedIndex > 0 ? modelEl.options[modelEl.selectedIndex].text.split('　')[0].trim() : '—';
+  var guideText = guideEl.options[guideEl.selectedIndex].text;
+  var gripText  = gripEl.options[gripEl.selectedIndex].text;
+  var shipText  = shippEl && shippEl.selectedIndex > 0 ? shippEl.options[shippEl.selectedIndex].text : '—';
+  var payText   = payEl && payEl.selectedIndex > 0 ? payEl.options[payEl.selectedIndex].text : '—';
+
+  function getField(field) {
+    var timg   = document.getElementById('cm-timg-' + field);
+    var hasImg = timg && timg.style.display !== 'none' && timg.src && !timg.src.endsWith(window.location.href.split('?')[0]);
+    return { val: document.getElementById('f-' + field).value || '—', img: hasImg ? timg.src : '' };
+  }
+  var bc = getField('blank-color');
+  var tc = getField('tip-color');
+  var tm = getField('thread-main');
+  var tt = getField('thread-tip');
+  var tp = getField('thread-pin');
+
+  function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>'); }
+  function row(label, val, img, isThread) {
+    var cls = isThread ? 'confirm-swatch-thread' : 'confirm-swatch';
+    var imgTag = img ? '<img src="' + img + '" class="' + cls + '" alt="">' : '';
+    return '<div class="confirm-row"><span class="confirm-row-label">' + label + '</span>'
+      + '<span class="confirm-row-val">' + imgTag + '<span>' + esc(val) + '</span></span></div>';
+  }
+
+  var bcp = cmPrices['blank-color'] || 0;
+  var tcp = cmPrices['tip-color'] || 0;
+
+  var html = ''
+    + '<div class="confirm-section"><div class="confirm-section-label">基本情報</div>'
+      + row('お客様名',      data.get('name') || '—')
+      + row('メールアドレス', data.get('email') || '—')
+      + row('電話番号',      data.get('tel') || '—')
+    + '</div>'
+    + '<div class="confirm-section"><div class="confirm-section-label">ベースモデル</div>'
+      + row('モデル', modelText)
+    + '</div>'
+    + '<div class="confirm-section"><div class="confirm-section-label">カラーカスタム</div>'
+      + row('ブランクスカラー',     bc.val, bc.img, false)
+      + row('ティップカラー',       tc.val, tc.img, false)
+      + row('メインスレッド',       tm.val, tm.img, true)
+      + row('ティップ部分スレッド', tt.val, tt.img, true)
+      + row('ピンラインスレッド',   tp.val, tp.img, true)
+    + '</div>'
+    + '<div class="confirm-section"><div class="confirm-section-label">カスタムオプション</div>'
+      + row('ガイド仕様',   guideText)
+      + row('グリップ仕様', gripText)
+      + row('ネーム仕様',   data.get('name-custom') || '希望なし')
+    + '</div>';
+
+  var noteVal = (data.get('note') || '').trim();
+  if (noteVal) {
+    html += '<div class="confirm-section"><div class="confirm-section-label">こだわり・備考</div>'
+      + '<div class="confirm-row"><span class="confirm-row-label">備考内容</span>'
+      + '<span class="confirm-row-val"><span>' + esc(noteVal) + '</span></span></div>'
+      + '</div>';
+  }
+
+  html += '<div class="confirm-section"><div class="confirm-section-label">配送・お支払い</div>'
+      + row('送料', shipText)
+      + '<div class="confirm-row"><span class="confirm-row-label">送り先住所</span>'
+      + '<span class="confirm-row-val"><span>' + esc(data.get('address') || '—') + '</span></span></div>'
+      + row('お支払い方法', payText)
+    + '</div>'
+    + '<div class="confirm-section"><div class="confirm-section-label">料金確認</div>'
+      + '<div class="confirm-price-box">'
+        + '<div class="confirm-price-title">PRICE SUMMARY</div>'
+        + '<div class="confirm-price-row"><span>ベースモデル</span><span class="cpv">' + document.getElementById('p-base').textContent + '</span></div>'
+        + '<div class="confirm-price-row"><span>ガイド仕様</span><span class="cpv">' + document.getElementById('p-guide').textContent + '</span></div>'
+        + '<div class="confirm-price-row"><span>グリップ仕様</span><span class="cpv">' + document.getElementById('p-grip').textContent + '</span></div>'
+        + (bcp > 0 ? '<div class="confirm-price-row"><span>ブランクスカラー（お任せ）</span><span class="cpv">' + document.getElementById('p-blank-color').textContent + '</span></div>' : '')
+        + (tcp > 0 ? '<div class="confirm-price-row"><span>ティップカラー（お任せ）</span><span class="cpv">' + document.getElementById('p-tip-color').textContent + '</span></div>' : '')
+        + '<div class="confirm-price-row"><span>合計（税抜）</span><span class="cpv">' + document.getElementById('p-subtotal').textContent + '</span></div>'
+        + '<div class="confirm-price-total"><span class="cpl">税込合計</span><span class="cpv">' + document.getElementById('p-total').textContent + '</span></div>'
+      + '</div>'
+    + '</div>';
+
+  document.getElementById('confirm-body').innerHTML = html;
+  var overlay = document.getElementById('confirm-overlay');
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+// 確認オーバーレイ：戻るボタン
+document.getElementById('confirm-back-top').addEventListener('click', function() {
+  document.getElementById('confirm-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+});
+document.getElementById('confirm-btn-back').addEventListener('click', function() {
+  document.getElementById('confirm-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+});
+
+// 確認オーバーレイ：最終送信ボタン
+document.getElementById('confirm-btn-send').addEventListener('click', function() {
+  var form    = document.getElementById('order-form');
+  var data    = new FormData(form);
+  var entries = Array.from(data.entries());
+
+  var labels = {
     name: 'お客様名', email: 'メールアドレス', tel: '電話番号',
     model: 'モデル', 'blank-color': 'ブランクスカラー', 'tip-color': 'ティップカラー',
     'thread-main': 'メインスレッド', 'thread-tip': 'ティップ部分スレッド', 'thread-pin': 'ピンライン',
@@ -1105,18 +1310,24 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
     note: '備考', shipping: '送料', address: '送り先住所', payment: 'お支払い方法'
   };
 
-  const body = entries.map(([k, v]) => (labels[k] || k) + '：' + v).join('\n') +
-    '\n\n--- 料金 ---\n' +
-    'ベースモデル：' + document.getElementById('p-base').textContent + '\n' +
-    'ガイド仕様：'  + document.getElementById('p-guide').textContent + '\n' +
-    'グリップ仕様：'+ document.getElementById('p-grip').textContent + '\n' +
-    '合計（税抜）：'+ document.getElementById('p-subtotal').textContent + '\n' +
-    '税込合計：'    + document.getElementById('p-total').textContent;
+  var body = entries.map(function(e) { return (labels[e[0]] || e[0]) + '：' + e[1]; }).join('\n')
+    + '\n\n--- 料金 ---\n'
+    + 'ベースモデル：' + document.getElementById('p-base').textContent + '\n'
+    + 'ガイド仕様：'   + document.getElementById('p-guide').textContent + '\n'
+    + 'グリップ仕様：' + document.getElementById('p-grip').textContent + '\n'
+    + '合計（税抜）：' + document.getElementById('p-subtotal').textContent + '\n'
+    + '税込合計：'     + document.getElementById('p-total').textContent;
 
-  const mailto = 'mailto:info@ig-rod.jp?subject=' +
-    encodeURIComponent('【オーダーフォーム】' + (data.get('name') || '') + ' 様') +
-    '&body=' + encodeURIComponent(body);
+  var mailto = 'mailto:info@ig-rod.jp?subject='
+    + encodeURIComponent('【オーダーフォーム】' + (data.get('name') || '') + ' 様')
+    + '&body=' + encodeURIComponent(body);
 
+  // 確認画面を閉じて成功画面へ
+  document.getElementById('confirm-overlay').classList.remove('open');
+  document.getElementById('success-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // メールアプリを起動
   window.location.href = mailto;
 });
 
