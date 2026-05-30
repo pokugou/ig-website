@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>カラー | IG Rod Planning</title>
+  <meta name="description" content="IG Rod Planningのカラーカスタムサンプル。スレッドカラー・コーティング仕上げのサンプルをご覧いただけます。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010; --white:#f8f8f8;
+      --gray:#d0d0d0; --gray2:#999999;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--black); color: var(--white); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(8,8,8,0.96); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul > li { position: relative; }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(248,248,248,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; }
+    .has-drop:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .dropdown li.sub a { padding-left: 1.9rem; font-size: 0.73rem; color: rgba(248,248,248,0.38); }
+    .dropdown li.sub a::before { content: '└ '; font-size: 0.6rem; opacity: 0.5; }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .nav-contact:hover { background: var(--red2) !important; }
+
+    /* PAGE HEADER */
+    .page-header { padding: 10rem 3rem 5rem; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+    .page-header-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(204,34,0,0.12) 0%, transparent 60%), var(--black); }
+    .page-header-line { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 70% 100% at 50% 0%, black 20%, transparent 100%); }
+    .page-header-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 1rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
+    .page-title { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1rem; }
+    .page-sub { font-size: 1rem; color: rgba(248,248,248,0.45); font-weight: 300; letter-spacing: 0.06em; }
+
+    /* MAIN */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 6rem 3rem; }
+
+    /* COLOR INTRO */
+    .color-intro { max-width: 680px; margin-bottom: 5rem; }
+    .color-intro p { font-size: 0.9rem; color: var(--gray); line-height: 2; margin-bottom: 1rem; }
+    .section-heading { font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 2rem; }
+
+    /* COLOR SWATCHES */
+    .swatch-section { margin-bottom: 5rem; }
+    .swatch-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .swatch { display: flex; flex-direction: column; gap: 0.5rem; }
+    .swatch-color { width: 100%; aspect-ratio: 1/1; border-radius: 2px; border: 1px solid rgba(255,255,255,0.08); }
+    .swatch-label { font-size: 0.62rem; color: var(--gray2); letter-spacing: 0.04em; line-height: 1.3; }
+    .swatch-note { font-size: 0.75rem; color: var(--gray2); }
+
+    /* COLOR PATTERN */
+    .pattern-section { margin-bottom: 5rem; }
+    .pattern-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .pattern-card { background: var(--dark); padding: 2rem; }
+    .pattern-preview { width: 100%; height: 80px; border-radius: 2px; margin-bottom: 1.25rem; position: relative; overflow: hidden; }
+    .pattern-name { font-size: 0.9rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .pattern-desc { font-size: 0.78rem; color: var(--gray2); line-height: 1.7; }
+
+    /* Stripe */
+    .stripe-preview { background: repeating-linear-gradient(45deg, #cc2200 0px, #cc2200 6px, #111 6px, #111 14px); }
+    /* Solid */
+    .solid-preview { background: #cc2200; }
+    /* Gradient */
+    .gradient-preview { background: linear-gradient(135deg, #e83010, #80001a, #222); }
+    /* Check */
+    .check-preview { background-image: repeating-linear-gradient(0deg, rgba(204,34,0,0.5) 0px, rgba(204,34,0,0.5) 6px, transparent 6px, transparent 14px), repeating-linear-gradient(90deg, rgba(204,34,0,0.5) 0px, rgba(204,34,0,0.5) 6px, transparent 6px, transparent 14px); background-color: #111; }
+    /* Split */
+    .split-preview { background: linear-gradient(to right, #cc2200 50%, #f0c040 50%); }
+    /* Spiral */
+    .spiral-preview { background: repeating-conic-gradient(#cc2200 0deg 15deg, #222 15deg 30deg); }
+
+    /* FINISH */
+    .finish-section { background: var(--dark); border: 1px solid var(--border); padding: 3rem; margin-bottom: 5rem; }
+    .finish-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .finish-item { }
+    .finish-name { font-size: 0.9rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .finish-desc { font-size: 0.8rem; color: var(--gray); line-height: 1.8; }
+
+    /* CTA */
+    .cta-strip { background: var(--dark); border: 1px solid var(--border); padding: 3rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .cta-strip-text h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .cta-strip-text p { font-size: 0.87rem; color: var(--gray); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 2rem; border-radius: 4px; font-size: 0.88rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; letter-spacing: 0.06em; text-transform: uppercase; font-family: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 0 30px rgba(204,34,0,0.25); }
+    .btn-red:hover { background: var(--red2); box-shadow: 0 0 50px rgba(204,34,0,0.45); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border2); color: rgba(248,248,248,0.6); }
+    .btn-ghost:hover { border-color: rgba(248,248,248,0.3); color: var(--white); }
+
+    /* SWATCH CATEGORY LABEL */
+    .swatch-cat { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray2); margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    .swatch-section .swatch-cat:first-of-type { margin-top: 0; }
+
+    /* FOOTER */
+    footer { background: var(--black); border-top: 1px solid var(--border); padding: 4rem 3rem 2.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+    .footer-brand p { font-size: 0.85rem; color: var(--gray); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.5rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--gray2); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--gray2); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--gray); }
+
+    @media (max-width: 1024px) {
+      .swatch-grid { grid-template-columns: repeat(6, 1fr); }
+      .pattern-grid { grid-template-columns: repeat(2, 1fr); }
+      .finish-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+      .main-wrap { padding: 5rem 2rem; }
+      .page-header { padding: 8rem 2rem 4rem; }
+      .cta-strip { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 768px) {
+      nav ul li:not(:last-child):not(:nth-last-child(2)) { display: none; }
+      .swatch-grid { grid-template-columns: repeat(4, 1fr); }
+      .pattern-grid { grid-template-columns: 1fr; }
+      .finish-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      footer { padding: 3rem 1.5rem 2rem; }
+      .page-header { padding: 7rem 1.5rem 3rem; }
+      .main-wrap { padding: 4rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:44px; width:auto; display:block;" />
+  </a>
+  <ul>
+    <li class="has-drop">
+      <a href="products.html">商品一覧</a>
+      <ul class="dropdown">
+        <li><a href="strixedge.html">STRIX EDGE</a></li>
+        <li><a href="gtlj.html">GTLJ</a></li>
+        <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li class="has-drop">
+      <a href="color.html">カスタムオーダー</a>
+      <ul class="dropdown">
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+      </ul>
+    </li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-bg"></div>
+  <div class="page-header-line"></div>
+  <div class="page-header-content">
+    <div class="eyebrow">Color</div>
+    <h1 class="page-title">カラー</h1>
+    <p class="page-sub">スレッドカラー・コーティング仕上げのサンプル一覧</p>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- INTRO -->
+  <div class="color-intro">
+    <p>IG Rod Planningでは、スレッドカラーやコーティング仕上げを豊富なバリエーションからお選びいただけます。単色・グラデーション・チェック・ストライプなど、ご希望のデザインに合わせてオーダーが可能です。</p>
+    <p>下記はカラーサンプルと仕上げパターンの例です。ご希望のカラーがある場合はお気軽にご相談ください。</p>
+  </div>
+
+  <!-- THREAD COLOR SWATCHES -->
+  <div class="swatch-section">
+    <div class="eyebrow">Thread Colors</div>
+    <h2 class="section-heading">スレッドカラーサンプル</h2>
+
+    <!-- ダルスレッド -->
+    <div class="swatch-cat">ダルスレッド</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#f2f2f2;border-color:rgba(255,255,255,0.25);"></div><div class="swatch-label">101 ホワイト</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#1a1a1a;border-color:rgba(255,255,255,0.12);"></div><div class="swatch-label">102 ブラック</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#4a4a4a;"></div><div class="swatch-label">112 ダークグレー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#b0b0b0;"></div><div class="swatch-label">118 ライトグレー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#cc2200;"></div><div class="swatch-label">103 レッド</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#e06010;"></div><div class="swatch-label">104 オレンジ</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#d4b800;"></div><div class="swatch-label">105 イエロー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#3a8c3a;"></div><div class="swatch-label">172 ライトグリーン</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#1e6e1e;"></div><div class="swatch-label">202 グリーン</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#0f3d8c;"></div><div class="swatch-label">106 ネイビー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#2255c0;"></div><div class="swatch-label">118 ブルー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#4aaad0;"></div><div class="swatch-label">145 ライトブルー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#1aafb0;"></div><div class="swatch-label">109 ターコイズ</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#7030a0;"></div><div class="swatch-label">166 パープル</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#d85090;"></div><div class="swatch-label">107 ピンク</div></div>
+    </div>
+
+    <!-- メタリックカラー -->
+    <div class="swatch-cat">メタリックカラー</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#d0d0d0,#f8f8f8,#a0a0a0);"></div><div class="swatch-label">201 シルバー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#c8a020,#f0d060,#b08010);"></div><div class="swatch-label">202 ゴールド</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#e080b0,#ffb8d8,#c05090);"></div><div class="swatch-label">237 ピンク</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#b81c00,#e84020,#901000);"></div><div class="swatch-label">203 レッド</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#d050a0,#f090c0,#a03080);"></div><div class="swatch-label">206 Dピンク</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#6020a0,#9050d0,#481880);"></div><div class="swatch-label">207 パープル</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#1840b0,#3870e0,#102890);"></div><div class="swatch-label">208 ブルー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#3898c8,#70c8f0,#2070a8);"></div><div class="swatch-label">209 ライトブルー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#208040,#40b060,#106030);"></div><div class="swatch-label">210 グリーン</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#b06830,#d89060,#905020);"></div><div class="swatch-label">211 カッパー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#7a4820,#b07840,#5a3010);"></div><div class="swatch-label">212 ブラウン</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#906030,#c09050,#705020);"></div><div class="swatch-label">213 ブロンズ</div></div>
+    </div>
+
+    <!-- 蛍光色 -->
+    <div class="swatch-cat">蛍光色</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:#f0f000;"></div><div class="swatch-label">301 イエロー</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ff6600;"></div><div class="swatch-label">302 オレンジ</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#00e040;"></div><div class="swatch-label">303 グリーン</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ff2020;"></div><div class="swatch-label">304 レッド</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ff40c0;"></div><div class="swatch-label">305 ピンク</div></div>
+    </div>
+
+    <p class="swatch-note">※ スレッドカラーの変更は追加料金なし。画面上の色は実物と異なる場合があります。</p>
+  </div>
+
+  <!-- FINISH -->
+  <div class="finish-section">
+    <div class="eyebrow">Finish</div>
+    <h2 class="section-heading" style="margin-bottom:2rem;">コーティング仕上げ</h2>
+    <div class="finish-grid">
+      <div class="finish-item">
+        <div class="finish-name">グロス（光沢）</div>
+        <p class="finish-desc">ツヤのある光沢仕上げ。カラーの鮮やかさが際立ち、高級感のある見た目になります。最もポピュラーな仕上げです。</p>
+      </div>
+      <div class="finish-item">
+        <div class="finish-name">マット（艶消し）</div>
+        <p class="finish-desc">光沢を抑えたマットな仕上げ。落ち着いた雰囲気になり、フィールドでの光の反射も少なくなります。</p>
+      </div>
+      <div class="finish-item">
+        <div class="finish-name">セミグロス（半光沢）</div>
+        <p class="finish-desc">グロスとマットの中間。ほどよいツヤ感で、バランスの良い仕上がりになります。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-strip">
+    <div class="cta-strip-text">
+      <h3>ご希望のカラー・パターンをご相談ください</h3>
+      <p>上記以外のカラーやオリジナルパターンも承ります。お気軽にお問い合わせください。</p>
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-red">お問い合わせ &#x2192;</a>
+      <a href="services.html" class="btn btn-ghost">サービス詳細 &#x2192;</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="IG Rod Planning" style="height:40px; width:auto; display:block;" />
+        </a>
+        <p>自分色のオリジナル釣竿を作ってみませんか。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げるロッドビルダーです。</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="strixedge.html">STRIX EDGE</a></li>
+          <li><a href="gtlj.html">GTLJ</a></li>
+          <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html">オリジナルロッド制作</a></li>
+          <li><a href="services.html">リメイク</a></li>
+          <li><a href="services.html">カラーカスタム</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></li>
+          <li><a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>カスタムオーダー | IG Rod Planning</title>
+  <meta name="description" content="IG Rod Planningのカスタムロッドオーダー。ブランクスカラー・スレッド・グリップ・リールシートなど6つのポイントを自由にカスタマイズできます。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010; --white:#f8f8f8;
+      --gray:#d0d0d0; --gray2:#999999;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--black); color: var(--white); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(8,8,8,0.96); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul > li { position: relative; }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(248,248,248,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; }
+    .has-drop:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .dropdown li.sub a { padding-left: 1.9rem; font-size: 0.73rem; color: rgba(248,248,248,0.38); }
+    .dropdown li.sub a::before { content: '└ '; font-size: 0.6rem; opacity: 0.5; }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .nav-contact:hover { background: var(--red2) !important; }
+
+    /* BTN */
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.8rem; border-radius: 4px; font-size: 0.88rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; letter-spacing: 0.05em; font-family: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 0 28px rgba(204,34,0,0.28); }
+    .btn-red:hover { background: var(--red2); box-shadow: 0 0 50px rgba(204,34,0,0.45); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border2); color: rgba(248,248,248,0.6); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 72vh; display: flex; align-items: center;
+      position: relative; overflow: hidden; padding: 8rem 3rem 5rem;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 65% 70% at 15% 50%, rgba(204,34,0,0.13) 0%, transparent 55%), var(--black);
+    }
+    .hero-line { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 70% 80% at 20% 50%, black 0%, transparent 70%); }
+    .hero-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; align-items: center; }
+    .hero-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem; }
+    .hero-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--red); }
+    .hero-catch { font-size: clamp(2.2rem, 4vw, 3.6rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1rem; }
+    .hero-catch .accent { color: var(--red2); }
+    .hero-sub { font-size: 0.92rem; color: rgba(248,248,248,0.5); line-height: 1.85; margin-bottom: 2rem; }
+    .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .hero-img-wrap { background: var(--dark); border: 1px solid var(--border); padding: 2rem; position: relative; }
+    .hero-img-wrap::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--red), transparent); }
+    .hero-img { width: 100%; display: block; }
+
+    /* ── WHY STRIP ── */
+    .why-strip { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .why-strip-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+    .why-item { padding: 2rem 2.25rem; border-right: 1px solid var(--border); display: flex; align-items: flex-start; gap: 1.1rem; }
+    .why-item:last-child { border-right: none; }
+    .why-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .why-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .why-desc { font-size: 0.78rem; color: var(--gray2); line-height: 1.75; }
+
+    /* ── MAIN WRAP ── */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 5rem 3rem; }
+    .sec-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
+    .sec-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--red); }
+    .sec-title { font-size: clamp(1.5rem, 2.8vw, 2.2rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 2.5rem; }
+
+    /* ── CUSTOM POINTS ── */
+    .points-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start; }
+    .points-img-wrap { background: var(--dark); border: 1px solid var(--border); padding: 2rem; }
+    .points-img { width: 100%; display: block; }
+    .points-img-cap { font-size: 0.68rem; color: var(--gray2); text-align: center; margin-top: 0.75rem; letter-spacing: 0.08em; }
+    .custom-list { display: flex; flex-direction: column; }
+    .custom-item { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--border); }
+    .custom-item:first-child { border-top: 1px solid var(--border); }
+    .item-badge { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(204,34,0,0.5); color: var(--white); font-size: 0.72rem; font-weight: 900; display: flex; align-items: center; justify-content: center; font-family: 'DM Sans', sans-serif; background: rgba(204,34,0,0.15); }
+    .item-name { font-size: 0.92rem; font-weight: 700; }
+    .item-desc { font-size: 0.76rem; color: var(--gray2); line-height: 1.6; margin-top: 0.1rem; }
+
+    /* ── THREAD ── */
+    .thread-wrap { margin-top: 4rem; padding-top: 4rem; border-top: 1px solid var(--border); }
+    .thread-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin-top: 2rem; }
+    .thread-card { background: var(--dark); display: flex; flex-direction: column; }
+    .thread-top { padding: 1.75rem 2rem 1.5rem; }
+    .thread-badge { display: inline-flex; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); background: var(--red); padding: 0.25rem 0.75rem; margin-bottom: 0.75rem; font-family: 'DM Sans', sans-serif; }
+    .thread-name { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .thread-desc { font-size: 0.78rem; color: var(--gray2); line-height: 1.75; }
+    .thread-img-wrap { overflow: hidden; border-top: 1px solid var(--border); }
+    .thread-img { width: 100%; display: block; transition: transform 0.4s; }
+    .thread-card:hover .thread-img { transform: scale(1.03); }
+    .thread-colors { padding: 1.25rem 2rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.55rem; }
+    .color-row { display: flex; align-items: center; gap: 0.75rem; }
+    .color-badge { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid rgba(204,34,0,0.35); color: var(--red2); font-size: 0.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; font-family: 'DM Sans', sans-serif; }
+    .color-label { font-size: 0.8rem; font-weight: 600; }
+    .color-sub { font-size: 0.7rem; color: var(--gray2); }
+
+    /* ── FLOW ── */
+    .flow-wrap { margin-top: 4rem; padding-top: 4rem; border-top: 1px solid var(--border); }
+    .flow-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 2rem; }
+    .flow-step { background: var(--dark); padding: 1.75rem 1.5rem; }
+    .flow-num { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.18em; color: var(--red2); font-family: 'DM Sans', sans-serif; margin-bottom: 0.6rem; }
+    .flow-icon { font-size: 1.3rem; margin-bottom: 0.6rem; }
+    .flow-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .flow-desc { font-size: 0.76rem; color: var(--gray2); line-height: 1.7; }
+
+    /* ── CTA ── */
+    .cta-wrap { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 4rem 3rem; position: relative; overflow: hidden; }
+    .cta-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 55% 80% at 50% 50%, rgba(204,34,0,0.1) 0%, transparent 65%); pointer-events: none; }
+    .cta-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; position: relative; z-index: 1; }
+    .cta-text h2 { font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+    .cta-text p { font-size: 0.88rem; color: var(--gray2); }
+    .cta-actions { display: flex; gap: 0.75rem; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--black); border-top: 1px solid var(--border); padding: 4rem 3rem 2.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+    .footer-brand p { font-size: 0.85rem; color: var(--gray); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.5rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--gray2); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--gray2); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--gray); }
+
+    /* ── LIGHTBOX ── */
+    .lb-trigger { cursor: zoom-in; position: relative; }
+    .lb-trigger::after {
+      content: '🔍'; position: absolute; bottom: 0.6rem; right: 0.6rem;
+      font-size: 1rem; opacity: 0; transition: opacity 0.2s;
+      background: rgba(8,8,8,0.7); padding: 0.3rem 0.4rem; border-radius: 4px;
+    }
+    .lb-trigger:hover::after { opacity: 1; }
+    .lb-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.88); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; cursor: zoom-out;
+      padding: 2rem;
+    }
+    .lb-overlay.active { display: flex; }
+    .lb-overlay img {
+      max-width: 90vw; max-height: 88vh; object-fit: contain;
+      box-shadow: 0 0 80px rgba(0,0,0,0.8);
+      animation: lb-in 0.2s ease;
+    }
+    .lb-close {
+      position: fixed; top: 1.5rem; right: 1.5rem;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: var(--white); font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .lb-close:hover { background: var(--red); }
+    @keyframes lb-in { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-img-wrap { display: none; }
+      .why-strip-inner { grid-template-columns: 1fr; }
+      .why-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .why-item:last-child { border-bottom: none; }
+      .points-layout { grid-template-columns: 1fr; }
+      .thread-compare { grid-template-columns: 1fr; }
+      .flow-steps { grid-template-columns: repeat(2, 1fr); }
+      .cta-inner { flex-direction: column; align-items: flex-start; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    }
+    @media (max-width: 768px) {
+      nav ul li:not(:last-child):not(:nth-last-child(2)) { display: none; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .main-wrap { padding: 4rem 1.5rem; }
+      .cta-wrap { padding: 3rem 1.5rem; }
+      .flow-steps { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      footer { padding: 3rem 1.5rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:44px; width:auto; display:block;" />
+  </a>
+  <ul>
+    <li class="has-drop">
+      <a href="products.html">商品一覧</a>
+      <ul class="dropdown">
+        <li><a href="strixedge.html">STRIX EDGE</a></li>
+        <li><a href="gtlj.html">GTLJ</a></li>
+        <li><a href="gtj.html">GT J</a></li>
+        <li><a href="gtslj.html">GTSLJ</a></li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li class="has-drop">
+      <a href="color.html">カスタムオーダー</a>
+      <ul class="dropdown">
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+      </ul>
+    </li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label">Custom Order</div>
+      <h1 class="hero-catch">世界に<span class="accent">一本</span>だけの<br>ロッドを。</h1>
+      <p class="hero-sub">カラー・スレッド・グリップ、すべてを自分で選ぶ。<br>あなたのイメージをそのまま形にします。</p>
+      <div class="hero-actions">
+        <a href="contact.html" class="btn btn-red">オーダーはこちら &rarr;</a>
+        <a href="color.html" class="btn btn-ghost">カラーチャートを見る</a>
+      </div>
+    </div>
+    <div class="hero-img-wrap lb-trigger" data-lb="custom-diagram.png">
+      <img class="hero-img" src="custom-diagram.png" alt="カスタムロッド説明図" />
+    </div>
+  </div>
+</section>
+
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- カスタムできる箇所 -->
+  <div class="sec-label">Customizable Points</div>
+  <div class="sec-title">カスタムできる箇所</div>
+  <div class="points-layout">
+    <div class="points-img-wrap lb-trigger" data-lb="custom-diagram.png">
+      <img class="points-img" src="custom-diagram.png" alt="カスタムポイント説明図" />
+      <div class="points-img-cap">カスタムポイント説明図（クリックで拡大）</div>
+    </div>
+    <div class="custom-list">
+      <div class="custom-item">
+        <div class="item-badge">▲</div>
+        <div><div class="item-name">ティップカラー</div><div class="item-desc">穂先部分のカラー。視認性やアクセントとして選択。</div></div>
+      </div>
+      <div class="custom-item">
+        <div class="item-badge">▪</div>
+        <div><div class="item-name">ティップ部分スレッド</div><div class="item-desc">ティップ付近のスレッドカラー。細部にもこだわりを。</div></div>
+      </div>
+      <div class="custom-item">
+        <div class="item-badge">①</div>
+        <div><div class="item-name">ブランクスカラー</div><div class="item-desc">ロッド本体のベースカラー。全体の印象を決める最重要ポイント。</div></div>
+      </div>
+      <div class="custom-item">
+        <div class="item-badge">②〜④</div>
+        <div><div class="item-name">スレッド</div><div class="item-desc">ガイドを固定する糸のカラーとパターン。SタイプとWタイプから選択。</div></div>
+      </div>
+      <div class="custom-item">
+        <div class="item-badge">⑤</div>
+        <div><div class="item-name">EVAグリップ</div><div class="item-desc">グリップのカラーや形状もご相談ください。</div></div>
+      </div>
+      <div class="custom-item">
+        <div class="item-badge">⑥</div>
+        <div><div class="item-name">リールーシート</div><div class="item-desc">デザインや素材についてもご相談に応じます。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- スレッドパターン -->
+  <div class="thread-wrap">
+    <div class="sec-label">Thread Pattern</div>
+    <div class="sec-title">スレッドパターン</div>
+    <div class="thread-compare">
+      <div class="thread-card">
+        <div class="thread-top">
+          <div class="thread-badge">S Type</div>
+          <div class="thread-name">シングルパターン</div>
+          <div class="thread-desc">メインスレッドとピンラインの2色構成。すっきりとした洗練された仕上がり。</div>
+        </div>
+        <div class="thread-img-wrap lb-trigger" data-lb="custom-thread-s.png">
+          <img class="thread-img" src="custom-thread-s.png" alt="Sタイプ" />
+        </div>
+        <div class="thread-colors">
+          <div class="color-row"><div class="color-badge">①</div><div><div class="color-label">ブランクスカラー</div><div class="color-sub">ロッド本体のベースカラー</div></div></div>
+          <div class="color-row"><div class="color-badge">②</div><div><div class="color-label">メインスレッド</div><div class="color-sub">ガイドを固定するメインの巻き糸</div></div></div>
+          <div class="color-row"><div class="color-badge">③</div><div><div class="color-label">ピンライン</div><div class="color-sub">両端の細いアクセントライン</div></div></div>
+        </div>
+      </div>
+      <div class="thread-card">
+        <div class="thread-top">
+          <div class="thread-badge">W Type</div>
+          <div class="thread-name">ワイドパターン</div>
+          <div class="thread-desc">ガイド下巻きを加えた3色以上の構成。カラーレイヤーで個性をより表現。</div>
+        </div>
+        <div class="thread-img-wrap lb-trigger" data-lb="custom-thread-w.png">
+          <img class="thread-img" src="custom-thread-w.png" alt="Wタイプ" />
+        </div>
+        <div class="thread-colors">
+          <div class="color-row"><div class="color-badge">①</div><div><div class="color-label">ブランクスカラー</div><div class="color-sub">ロッド本体のベースカラー</div></div></div>
+          <div class="color-row"><div class="color-badge">②</div><div><div class="color-label">メインスレッド</div><div class="color-sub">ガイドを固定するメインの巻き糸</div></div></div>
+          <div class="color-row"><div class="color-badge">③</div><div><div class="color-label">ピンラインスレッド</div><div class="color-sub">メインに重ねる細いラインカラー</div></div></div>
+          <div class="color-row"><div class="color-badge">④</div><div><div class="color-label">ガイド下巻きスレッド</div><div class="color-sub">補強と装飾を兼ねる下巻き</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ご注文の流れ -->
+  <div class="flow-wrap">
+    <div class="sec-label">Order Flow</div>
+    <div class="sec-title">ご注文の流れ</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-num">STEP 01</div>
+        <div class="flow-icon">💬</div>
+        <div class="flow-title">お問い合わせ</div>
+        <div class="flow-desc">フォームまたはInstagram DMにてご希望のイメージをお知らせください。</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">STEP 02</div>
+        <div class="flow-icon">🎨</div>
+        <div class="flow-title">カラー・仕様決定</div>
+        <div class="flow-desc">カラーチャートをもとに各パーツの仕様を一緒に決定します。</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">STEP 03</div>
+        <div class="flow-icon">🔧</div>
+        <div class="flow-title">製作</div>
+        <div class="flow-desc">手作業で一本一本丁寧に仕上げます。製作期間は都度ご連絡します。</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">STEP 04</div>
+        <div class="flow-icon">📦</div>
+        <div class="flow-title">お届け</div>
+        <div class="flow-desc">完成・検品後にご自宅へお届け。あなただけの一本をお楽しみください。</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <div class="cta-glow"></div>
+  <div class="cta-inner">
+    <div class="cta-text">
+      <h2>まずはお気軽にご相談ください。</h2>
+      <p>イメージが固まっていなくても大丈夫。一緒に理想の一本を作り上げましょう。</p>
+    </div>
+    <div class="cta-actions">
+      <a href="contact.html" class="btn btn-red">お問い合わせ &rarr;</a>
+      <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" class="btn btn-ghost">Instagram DM &#x2197;</a>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lb-overlay" id="lb-overlay">
+  <button class="lb-close" id="lb-close">✕</button>
+  <img id="lb-img" src="" alt="" />
+</div>
+
+<script>
+  const overlay = document.getElementById('lb-overlay');
+  const lbImg   = document.getElementById('lb-img');
+
+  document.querySelectorAll('.lb-trigger').forEach(el => {
+    el.addEventListener('click', () => {
+      lbImg.src = el.dataset.lb;
+      overlay.classList.add('active');
+    });
+  });
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay || e.target.id === 'lb-close') {
+      overlay.classList.remove('active');
+      lbImg.src = '';
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { overlay.classList.remove('active'); lbImg.src = ''; }
+  });
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="IG Rod Planning" style="height:40px; width:auto; display:block;" />
+        </a>
+        <p>自分色のオリジナル釣竿を作ってみませんか。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げるロッドビルダーです。</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="strixedge.html">STRIX EDGE</a></li>
+          <li><a href="gtlj.html">GTLJ</a></li>
+          <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html">オリジナルロッド制作</a></li>
+          <li><a href="services.html">リメイク</a></li>
+          <li><a href="services.html">カラーカスタム</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></li>
+          <li><a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>サービス | IG Rod Planning</title>
+  <meta name="description" content="IG Rod Planningのサービス。オリジナルロッド制作・リメイク・カラーカスタムなど、こだわりの一本を丁寧に手作りします。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010; --white:#f8f8f8;
+      --gray:#d0d0d0; --gray2:#999999;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--black); color: var(--white); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(8,8,8,0.96); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul > li { position: relative; }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(248,248,248,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; }
+    .has-drop:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .dropdown li.sub a { padding-left: 1.9rem; font-size: 0.73rem; color: rgba(248,248,248,0.38); }
+    .dropdown li.sub a::before { content: '└ '; font-size: 0.6rem; opacity: 0.5; }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .nav-contact:hover { background: var(--red2) !important; }
+
+    /* PAGE HEADER */
+    .page-header { padding: 10rem 3rem 5rem; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+    .page-header-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(204,34,0,0.12) 0%, transparent 60%), var(--black); }
+    .page-header-line { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 70% 100% at 50% 0%, black 20%, transparent 100%); }
+    .page-header-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 1rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
+    .page-title { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1rem; }
+    .page-sub { font-size: 1rem; color: rgba(248,248,248,0.45); font-weight: 300; letter-spacing: 0.06em; }
+
+    /* MAIN */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 6rem 3rem; }
+
+    /* SERVICE INTRO */
+    .svc-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-bottom: 6rem; }
+    .svc-intro-text h2 { font-size: clamp(1.6rem, 3vw, 2.5rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1.5rem; line-height: 1.3; }
+    .svc-intro-text p { font-size: 0.9rem; color: var(--gray); line-height: 2; margin-bottom: 1rem; }
+    .svc-intro-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+
+    /* SERVICE CARDS */
+    .svc-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 6rem; }
+    .svc-card { background: var(--dark); padding: 2.5rem; display: flex; flex-direction: column; }
+    .svc-num { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; color: var(--red2); margin-bottom: 1rem; font-family: 'DM Sans',sans-serif; }
+    .svc-icon { font-size: 2rem; margin-bottom: 1.25rem; line-height: 1; }
+    .svc-name { font-size: 1.15rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    .svc-desc { font-size: 0.83rem; color: var(--gray); line-height: 1.9; flex: 1; }
+
+    /* FLOW */
+    .flow-section { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 3rem; margin-bottom: 6rem; }
+    .flow-inner { max-width: 1200px; margin: 0 auto; }
+    .section-heading { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 3rem; }
+    .flow-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; }
+    .flow-step { position: relative; padding: 2rem 1.5rem 2rem 1rem; border-left: 1px solid var(--border2); }
+    .flow-step:first-child { border-left: none; }
+    .flow-step-num { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; color: var(--red2); margin-bottom: 0.75rem; font-family: 'DM Sans',sans-serif; }
+    .flow-step-title { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .flow-step-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.8; }
+
+    /* PRICE */
+    .price-section { margin-bottom: 6rem; }
+    .price-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); }
+    .price-table th { background: var(--dark2); padding: 1rem 1.5rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray2); text-align: left; border-bottom: 1px solid var(--border2); }
+    .price-table td { padding: 1.1rem 1.5rem; font-size: 0.87rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .price-table tr:last-child td { border-bottom: none; }
+    .price-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .price-note { font-size: 0.75rem; color: var(--gray2); margin-top: 1rem; }
+
+    /* CTA */
+    .cta-strip { background: var(--dark); border: 1px solid var(--border); padding: 3rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .cta-strip-text h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .cta-strip-text p { font-size: 0.87rem; color: var(--gray); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 2rem; border-radius: 4px; font-size: 0.88rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; letter-spacing: 0.06em; text-transform: uppercase; font-family: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 0 30px rgba(204,34,0,0.25); }
+    .btn-red:hover { background: var(--red2); box-shadow: 0 0 50px rgba(204,34,0,0.45); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border2); color: rgba(248,248,248,0.6); }
+    .btn-ghost:hover { border-color: rgba(248,248,248,0.3); color: var(--white); }
+
+    /* FOOTER */
+    footer { background: var(--black); border-top: 1px solid var(--border); padding: 4rem 3rem 2.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+    .footer-brand p { font-size: 0.85rem; color: var(--gray); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.5rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--gray2); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--gray2); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--gray); }
+
+    @media (max-width: 1024px) {
+      .svc-intro { grid-template-columns: 1fr; gap: 3rem; }
+      .svc-cards { grid-template-columns: repeat(2, 1fr); }
+      .flow-steps { grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+      .flow-step { border-left: none; background: var(--dark); }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+      .main-wrap { padding: 5rem 2rem; }
+      .page-header { padding: 8rem 2rem 4rem; }
+      .flow-section { padding: 4rem 2rem; }
+      .cta-strip { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 768px) {
+      nav ul li:not(:last-child):not(:nth-last-child(2)) { display: none; }
+      .svc-cards { grid-template-columns: 1fr; }
+      .flow-steps { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      footer { padding: 3rem 1.5rem 2rem; }
+      .page-header { padding: 7rem 1.5rem 3rem; }
+      .main-wrap { padding: 4rem 1.5rem; }
+      .price-table th, .price-table td { padding: 0.85rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:44px; width:auto; display:block;" />
+  </a>
+  <ul>
+    <li class="has-drop">
+      <a href="products.html">商品一覧</a>
+      <ul class="dropdown">
+        <li><a href="strixedge.html">STRIX EDGE</a></li>
+        <li><a href="gtlj.html">GTLJ</a></li>
+        <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li class="has-drop">
+      <a href="color.html">カスタムオーダー</a>
+      <ul class="dropdown">
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+      </ul>
+    </li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-bg"></div>
+  <div class="page-header-line"></div>
+  <div class="page-header-content">
+    <div class="eyebrow">Services</div>
+    <h1 class="page-title">サービス</h1>
+    <p class="page-sub">あなただけの一本を、一から丁寧に仕上げます</p>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- INTRO -->
+  <div class="svc-intro">
+    <div class="svc-intro-text">
+      <h2>オリジナルロッドを、<br />手作りで届ける。</h2>
+      <p>IG Rod Planningは「自分色のオリジナル釣竿を作ってみませんか」という想いから生まれたロッドビルダーです。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げます。</p>
+      <p>市販品にはないスペック、好みのカラー、自分だけのデザイン。サイズ・素材・ガイドの選定から仕上げまで、すべてお客様と相談しながら進めます。小ロット・個人オーダーも歓迎です。</p>
+    </div>
+    <img class="svc-intro-img" src="https://ig-rod.jp/wp-content/uploads/2025/10/全体画像.jpg" alt="カスタムロッド制作" loading="lazy" />
+  </div>
+
+  <!-- SERVICE CARDS -->
+  <div class="svc-cards">
+    <!-- オリジナルロッド制作 -->
+    <div class="svc-card">
+      <div class="svc-num">SERVICE 01</div>
+      <div class="svc-icon">&#x1F3A3;</div>
+      <div class="svc-name">オリジナルロッド制作</div>
+      <p class="svc-desc">ブランクス選定からガイドセッティング、グリップ仕様、カラー仕上げまで、すべてをゼロから組み上げます。釣りスタイル・ターゲット・予算に合わせた最適な一本を提案します。Fuji製ガイド・SiCリングなど高品質パーツを標準装備。</p>
+    </div>
+    <!-- リメイク -->
+    <div class="svc-card">
+      <div class="svc-num">SERVICE 02</div>
+      <div class="svc-icon">&#x1F527;</div>
+      <div class="svc-name">リメイク・修理</div>
+      <p class="svc-desc">使い慣れたロッドをリビルドして新品同様に蘇らせます。ガイド交換・グリップ交換・スレッド巻き直し・トップガイド修理など幅広く対応。大切な一本を長く使い続けたい方に。状態確認後にお見積もりします。</p>
+    </div>
+    <!-- カラーカスタム -->
+    <div class="svc-card">
+      <div class="svc-num">SERVICE 03</div>
+      <div class="svc-icon">&#x1F3A8;</div>
+      <div class="svc-name">カラーカスタム</div>
+      <p class="svc-desc">スレッドカラーやコーティング仕上げで、ロッドの見た目を自分好みに変えられます。単色・グラデーション・チェック・ストライプなど多彩なパターンに対応。カラーページでサンプルをご確認いただけます。</p>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+</div>
+
+<div class="flow-section">
+  <div class="flow-inner">
+    <div class="eyebrow">Flow</div>
+    <h2 class="section-heading">ご注文の流れ</h2>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-step-num">STEP 01</div>
+        <div class="flow-step-title">お問い合わせ</div>
+        <p class="flow-step-desc">フォームまたはInstagram DM・LINEよりご希望の内容をお気軽にご連絡ください。</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">STEP 02</div>
+        <div class="flow-step-title">ヒアリング・お見積もり</div>
+        <p class="flow-step-desc">釣りスタイル・ターゲット・ご予算などをお伺いし、最適な仕様と価格をご提案します。</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">STEP 03</div>
+        <div class="flow-step-title">仕様確定・ご入金</div>
+        <p class="flow-step-desc">ブランクス・ガイド・カラーなどの仕様を確定後、着手前に料金の一部をお振込みいただきます。</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">STEP 04</div>
+        <div class="flow-step-title">制作</div>
+        <p class="flow-step-desc">職人が一本一本手作業で丁寧に仕上げます。進捗はSNSや直接ご連絡でご確認いただけます。</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">STEP 05</div>
+        <div class="flow-step-title">お届け・残金精算</div>
+        <p class="flow-step-desc">完成後に写真をご確認いただき、残金のお支払い後に発送または手渡しでお届けします。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- PRICE -->
+  <div class="price-section">
+    <div class="eyebrow">Pricing</div>
+    <h2 class="section-heading">料金目安</h2>
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th>サービス</th>
+          <th>内容</th>
+          <th>目安価格（税別）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>オリジナルロッド制作</strong></td>
+          <td>ブランクス・ガイド・グリップ・カラー込み</td>
+          <td>¥30,000〜</td>
+        </tr>
+        <tr>
+          <td><strong>ガイド交換（1本）</strong></td>
+          <td>既存ガイド除去・新規取付・コーティング</td>
+          <td>¥8,000〜</td>
+        </tr>
+        <tr>
+          <td><strong>グリップ交換</strong></td>
+          <td>コルク・EVA・ウッドなどへの交換</td>
+          <td>¥5,000〜</td>
+        </tr>
+        <tr>
+          <td><strong>カラーカスタム</strong></td>
+          <td>スレッド巻き直し・コーティング仕上げ</td>
+          <td>¥10,000〜</td>
+        </tr>
+        <tr>
+          <td><strong>トップガイド修理</strong></td>
+          <td>トップガイド交換・接着</td>
+          <td>¥1,500〜</td>
+        </tr>
+        <tr>
+          <td><strong>リメイク一式</strong></td>
+          <td>フルリビルド（状態確認後お見積もり）</td>
+          <td>要相談</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="price-note">※ 価格は素材・仕様・作業量により変動します。まずはお気軽にご相談ください。</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-strip">
+    <div class="cta-strip-text">
+      <h3>まずはお気軽にご相談ください</h3>
+      <p>スペック・仕様・予算など、どんな内容でも歓迎です。小ロット・個人オーダーも承ります。</p>
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-red">お問い合わせ &#x2192;</a>
+      <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" class="btn btn-ghost">Instagram DM &#x2197;</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="IG Rod Planning" style="height:40px; width:auto; display:block;" />
+        </a>
+        <p>自分色のオリジナル釣竿を作ってみませんか。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げるロッドビルダーです。</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="strixedge.html">STRIX EDGE</a></li>
+          <li><a href="gtlj.html">GTLJ</a></li>
+          <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html">オリジナルロッド制作</a></li>
+          <li><a href="services.html">リメイク</a></li>
+          <li><a href="services.html">カラーカスタム</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></li>
+          <li><a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

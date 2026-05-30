@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>商品一覧 | IG Rod Planning</title>
+  <meta name="description" content="IG Rod Planningの商品ラインナップ。STRIX EDGE・GT-LJ・GT-J・GT-SLJ・OFF SHOREなどカスタムロッドシリーズをご覧いただけます。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010; --white:#f8f8f8;
+      --gray:#d0d0d0; --gray2:#999999;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--black); color: var(--white); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(8,8,8,0.96); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul > li { position: relative; }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(248,248,248,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; }
+    .has-drop:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .dropdown li.sub a { padding-left: 1.9rem; font-size: 0.73rem; color: rgba(248,248,248,0.38); }
+    .dropdown li.sub a::before { content: '└ '; font-size: 0.6rem; opacity: 0.5; }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .nav-contact:hover { background: var(--red2) !important; }
+
+    /* PAGE HEADER */
+    .page-header { padding: 10rem 3rem 5rem; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+    .page-header-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(204,34,0,0.12) 0%, transparent 60%), var(--black); }
+    .page-header-line { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 70% 100% at 50% 0%, black 20%, transparent 100%); }
+    .page-header-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 1rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
+    .page-title { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1rem; }
+    .page-sub { font-size: 1rem; color: rgba(248,248,248,0.45); font-weight: 300; letter-spacing: 0.06em; }
+
+    /* MAIN */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 6rem 3rem; }
+
+    /* PRODUCT GRID */
+    .prod-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 4rem; }
+    .prod-card { display: flex; flex-direction: column; background: var(--dark); text-decoration: none; color: inherit; transition: background 0.25s; }
+    .prod-card:hover { background: var(--dark2); }
+    .prod-img-wrap { aspect-ratio: 16/9; overflow: hidden; }
+    .prod-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .prod-card:hover .prod-img { transform: scale(1.04); }
+    .prod-body { padding: 1.75rem; flex: 1; display: flex; flex-direction: column; }
+    .prod-num { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; color: var(--red2); margin-bottom: 0.5rem; font-family: 'DM Sans',sans-serif; }
+    .prod-name { font-size: 1.25rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+    .prod-sub { font-size: 0.72rem; color: var(--gray2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; font-family: 'DM Sans',sans-serif; }
+    .prod-desc { font-size: 0.83rem; color: var(--gray); line-height: 1.8; margin-bottom: 1rem; flex: 1; }
+    .prod-specs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+    .spec-tag { font-size: 0.65rem; padding: 0.25rem 0.6rem; border: 1px solid var(--border2); color: var(--gray2); letter-spacing: 0.05em; }
+    .prod-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border); margin-top: auto; }
+    .prod-price { font-size: 0.85rem; font-weight: 700; }
+    .prod-arrow { font-size: 1rem; color: var(--red2); }
+
+    /* STRIX FEATURE */
+    .strix-feature { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 3rem; margin-bottom: 4rem; }
+    .strix-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .strix-img { width: 100%; display: block; aspect-ratio: 4/3; object-fit: cover; }
+    .new-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; color: var(--white); background: var(--red); padding: 0.35rem 0.9rem; margin-bottom: 1rem; }
+    .strix-catch { font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 900; line-height: 1.4; margin: 1rem 0; letter-spacing: -0.02em; }
+    .em { color: var(--red2); }
+    .strix-detail { font-size: 0.88rem; color: var(--gray); line-height: 1.9; margin-bottom: 2rem; }
+    .strix-specs-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-bottom: 2rem; }
+    .strix-spec-label { font-size: 0.62rem; color: var(--gray2); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.2rem; }
+    .strix-spec-val { font-size: 0.9rem; font-weight: 700; }
+
+    /* CTA */
+    .cta-strip { background: var(--dark); border: 1px solid var(--border); padding: 3rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .cta-strip-text h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .cta-strip-text p { font-size: 0.87rem; color: var(--gray); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 2rem; border-radius: 4px; font-size: 0.88rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; letter-spacing: 0.06em; text-transform: uppercase; font-family: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 0 30px rgba(204,34,0,0.25); }
+    .btn-red:hover { background: var(--red2); box-shadow: 0 0 50px rgba(204,34,0,0.45); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border2); color: rgba(248,248,248,0.6); }
+    .btn-ghost:hover { border-color: rgba(248,248,248,0.3); color: var(--white); }
+
+    /* FOOTER */
+    footer { background: var(--black); border-top: 1px solid var(--border); padding: 4rem 3rem 2.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+    .footer-brand p { font-size: 0.85rem; color: var(--gray); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.5rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--gray2); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--gray2); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--gray); }
+
+    @media (max-width: 1024px) {
+      .prod-grid { grid-template-columns: repeat(2,1fr); }
+      .strix-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+      .main-wrap { padding: 5rem 2rem; }
+      .page-header { padding: 8rem 2rem 4rem; }
+      .strix-feature { padding: 4rem 2rem; }
+      .cta-strip { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 768px) {
+      nav ul li:not(:last-child):not(:nth-last-child(2)) { display: none; }
+      .prod-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      footer { padding: 3rem 1.5rem 2rem; }
+      .page-header { padding: 7rem 1.5rem 3rem; }
+      .main-wrap { padding: 4rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:44px; width:auto; display:block;" />
+  </a>
+  <ul>
+    <li class="has-drop">
+      <a href="products.html">商品一覧</a>
+      <ul class="dropdown">
+        <li><a href="strixedge.html">STRIX EDGE</a></li>
+        <li><a href="gtlj.html">GTLJ</a></li>
+        <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li class="has-drop">
+      <a href="color.html">カスタムオーダー</a>
+      <ul class="dropdown">
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+      </ul>
+    </li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-bg"></div>
+  <div class="page-header-line"></div>
+  <div class="page-header-content">
+    <div class="eyebrow">Products</div>
+    <h1 class="page-title">商品一覧</h1>
+    <p class="page-sub">IG Rod Planning のロッドラインナップ</p>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <div class="prod-grid">
+    <!-- STRIX EDGE -->
+    <a class="prod-card" href="strixedge.html">
+      <div class="prod-img-wrap">
+        <img class="prod-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
+      </div>
+      <div class="prod-body">
+        
+        <div class="prod-name">STRIX EDGE</div>
+        <div class="prod-sub">IKAMETAL</div>
+        <p class="prod-desc">響きが違う。見えない「触れ」が見える。チタントップが海中の微細な信号を捉え、軽量バランス設計が生む繊細な操作感。Fuji製SiCチタンガイドを標準装備。</p>
+        <div class="prod-specs">
+          <span class="spec-tag">イカメタル</span>
+          <span class="spec-tag">オモリグ</span>
+        </div>
+        <div class="prod-footer">
+          <div class="prod-price"><strong>¥39,300〜</strong>（税別）</div>
+          <div class="prod-arrow">&#x2197;</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- GT-LJ -->
+    <a class="prod-card" href="gtlj.html">
+      <div class="prod-img-wrap">
+        <img class="prod-img" src="gtlj-banner.png" alt="GT-LJ" loading="lazy" />
+      </div>
+      <div class="prod-body">
+        
+        <div class="prod-name">GTLJ</div>
+        <div class="prod-sub">Light Jigging</div>
+        <p class="prod-desc">カーボンチューブラーのシャープさとソリッドの粘りを両立。24t・30t混在弾性カーボン採用のライトジギングロッド。青物・真イカ・根魚など多彩なターゲットに対応。</p>
+        <div class="prod-specs">
+          <span class="spec-tag">ライトジギング</span>
+          <span class="spec-tag">ジギング</span>
+          <span class="spec-tag">スロージギング</span>
+          <span class="spec-tag">タイジギング</span>
+          <span class="spec-tag">ディープタイラバ</span>
+        </div>
+        <div class="prod-footer">
+          <div class="prod-price"><strong>¥31,300〜</strong>（税別）</div>
+          <div class="prod-arrow">&#x2197;</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- GT-J -->
+    <a class="prod-card" href="gtj.html">
+      <div class="prod-img-wrap">
+        <img class="prod-img" src="gtj-banner.png" alt="GT-J" loading="lazy" />
+      </div>
+      <div class="prod-body">
+        
+        <div class="prod-name">GT J</div>
+        <div class="prod-sub">Jigging</div>
+        <p class="prod-desc">操作性と粘りを追求したジギングロッド。フルベンドデザインによる滑らかなヒット感と、バット部まで曲がりきる弾力が魚とのやり取りを制する。</p>
+        <div class="prod-specs">
+          <span class="spec-tag">ジギング</span>
+          <span class="spec-tag">青物</span>
+          <span class="spec-tag">底物</span>
+        </div>
+        <div class="prod-footer">
+          <div class="prod-price"><strong>¥33,800〜</strong>（税別）</div>
+          <div class="prod-arrow">&#x2197;</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- GTSLJ -->
+    <a class="prod-card" href="gtslj.html">
+      <div class="prod-img-wrap">
+        <img class="prod-img" src="gtslj-banner.png" alt="GTSLJ" loading="lazy" />
+      </div>
+      <div class="prod-body">
+        
+        <div class="prod-name">GTSLJ</div>
+        <div class="prod-sub">Offshore Light Rod</div>
+        <p class="prod-desc">遊び尽くせるオフショアライトロッド。SLJ〜ライトジギング、タイラバ、タイジギングまで対応。軽量設計と高強度ブランクスで長時間の釣行も快適に。</p>
+        <div class="prod-specs">
+          <span class="spec-tag">SLJ</span>
+          <span class="spec-tag">タイラバ</span>
+          <span class="spec-tag">タイジギング</span>
+        </div>
+        <div class="prod-footer">
+          <div class="prod-price"><strong>¥31,300〜</strong>（税別）</div>
+          <div class="prod-arrow">&#x2197;</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- STRIX FEATURE -->
+  <div class="strix-feature">
+    <div class="strix-inner">
+      <img class="strix-img" src="https://ig-rod.jp/wp-content/uploads/2025/10/全体画像.jpg" alt="STRIX EDGE 全体画像" loading="lazy" />
+      <div>
+        <div class="new-badge">2026年2月下旬 発売予定</div>
+        <div class="eyebrow">Featured</div>
+        <h2 style="font-size:clamp(2rem,4vw,3.5rem);font-weight:900;letter-spacing:-0.03em;margin-bottom:1rem;">STRIX EDGE</h2>
+        <p class="strix-catch">響きが違う。<br />見えない<span class="em">「触れ」</span>が見える。</p>
+        <div class="strix-detail">
+          <p>海中から届く微細な信号をチタントップで捉える。軽量バランス設計が生む繊細な操作感。ただ軽いだけではない、"伝わる軽さ"。</p>
+          <p>Fuji製SiCチタンガイドを標準装備。ベイトモデルはスパイラル仕上げに対応。</p>
+        </div>
+        <div class="strix-specs-row">
+          <div class="strix-spec"><div class="strix-spec-label">モデル</div><div class="strix-spec-val">SE510ML / SE66ML</div></div>
+          <div class="strix-spec"><div class="strix-spec-label">重量</div><div class="strix-spec-val">90〜91g</div></div>
+          <div class="strix-spec"><div class="strix-spec-label">ガイド</div><div class="strix-spec-val">Fuji SiC チタン</div></div>
+          <div class="strix-spec"><div class="strix-spec-label">価格（税別）</div><div class="strix-spec-val">¥39,300〜¥39,600</div></div>
+        </div>
+        <a href="https://ig-rod.jp/strixedge/" target="_blank" rel="noopener" class="btn btn-red">詳細・オーダーフォームへ &#x2197;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-strip">
+    <div class="cta-strip-text">
+      <h3>オーダーメイドでご希望の一本を</h3>
+      <p>スペック・仕様はお気軽にご相談ください。小ロット・個人オーダーも歓迎です。</p>
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-red">お問い合わせ &#x2192;</a>
+      <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" class="btn btn-ghost">Instagram DM &#x2197;</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="IG Rod Planning" style="height:40px; width:auto; display:block;" />
+        </a>
+        <p>自分色のオリジナル釣竿を作ってみませんか。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げるロッドビルダーです。</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="strixedge.html">STRIX EDGE</a></li>
+          <li><a href="gtlj.html">GTLJ</a></li>
+          <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html">オリジナルロッド制作</a></li>
+          <li><a href="services.html">リメイク</a></li>
+          <li><a href="services.html">カラーカスタム</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></li>
+          <li><a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

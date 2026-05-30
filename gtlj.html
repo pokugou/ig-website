@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GTLJ | IG Rod Planning</title>
+  <meta name="description" content="超万能ライトジギングロッド GTLJ。カーボンチューブラーのシャープさとソリッドの粘りを両立した24t・30t混在弾性カーボン採用モデル。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010; --white:#f8f8f8;
+      --gray:#d0d0d0; --gray2:#999999;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--black); color: var(--white); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(8,8,8,0.96); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul > li { position: relative; }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(248,248,248,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; }
+    .has-drop:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .dropdown li.sub a { padding-left: 1.9rem; font-size: 0.73rem; color: rgba(248,248,248,0.38); }
+    .dropdown li.sub a::before { content: '└ '; font-size: 0.6rem; opacity: 0.5; }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .nav-contact:hover { background: var(--red2) !important; }
+
+    /* HERO */
+    .hero { position: relative; width: 100%; min-height: 100vh; display: flex; align-items: flex-end; overflow: hidden; }
+    .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.9) 0%, rgba(8,8,8,0.25) 50%, rgba(8,8,8,0.1) 100%); }
+    .hero-content { position: relative; z-index: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 3rem 6rem; }
+    .hero-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.75rem; }
+    .hero-title { font-size: clamp(3rem, 8vw, 7rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; margin-bottom: 1rem; }
+    .hero-sub { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 300; color: rgba(248,248,248,0.75); letter-spacing: 0.03em; margin-bottom: 2rem; }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .hero-tag { font-size: 0.7rem; padding: 0.3rem 0.8rem; border: 1px solid rgba(255,255,255,0.25); color: rgba(248,248,248,0.65); letter-spacing: 0.06em; }
+
+    /* SECTIONS */
+    .section { padding: 6rem 3rem; max-width: 1200px; margin: 0 auto; }
+    .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .section-label::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
+    .section-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+    .section-desc { font-size: 0.95rem; color: var(--gray); line-height: 1.9; max-width: 700px; }
+
+    /* SPECS */
+    .specs-section { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .specs-inner { max-width: 1200px; margin: 0 auto; padding: 5rem 3rem; }
+    .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 3rem; }
+    .spec-cell { background: var(--dark2); padding: 1.75rem; }
+    .spec-cell-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray2); margin-bottom: 0.5rem; font-family: 'DM Sans',sans-serif; }
+    .spec-cell-val { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 3rem; }
+    .feature-card { background: var(--dark); padding: 2.5rem; }
+    .feature-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+    .feature-title { font-size: 1rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.6rem; }
+    .feature-desc { font-size: 0.83rem; color: var(--gray); line-height: 1.8; }
+
+    /* MODEL TABLE */
+    .model-table-wrap { margin-top: 3rem; overflow-x: auto; }
+    .model-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); }
+    .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: left; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray2); border-bottom: 1px solid var(--border); white-space: nowrap; }
+    .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 1px solid var(--border); color: var(--gray); }
+    .model-table tr:last-child td { border-bottom: none; }
+    .model-table tr:hover td { background: rgba(255,255,255,0.02); color: var(--white); }
+    .model-name { font-weight: 700; color: var(--white) !important; }
+
+    /* CTA */
+    .cta-section { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 5rem 3rem; }
+    .cta-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .cta-text h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .cta-text p { font-size: 0.9rem; color: var(--gray); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 2rem; border-radius: 4px; font-size: 0.88rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; letter-spacing: 0.06em; text-transform: uppercase; font-family: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 0 30px rgba(204,34,0,0.25); }
+    .btn-red:hover { background: var(--red2); box-shadow: 0 0 50px rgba(204,34,0,0.45); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border2); color: rgba(248,248,248,0.6); }
+    .btn-ghost:hover { border-color: rgba(248,248,248,0.3); color: var(--white); }
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* FOOTER */
+    footer { background: var(--black); border-top: 1px solid var(--border); padding: 4rem 3rem 2.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+    .footer-brand p { font-size: 0.85rem; color: var(--gray); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.5rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--gray2); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--gray2); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--gray); }
+
+    @media (max-width: 1024px) {
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .cta-inner { flex-direction: column; align-items: flex-start; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+      .section { padding: 5rem 2rem; }
+      .specs-inner { padding: 4rem 2rem; }
+      .cta-section { padding: 4rem 2rem; }
+    }
+    @media (max-width: 768px) {
+      nav ul li:not(:last-child):not(:nth-last-child(2)) { display: none; }
+      .hero-content { padding: 0 1.5rem 4rem; }
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+      .features-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      footer { padding: 3rem 1.5rem 2rem; }
+      .section { padding: 4rem 1.5rem; }
+      .specs-inner { padding: 3rem 1.5rem; }
+      .cta-section { padding: 3rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:44px; width:auto; display:block;" />
+  </a>
+  <ul>
+    <li class="has-drop">
+      <a href="products.html">商品一覧</a>
+      <ul class="dropdown">
+        <li><a href="strixedge.html">STRIX EDGE</a></li>
+        <li><a href="gtlj.html">GTLJ</a></li>
+        <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li class="has-drop">
+      <a href="color.html">カスタムオーダー</a>
+      <ul class="dropdown">
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+      </ul>
+    </li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <img class="hero-img" src="gtlj-banner.png" alt="GTLJ" />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">LIGHT JIGGING ROD</div>
+    <h1 class="hero-title">GTLJ</h1>
+    <p class="hero-sub">超万能ライトジギングロッド</p>
+    <div class="hero-tags">
+      <span class="hero-tag">ライトジギング</span>
+      <span class="hero-tag">ジギング</span>
+      <span class="hero-tag">スロージギング</span>
+      <span class="hero-tag">タイジギング</span>
+      <span class="hero-tag">ディープタイラバ</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<div class="section">
+  <div class="section-label">Concept</div>
+  <h2 class="section-title">曲げて遊べる、超万能な一本。</h2>
+  <p class="section-desc">カーボンチューブラーなのにソリッドのような粘りを見せてくれる。24t・30t混在弾性カーボンのマルチバイアス設計により、細身でありながら高い破断強度を実現。青物・真イカ・根魚など多彩なターゲットに対応するライトジギングロッド。</p>
+</div>
+
+<!-- SPECS -->
+<div class="specs-section">
+  <div class="specs-inner">
+    <div class="section-label">Spec</div>
+    <h2 class="section-title" style="margin-bottom:0;">主要スペック</h2>
+    <div class="specs-grid">
+      <div class="spec-cell">
+        <div class="spec-cell-label">全長</div>
+        <div class="spec-cell-val">1.91m</div>
+      </div>
+      <div class="spec-cell">
+        <div class="spec-cell-label">継数</div>
+        <div class="spec-cell-val">1ピース</div>
+      </div>
+      <div class="spec-cell">
+        <div class="spec-cell-label">対応スタイル</div>
+        <div class="spec-cell-val">ベイト / スピニング</div>
+      </div>
+      <div class="spec-cell">
+        <div class="spec-cell-label">価格（税別）</div>
+        <div class="spec-cell-val">¥31,300〜</div>
+      </div>
+    </div>
+
+    <div class="model-table-wrap">
+      <table class="model-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>全長</th>
+            <th>継数</th>
+            <th>カーボン</th>
+            <th>対応スタイル</th>
+            <th>価格（税別）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="model-name">GTLJ</td>
+            <td>1.91m</td>
+            <td>1ピース</td>
+            <td>24t / 30t 混在弾性</td>
+            <td>ベイト / スピニング</td>
+            <td>¥31,300〜</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">3つの特長</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎣</div>
+      <div class="feature-title">マルチバイアス設計</div>
+      <div class="feature-desc">24t・30t混在弾性カーボンのマルチバイアス設計により、チューブラーでありながらソリッドのような粘りを実現。フルベンドによる滑らかなファイトが楽しめる。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🐟</div>
+      <div class="feature-title">マルチターゲット対応</div>
+      <div class="feature-desc">青物・真イカ・根魚など多彩なターゲットに対応。ライトジギングシーンを幅広くカバーする汎用性の高い設計で、一本で複数の釣りを楽しみたい方に。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚙️</div>
+      <div class="feature-title">ベイト / スピニング対応</div>
+      <div class="feature-desc">ベイトモデル・スピニングモデルを用意。釣りスタイルやターゲットに合わせて選択可能。どちらも同じコンセプトのもと、粘りと操作性を両立している。</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-text">
+      <h2>オーダー・お問い合わせ</h2>
+      <p>仕様・カラーカスタムなど、お気軽にご相談ください。</p>
+    </div>
+    <div class="btn-group">
+      <a href="contact.html" class="btn btn-red">お問い合わせ &#x2192;</a>
+      <a href="products.html" class="btn btn-ghost">商品一覧へ戻る</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="IG Rod Planning" style="height:40px; width:auto; display:block;" />
+        </a>
+        <p>自分色のオリジナル釣竿を作ってみませんか。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げるロッドビルダーです。</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="strixedge.html">STRIX EDGE</a></li>
+          <li><a href="gtlj.html">GTLJ</a></li>
+          <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html">オリジナルロッド制作</a></li>
+          <li><a href="services.html">リメイク</a></li>
+          <li><a href="services.html">カラーカスタム</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></li>
+          <li><a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
