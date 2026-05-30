@@ -102,6 +102,15 @@
     .cd-check { margin-left: auto; color: var(--red); font-size: 0.8rem; display: none; }
     .cd-opt.selected .cd-check { display: block; }
     .cd-error .cd-btn { border-color: var(--red2) !important; }
+    .cd-opt-icon { width: 40px; height: 26px; border-radius: 2px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .cd-opt-name small { display: block; font-size: 0.68rem; color: var(--gray2); margin-top: 0.1rem; }
+    .sp-omakase { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+    .sp-omakase-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border: 2px solid transparent; border-radius: 3px; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--dark3); }
+    .sp-omakase-item:hover { border-color: rgba(255,255,255,0.2); }
+    .sp-omakase-item.selected { border-color: var(--red); background: rgba(204,34,0,0.12); }
+    .sp-omakase-icon { width: 40px; height: 26px; border-radius: 2px; flex-shrink: 0; }
+    .sp-omakase-name { font-size: 0.83rem; font-weight: 700; }
+    .sp-omakase-sub { font-size: 0.68rem; color: var(--gray2); }
 
     /* SWATCH PICKER (スレッド) */
     .sp-wrap { border: 1px solid var(--border2); padding: 1.25rem; background: var(--dark); margin-top: 0.4rem; }
@@ -281,6 +290,9 @@
             <span class="cd-btn-arrow">▼</span>
           </button>
           <div class="cd-panel" id="cd-panel-blank-color">
+            <div class="cd-group-lbl">お任せコーディネート</div>
+            <div class="cd-opt" data-field="blank-color" data-val="派手にお任せコーディネート" data-img=""><div class="cd-opt-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#cc2200,#0055cc,#00cc44)">🎨</div><span class="cd-opt-name">派手にお任せコーディネート<small>カラーはビルダーにお任せ</small></span><span class="cd-check">✓</span></div>
+            <div class="cd-opt" data-field="blank-color" data-val="ダーク系のシンプルコーディネート" data-img=""><div class="cd-opt-icon" style="background:linear-gradient(135deg,#222,#444)">🖤</div><span class="cd-opt-name">ダーク系のシンプルコーディネート<small>カラーはビルダーにお任せ</small></span><span class="cd-check">✓</span></div>
             <div class="cd-group-lbl">フラット通常色 ¥9,000</div>
             <div class="cd-opt" data-field="blank-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg"><span class="cd-opt-name">001 ホワイト</span><span class="cd-check">✓</span></div>
             <div class="cd-opt" data-field="blank-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg"><span class="cd-opt-name">002 ブラック</span><span class="cd-check">✓</span></div>
@@ -315,6 +327,9 @@
             <span class="cd-btn-arrow">▼</span>
           </button>
           <div class="cd-panel" id="cd-panel-tip-color">
+            <div class="cd-group-lbl">お任せコーディネート</div>
+            <div class="cd-opt" data-field="tip-color" data-val="派手にお任せコーディネート" data-img=""><div class="cd-opt-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#cc2200,#0055cc,#00cc44)">🎨</div><span class="cd-opt-name">派手にお任せコーディネート<small>カラーはビルダーにお任せ</small></span><span class="cd-check">✓</span></div>
+            <div class="cd-opt" data-field="tip-color" data-val="ダーク系のシンプルコーディネート" data-img=""><div class="cd-opt-icon" style="background:linear-gradient(135deg,#222,#444)">🖤</div><span class="cd-opt-name">ダーク系のシンプルコーディネート<small>カラーはビルダーにお任せ</small></span><span class="cd-check">✓</span></div>
             <div class="cd-group-lbl">フラット通常色 ¥9,000</div>
             <div class="cd-opt" data-field="tip-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg"><span class="cd-opt-name">001 ホワイト</span><span class="cd-check">✓</span></div>
             <div class="cd-opt" data-field="tip-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg"><span class="cd-opt-name">002 ブラック</span><span class="cd-check">✓</span></div>
@@ -344,6 +359,10 @@
       <div class="field">
         <label>メインスレッド<span class="req">必須</span></label>
         <div class="sp-wrap" id="sp-thread-main">
+          <div class="sp-omakase">
+            <div class="sp-omakase-item" data-field="thread-main" data-val="派手にお任せコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#0055cc,#00cc44)"></div><div><div class="sp-omakase-name">🎨 派手にお任せコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
+            <div class="sp-omakase-item" data-field="thread-main" data-val="ダーク系のシンプルコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#1a1a1a,#444)"></div><div><div class="sp-omakase-name">🖤 ダーク系のシンプルコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
+          </div>
           <div class="sp-cat-lbl">ダルスレッド</div>
           <div class="sp-grid thread-grid">
             <div class="sp-item" data-field="thread-main" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
@@ -394,6 +413,10 @@
       <div class="field">
         <label>ティップ部分スレッド<span class="req">必須</span></label>
         <div class="sp-wrap" id="sp-thread-tip">
+          <div class="sp-omakase">
+            <div class="sp-omakase-item" data-field="thread-tip" data-val="派手にお任せコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#0055cc,#00cc44)"></div><div><div class="sp-omakase-name">🎨 派手にお任せコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
+            <div class="sp-omakase-item" data-field="thread-tip" data-val="ダーク系のシンプルコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#1a1a1a,#444)"></div><div><div class="sp-omakase-name">🖤 ダーク系のシンプルコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
+          </div>
           <div class="sp-cat-lbl">ダルスレッド</div>
           <div class="sp-grid thread-grid">
             <div class="sp-item" data-field="thread-tip" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
@@ -444,6 +467,10 @@
       <div class="field">
         <label>ピンラインスレッド<span class="req">必須</span></label>
         <div class="sp-wrap" id="sp-thread-pin">
+          <div class="sp-omakase">
+            <div class="sp-omakase-item" data-field="thread-pin" data-val="派手にお任せコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#0055cc,#00cc44)"></div><div><div class="sp-omakase-name">🎨 派手にお任せコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
+            <div class="sp-omakase-item" data-field="thread-pin" data-val="ダーク系のシンプルコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#1a1a1a,#444)"></div><div><div class="sp-omakase-name">🖤 ダーク系のシンプルコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
+          </div>
           <div class="sp-cat-lbl">ダルスレッド</div>
           <div class="sp-grid thread-grid">
             <div class="sp-item" data-field="thread-pin" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
@@ -702,14 +729,32 @@ document.addEventListener('click', function() {
   document.querySelectorAll('.cd-btn').forEach(function(b){ b.classList.remove('open'); });
 });
 
+// --- お任せアイテム選択（スレッド） ---
+document.querySelectorAll('.sp-omakase-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    var field = this.dataset.field;
+    var val   = this.dataset.val;
+    // 同フィールドの全選択解除
+    document.querySelectorAll('.sp-item[data-field="' + field + '"], .sp-omakase-item[data-field="' + field + '"]').forEach(function(i){ i.classList.remove('selected'); });
+    this.classList.add('selected');
+    document.getElementById('f-' + field).value = val;
+    var txtEl = document.getElementById('txt-' + field);
+    var imgEl = document.getElementById('img-' + field);
+    if (txtEl) { txtEl.textContent = '選択中：' + val; txtEl.classList.add('chosen'); }
+    if (imgEl) imgEl.style.display = 'none';
+    var wrap = document.getElementById('sp-' + field);
+    if (wrap) wrap.classList.remove('sp-error');
+  });
+});
+
 // --- スウォッチ選択 ---
 document.querySelectorAll('.sp-item').forEach(function(item) {
   item.addEventListener('click', function() {
     var field = this.dataset.field;
     var val   = this.dataset.val;
     var img   = this.dataset.img;
-    // 同じフィールドの選択解除
-    document.querySelectorAll('.sp-item[data-field="' + field + '"]').forEach(function(i){ i.classList.remove('selected'); });
+    // 同じフィールドの選択解除（お任せ含む）
+    document.querySelectorAll('.sp-item[data-field="' + field + '"], .sp-omakase-item[data-field="' + field + '"]').forEach(function(i){ i.classList.remove('selected'); });
     this.classList.add('selected');
     // hidden inputに値をセット
     document.getElementById('f-' + field).value = val;
