@@ -80,11 +80,22 @@
     select option { background: var(--dark2); }
     textarea { resize: vertical; min-height: 100px; }
 
-    /* COLOR FIELD */
-    .color-field-wrap { display: flex; gap: 0.75rem; align-items: flex-start; }
-    .color-field-wrap input { flex: 1; }
-    .color-chart-link { display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; font-size: 0.72rem; color: var(--gold); border: 1px solid rgba(245,208,98,0.3); padding: 0.75rem 0.85rem; text-decoration: none; transition: background 0.2s, border-color 0.2s; flex-shrink: 0; }
-    .color-chart-link:hover { background: rgba(245,208,98,0.08); border-color: rgba(245,208,98,0.6); }
+    /* SWATCH PICKER */
+    .sp-wrap { border: 1px solid var(--border2); padding: 1.25rem; background: var(--dark); margin-top: 0.4rem; }
+    .sp-cat-lbl { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; color: var(--red2); margin-bottom: 0.6rem; margin-top: 1rem; }
+    .sp-cat-lbl:first-child { margin-top: 0; }
+    .sp-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.4rem; margin-bottom: 0.25rem; }
+    .sp-grid.thread-grid { grid-template-columns: repeat(8, 1fr); }
+    .sp-item { cursor: pointer; display: flex; flex-direction: column; gap: 0.2rem; border: 2px solid transparent; border-radius: 3px; padding: 2px; transition: border-color 0.15s, background 0.15s; }
+    .sp-item:hover { border-color: rgba(255,255,255,0.25); }
+    .sp-item.selected { border-color: var(--red); background: rgba(204,34,0,0.12); }
+    .sp-item img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; border-radius: 2px; }
+    .sp-item .sp-name { font-size: 0.5rem; color: rgba(248,248,248,0.45); line-height: 1.2; text-align: center; }
+    .sp-current { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.6rem; font-size: 0.75rem; min-height: 1.4em; }
+    .sp-current-img { width: 28px; height: 18px; object-fit: cover; border-radius: 2px; display: none; border: 1px solid var(--border2); flex-shrink: 0; }
+    .sp-current-txt { color: var(--gray2); }
+    .sp-current-txt.chosen { color: var(--white); font-weight: 700; }
+    .sp-error { border-color: var(--red2) !important; }
 
     /* PRICE BOX */
     .price-box { background: var(--dark); border: 1px solid var(--border2); padding: 2rem; margin-bottom: 2rem; }
@@ -238,44 +249,223 @@
     <div class="form-section">
       <div class="form-section-title">カラーカスタム</div>
 
+      <!-- ブランクスカラー -->
       <div class="field">
         <label>ブランクスカラー<span class="req">必須</span></label>
-        <div class="color-field-wrap">
-          <input type="text" name="blank-color" placeholder="例：001 ホワイト" required />
-          <a href="color.html" target="_blank" class="color-chart-link">カラーチャート &#x2197;</a>
+        <div class="sp-wrap" id="sp-blank-color">
+          <div class="sp-cat-lbl">フラット通常色 ¥9,000</div>
+          <div class="sp-grid">
+            <div class="sp-item" data-field="blank-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg"><div class="sp-name">001 ホワイト</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg"><div class="sp-name">002 ブラック</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="003 ブルー" data-img="swatches/b003.jpg"><img src="swatches/b003.jpg"><div class="sp-name">003 ブルー</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="004 レッド" data-img="swatches/b004.jpg"><img src="swatches/b004.jpg"><div class="sp-name">004 レッド</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="005 イエロー" data-img="swatches/b005.jpg"><img src="swatches/b005.jpg"><div class="sp-name">005 イエロー</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="006 グリーン" data-img="swatches/b006.jpg"><img src="swatches/b006.jpg"><div class="sp-name">006 グリーン</div></div>
+          </div>
+          <div class="sp-cat-lbl">フラットメタリック色 ¥9,500UP</div>
+          <div class="sp-grid">
+            <div class="sp-item" data-field="blank-color" data-val="007 シルバー" data-img="swatches/b007.jpg"><img src="swatches/b007.jpg"><div class="sp-name">007 シルバー</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="008 ゴールド" data-img="swatches/b008.jpg"><img src="swatches/b008.jpg"><div class="sp-name">008 ゴールド</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="009 Mブルー" data-img="swatches/b009.jpg"><img src="swatches/b009.jpg"><div class="sp-name">009 Mブルー</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="010 Mレッド" data-img="swatches/b010.jpg"><img src="swatches/b010.jpg"><div class="sp-name">010 Mレッド</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="011 Mグリーン" data-img="swatches/b011.jpg"><img src="swatches/b011.jpg"><div class="sp-name">011 Mグリーン</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="012 Mオレンジ" data-img="swatches/b012.jpg"><img src="swatches/b012.jpg"><div class="sp-name">012 Mオレンジ</div></div>
+          </div>
+          <div class="sp-cat-lbl">フラット蛍光色 ¥9,000UP</div>
+          <div class="sp-grid">
+            <div class="sp-item" data-field="blank-color" data-val="013 蛍光グリーン" data-img="swatches/b013.jpg"><img src="swatches/b013.jpg"><div class="sp-name">013 蛍光G</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="014 蛍光イエロー" data-img="swatches/b014.jpg"><img src="swatches/b014.jpg"><div class="sp-name">014 蛍光Y</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="015 蛍光ピンク" data-img="swatches/b015.jpg"><img src="swatches/b015.jpg"><div class="sp-name">015 蛍光P</div></div>
+            <div class="sp-item" data-field="blank-color" data-val="016 蛍光オレンジ" data-img="swatches/b016.jpg"><img src="swatches/b016.jpg"><div class="sp-name">016 蛍光O</div></div>
+          </div>
         </div>
+        <input type="hidden" name="blank-color" id="f-blank-color" />
+        <div class="sp-current"><img class="sp-current-img" id="img-blank-color"><span class="sp-current-txt" id="txt-blank-color">未選択</span></div>
       </div>
 
+      <!-- ティップカラー -->
       <div class="field">
         <label>ティップカラー<span class="req">必須</span></label>
-        <div class="color-field-wrap">
-          <input type="text" name="tip-color" placeholder="例：013 蛍光グリーン" required />
-          <a href="color.html" target="_blank" class="color-chart-link">カラーチャート &#x2197;</a>
+        <div class="sp-wrap" id="sp-tip-color">
+          <div class="sp-cat-lbl">フラット通常色 ¥9,000</div>
+          <div class="sp-grid">
+            <div class="sp-item" data-field="tip-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg"><div class="sp-name">001 ホワイト</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg"><div class="sp-name">002 ブラック</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="003 ブルー" data-img="swatches/b003.jpg"><img src="swatches/b003.jpg"><div class="sp-name">003 ブルー</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="004 レッド" data-img="swatches/b004.jpg"><img src="swatches/b004.jpg"><div class="sp-name">004 レッド</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="005 イエロー" data-img="swatches/b005.jpg"><img src="swatches/b005.jpg"><div class="sp-name">005 イエロー</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="006 グリーン" data-img="swatches/b006.jpg"><img src="swatches/b006.jpg"><div class="sp-name">006 グリーン</div></div>
+          </div>
+          <div class="sp-cat-lbl">フラットメタリック色 ¥9,500UP</div>
+          <div class="sp-grid">
+            <div class="sp-item" data-field="tip-color" data-val="007 シルバー" data-img="swatches/b007.jpg"><img src="swatches/b007.jpg"><div class="sp-name">007 シルバー</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="008 ゴールド" data-img="swatches/b008.jpg"><img src="swatches/b008.jpg"><div class="sp-name">008 ゴールド</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="009 Mブルー" data-img="swatches/b009.jpg"><img src="swatches/b009.jpg"><div class="sp-name">009 Mブルー</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="010 Mレッド" data-img="swatches/b010.jpg"><img src="swatches/b010.jpg"><div class="sp-name">010 Mレッド</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="011 Mグリーン" data-img="swatches/b011.jpg"><img src="swatches/b011.jpg"><div class="sp-name">011 Mグリーン</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="012 Mオレンジ" data-img="swatches/b012.jpg"><img src="swatches/b012.jpg"><div class="sp-name">012 Mオレンジ</div></div>
+          </div>
+          <div class="sp-cat-lbl">フラット蛍光色 ¥9,000UP</div>
+          <div class="sp-grid">
+            <div class="sp-item" data-field="tip-color" data-val="013 蛍光グリーン" data-img="swatches/b013.jpg"><img src="swatches/b013.jpg"><div class="sp-name">013 蛍光G</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="014 蛍光イエロー" data-img="swatches/b014.jpg"><img src="swatches/b014.jpg"><div class="sp-name">014 蛍光Y</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="015 蛍光ピンク" data-img="swatches/b015.jpg"><img src="swatches/b015.jpg"><div class="sp-name">015 蛍光P</div></div>
+            <div class="sp-item" data-field="tip-color" data-val="016 蛍光オレンジ" data-img="swatches/b016.jpg"><img src="swatches/b016.jpg"><div class="sp-name">016 蛍光O</div></div>
+          </div>
         </div>
+        <input type="hidden" name="tip-color" id="f-tip-color" />
+        <div class="sp-current"><img class="sp-current-img" id="img-tip-color"><span class="sp-current-txt" id="txt-tip-color">未選択</span></div>
       </div>
 
+      <!-- スレッド共通マクロ用データ -->
+      <!-- メインスレッド -->
       <div class="field">
         <label>メインスレッド<span class="req">必須</span></label>
-        <div class="color-field-wrap">
-          <input type="text" name="thread-main" placeholder="例：t101 ホワイト" required />
-          <a href="color.html" target="_blank" class="color-chart-link">カラーチャート &#x2197;</a>
+        <div class="sp-wrap" id="sp-thread-main">
+          <div class="sp-cat-lbl">ダルスレッド</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-main" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg"><div class="sp-name">102 Bk</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg"><div class="sp-name">112 DGy</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg"><div class="sp-name">118 LGy</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg"><div class="sp-name">172 LG</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg"><div class="sp-name">202 G</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg"><div class="sp-name">103 R</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg"><div class="sp-name">104 Or</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg"><div class="sp-name">166 Pu</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg"><div class="sp-name">109 Tq</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg"><div class="sp-name">145 LB</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg"><div class="sp-name">118 Bl</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">105 Y</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg"><div class="sp-name">106 Nv</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg"><div class="sp-name">107 Pk</div></div>
+          </div>
+          <div class="sp-cat-lbl">メタリックカラー</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-main" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg"><div class="sp-name">201 Sv</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg"><div class="sp-name">202 Gd</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg"><div class="sp-name">237 Pk</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg"><div class="sp-name">203 R</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg"><div class="sp-name">206 DP</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg"><div class="sp-name">207 Pu</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg"><div class="sp-name">208 Bl</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg"><div class="sp-name">209 LB</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg"><div class="sp-name">210 G</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg"><div class="sp-name">211 Cu</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg"><div class="sp-name">212 Br</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg"><div class="sp-name">213 Bz</div></div>
+          </div>
+          <div class="sp-cat-lbl">蛍光色</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-main" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">301 Y</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg"><div class="sp-name">302 Or</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg"><div class="sp-name">303 G</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg"><div class="sp-name">304 R</div></div>
+            <div class="sp-item" data-field="thread-main" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg"><div class="sp-name">305 Pk</div></div>
+          </div>
         </div>
+        <input type="hidden" name="thread-main" id="f-thread-main" />
+        <div class="sp-current"><img class="sp-current-img" id="img-thread-main"><span class="sp-current-txt" id="txt-thread-main">未選択</span></div>
       </div>
 
+      <!-- ティップ部分スレッド -->
       <div class="field">
         <label>ティップ部分スレッド<span class="req">必須</span></label>
-        <div class="color-field-wrap">
-          <input type="text" name="thread-tip" placeholder="例：t102 ブラック" required />
-          <a href="color.html" target="_blank" class="color-chart-link">カラーチャート &#x2197;</a>
+        <div class="sp-wrap" id="sp-thread-tip">
+          <div class="sp-cat-lbl">ダルスレッド</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-tip" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg"><div class="sp-name">102 Bk</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg"><div class="sp-name">112 DGy</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg"><div class="sp-name">118 LGy</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg"><div class="sp-name">172 LG</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg"><div class="sp-name">202 G</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg"><div class="sp-name">103 R</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg"><div class="sp-name">104 Or</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg"><div class="sp-name">166 Pu</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg"><div class="sp-name">109 Tq</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg"><div class="sp-name">145 LB</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg"><div class="sp-name">118 Bl</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">105 Y</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg"><div class="sp-name">106 Nv</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg"><div class="sp-name">107 Pk</div></div>
+          </div>
+          <div class="sp-cat-lbl">メタリックカラー</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-tip" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg"><div class="sp-name">201 Sv</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg"><div class="sp-name">202 Gd</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg"><div class="sp-name">237 Pk</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg"><div class="sp-name">203 R</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg"><div class="sp-name">206 DP</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg"><div class="sp-name">207 Pu</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg"><div class="sp-name">208 Bl</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg"><div class="sp-name">209 LB</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg"><div class="sp-name">210 G</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg"><div class="sp-name">211 Cu</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg"><div class="sp-name">212 Br</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg"><div class="sp-name">213 Bz</div></div>
+          </div>
+          <div class="sp-cat-lbl">蛍光色</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-tip" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">301 Y</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg"><div class="sp-name">302 Or</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg"><div class="sp-name">303 G</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg"><div class="sp-name">304 R</div></div>
+            <div class="sp-item" data-field="thread-tip" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg"><div class="sp-name">305 Pk</div></div>
+          </div>
         </div>
+        <input type="hidden" name="thread-tip" id="f-thread-tip" />
+        <div class="sp-current"><img class="sp-current-img" id="img-thread-tip"><span class="sp-current-txt" id="txt-thread-tip">未選択</span></div>
       </div>
 
+      <!-- ピンラインスレッド -->
       <div class="field">
         <label>ピンラインスレッド<span class="req">必須</span></label>
-        <div class="color-field-wrap">
-          <input type="text" name="thread-pin" placeholder="例：t202g ゴールド" required />
-          <a href="color.html" target="_blank" class="color-chart-link">カラーチャート &#x2197;</a>
+        <div class="sp-wrap" id="sp-thread-pin">
+          <div class="sp-cat-lbl">ダルスレッド</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-pin" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg"><div class="sp-name">102 Bk</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg"><div class="sp-name">112 DGy</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg"><div class="sp-name">118 LGy</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg"><div class="sp-name">172 LG</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg"><div class="sp-name">202 G</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg"><div class="sp-name">103 R</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg"><div class="sp-name">104 Or</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg"><div class="sp-name">166 Pu</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg"><div class="sp-name">109 Tq</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg"><div class="sp-name">145 LB</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg"><div class="sp-name">118 Bl</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">105 Y</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg"><div class="sp-name">106 Nv</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg"><div class="sp-name">107 Pk</div></div>
+          </div>
+          <div class="sp-cat-lbl">メタリックカラー</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-pin" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg"><div class="sp-name">201 Sv</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg"><div class="sp-name">202 Gd</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg"><div class="sp-name">237 Pk</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg"><div class="sp-name">203 R</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg"><div class="sp-name">206 DP</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg"><div class="sp-name">207 Pu</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg"><div class="sp-name">208 Bl</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg"><div class="sp-name">209 LB</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg"><div class="sp-name">210 G</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg"><div class="sp-name">211 Cu</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg"><div class="sp-name">212 Br</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg"><div class="sp-name">213 Bz</div></div>
+          </div>
+          <div class="sp-cat-lbl">蛍光色</div>
+          <div class="sp-grid thread-grid">
+            <div class="sp-item" data-field="thread-pin" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">301 Y</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg"><div class="sp-name">302 Or</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg"><div class="sp-name">303 G</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg"><div class="sp-name">304 R</div></div>
+            <div class="sp-item" data-field="thread-pin" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg"><div class="sp-name">305 Pk</div></div>
+          </div>
         </div>
+        <input type="hidden" name="thread-pin" id="f-thread-pin" />
+        <div class="sp-current"><img class="sp-current-img" id="img-thread-pin"><span class="sp-current-txt" id="txt-thread-pin">未選択</span></div>
         <p class="field-note" style="margin-top:0.5rem">※ チタントップの箇所にピンラインは付きません。</p>
       </div>
     </div>
@@ -441,6 +631,30 @@
 </footer>
 
 <script>
+// --- スウォッチ選択 ---
+document.querySelectorAll('.sp-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    var field = this.dataset.field;
+    var val   = this.dataset.val;
+    var img   = this.dataset.img;
+    // 同じフィールドの選択解除
+    document.querySelectorAll('.sp-item[data-field="' + field + '"]').forEach(function(i){ i.classList.remove('selected'); });
+    this.classList.add('selected');
+    // hidden inputに値をセット
+    document.getElementById('f-' + field).value = val;
+    // 選択中表示
+    var txtEl = document.getElementById('txt-' + field);
+    var imgEl = document.getElementById('img-' + field);
+    txtEl.textContent = '選択中：' + val;
+    txtEl.classList.add('chosen');
+    imgEl.src = img;
+    imgEl.style.display = 'block';
+    // エラー枠を解除
+    var wrap = document.getElementById('sp-' + field.replace(/-/g, '-'));
+    if (wrap) wrap.classList.remove('sp-error');
+  });
+});
+
 // --- 料金計算 ---
 function calcPrice() {
   const modelEl  = document.getElementById('sel-model');
@@ -474,11 +688,20 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
   const entries = [...data.entries()];
 
   // バリデーション
-  const required = form.querySelectorAll('[required]');
   let ok = true;
-  required.forEach(el => {
+  // 通常の必須フィールド
+  form.querySelectorAll('input[required]:not([type="hidden"]), select[required], textarea[required]').forEach(el => {
     el.style.borderColor = '';
     if (!el.value.trim()) { el.style.borderColor = 'var(--red2)'; ok = false; }
+  });
+  // スウォッチ必須フィールド
+  ['blank-color','tip-color','thread-main','thread-tip','thread-pin'].forEach(function(field) {
+    var hiddenEl = document.getElementById('f-' + field);
+    var wrapEl   = document.getElementById('sp-' + field);
+    if (hiddenEl && !hiddenEl.value) {
+      if (wrapEl) wrapEl.classList.add('sp-error');
+      ok = false;
+    }
   });
   if (!ok) { alert('必須項目を入力してください。'); return; }
 
