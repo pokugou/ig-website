@@ -144,8 +144,19 @@
     .sp-omakase-name { font-size: 0.83rem; font-weight: 700; }
     .sp-omakase-sub { font-size: 0.68rem; color: var(--gray2); }
 
+    /* THREAD SWATCH GRID */
+    .cm-thread-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.45rem; }
+    .cm-thread-btn { border-radius: 6px; border: 2px solid rgba(255,255,255,0.12); cursor: pointer; transition: border-color 0.15s, transform 0.12s; background: transparent; padding: 0; overflow: hidden; text-align: left; }
+    .cm-thread-btn:hover { border-color: rgba(255,255,255,0.5); transform: scale(1.05); }
+    .cm-thread-btn.selected { border-color: var(--white); }
+    .cm-thread-btn img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; }
+    .cm-thread-info { padding: 0.2rem 0.25rem; }
+    .cm-thread-num { font-size: 0.55rem; font-weight: 700; color: var(--white); display: block; }
+    .cm-thread-name { font-size: 0.5rem; color: rgba(248,248,248,0.5); display: block; }
+
     @media (max-width: 600px) {
       .cm-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+      .cm-thread-grid { grid-template-columns: repeat(4, 1fr); }
       .cm-title { font-size: 1.2rem; }
       .cm-head { padding: 1rem; }
       .cm-body { padding: 1rem; gap: 1.5rem; }
@@ -349,167 +360,49 @@
         <input type="hidden" name="tip-color" id="f-tip-color" />
       </div>
 
-      <!-- スレッド共通マクロ用データ -->
       <!-- メインスレッド -->
       <div class="field">
         <label>メインスレッド<span class="req">必須</span></label>
-        <div class="sp-wrap" id="sp-thread-main">
-          <div class="sp-omakase">
-            <div class="sp-omakase-item" data-field="thread-main" data-val="派手にお任せコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#0055cc,#00cc44)"></div><div><div class="sp-omakase-name">🎨 派手にお任せコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
-            <div class="sp-omakase-item" data-field="thread-main" data-val="ダーク系のシンプルコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#1a1a1a,#444)"></div><div><div class="sp-omakase-name">🖤 ダーク系のシンプルコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
-          </div>
-          <div class="sp-cat-lbl">ダルスレッド</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-main" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg"><div class="sp-name">102 Bk</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg"><div class="sp-name">112 DGy</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg"><div class="sp-name">118 LGy</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg"><div class="sp-name">172 LG</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg"><div class="sp-name">202 G</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg"><div class="sp-name">103 R</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg"><div class="sp-name">104 Or</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg"><div class="sp-name">166 Pu</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg"><div class="sp-name">109 Tq</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg"><div class="sp-name">145 LB</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg"><div class="sp-name">118 Bl</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">105 Y</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg"><div class="sp-name">106 Nv</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg"><div class="sp-name">107 Pk</div></div>
-          </div>
-          <div class="sp-cat-lbl">メタリックカラー</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-main" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg"><div class="sp-name">201 Sv</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg"><div class="sp-name">202 Gd</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg"><div class="sp-name">237 Pk</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg"><div class="sp-name">203 R</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg"><div class="sp-name">206 DP</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg"><div class="sp-name">207 Pu</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg"><div class="sp-name">208 Bl</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg"><div class="sp-name">209 LB</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg"><div class="sp-name">210 G</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg"><div class="sp-name">211 Cu</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg"><div class="sp-name">212 Br</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg"><div class="sp-name">213 Bz</div></div>
-          </div>
-          <div class="sp-cat-lbl">蛍光色</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-main" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">301 Y</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg"><div class="sp-name">302 Or</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg"><div class="sp-name">303 G</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg"><div class="sp-name">304 R</div></div>
-            <div class="sp-item" data-field="thread-main" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg"><div class="sp-name">305 Pk</div></div>
-          </div>
+        <div class="cm-wrap" id="cm-wrap-thread-main">
+          <button type="button" class="cm-trigger" id="cm-trigger-thread-main">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-thread-main" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-thread-main">スレッドカラーを選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
         </div>
         <input type="hidden" name="thread-main" id="f-thread-main" />
-        <div class="sp-current"><img class="sp-current-img" id="img-thread-main"><span class="sp-current-txt" id="txt-thread-main">未選択</span></div>
       </div>
 
       <!-- ティップ部分スレッド -->
       <div class="field">
         <label>ティップ部分スレッド<span class="req">必須</span></label>
-        <div class="sp-wrap" id="sp-thread-tip">
-          <div class="sp-omakase">
-            <div class="sp-omakase-item" data-field="thread-tip" data-val="派手にお任せコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#0055cc,#00cc44)"></div><div><div class="sp-omakase-name">🎨 派手にお任せコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
-            <div class="sp-omakase-item" data-field="thread-tip" data-val="ダーク系のシンプルコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#1a1a1a,#444)"></div><div><div class="sp-omakase-name">🖤 ダーク系のシンプルコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
-          </div>
-          <div class="sp-cat-lbl">ダルスレッド</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-tip" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg"><div class="sp-name">102 Bk</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg"><div class="sp-name">112 DGy</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg"><div class="sp-name">118 LGy</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg"><div class="sp-name">172 LG</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg"><div class="sp-name">202 G</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg"><div class="sp-name">103 R</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg"><div class="sp-name">104 Or</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg"><div class="sp-name">166 Pu</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg"><div class="sp-name">109 Tq</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg"><div class="sp-name">145 LB</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg"><div class="sp-name">118 Bl</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">105 Y</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg"><div class="sp-name">106 Nv</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg"><div class="sp-name">107 Pk</div></div>
-          </div>
-          <div class="sp-cat-lbl">メタリックカラー</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-tip" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg"><div class="sp-name">201 Sv</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg"><div class="sp-name">202 Gd</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg"><div class="sp-name">237 Pk</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg"><div class="sp-name">203 R</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg"><div class="sp-name">206 DP</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg"><div class="sp-name">207 Pu</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg"><div class="sp-name">208 Bl</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg"><div class="sp-name">209 LB</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg"><div class="sp-name">210 G</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg"><div class="sp-name">211 Cu</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg"><div class="sp-name">212 Br</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg"><div class="sp-name">213 Bz</div></div>
-          </div>
-          <div class="sp-cat-lbl">蛍光色</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-tip" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">301 Y</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg"><div class="sp-name">302 Or</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg"><div class="sp-name">303 G</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg"><div class="sp-name">304 R</div></div>
-            <div class="sp-item" data-field="thread-tip" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg"><div class="sp-name">305 Pk</div></div>
-          </div>
+        <div class="cm-wrap" id="cm-wrap-thread-tip">
+          <button type="button" class="cm-trigger" id="cm-trigger-thread-tip">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-thread-tip" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-thread-tip">スレッドカラーを選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
         </div>
         <input type="hidden" name="thread-tip" id="f-thread-tip" />
-        <div class="sp-current"><img class="sp-current-img" id="img-thread-tip"><span class="sp-current-txt" id="txt-thread-tip">未選択</span></div>
       </div>
 
       <!-- ピンラインスレッド -->
       <div class="field">
         <label>ピンラインスレッド<span class="req">必須</span></label>
-        <div class="sp-wrap" id="sp-thread-pin">
-          <div class="sp-omakase">
-            <div class="sp-omakase-item" data-field="thread-pin" data-val="派手にお任せコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#0055cc,#00cc44)"></div><div><div class="sp-omakase-name">🎨 派手にお任せコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
-            <div class="sp-omakase-item" data-field="thread-pin" data-val="ダーク系のシンプルコーディネート"><div class="sp-omakase-icon" style="background:linear-gradient(135deg,#1a1a1a,#444)"></div><div><div class="sp-omakase-name">🖤 ダーク系のシンプルコーディネート</div><div class="sp-omakase-sub">カラーはビルダーにお任せ</div></div></div>
-          </div>
-          <div class="sp-cat-lbl">ダルスレッド</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-pin" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg"><div class="sp-name">101 W</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg"><div class="sp-name">102 Bk</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg"><div class="sp-name">112 DGy</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg"><div class="sp-name">118 LGy</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg"><div class="sp-name">172 LG</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg"><div class="sp-name">202 G</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg"><div class="sp-name">103 R</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg"><div class="sp-name">104 Or</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg"><div class="sp-name">166 Pu</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg"><div class="sp-name">109 Tq</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg"><div class="sp-name">145 LB</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg"><div class="sp-name">118 Bl</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">105 Y</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg"><div class="sp-name">106 Nv</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg"><div class="sp-name">107 Pk</div></div>
-          </div>
-          <div class="sp-cat-lbl">メタリックカラー</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-pin" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg"><div class="sp-name">201 Sv</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg"><div class="sp-name">202 Gd</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg"><div class="sp-name">237 Pk</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg"><div class="sp-name">203 R</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg"><div class="sp-name">206 DP</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg"><div class="sp-name">207 Pu</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg"><div class="sp-name">208 Bl</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg"><div class="sp-name">209 LB</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg"><div class="sp-name">210 G</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg"><div class="sp-name">211 Cu</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg"><div class="sp-name">212 Br</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg"><div class="sp-name">213 Bz</div></div>
-          </div>
-          <div class="sp-cat-lbl">蛍光色</div>
-          <div class="sp-grid thread-grid">
-            <div class="sp-item" data-field="thread-pin" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg"><div class="sp-name">301 Y</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg"><div class="sp-name">302 Or</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg"><div class="sp-name">303 G</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg"><div class="sp-name">304 R</div></div>
-            <div class="sp-item" data-field="thread-pin" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg"><div class="sp-name">305 Pk</div></div>
-          </div>
+        <div class="cm-wrap" id="cm-wrap-thread-pin">
+          <button type="button" class="cm-trigger" id="cm-trigger-thread-pin">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-thread-pin" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-thread-pin">スレッドカラーを選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
         </div>
         <input type="hidden" name="thread-pin" id="f-thread-pin" />
-        <div class="sp-current"><img class="sp-current-img" id="img-thread-pin"><span class="sp-current-txt" id="txt-thread-pin">未選択</span></div>
         <p class="field-note" style="margin-top:0.5rem">※ チタントップの箇所にピンラインは付きません。</p>
       </div>
     </div>
@@ -761,6 +654,206 @@
   </div>
 </div>
 
+<!-- ===== THREAD MODALS ===== -->
+
+<!-- スレッド共通 HTML マクロ：メイン -->
+<div class="cm-overlay" id="cm-overlay-thread-main">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">メインスレッドを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-thread-main"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="cm-body">
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="thread-main" data-val="派手にお任せコーディネート" data-img="" data-price="0"><span>🎨 派手にお任せコーディネート</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-main" data-val="ダーク系のシンプルコーディネート" data-img="" data-price="0"><span>🖤 ダーク系のシンプルコーディネート</span></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">ダルスレッド</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg" alt="ホワイト"><div class="cm-thread-info"><span class="cm-thread-num">101</span><span class="cm-thread-name">ホワイト</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg" alt="ブラック"><div class="cm-thread-info"><span class="cm-thread-num">102</span><span class="cm-thread-name">ブラック</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg" alt="ダークグレー"><div class="cm-thread-info"><span class="cm-thread-num">112</span><span class="cm-thread-name">D.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg" alt="ライトグレー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">L.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg" alt="ライトグリーン"><div class="cm-thread-info"><span class="cm-thread-num">172</span><span class="cm-thread-name">L.グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">103</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">104</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">166</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg" alt="ターコイズ"><div class="cm-thread-info"><span class="cm-thread-num">109</span><span class="cm-thread-name">ターコイズ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">145</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">105</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg" alt="ネイビー"><div class="cm-thread-info"><span class="cm-thread-num">106</span><span class="cm-thread-name">ネイビー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">107</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">メタリックカラー</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg" alt="シルバー"><div class="cm-thread-info"><span class="cm-thread-num">201</span><span class="cm-thread-name">シルバー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg" alt="ゴールド"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">ゴールド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">237</span><span class="cm-thread-name">ピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">203</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg" alt="Dピンク"><div class="cm-thread-info"><span class="cm-thread-num">206</span><span class="cm-thread-name">Dピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">207</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">208</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">209</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">210</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg" alt="カッパー"><div class="cm-thread-info"><span class="cm-thread-num">211</span><span class="cm-thread-name">カッパー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg" alt="ブラウン"><div class="cm-thread-info"><span class="cm-thread-num">212</span><span class="cm-thread-name">ブラウン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg" alt="ブロンズ"><div class="cm-thread-info"><span class="cm-thread-num">213</span><span class="cm-thread-name">ブロンズ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">蛍光色</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">301</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">302</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">303</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">304</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">305</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ティップ部分スレッドモーダル -->
+<div class="cm-overlay" id="cm-overlay-thread-tip">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">ティップ部分スレッドを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-thread-tip"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="cm-body">
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="thread-tip" data-val="派手にお任せコーディネート" data-img="" data-price="0"><span>🎨 派手にお任せコーディネート</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-tip" data-val="ダーク系のシンプルコーディネート" data-img="" data-price="0"><span>🖤 ダーク系のシンプルコーディネート</span></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">ダルスレッド</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg" alt="ホワイト"><div class="cm-thread-info"><span class="cm-thread-num">101</span><span class="cm-thread-name">ホワイト</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg" alt="ブラック"><div class="cm-thread-info"><span class="cm-thread-num">102</span><span class="cm-thread-name">ブラック</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg" alt="ダークグレー"><div class="cm-thread-info"><span class="cm-thread-num">112</span><span class="cm-thread-name">D.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg" alt="ライトグレー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">L.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg" alt="ライトグリーン"><div class="cm-thread-info"><span class="cm-thread-num">172</span><span class="cm-thread-name">L.グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">103</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">104</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">166</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg" alt="ターコイズ"><div class="cm-thread-info"><span class="cm-thread-num">109</span><span class="cm-thread-name">ターコイズ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">145</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">105</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg" alt="ネイビー"><div class="cm-thread-info"><span class="cm-thread-num">106</span><span class="cm-thread-name">ネイビー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">107</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">メタリックカラー</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg" alt="シルバー"><div class="cm-thread-info"><span class="cm-thread-num">201</span><span class="cm-thread-name">シルバー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg" alt="ゴールド"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">ゴールド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">237</span><span class="cm-thread-name">ピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">203</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg" alt="Dピンク"><div class="cm-thread-info"><span class="cm-thread-num">206</span><span class="cm-thread-name">Dピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">207</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">208</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">209</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">210</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg" alt="カッパー"><div class="cm-thread-info"><span class="cm-thread-num">211</span><span class="cm-thread-name">カッパー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg" alt="ブラウン"><div class="cm-thread-info"><span class="cm-thread-num">212</span><span class="cm-thread-name">ブラウン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg" alt="ブロンズ"><div class="cm-thread-info"><span class="cm-thread-num">213</span><span class="cm-thread-name">ブロンズ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">蛍光色</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">301</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">302</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">303</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">304</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">305</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ピンラインスレッドモーダル -->
+<div class="cm-overlay" id="cm-overlay-thread-pin">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">ピンラインスレッドを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-thread-pin"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="cm-body">
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="thread-pin" data-val="派手にお任せコーディネート" data-img="" data-price="0"><span>🎨 派手にお任せコーディネート</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-pin" data-val="ダーク系のシンプルコーディネート" data-img="" data-price="0"><span>🖤 ダーク系のシンプルコーディネート</span></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">ダルスレッド</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg" alt="ホワイト"><div class="cm-thread-info"><span class="cm-thread-num">101</span><span class="cm-thread-name">ホワイト</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg" alt="ブラック"><div class="cm-thread-info"><span class="cm-thread-num">102</span><span class="cm-thread-name">ブラック</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg" alt="ダークグレー"><div class="cm-thread-info"><span class="cm-thread-num">112</span><span class="cm-thread-name">D.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg" alt="ライトグレー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">L.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg" alt="ライトグリーン"><div class="cm-thread-info"><span class="cm-thread-num">172</span><span class="cm-thread-name">L.グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">103</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">104</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">166</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg" alt="ターコイズ"><div class="cm-thread-info"><span class="cm-thread-num">109</span><span class="cm-thread-name">ターコイズ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">145</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">105</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg" alt="ネイビー"><div class="cm-thread-info"><span class="cm-thread-num">106</span><span class="cm-thread-name">ネイビー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">107</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">メタリックカラー</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg" alt="シルバー"><div class="cm-thread-info"><span class="cm-thread-num">201</span><span class="cm-thread-name">シルバー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg" alt="ゴールド"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">ゴールド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">237</span><span class="cm-thread-name">ピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">203</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg" alt="Dピンク"><div class="cm-thread-info"><span class="cm-thread-num">206</span><span class="cm-thread-name">Dピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">207</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">208</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">209</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">210</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg" alt="カッパー"><div class="cm-thread-info"><span class="cm-thread-num">211</span><span class="cm-thread-name">カッパー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg" alt="ブラウン"><div class="cm-thread-info"><span class="cm-thread-num">212</span><span class="cm-thread-name">ブラウン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg" alt="ブロンズ"><div class="cm-thread-info"><span class="cm-thread-num">213</span><span class="cm-thread-name">ブロンズ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">蛍光色</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">301</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">302</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">303</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">304</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">305</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -810,8 +903,8 @@
 // --- お任せオプション料金管理 ---
 var cmPrices = { 'blank-color': 0, 'tip-color': 0 };
 
-// --- カラーモーダル（ブランクス・ティップ）---
-var cmFields = ['blank-color', 'tip-color'];
+// --- カラー／スレッドモーダル ---
+var cmFields = ['blank-color', 'tip-color', 'thread-main', 'thread-tip', 'thread-pin'];
 cmFields.forEach(function(field) {
   var trigger = document.getElementById('cm-trigger-' + field);
   var overlay = document.getElementById('cm-overlay-' + field);
@@ -844,7 +937,7 @@ cmFields.forEach(function(field) {
       var val = this.dataset.val;
       var img = this.dataset.img;
       // 同フィールドの選択状態リセット
-      overlay.querySelectorAll('.cm-color-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
+      overlay.querySelectorAll('.cm-color-btn, .cm-thread-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
       this.classList.add('selected');
       // hidden inputに値セット
       document.getElementById('f-' + field).value = val;
@@ -866,13 +959,34 @@ cmFields.forEach(function(field) {
     });
   });
 
+  // スレッドボタンクリック
+  overlay.querySelectorAll('.cm-thread-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var val = this.dataset.val;
+      var img = this.dataset.img;
+      overlay.querySelectorAll('.cm-color-btn, .cm-thread-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
+      this.classList.add('selected');
+      document.getElementById('f-' + field).value = val;
+      cmPrices[field] = 0;
+      var txt = document.getElementById('cm-ttxt-' + field);
+      var timg = document.getElementById('cm-timg-' + field);
+      txt.textContent = val;
+      txt.classList.add('chosen');
+      if (img) { timg.src = img; timg.style.display = 'block'; }
+      var wrap = document.getElementById('cm-wrap-' + field);
+      if (wrap) wrap.classList.remove('cm-error');
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
   // お任せボタンクリック
   overlay.querySelectorAll('.cm-omakase-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var val = this.dataset.val;
       var price = parseInt(this.dataset.price || 0);
       // 同フィールドの選択状態リセット
-      overlay.querySelectorAll('.cm-color-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
+      overlay.querySelectorAll('.cm-color-btn, .cm-thread-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
       this.classList.add('selected');
       // hidden inputに値セット
       document.getElementById('f-' + field).value = val;
@@ -905,47 +1019,6 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// --- お任せアイテム選択（スレッド） ---
-document.querySelectorAll('.sp-omakase-item').forEach(function(item) {
-  item.addEventListener('click', function() {
-    var field = this.dataset.field;
-    var val   = this.dataset.val;
-    // 同フィールドの全選択解除
-    document.querySelectorAll('.sp-item[data-field="' + field + '"], .sp-omakase-item[data-field="' + field + '"]').forEach(function(i){ i.classList.remove('selected'); });
-    this.classList.add('selected');
-    document.getElementById('f-' + field).value = val;
-    var txtEl = document.getElementById('txt-' + field);
-    var imgEl = document.getElementById('img-' + field);
-    if (txtEl) { txtEl.textContent = '選択中：' + val; txtEl.classList.add('chosen'); }
-    if (imgEl) imgEl.style.display = 'none';
-    var wrap = document.getElementById('sp-' + field);
-    if (wrap) wrap.classList.remove('sp-error');
-  });
-});
-
-// --- スウォッチ選択 ---
-document.querySelectorAll('.sp-item').forEach(function(item) {
-  item.addEventListener('click', function() {
-    var field = this.dataset.field;
-    var val   = this.dataset.val;
-    var img   = this.dataset.img;
-    // 同じフィールドの選択解除（お任せ含む）
-    document.querySelectorAll('.sp-item[data-field="' + field + '"], .sp-omakase-item[data-field="' + field + '"]').forEach(function(i){ i.classList.remove('selected'); });
-    this.classList.add('selected');
-    // hidden inputに値をセット
-    document.getElementById('f-' + field).value = val;
-    // 選択中表示
-    var txtEl = document.getElementById('txt-' + field);
-    var imgEl = document.getElementById('img-' + field);
-    txtEl.textContent = '選択中：' + val;
-    txtEl.classList.add('chosen');
-    imgEl.src = img;
-    imgEl.style.display = 'block';
-    // エラー枠を解除
-    var wrap = document.getElementById('sp-' + field.replace(/-/g, '-'));
-    if (wrap) wrap.classList.remove('sp-error');
-  });
-});
 
 // --- 料金計算 ---
 function calcPrice() {
@@ -1008,12 +1081,12 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
       ok = false;
     }
   });
-  // スウォッチ必須フィールド（スレッド）
+  // スレッドカラー必須
   ['thread-main','thread-tip','thread-pin'].forEach(function(field) {
     var hiddenEl = document.getElementById('f-' + field);
-    var wrapEl   = document.getElementById('sp-' + field);
+    var wrapEl   = document.getElementById('cm-wrap-' + field);
     if (hiddenEl && !hiddenEl.value) {
-      if (wrapEl) wrapEl.classList.add('sp-error');
+      if (wrapEl) wrapEl.classList.add('cm-error');
       ok = false;
     }
   });
