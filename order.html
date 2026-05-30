@@ -80,30 +80,58 @@
     select option { background: var(--dark2); }
     textarea { resize: vertical; min-height: 100px; }
 
-    /* CUSTOM DROPDOWN (ブランクス・ティップ) */
-    .cd-wrap { position: relative; margin-top: 0.4rem; }
-    .cd-btn { width: 100%; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--dark2); border: 1px solid var(--border2); color: var(--white); cursor: pointer; transition: border-color 0.2s; text-align: left; font-family: inherit; font-size: 0.88rem; }
-    .cd-btn:hover, .cd-btn.open { border-color: var(--red); }
-    .cd-btn-img { width: 36px; height: 24px; object-fit: cover; border-radius: 2px; display: none; flex-shrink: 0; }
-    .cd-btn-txt { flex: 1; color: rgba(248,248,248,0.35); }
-    .cd-btn-txt.chosen { color: var(--white); }
-    .cd-btn-arrow { margin-left: auto; font-size: 0.6rem; opacity: 0.5; transition: transform 0.2s; flex-shrink: 0; }
-    .cd-btn.open .cd-btn-arrow { transform: rotate(180deg); }
-    .cd-panel { display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 200; background: var(--dark2); border: 1px solid var(--border2); border-top: 2px solid var(--red); max-height: 320px; overflow-y: auto; }
-    .cd-panel.open { display: block; }
-    .cd-group-lbl { padding: 0.5rem 1rem 0.25rem; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.12em; color: var(--red2); background: rgba(204,34,0,0.06); border-top: 1px solid var(--border); }
-    .cd-opt { display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 1rem; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border); }
-    .cd-opt:last-child { border-bottom: none; }
-    .cd-opt:hover { background: rgba(255,255,255,0.05); }
-    .cd-opt.selected { background: rgba(204,34,0,0.1); }
-    .cd-opt img { width: 40px; height: 26px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
-    .cd-opt-name { font-size: 0.83rem; }
-    .cd-opt.selected .cd-opt-name { font-weight: 700; color: var(--white); }
-    .cd-check { margin-left: auto; color: var(--red); font-size: 0.8rem; display: none; }
-    .cd-opt.selected .cd-check { display: block; }
-    .cd-error .cd-btn { border-color: var(--red2) !important; }
-    .cd-opt-icon { width: 40px; height: 26px; border-radius: 2px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-    .cd-opt-name small { display: block; font-size: 0.68rem; color: var(--gray2); margin-top: 0.1rem; }
+    /* COLOR MODAL TRIGGER */
+    .cm-wrap { margin-top: 0.4rem; }
+    .cm-trigger { width: 100%; padding: 0.75rem 1rem; background: var(--dark2); border: 1px solid rgba(255,255,255,0.12); color: var(--white); border-radius: 8px; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; font-family: inherit; font-size: 0.88rem; transition: border-color 0.2s; }
+    .cm-trigger:hover { border-color: rgba(255,255,255,0.4); }
+    .cm-trigger-left { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
+    .cm-trigger-img { width: 36px; height: 36px; object-fit: cover; border-radius: 4px; display: none; flex-shrink: 0; }
+    .cm-trigger-txt { color: rgba(248,248,248,0.35); font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cm-trigger-txt.chosen { color: var(--white); }
+    .cm-trigger-arrow { flex-shrink: 0; opacity: 0.5; }
+    .cm-error .cm-trigger { border-color: var(--red2) !important; }
+
+    /* COLOR MODAL OVERLAY */
+    .cm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; padding: 1rem; }
+    .cm-overlay.open { display: flex; }
+
+    /* COLOR MODAL BOX */
+    .cm-box { background: #18181b; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; }
+    .cm-box::-webkit-scrollbar { width: 4px; }
+    .cm-box::-webkit-scrollbar-track { background: #18181b; }
+    .cm-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+    /* MODAL HEADER */
+    .cm-head { position: sticky; top: 0; background: #18181b; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+    .cm-title { font-size: 1.5rem; font-weight: 900; color: var(--white); letter-spacing: -0.02em; }
+    .cm-close { background: none; border: none; cursor: pointer; color: rgba(248,248,248,0.45); padding: 0.25rem; transition: color 0.15s; line-height: 0; }
+    .cm-close:hover { color: var(--white); }
+
+    /* MODAL BODY */
+    .cm-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 2rem; }
+    .cm-note { font-size: 0.82rem; color: rgba(248,248,248,0.4); margin-top: -0.5rem; }
+
+    /* MODAL SECTION */
+    .cm-section-title { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+    /* OMAKASE BUTTONS */
+    .cm-omakase-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .cm-omakase-btn { width: 100%; padding: 0.85rem 1rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.15); cursor: pointer; transition: border-color 0.15s, transform 0.12s, background 0.15s; text-align: left; background: transparent; color: var(--white); font-family: inherit; font-size: 0.9rem; font-weight: 600; }
+    .cm-omakase-btn:hover { border-color: rgba(255,255,255,0.5); transform: scale(1.01); }
+    .cm-omakase-btn.selected { border-color: var(--white); background: rgba(255,255,255,0.07); }
+    .cm-warn { font-size: 0.72rem; color: var(--gold); text-align: center; margin-top: 0.6rem; }
+
+    /* COLOR GRID */
+    .cm-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.75rem; }
+    .cm-color-btn { border-radius: 8px; border: 2px solid rgba(255,255,255,0.12); cursor: pointer; transition: border-color 0.15s, transform 0.12s; background: transparent; padding: 0; overflow: hidden; text-align: left; }
+    .cm-color-btn:hover { border-color: rgba(255,255,255,0.5); transform: scale(1.03); }
+    .cm-color-btn.selected { border-color: var(--white); }
+    .cm-color-btn img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+    .cm-color-info { padding: 0.3rem 0.3rem 0.25rem; }
+    .cm-color-num { font-size: 0.65rem; font-weight: 700; color: var(--white); display: block; }
+    .cm-color-name { font-size: 0.62rem; color: rgba(248,248,248,0.5); display: block; }
+
+    /* OMAKASE ITEMS (スレッド) */
     .sp-omakase { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
     .sp-omakase-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border: 2px solid transparent; border-radius: 3px; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--dark3); }
     .sp-omakase-item:hover { border-color: rgba(255,255,255,0.2); }
@@ -111,6 +139,13 @@
     .sp-omakase-icon { width: 40px; height: 26px; border-radius: 2px; flex-shrink: 0; }
     .sp-omakase-name { font-size: 0.83rem; font-weight: 700; }
     .sp-omakase-sub { font-size: 0.68rem; color: var(--gray2); }
+
+    @media (max-width: 600px) {
+      .cm-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+      .cm-title { font-size: 1.2rem; }
+      .cm-head { padding: 1rem; }
+      .cm-body { padding: 1rem; gap: 1.5rem; }
+    }
 
     /* SWATCH PICKER (スレッド) */
     .sp-wrap { border: 1px solid var(--border2); padding: 1.25rem; background: var(--dark); margin-top: 0.4rem; }
@@ -283,36 +318,14 @@
       <!-- ブランクスカラー -->
       <div class="field">
         <label>ブランクスカラー<span class="req">必須</span></label>
-        <div class="cd-wrap" id="cd-wrap-blank-color">
-          <button type="button" class="cd-btn" id="cd-btn-blank-color">
-            <img class="cd-btn-img" id="cd-img-blank-color" src="" alt="">
-            <span class="cd-btn-txt" id="cd-txt-blank-color">カラーを選択してください</span>
-            <span class="cd-btn-arrow">▼</span>
+        <div class="cm-wrap" id="cm-wrap-blank-color">
+          <button type="button" class="cm-trigger" id="cm-trigger-blank-color">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-blank-color" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-blank-color">カラーチャートから選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div class="cd-panel" id="cd-panel-blank-color">
-            <div class="cd-group-lbl">お任せコーディネート</div>
-            <div class="cd-opt" data-field="blank-color" data-val="派手にお任せコーディネート" data-img=""><div class="cd-opt-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#cc2200,#0055cc,#00cc44)">🎨</div><span class="cd-opt-name">派手にお任せコーディネート<small>カラーはビルダーにお任せ</small></span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="ダーク系のシンプルコーディネート" data-img=""><div class="cd-opt-icon" style="background:linear-gradient(135deg,#222,#444)">🖤</div><span class="cd-opt-name">ダーク系のシンプルコーディネート<small>カラーはビルダーにお任せ</small></span><span class="cd-check">✓</span></div>
-            <div class="cd-group-lbl">フラット通常色 ¥9,000</div>
-            <div class="cd-opt" data-field="blank-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg"><span class="cd-opt-name">001 ホワイト</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg"><span class="cd-opt-name">002 ブラック</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="003 ブルー" data-img="swatches/b003.jpg"><img src="swatches/b003.jpg"><span class="cd-opt-name">003 ブルー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="004 レッド" data-img="swatches/b004.jpg"><img src="swatches/b004.jpg"><span class="cd-opt-name">004 レッド</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="005 イエロー" data-img="swatches/b005.jpg"><img src="swatches/b005.jpg"><span class="cd-opt-name">005 イエロー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="006 グリーン" data-img="swatches/b006.jpg"><img src="swatches/b006.jpg"><span class="cd-opt-name">006 グリーン</span><span class="cd-check">✓</span></div>
-            <div class="cd-group-lbl">フラットメタリック色 ¥9,500UP</div>
-            <div class="cd-opt" data-field="blank-color" data-val="007 シルバー" data-img="swatches/b007.jpg"><img src="swatches/b007.jpg"><span class="cd-opt-name">007 シルバー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="008 ゴールド" data-img="swatches/b008.jpg"><img src="swatches/b008.jpg"><span class="cd-opt-name">008 ゴールド</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="009 メタリックブルー" data-img="swatches/b009.jpg"><img src="swatches/b009.jpg"><span class="cd-opt-name">009 メタリックブルー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="010 メタリックレッド" data-img="swatches/b010.jpg"><img src="swatches/b010.jpg"><span class="cd-opt-name">010 メタリックレッド</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="011 メタリックグリーン" data-img="swatches/b011.jpg"><img src="swatches/b011.jpg"><span class="cd-opt-name">011 メタリックグリーン</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="012 メタリックオレンジ" data-img="swatches/b012.jpg"><img src="swatches/b012.jpg"><span class="cd-opt-name">012 メタリックオレンジ</span><span class="cd-check">✓</span></div>
-            <div class="cd-group-lbl">フラット蛍光色 ¥9,000UP</div>
-            <div class="cd-opt" data-field="blank-color" data-val="013 蛍光グリーン" data-img="swatches/b013.jpg"><img src="swatches/b013.jpg"><span class="cd-opt-name">013 蛍光グリーン</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="014 蛍光イエロー" data-img="swatches/b014.jpg"><img src="swatches/b014.jpg"><span class="cd-opt-name">014 蛍光イエロー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="015 蛍光ピンク" data-img="swatches/b015.jpg"><img src="swatches/b015.jpg"><span class="cd-opt-name">015 蛍光ピンク</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="blank-color" data-val="016 蛍光オレンジ" data-img="swatches/b016.jpg"><img src="swatches/b016.jpg"><span class="cd-opt-name">016 蛍光オレンジ</span><span class="cd-check">✓</span></div>
-          </div>
         </div>
         <input type="hidden" name="blank-color" id="f-blank-color" />
       </div>
@@ -320,36 +333,14 @@
       <!-- ティップカラー -->
       <div class="field">
         <label>ティップカラー<span class="req">必須</span></label>
-        <div class="cd-wrap" id="cd-wrap-tip-color">
-          <button type="button" class="cd-btn" id="cd-btn-tip-color">
-            <img class="cd-btn-img" id="cd-img-tip-color" src="" alt="">
-            <span class="cd-btn-txt" id="cd-txt-tip-color">カラーを選択してください</span>
-            <span class="cd-btn-arrow">▼</span>
+        <div class="cm-wrap" id="cm-wrap-tip-color">
+          <button type="button" class="cm-trigger" id="cm-trigger-tip-color">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-tip-color" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-tip-color">カラーチャートから選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div class="cd-panel" id="cd-panel-tip-color">
-            <div class="cd-group-lbl">お任せコーディネート</div>
-            <div class="cd-opt" data-field="tip-color" data-val="派手にお任せコーディネート" data-img=""><div class="cd-opt-icon" style="background:linear-gradient(135deg,#f5d062,#e83010,#cc2200,#0055cc,#00cc44)">🎨</div><span class="cd-opt-name">派手にお任せコーディネート<small>カラーはビルダーにお任せ</small></span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="ダーク系のシンプルコーディネート" data-img=""><div class="cd-opt-icon" style="background:linear-gradient(135deg,#222,#444)">🖤</div><span class="cd-opt-name">ダーク系のシンプルコーディネート<small>カラーはビルダーにお任せ</small></span><span class="cd-check">✓</span></div>
-            <div class="cd-group-lbl">フラット通常色 ¥9,000</div>
-            <div class="cd-opt" data-field="tip-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg"><span class="cd-opt-name">001 ホワイト</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg"><span class="cd-opt-name">002 ブラック</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="003 ブルー" data-img="swatches/b003.jpg"><img src="swatches/b003.jpg"><span class="cd-opt-name">003 ブルー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="004 レッド" data-img="swatches/b004.jpg"><img src="swatches/b004.jpg"><span class="cd-opt-name">004 レッド</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="005 イエロー" data-img="swatches/b005.jpg"><img src="swatches/b005.jpg"><span class="cd-opt-name">005 イエロー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="006 グリーン" data-img="swatches/b006.jpg"><img src="swatches/b006.jpg"><span class="cd-opt-name">006 グリーン</span><span class="cd-check">✓</span></div>
-            <div class="cd-group-lbl">フラットメタリック色 ¥9,500UP</div>
-            <div class="cd-opt" data-field="tip-color" data-val="007 シルバー" data-img="swatches/b007.jpg"><img src="swatches/b007.jpg"><span class="cd-opt-name">007 シルバー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="008 ゴールド" data-img="swatches/b008.jpg"><img src="swatches/b008.jpg"><span class="cd-opt-name">008 ゴールド</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="009 メタリックブルー" data-img="swatches/b009.jpg"><img src="swatches/b009.jpg"><span class="cd-opt-name">009 メタリックブルー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="010 メタリックレッド" data-img="swatches/b010.jpg"><img src="swatches/b010.jpg"><span class="cd-opt-name">010 メタリックレッド</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="011 メタリックグリーン" data-img="swatches/b011.jpg"><img src="swatches/b011.jpg"><span class="cd-opt-name">011 メタリックグリーン</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="012 メタリックオレンジ" data-img="swatches/b012.jpg"><img src="swatches/b012.jpg"><span class="cd-opt-name">012 メタリックオレンジ</span><span class="cd-check">✓</span></div>
-            <div class="cd-group-lbl">フラット蛍光色 ¥9,000UP</div>
-            <div class="cd-opt" data-field="tip-color" data-val="013 蛍光グリーン" data-img="swatches/b013.jpg"><img src="swatches/b013.jpg"><span class="cd-opt-name">013 蛍光グリーン</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="014 蛍光イエロー" data-img="swatches/b014.jpg"><img src="swatches/b014.jpg"><span class="cd-opt-name">014 蛍光イエロー</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="015 蛍光ピンク" data-img="swatches/b015.jpg"><img src="swatches/b015.jpg"><span class="cd-opt-name">015 蛍光ピンク</span><span class="cd-check">✓</span></div>
-            <div class="cd-opt" data-field="tip-color" data-val="016 蛍光オレンジ" data-img="swatches/b016.jpg"><img src="swatches/b016.jpg"><span class="cd-opt-name">016 蛍光オレンジ</span><span class="cd-check">✓</span></div>
-          </div>
         </div>
         <input type="hidden" name="tip-color" id="f-tip-color" />
       </div>
@@ -634,6 +625,130 @@
   </form>
 </div>
 
+<!-- ===== COLOR MODALS ===== -->
+
+<!-- ブランクスカラーモーダル -->
+<div class="cm-overlay" id="cm-overlay-blank-color">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">ブランクスカラーを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-blank-color">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="cm-body">
+      <p class="cm-note">※これ以外に希望するカラーも調色で塗装可能なのでこだわり欄に記載してください</p>
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="blank-color" data-val="こだわり備考欄に記載" data-img="">こだわり備考欄に記載</button>
+          <button type="button" class="cm-omakase-btn" data-field="blank-color" data-val="派手系でおまかせコーディネート" data-img="">派手系でおまかせコーディネート</button>
+          <button type="button" class="cm-omakase-btn" data-field="blank-color" data-val="ダーク系のシンプルでコーディネート" data-img="">ダーク系のシンプルでコーディネート</button>
+        </div>
+        <p class="cm-warn">※上記三つを選択した場合はこちらから再度見積させて頂きます。</p>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット通常色 ¥8,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg" alt="ホワイト"><div class="cm-color-info"><span class="cm-color-num">001</span><span class="cm-color-name">ホワイト</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg" alt="ブラック"><div class="cm-color-info"><span class="cm-color-num">002</span><span class="cm-color-name">ブラック</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="003 ブルー" data-img="swatches/b003.jpg"><img src="swatches/b003.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">003</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="004 レッド" data-img="swatches/b004.jpg"><img src="swatches/b004.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">004</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="005 イエロー" data-img="swatches/b005.jpg"><img src="swatches/b005.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">005</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="006 グリーン" data-img="swatches/b006.jpg"><img src="swatches/b006.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">006</span><span class="cm-color-name">グリーン</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラットメタリック色 ¥9,500UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="007 シルバー" data-img="swatches/b007.jpg"><img src="swatches/b007.jpg" alt="シルバー"><div class="cm-color-info"><span class="cm-color-num">007</span><span class="cm-color-name">シルバー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="008 ゴールド" data-img="swatches/b008.jpg"><img src="swatches/b008.jpg" alt="ゴールド"><div class="cm-color-info"><span class="cm-color-num">008</span><span class="cm-color-name">ゴールド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="009 ブルー" data-img="swatches/b009.jpg"><img src="swatches/b009.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">009</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="010 レッド" data-img="swatches/b010.jpg"><img src="swatches/b010.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">010</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="011 グリーン" data-img="swatches/b011.jpg"><img src="swatches/b011.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">011</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="012 オレンジ" data-img="swatches/b012.jpg"><img src="swatches/b012.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">012</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット蛍光色 ¥9,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="013 グリーン" data-img="swatches/b013.jpg"><img src="swatches/b013.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">013</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="014 イエロー" data-img="swatches/b014.jpg"><img src="swatches/b014.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">014</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="015 ピンク" data-img="swatches/b015.jpg"><img src="swatches/b015.jpg" alt="ピンク"><div class="cm-color-info"><span class="cm-color-num">015</span><span class="cm-color-name">ピンク</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="016 オレンジ" data-img="swatches/b016.jpg"><img src="swatches/b016.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">016</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">マジョーラ色 ¥12,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="017 ブルーパープルマジョーラ" data-img="swatches/b017.jpg"><img src="swatches/b017.jpg" alt="ブルーパープルマジョーラ"><div class="cm-color-info"><span class="cm-color-num">017</span><span class="cm-color-name">ブルーパープルマジョーラ</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ティップカラーモーダル -->
+<div class="cm-overlay" id="cm-overlay-tip-color">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">ティップカラーを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-tip-color">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="cm-body">
+      <p class="cm-note">※これ以外に希望するカラーも調色で塗装可能なのでこだわり欄に記載してください</p>
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="tip-color" data-val="こだわり備考欄に記載" data-img="">こだわり備考欄に記載</button>
+          <button type="button" class="cm-omakase-btn" data-field="tip-color" data-val="派手系でおまかせコーディネート" data-img="">派手系でおまかせコーディネート</button>
+          <button type="button" class="cm-omakase-btn" data-field="tip-color" data-val="ダーク系のシンプルでコーディネート" data-img="">ダーク系のシンプルでコーディネート</button>
+        </div>
+        <p class="cm-warn">※上記三つを選択した場合はこちらから再度見積させて頂きます。</p>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット通常色 ¥8,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg" alt="ホワイト"><div class="cm-color-info"><span class="cm-color-num">001</span><span class="cm-color-name">ホワイト</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg" alt="ブラック"><div class="cm-color-info"><span class="cm-color-num">002</span><span class="cm-color-name">ブラック</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="003 ブルー" data-img="swatches/b003.jpg"><img src="swatches/b003.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">003</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="004 レッド" data-img="swatches/b004.jpg"><img src="swatches/b004.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">004</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="005 イエロー" data-img="swatches/b005.jpg"><img src="swatches/b005.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">005</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="006 グリーン" data-img="swatches/b006.jpg"><img src="swatches/b006.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">006</span><span class="cm-color-name">グリーン</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラットメタリック色 ¥9,500UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="007 シルバー" data-img="swatches/b007.jpg"><img src="swatches/b007.jpg" alt="シルバー"><div class="cm-color-info"><span class="cm-color-num">007</span><span class="cm-color-name">シルバー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="008 ゴールド" data-img="swatches/b008.jpg"><img src="swatches/b008.jpg" alt="ゴールド"><div class="cm-color-info"><span class="cm-color-num">008</span><span class="cm-color-name">ゴールド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="009 ブルー" data-img="swatches/b009.jpg"><img src="swatches/b009.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">009</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="010 レッド" data-img="swatches/b010.jpg"><img src="swatches/b010.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">010</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="011 グリーン" data-img="swatches/b011.jpg"><img src="swatches/b011.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">011</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="012 オレンジ" data-img="swatches/b012.jpg"><img src="swatches/b012.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">012</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット蛍光色 ¥9,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="013 グリーン" data-img="swatches/b013.jpg"><img src="swatches/b013.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">013</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="014 イエロー" data-img="swatches/b014.jpg"><img src="swatches/b014.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">014</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="015 ピンク" data-img="swatches/b015.jpg"><img src="swatches/b015.jpg" alt="ピンク"><div class="cm-color-info"><span class="cm-color-num">015</span><span class="cm-color-name">ピンク</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="016 オレンジ" data-img="swatches/b016.jpg"><img src="swatches/b016.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">016</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">マジョーラ色 ¥12,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="017 ブルーパープルマジョーラ" data-img="swatches/b017.jpg"><img src="swatches/b017.jpg" alt="ブルーパープルマジョーラ"><div class="cm-color-info"><span class="cm-color-num">017</span><span class="cm-color-name">ブルーパープルマジョーラ</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -680,53 +795,92 @@
 </footer>
 
 <script>
-// --- カスタムドロップダウン（ブランクス・ティップ）---
-var cdFields = ['blank-color', 'tip-color'];
-cdFields.forEach(function(field) {
-  var btn   = document.getElementById('cd-btn-' + field);
-  var panel = document.getElementById('cd-panel-' + field);
-  if (!btn || !panel) return;
+// --- カラーモーダル（ブランクス・ティップ）---
+var cmFields = ['blank-color', 'tip-color'];
+cmFields.forEach(function(field) {
+  var trigger = document.getElementById('cm-trigger-' + field);
+  var overlay = document.getElementById('cm-overlay-' + field);
+  var closeBtn = document.getElementById('cm-close-' + field);
+  if (!trigger || !overlay) return;
 
-  // ボタンクリックで開閉
-  btn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    var isOpen = panel.classList.contains('open');
-    // 全部閉じる
-    document.querySelectorAll('.cd-panel').forEach(function(p){ p.classList.remove('open'); });
-    document.querySelectorAll('.cd-btn').forEach(function(b){ b.classList.remove('open'); });
-    if (!isOpen) { panel.classList.add('open'); btn.classList.add('open'); }
+  // トリガーボタンクリックでモーダルを開く
+  trigger.addEventListener('click', function() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
   });
 
-  // 選択肢クリック
-  panel.querySelectorAll('.cd-opt').forEach(function(opt) {
-    opt.addEventListener('click', function() {
+  // 閉じるボタン
+  closeBtn.addEventListener('click', function() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  // オーバーレイ背景クリックで閉じる
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // カラーボタン（スウォッチ）クリック
+  overlay.querySelectorAll('.cm-color-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
       var val = this.dataset.val;
       var img = this.dataset.img;
+      // 同フィールドの選択状態リセット
+      overlay.querySelectorAll('.cm-color-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
+      this.classList.add('selected');
       // hidden inputに値セット
       document.getElementById('f-' + field).value = val;
-      // ボタン表示更新
-      var btnTxt = document.getElementById('cd-txt-' + field);
-      var btnImg = document.getElementById('cd-img-' + field);
-      btnTxt.textContent = val;
-      btnTxt.classList.add('chosen');
-      btnImg.src = img;
-      btnImg.style.display = 'block';
-      // 選択状態
-      panel.querySelectorAll('.cd-opt').forEach(function(o){ o.classList.remove('selected'); });
-      this.classList.add('selected');
+      // トリガーボタン表示更新
+      var txt = document.getElementById('cm-ttxt-' + field);
+      var timg = document.getElementById('cm-timg-' + field);
+      txt.textContent = val;
+      txt.classList.add('chosen');
+      if (img) { timg.src = img; timg.style.display = 'block'; }
       // エラー解除
-      var wrap = document.getElementById('cd-wrap-' + field);
-      if (wrap) wrap.classList.remove('cd-error');
-      // 閉じる
-      panel.classList.remove('open');
-      btn.classList.remove('open');
+      var wrap = document.getElementById('cm-wrap-' + field);
+      if (wrap) wrap.classList.remove('cm-error');
+      // モーダルを閉じる
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // お任せボタンクリック
+  overlay.querySelectorAll('.cm-omakase-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var val = this.dataset.val;
+      // 同フィールドの選択状態リセット
+      overlay.querySelectorAll('.cm-color-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
+      this.classList.add('selected');
+      // hidden inputに値セット
+      document.getElementById('f-' + field).value = val;
+      // トリガーボタン表示更新
+      var txt = document.getElementById('cm-ttxt-' + field);
+      var timg = document.getElementById('cm-timg-' + field);
+      txt.textContent = val;
+      txt.classList.add('chosen');
+      timg.style.display = 'none';
+      // エラー解除
+      var wrap = document.getElementById('cm-wrap-' + field);
+      if (wrap) wrap.classList.remove('cm-error');
+      // モーダルを閉じる
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
     });
   });
 });
-// 外クリックで閉じる
-document.addEventListener('click', function() {
-  document.querySelectorAll('.cd-panel').forEach(function(p){ p.classList.remove('open'); });
-  document.querySelectorAll('.cd-btn').forEach(function(b){ b.classList.remove('open'); });
+
+// Escキーでモーダルを閉じる
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.cm-overlay.open').forEach(function(o){
+      o.classList.remove('open');
+    });
+    document.body.style.overflow = '';
+  }
 });
 
 // --- お任せアイテム選択（スレッド） ---
@@ -810,12 +964,12 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
     el.style.borderColor = '';
     if (!el.value.trim()) { el.style.borderColor = 'var(--red2)'; ok = false; }
   });
-  // ドロップダウン必須（ブランクス・ティップ）
+  // カラーモーダル必須（ブランクス・ティップ）
   ['blank-color','tip-color'].forEach(function(field) {
     var hiddenEl = document.getElementById('f-' + field);
-    var wrapEl   = document.getElementById('cd-wrap-' + field);
+    var wrapEl   = document.getElementById('cm-wrap-' + field);
     if (hiddenEl && !hiddenEl.value) {
-      if (wrapEl) wrapEl.classList.add('cd-error');
+      if (wrapEl) wrapEl.classList.add('cm-error');
       ok = false;
     }
   });
