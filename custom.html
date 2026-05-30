@@ -526,23 +526,20 @@
   </div>
 </div>
 
-<!-- LIGHTBOX -->
-<div class="lb-overlay" id="lb-overlay">
-  <button class="lb-close" id="lb-close">✕</button>
-  <img id="lb-img" src="" alt="" />
-</div>
-
 <script>
-  const overlay = document.getElementById('lb-overlay');
-  const lbImg   = document.getElementById('lb-img');
+  // 図解画像：クリックで新タブ
   document.querySelectorAll('.lb-trigger').forEach(el => {
-    el.addEventListener('click', () => { lbImg.src = el.dataset.lb; overlay.classList.add('active'); });
+    el.style.cursor = 'zoom-in';
+    el.addEventListener('click', () => {
+      window.open(el.dataset.lb, '_blank', 'noopener');
+    });
   });
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay || e.target.id === 'lb-close') { overlay.classList.remove('active'); lbImg.src = ''; }
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { overlay.classList.remove('active'); lbImg.src = ''; }
+  // スウォッチ画像：クリックで新タブ
+  document.querySelectorAll('.sw-img').forEach(img => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => {
+      window.open(img.src, '_blank', 'noopener');
+    });
   });
 </script>
 
