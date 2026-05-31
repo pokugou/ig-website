@@ -183,7 +183,7 @@
     .share-btn.is-loading { opacity: 0.55; cursor: wait; pointer-events: none; }
     .success-share { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
     .success-share .share-btn { flex: none; min-width: 160px; padding: 0.8rem 1.25rem; }
-    @media (max-width: 600px) { .confirm-share { padding: 0.75rem 1.25rem; } .success-share { flex-direction: column; align-items: stretch; } .success-share .share-btn { min-width: unset; } }
+    @media (max-width: 600px) { .success-share { flex-direction: column; align-items: stretch; } .success-share .share-btn { min-width: unset; } }
 
     /* CONFIRMATION OVERLAY */
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
@@ -234,12 +234,33 @@
     .success-btn:hover { border-color: rgba(255,255,255,0.4); color: var(--white); }
 
     @media (max-width: 600px) {
-      .confirm-head { padding: 1.25rem 1.25rem 1rem; }
-      .confirm-lead { padding: 0.75rem 1.25rem; }
-      .confirm-body { padding: 1rem 1.25rem; gap: 1rem; }
-      .confirm-actions { flex-direction: column-reverse; padding: 1rem 1.25rem 1.25rem; }
-      .confirm-row-label { min-width: 100px; }
-      .confirm-title { font-size: 1.2rem; }
+      /* 確認画面：モバイル1画面に収める */
+      .confirm-overlay { padding: 0; }
+      .confirm-box { border-left: none; border-right: none; border-radius: 0; }
+      .confirm-eyebrow { display: none; }
+      .confirm-title { font-size: 0.92rem; }
+      .confirm-head { padding: 0.55rem 0.9rem 0.5rem; }
+      .confirm-back-top { padding: 0.2rem; }
+      .confirm-lead { display: none; }
+      .confirm-body { padding: 0.45rem 0.9rem; gap: 0.38rem; }
+      .confirm-section-label { font-size: 0.48rem; margin-bottom: 0.18rem; letter-spacing: 0.1em; }
+      .confirm-section-label::before { width: 10px; }
+      .confirm-row { padding: 0.14rem 0; font-size: 0.72rem; gap: 0.3rem; }
+      .confirm-row-label { min-width: 74px; font-size: 0.65rem; padding-top: 0.1rem; }
+      .confirm-row-val { font-size: 0.72rem; gap: 0.3rem; }
+      .confirm-swatch { width: 19px; height: 19px; }
+      .confirm-swatch-thread { width: 25px; height: 16px; }
+      .confirm-price-box { padding: 0.45rem 0.7rem; }
+      .confirm-price-title { display: none; }
+      .confirm-price-row { padding: 0.13rem 0; font-size: 0.72rem; }
+      .confirm-price-row .cpv { font-size: 0.72rem; }
+      .confirm-price-total { padding-top: 0.28rem; margin-top: 0.1rem; }
+      .confirm-price-total .cpl { font-size: 0.78rem; }
+      .confirm-price-total .cpv { font-size: 1rem; }
+      .confirm-share { padding: 0.35rem 0.9rem; gap: 0.35rem; }
+      .share-btn { padding: 0.45rem 0.4rem; font-size: 0.68rem; gap: 0.28rem; }
+      .confirm-actions { flex-direction: column-reverse; padding: 0.35rem 0.9rem 0.55rem; gap: 0.35rem; }
+      .confirm-btn-back, .confirm-btn-send { padding: 0.55rem 0.75rem; font-size: 0.76rem; }
     }
 
     /* SWATCH PICKER (スレッド) */
