@@ -173,6 +173,18 @@
     .zip-status.zip-ok { color: #4ade80; }
     .zip-status.zip-error { color: var(--red2); }
 
+    /* SHARE BUTTONS (confirm + success) */
+    .confirm-share { padding: 0.75rem 2rem; display: flex; gap: 0.6rem; border-top: 1px solid var(--border); }
+    .share-btn { flex: 1; padding: 0.65rem 0.75rem; border: 1.5px solid rgba(255,255,255,0.12); background: transparent; font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; transition: background 0.15s, border-color 0.15s; text-decoration: none; letter-spacing: 0.02em; }
+    .share-btn.share-line { color: #06c755; border-color: rgba(6,199,85,0.4); }
+    .share-btn.share-line:hover { background: rgba(6,199,85,0.1); border-color: #06c755; }
+    .share-btn.share-save { color: var(--gold); border-color: rgba(245,208,98,0.4); }
+    .share-btn.share-save:hover { background: rgba(245,208,98,0.08); border-color: var(--gold); }
+    .share-btn.is-loading { opacity: 0.55; cursor: wait; pointer-events: none; }
+    .success-share { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
+    .success-share .share-btn { flex: none; min-width: 160px; padding: 0.8rem 1.25rem; }
+    @media (max-width: 600px) { .confirm-share { padding: 0.75rem 1.25rem; } .success-share { flex-direction: column; align-items: stretch; } .success-share .share-btn { min-width: unset; } }
+
     /* CONFIRMATION OVERLAY */
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.93); z-index: 600; overflow-y: auto; padding: 2rem 1rem 3rem; }
@@ -931,6 +943,9 @@
   </div>
 </div>
 
+<!-- ORDER SUMMARY CARD (html2canvas capture target) -->
+<div id="order-card" style="position:fixed;left:-9999px;top:0;width:375px;background:#0f0f0f;font-family:'Noto Sans JP',sans-serif;overflow:hidden;color:#f8f8f8;"></div>
+
 <!-- CONFIRMATION OVERLAY -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
@@ -945,6 +960,16 @@
     </div>
     <p class="confirm-lead">以下の内容でご注文を承ります。内容をご確認のうえ、送信ボタンを押してください。</p>
     <div class="confirm-body" id="confirm-body"></div>
+    <div class="confirm-share">
+      <a href="https://lin.ee/XXXXXXXX" target="_blank" rel="noopener" class="share-btn share-line" id="btn-line-confirm">
+        <svg width="16" height="16" viewBox="0 0 48 48" fill="currentColor"><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1S41 14.5 44.7 20.1z" opacity=".01"/><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1s12.7-7.5 17.3-12.7c3.3-3.8 5-7.3 5-9.3z"/></svg>
+        LINE公式に相談
+      </a>
+      <button type="button" class="share-btn share-save" id="btn-save-image">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        画像として保存
+      </button>
+    </div>
     <div class="confirm-actions">
       <button type="button" class="confirm-btn-back" id="confirm-btn-back">
         <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
@@ -967,6 +992,16 @@
     <div class="success-eyebrow">Order Sent</div>
     <h2 class="success-h">ご注文ありがとうございます</h2>
     <p class="success-p">メールアプリが起動しました。<br>内容をご確認のうえ、送信ボタンを押してください。</p>
+    <div class="success-share">
+      <a href="https://lin.ee/XXXXXXXX" target="_blank" rel="noopener" class="share-btn share-line">
+        <svg width="16" height="16" viewBox="0 0 48 48" fill="currentColor"><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1s12.7-7.5 17.3-12.7c3.3-3.8 5-7.3 5-9.3z"/></svg>
+        LINE公式に相談
+      </a>
+      <button type="button" class="share-btn share-save" id="btn-save-success">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        画像として保存
+      </button>
+    </div>
     <div class="success-note">
       メールアプリが開かない場合は<br>
       <strong>info@ig-rod.jp</strong> まで直接ご連絡ください
@@ -1023,6 +1058,7 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 // --- お任せオプション料金管理 ---
 var cmPrices = { 'blank-color': 0, 'tip-color': 0 };
@@ -1345,6 +1381,134 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
 
   // メールアプリを起動
   window.location.href = mailto;
+});
+
+// --- オーダーカード生成 (html2canvas用) ---
+function buildOrderCard() {
+  var form     = document.getElementById('order-form');
+  var data     = new FormData(form);
+  var modelEl  = document.getElementById('sel-model');
+  var guideEl  = document.getElementById('sel-guide');
+  var gripEl   = document.getElementById('sel-grip');
+
+  var modelText = modelEl.selectedIndex > 0 ? modelEl.options[modelEl.selectedIndex].text.split('　')[0].trim() : '—';
+  var guideText = guideEl.options[guideEl.selectedIndex].text;
+  var gripText  = gripEl.options[gripEl.selectedIndex].text;
+
+  function gf(field) {
+    var timg   = document.getElementById('cm-timg-' + field);
+    var hasImg = timg && timg.style.display !== 'none' && timg.src && timg.src.indexOf('swatches/') !== -1;
+    return { val: document.getElementById('f-' + field).value || '—', img: hasImg ? timg.src : '' };
+  }
+  var bc = gf('blank-color'), tc = gf('tip-color');
+  var tm = gf('thread-main'), tt = gf('thread-tip'), tp = gf('thread-pin');
+
+  var now = new Date();
+  var dateStr = now.getFullYear() + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + String(now.getDate()).padStart(2,'0');
+  var totalText = document.getElementById('p-total').textContent;
+
+  // inline style shortcuts
+  var s = {
+    sec:   'margin-bottom:11px;',
+    stitle:'font-size:8.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#dd3300;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.07);',
+    row:   'display:flex;align-items:center;gap:6px;padding:2.5px 0;',
+    lbl:   'font-size:10px;color:rgba(248,248,248,0.42);width:98px;flex-shrink:0;',
+    val:   'font-size:10px;color:#f8f8f8;font-weight:500;flex:1;line-height:1.4;',
+    sw:    'width:22px;height:22px;object-fit:cover;border-radius:2px;flex-shrink:0;border:1px solid rgba(255,255,255,0.15);',
+    swt:   'width:30px;height:19px;object-fit:cover;border-radius:2px;flex-shrink:0;border:1px solid rgba(255,255,255,0.15);'
+  };
+
+  function r(label, val, img, isThread) {
+    var imgTag = img ? '<img src="'+img+'" style="'+(isThread?s.swt:s.sw)+'">' : '';
+    return '<div style="'+s.row+'"><span style="'+s.lbl+'">'+label+'</span>'+imgTag+'<span style="'+s.val+'">'+(val||'—')+'</span></div>';
+  }
+
+  var nameCustom = data.get('name-custom') || '';
+  var noteVal    = (data.get('note') || '').trim();
+
+  var html = ''
+    // ── ヘッダー ──
+    + '<div style="background:#080808;padding:13px 16px 11px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);">'
+      + '<img src="logo.png" style="height:26px;width:auto;display:block;">'
+      + '<span style="font:600 10px/1 \'DM Sans\',sans-serif;color:rgba(248,248,248,0.38);letter-spacing:2px;">'+dateStr+'</span>'
+    + '</div>'
+    // ── バナー ──
+    + '<div style="background:#cc2200;text-align:center;padding:5px 0;font-size:8.5px;font-weight:700;letter-spacing:3px;color:#fff;">ORDER SUMMARY</div>'
+    // ── ボディ ──
+    + '<div style="padding:12px 16px 8px;">'
+      // 基本情報
+      + '<div style="'+s.sec+'">'
+        + '<div style="'+s.stitle+'">お客様情報</div>'
+        + r('お客様名', data.get('name') || '—')
+        + r('モデル', modelText)
+      + '</div>'
+      // カラーカスタム
+      + '<div style="'+s.sec+'">'
+        + '<div style="'+s.stitle+'">カラーカスタム</div>'
+        + r('ブランクスカラー', bc.val, bc.img, false)
+        + r('ティップカラー',   tc.val, tc.img, false)
+        + r('メインスレッド',   tm.val, tm.img, true)
+        + r('ティップスレッド', tt.val, tt.img, true)
+        + r('ピンライン',       tp.val, tp.img, true)
+      + '</div>'
+      // オプション
+      + '<div style="'+s.sec+'">'
+        + '<div style="'+s.stitle+'">カスタムオプション</div>'
+        + r('ガイド仕様',   guideText)
+        + r('グリップ仕様', gripText)
+        + (nameCustom ? r('ネーム仕様', nameCustom) : '')
+        + (noteVal    ? r('備考', noteVal) : '')
+      + '</div>'
+    + '</div>'
+    // ── 税込合計 ──
+    + '<div style="background:#161616;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.08);">'
+      + '<span style="font-size:11px;font-weight:700;color:rgba(248,248,248,0.75);">税込合計</span>'
+      + '<span style="font:700 19px/1 \'DM Sans\',sans-serif;color:#f5d062;">'+totalText+'</span>'
+    + '</div>'
+    // ── フッター ──
+    + '<div style="background:#080808;padding:7px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);">'
+      + '<span style="font-size:8.5px;color:rgba(248,248,248,0.32);letter-spacing:0.5px;">IG Rod Planning</span>'
+      + '<span style="font-size:8.5px;color:rgba(248,248,248,0.32);">@igrod_pl</span>'
+    + '</div>';
+
+  document.getElementById('order-card').innerHTML = html;
+}
+
+// --- 画像として保存 ---
+function saveAsImage(btnEl) {
+  if (!window.html2canvas) { alert('ライブラリを読み込み中です。しばらく待ってからお試しください。'); return; }
+  buildOrderCard();
+  if (btnEl) { btnEl.classList.add('is-loading'); btnEl.textContent = '生成中…'; }
+
+  var card = document.getElementById('order-card');
+  html2canvas(card, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: false,
+    backgroundColor: '#0f0f0f',
+    logging: false
+  }).then(function(canvas) {
+    var link = document.createElement('a');
+    link.download = 'ig-rod-order-' + new Date().toISOString().slice(0,10) + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    if (btnEl) {
+      btnEl.classList.remove('is-loading');
+      btnEl.innerHTML = '<svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 画像として保存';
+    }
+  }).catch(function() {
+    if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.textContent = '画像として保存'; }
+    alert('画像の生成に失敗しました。スクリーンショットをご利用ください。');
+  });
+}
+
+// 保存ボタンのイベント（確認画面）
+document.getElementById('btn-save-image').addEventListener('click', function() {
+  saveAsImage(this);
+});
+// 保存ボタンのイベント（成功画面）
+document.getElementById('btn-save-success').addEventListener('click', function() {
+  saveAsImage(this);
 });
 
 // --- 郵便番号 → 住所自動入力 ---
