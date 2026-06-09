@@ -375,6 +375,95 @@
     }
     .prod-card:hover .prod-arrow { background: var(--red); border-color: var(--red); color: var(--white); transform: rotate(45deg); }
 
+    /* ── GENRE BANNERS ── */
+    .genre-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 2px;
+    }
+    .genre-banner {
+      position: relative;
+      min-height: 220px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem 2.5rem;
+      border: none;
+      color: inherit;
+      text-align: left;
+    }
+    .genre-banner-bg {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.6s ease;
+    }
+    .genre-banner:hover .genre-banner-bg,
+    .genre-banner.active .genre-banner-bg { transform: scale(1.05); }
+    .genre-banner-bg.offshore {
+      background:
+        radial-gradient(ellipse at 75% 25%, rgba(20,90,180,0.4) 0%, transparent 60%),
+        linear-gradient(155deg, #060d1c 0%, #0b2244 55%, #0e3464 100%);
+    }
+    .genre-banner-bg.shore {
+      background:
+        radial-gradient(ellipse at 25% 75%, rgba(20,130,70,0.35) 0%, transparent 60%),
+        linear-gradient(155deg, #060f09 0%, #0b2a17 55%, #11311c 100%);
+    }
+    .genre-banner-bg.bottom {
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(180,80,15,0.35) 0%, transparent 60%),
+        linear-gradient(155deg, #100600 0%, #2e1100 55%, #431700 100%);
+    }
+    .genre-banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.45) 55%, rgba(8,8,8,0.05) 100%);
+    }
+    .genre-banner::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 2px; height: 0;
+      background: var(--red);
+      transition: height 0.4s ease;
+      z-index: 4;
+    }
+    .genre-banner:hover::before,
+    .genre-banner.active::before { height: 100%; }
+    .genre-banner-content { position: relative; z-index: 2; }
+    .genre-banner-en {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--red2);
+      font-family: 'DM Sans', sans-serif; margin-bottom: 0.45rem;
+    }
+    .genre-banner-name {
+      font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--white); font-family: 'Noto Sans JP', sans-serif;
+      line-height: 1; margin-bottom: 0.6rem;
+      transition: color 0.3s;
+    }
+    .genre-banner.active .genre-banner-name { color: var(--gold); }
+    .genre-banner-models {
+      font-size: 0.67rem; color: rgba(248,248,248,0.38);
+      font-family: 'DM Sans', sans-serif; letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .genre-banner-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px; background: var(--red);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+      z-index: 3;
+    }
+    .genre-banner:hover .genre-banner-bar,
+    .genre-banner.active .genre-banner-bar { transform: scaleX(1); }
+    .prod-card.genre-hidden { display: none; }
+
     /* ── STRIX EDGE FEATURE ── */
     .strix-feature {
       background: var(--black);
@@ -747,6 +836,9 @@
       .hero-actions { gap: 0.6rem; margin-top: 1em; }
       .hero-actions .btn { width: 100%; justify-content: center; padding: 0.85rem 1rem; }
       .products { padding-top: 0.5rem !important; }
+      .genre-grid { grid-template-columns: 1fr; }
+      .genre-banner { min-height: 130px; padding: 1.5rem; }
+      .genre-banner-name { font-size: 1.75rem; }
       .products-grid { grid-template-columns: 1fr; }
       .services-grid { grid-template-columns: 1fr; }
       .flow-steps { grid-template-columns: 1fr; gap: 2rem; }
@@ -780,7 +872,9 @@
         <li><a href="strixedge.html">STRIX EDGE</a></li>
         <li><a href="gtlj.html">GTLJ</a></li>
         <li><a href="gtj.html">GT J</a></li>
-          <li><a href="gtslj.html">GTSLJ</a></li>
+        <li><a href="gtslj.html">GTSLJ</a></li>
+        <li><a href="gts.html">GTS</a></li>
+        <li><a href="gtr.html">GTR</a></li>
       </ul>
     </li>
     <li><a href="services.html">サービス</a></li>
@@ -836,10 +930,44 @@
       <p class="section-sub" style="text-align:right">すべてのロッドはカスタムオーダー対応。<br />スペック・仕様はお気軽にご相談ください。</p>
     </div>
 
+    <!-- ジャンルバナー -->
+    <div class="genre-grid reveal">
+      <button class="genre-banner" data-filter="offshore">
+        <div class="genre-banner-bg offshore"></div>
+        <div class="genre-banner-overlay"></div>
+        <div class="genre-banner-content">
+          <div class="genre-banner-en">Offshore</div>
+          <div class="genre-banner-name">オフショア</div>
+          <div class="genre-banner-models">GTLJ &middot; GTJ &middot; GTSLJ &middot; GTS &middot; GTR</div>
+        </div>
+        <div class="genre-banner-bar"></div>
+      </button>
+      <button class="genre-banner" data-filter="shore">
+        <div class="genre-banner-bg shore"></div>
+        <div class="genre-banner-overlay"></div>
+        <div class="genre-banner-content">
+          <div class="genre-banner-en">Shore</div>
+          <div class="genre-banner-name">ショア</div>
+          <div class="genre-banner-models">STRIX EDGE</div>
+        </div>
+        <div class="genre-banner-bar"></div>
+      </button>
+      <button class="genre-banner" data-filter="bottom">
+        <div class="genre-banner-bg bottom"></div>
+        <div class="genre-banner-overlay"></div>
+        <div class="genre-banner-content">
+          <div class="genre-banner-en">Bottom</div>
+          <div class="genre-banner-name">底物</div>
+          <div class="genre-banner-models">GTJ</div>
+        </div>
+        <div class="genre-banner-bar"></div>
+      </button>
+    </div>
+
     <div class="products-grid stagger">
 
       <!-- STRIX EDGE -->
-      <a class="prod-card" href="strixedge.html">
+      <a class="prod-card" href="strixedge.html" data-genre="shore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
         </div>
@@ -860,7 +988,7 @@
       </a>
 
       <!-- GT-LJ -->
-      <a class="prod-card" href="gtlj.html">
+      <a class="prod-card" href="gtlj.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gtlj-banner.png" alt="GT-LJ Light Jigging" loading="lazy" />
         </div>
@@ -884,7 +1012,7 @@
       </a>
 
       <!-- GT-J -->
-      <a class="prod-card" href="gtj.html">
+      <a class="prod-card" href="gtj.html" data-genre="offshore bottom">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gtj-banner.png" alt="GT-J Jigging" loading="lazy" />
         </div>
@@ -906,7 +1034,7 @@
       </a>
 
       <!-- GTSLJ -->
-      <a class="prod-card" href="gtslj.html">
+      <a class="prod-card" href="gtslj.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gtslj-banner.png" alt="GTSLJ" loading="lazy" />
         </div>
@@ -926,8 +1054,29 @@
         </div>
       </a>
 
+      <!-- GTR -->
+      <a class="prod-card" href="gtr.html" data-genre="offshore">
+        <div class="prod-img-wrap">
+          <img class="prod-img" src="gtr-banner.png" alt="GTR Tairubber Rod" loading="lazy" />
+        </div>
+        <div class="prod-body">
+          <div class="prod-name">GTR</div>
+          <div class="prod-sub">Tairubber Rod</div>
+          <p class="prod-desc">真鯛との駆け引きを支配するタイラバロッド。繊細な感度で吸い込みバイトを捉え、粘り強いバットでデカマダイとのファイトを制する。</p>
+          <div class="prod-specs">
+            <span class="spec-tag">タイラバ</span>
+            <span class="spec-tag">タイジギング</span>
+            <span class="spec-tag">オフショア</span>
+          </div>
+          <div class="prod-footer">
+            <div class="prod-price"><strong>お問い合わせ</strong></div>
+            <div class="prod-arrow">&#x2197;</div>
+          </div>
+        </div>
+      </a>
+
       <!-- GTS -->
-      <a class="prod-card" href="gts.html">
+      <a class="prod-card" href="gts.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gts-banner.png" alt="GTS" loading="lazy" />
         </div>
@@ -1337,6 +1486,26 @@
   }, { threshold: 0.4 }).observe = (el) => {
     sections.forEach(s => new IntersectionObserver(() => {}, {threshold: 0.4}).observe(s));
   };
+
+  /* GENRE FILTER */
+  const genreBtns = document.querySelectorAll('.genre-banner');
+  const prodCards = document.querySelectorAll('.prod-card');
+  genreBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      const isActive = btn.classList.contains('active');
+      genreBtns.forEach(b => b.classList.remove('active'));
+      if (!isActive) {
+        btn.classList.add('active');
+        prodCards.forEach(card => {
+          const genres = (card.dataset.genre || '').split(' ');
+          card.classList.toggle('genre-hidden', !genres.includes(filter));
+        });
+      } else {
+        prodCards.forEach(card => card.classList.remove('genre-hidden'));
+      }
+    });
+  });
 
   /* PRODUCT CARD TILT */
   document.querySelectorAll('.prod-card').forEach(card => {
