@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>カラーシミュレーター | IG Rod Planning</title>
+  <meta name="description" content="IG Rod Planningのロッドカラーシミュレーター。ブランクス・スレッド・ティップカラーを自由に組み合わせてカスタムロッドの配色をシミュレーションできます。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010; --white:#f8f8f8;
+      --gray:#d0d0d0; --gray2:#999999;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--black); color: var(--white); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(8,8,8,0.96); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul > li { position: relative; }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(248,248,248,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 180px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; }
+    .has-drop:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .nav-contact:hover { background: var(--red2) !important; }
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: transform 0.28s, opacity 0.28s; transform-origin: center; }
+    .hamburger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* PAGE HEADER */
+    .page-header { padding: 10rem 3rem 5rem; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+    .page-header-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(204,34,0,0.12) 0%, transparent 60%), var(--black); }
+    .page-header-line { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 70% 100% at 50% 0%, black 20%, transparent 100%); }
+    .page-header-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 1rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
+    .page-title { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1rem; }
+    .page-sub { font-size: 1rem; color: rgba(248,248,248,0.45); font-weight: 300; letter-spacing: 0.06em; }
+
+    /* MAIN */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 5rem 3rem 6rem; }
+
+    /* ROD PREVIEW (top, full width) */
+    .rod-preview-card {
+      background: #f0f0ee;
+      border-radius: 10px;
+      padding: 2rem 2rem 1.5rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    .rod-preview-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #888; margin-bottom: 1rem;
+    }
+    .rod-canvas-wrap {
+      width: 100%;
+      background: #f0f0ee;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      min-height: 120px;
+    }
+    #rod-canvas {
+      width: 100%;
+      height: 180px;
+      display: block;
+    }
+    @media (min-width: 768px) {
+      #rod-canvas { height: 260px; }
+    }
+    .rod-loading {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: #f0f0ee;
+      font-size: 0.8rem; color: #888;
+      letter-spacing: 0.08em;
+    }
+
+    /* PART TABS */
+    .part-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .part-tab {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.6rem 1.1rem; border-radius: 5px;
+      border: 1px solid var(--border2); background: transparent;
+      color: rgba(248,248,248,0.5); font-family: inherit;
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.03em;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .part-tab:hover { color: var(--white); border-color: rgba(255,255,255,0.25); }
+    .part-tab.active { border-color: var(--red); background: rgba(204,34,0,0.1); color: var(--white); }
+    .part-tab-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.2); }
+
+    /* SIMULATOR LAYOUT */
+    .sim-layout { display: grid; grid-template-columns: 1fr 320px; gap: 2rem; align-items: start; }
+
+    /* PALETTE */
+    .palette-wrap { background: var(--dark); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+    .palette-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem; }
+    .palette-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray2); }
+    .cat-tabs { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .cat-tab { font-size: 0.66rem; font-weight: 600; padding: 0.25rem 0.55rem; border-radius: 20px; border: 1px solid var(--border2); color: rgba(248,248,248,0.45); cursor: pointer; transition: all 0.15s; background: none; font-family: inherit; white-space: nowrap; }
+    .cat-tab:hover { color: var(--white); }
+    .cat-tab.active { background: var(--red); border-color: var(--red); color: var(--white); }
+    .palette-section { display: none; }
+    .palette-section.visible { display: block; }
+    .palette-group { margin-bottom: 1.25rem; }
+    .palette-group-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; color: var(--gray2); border-left: 2px solid var(--red); padding: 0.25rem 0.5rem; background: rgba(255,255,255,0.02); margin-bottom: 0.65rem; }
+    .swatch-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.4rem; }
+    .swatch-item { cursor: pointer; border-radius: 4px; overflow: hidden; border: 2px solid transparent; transition: border-color 0.15s, transform 0.15s; }
+    .swatch-item:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
+    .swatch-item.active { border-color: var(--red2); box-shadow: 0 0 10px rgba(232,48,16,0.5); }
+    .swatch-item img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; }
+    .swatch-item-name { font-size: 0.52rem; color: rgba(248,248,248,0.45); padding: 0.15rem 0.2rem; text-align: center; line-height: 1.2; }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 1rem; }
+    .summary-card { background: var(--dark); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+    .summary-card h3 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1rem; }
+    .summary-row { display: flex; align-items: center; gap: 0.65rem; padding: 0.55rem 0; border-bottom: 1px solid var(--border); }
+    .summary-row:last-of-type { border-bottom: none; }
+    .summary-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.12); flex-shrink: 0; }
+    .summary-info { flex: 1; min-width: 0; }
+    .summary-part { font-size: 0.63rem; color: var(--gray2); }
+    .summary-name { font-size: 0.8rem; font-weight: 700; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.5rem; border-radius: 4px; font-size: 0.85rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; letter-spacing: 0.05em; text-transform: uppercase; font-family: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 0 30px rgba(204,34,0,0.25); }
+    .btn-red:hover { background: var(--red2); box-shadow: 0 0 50px rgba(204,34,0,0.45); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border2); color: rgba(248,248,248,0.6); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* NOTE */
+    .sim-note { margin-top: 2rem; padding: 1.1rem 1.4rem; background: rgba(255,255,255,0.03); border-left: 3px solid var(--red); border-radius: 0 4px 4px 0; }
+    .sim-note p { font-size: 0.78rem; color: var(--gray2); line-height: 2; }
+
+    /* CTA */
+    .cta-strip { background: var(--dark); border: 1px solid var(--border); padding: 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 4rem; border-radius: 6px; }
+    .cta-strip-text h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+    .cta-strip-text p { font-size: 0.85rem; color: var(--gray); }
+
+    /* FOOTER */
+    footer { background: var(--black); border-top: 1px solid var(--border); padding: 4rem 3rem 2.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+    .footer-brand p { font-size: 0.85rem; color: var(--gray); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.5rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--gray2); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--gray2); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--gray); }
+
+    @media (max-width: 1024px) {
+      .sim-layout { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+      .main-wrap { padding: 4rem 2rem; }
+      .page-header { padding: 8rem 2rem 4rem; }
+      .cta-strip { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      nav ul { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(8,8,8,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 0.5rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--border); }
+      nav ul.is-open { display: flex; }
+      nav ul > li { display: block !important; width: 100%; border-bottom: 1px solid var(--border); }
+      nav ul > li > a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; }
+      .has-drop:hover .dropdown { display: none; }
+      .has-drop.is-open .dropdown { display: block; }
+      .dropdown { position: static; border: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.03); min-width: unset; }
+      .dropdown li a { padding: 0.75rem 2rem; }
+      .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
+      .swatch-grid { grid-template-columns: repeat(7, 1fr); }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      footer { padding: 3rem 1.5rem 2rem; }
+      .page-header { padding: 7rem 1.5rem 3rem; }
+      .main-wrap { padding: 4rem 1.5rem; }
+      .cta-strip { padding: 1.75rem 1.5rem; }
+      .part-tab { font-size: 0.75rem; padding: 0.5rem 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:44px; width:auto; display:block;" />
+  </a>
+  <ul>
+    <li class="has-drop">
+      <a href="products.html">商品一覧</a>
+      <ul class="dropdown">
+        <li><a href="strixedge.html">STRIX EDGE</a></li>
+        <li><a href="gtlj.html">GTLJ</a></li>
+        <li><a href="gtj.html">GT J</a></li>
+        <li><a href="gtslj.html">GTSLJ</a></li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li class="has-drop">
+      <a href="color.html">カスタムオーダー</a>
+      <ul class="dropdown">
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+        <li><a href="simulator.html">カラーシミュレーター</a></li>
+      </ul>
+    </li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-bg"></div>
+  <div class="page-header-line"></div>
+  <div class="page-header-content">
+    <div class="eyebrow">Color Simulator</div>
+    <h1 class="page-title">カラーシミュレーター</h1>
+    <p class="page-sub">ブランクス・スレッド・ピンライン・ティップカラーを自由に組み合わせて、あなただけの配色を試してみてください。</p>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- ROD PREVIEW (full width at top) -->
+  <div class="rod-preview-card">
+    <div class="rod-preview-label">PREVIEW — ロッドカラープレビュー</div>
+    <div class="rod-canvas-wrap">
+      <canvas id="rod-canvas"></canvas>
+      <div class="rod-loading" id="rod-loading">画像を解析中...</div>
+    </div>
+  </div>
+
+  <!-- PART TABS -->
+  <div class="part-tabs" style="margin-bottom:1.5rem;">
+    <button class="part-tab active" data-part="blank" onclick="selectPart('blank')">
+      <span class="part-tab-dot" id="tab-dot-blank" style="background:#ac1d2b;"></span>
+      ①ブランクスカラー
+    </button>
+    <button class="part-tab" data-part="thread" onclick="selectPart('thread')">
+      <span class="part-tab-dot" id="tab-dot-thread" style="background:#f1f3f3;"></span>
+      ②スレッド
+    </button>
+    <button class="part-tab" data-part="pinline" onclick="selectPart('pinline')">
+      <span class="part-tab-dot" id="tab-dot-pinline" style="background:#bd2f22; opacity:0.4;"></span>
+      ③ピンライン（任意）
+    </button>
+    <button class="part-tab" data-part="tip" onclick="selectPart('tip')">
+      <span class="part-tab-dot" id="tab-dot-tip" style="background:#ac1d2b; opacity:0.3;"></span>
+      ④ティップカラー（任意）
+    </button>
+  </div>
+
+  <!-- MAIN LAYOUT: palette + sidebar -->
+  <div class="sim-layout">
+
+    <!-- LEFT: Palette -->
+    <div>
+      <div class="palette-wrap">
+        <div class="palette-header">
+          <div class="palette-title" id="palette-title">ブランクスカラーを選択</div>
+          <div class="cat-tabs" id="cat-tabs" style="display:none;">
+            <button class="cat-tab active" data-cat="ダル" onclick="switchCat(this)">ダル</button>
+            <button class="cat-tab" data-cat="メタリック" onclick="switchCat(this)">メタリック</button>
+            <button class="cat-tab" data-cat="NCP" onclick="switchCat(this)">NCP</button>
+          </div>
+        </div>
+
+        <!-- Blank palette -->
+        <div class="palette-section visible" id="palette-blank">
+          <div class="swatch-grid" id="grid-blank"></div>
+        </div>
+
+        <!-- Thread palette -->
+        <div class="palette-section" id="palette-thread">
+          <div id="pg-thread-ダル" class="palette-group">
+            <div class="palette-group-label">ダルスレッド</div>
+            <div class="swatch-grid" id="grid-thread-ダル"></div>
+          </div>
+          <div id="pg-thread-メタリック" class="palette-group" style="display:none;">
+            <div class="palette-group-label">メタリックスレッド</div>
+            <div class="swatch-grid" id="grid-thread-メタリック"></div>
+          </div>
+          <div id="pg-thread-NCP" class="palette-group" style="display:none;">
+            <div class="palette-group-label">NCPスレッド</div>
+            <div class="swatch-grid" id="grid-thread-NCP"></div>
+          </div>
+        </div>
+
+        <!-- Pinline palette -->
+        <div class="palette-section" id="palette-pinline">
+          <p style="font-size:0.78rem; color:var(--gray2); margin-bottom:1rem;">未設定の場合はスレッドと同色になります。ピンラインはスレッド巻きの両端に入る細いアクセントラインです。</p>
+          <div id="pg-pinline-ダル" class="palette-group">
+            <div class="palette-group-label">ダルスレッド</div>
+            <div class="swatch-grid" id="grid-pinline-ダル"></div>
+          </div>
+          <div id="pg-pinline-メタリック" class="palette-group" style="display:none;">
+            <div class="palette-group-label">メタリックスレッド</div>
+            <div class="swatch-grid" id="grid-pinline-メタリック"></div>
+          </div>
+          <div id="pg-pinline-NCP" class="palette-group" style="display:none;">
+            <div class="palette-group-label">NCPスレッド</div>
+            <div class="swatch-grid" id="grid-pinline-NCP"></div>
+          </div>
+        </div>
+
+        <!-- Tip palette -->
+        <div class="palette-section" id="palette-tip">
+          <p style="font-size:0.78rem; color:var(--gray2); margin-bottom:1rem;">未設定の場合はブランクスと同色になります。</p>
+          <div id="pg-tip-ダル" class="palette-group">
+            <div class="palette-group-label">ダルスレッド</div>
+            <div class="swatch-grid" id="grid-tip-ダル"></div>
+          </div>
+          <div id="pg-tip-メタリック" class="palette-group" style="display:none;">
+            <div class="palette-group-label">メタリックスレッド</div>
+            <div class="swatch-grid" id="grid-tip-メタリック"></div>
+          </div>
+          <div id="pg-tip-NCP" class="palette-group" style="display:none;">
+            <div class="palette-group-label">NCPスレッド</div>
+            <div class="swatch-grid" id="grid-tip-NCP"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-note">
+        <p>※ プレビューはイメージです。実際の色・光沢感とは異なる場合があります。<br>
+           ※ ピンライン・ティップカラーは任意です。未設定の場合はスレッド/ブランクスと同色になります。<br>
+           ※ スレッドカラー変更は追加料金なし。ブランクスカラー変更は要相談。</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: Summary -->
+    <div class="sidebar">
+      <div class="summary-card">
+        <h3>選択中のカラー</h3>
+        <div class="summary-row">
+          <div class="summary-dot" id="sum-dot-blank" style="background:#ac1d2b;"></div>
+          <div class="summary-info">
+            <div class="summary-part">①ブランクスカラー</div>
+            <div class="summary-name" id="sum-name-blank">004 レッド</div>
+          </div>
+        </div>
+        <div class="summary-row">
+          <div class="summary-dot" id="sum-dot-thread" style="background:#f1f3f3;"></div>
+          <div class="summary-info">
+            <div class="summary-part">②スレッド</div>
+            <div class="summary-name" id="sum-name-thread">101 ホワイト</div>
+          </div>
+        </div>
+        <div class="summary-row">
+          <div class="summary-dot" id="sum-dot-pinline" style="background:#bd2f22; opacity:0.3;"></div>
+          <div class="summary-info">
+            <div class="summary-part">③ピンライン</div>
+            <div class="summary-name" id="sum-name-pinline">未設定</div>
+          </div>
+        </div>
+        <div class="summary-row">
+          <div class="summary-dot" id="sum-dot-tip" style="background:#ac1d2b; opacity:0.3;"></div>
+          <div class="summary-info">
+            <div class="summary-part">④ティップカラー</div>
+            <div class="summary-name" id="sum-name-tip">未設定</div>
+          </div>
+        </div>
+        <a id="order-btn" href="contact.html" class="btn btn-red btn-full" style="margin-top:1rem;">
+          このカラーでオーダー →
+        </a>
+        <button class="btn btn-ghost btn-full" style="margin-top:0.5rem;" onclick="resetColors()">
+          リセット
+        </button>
+      </div>
+
+      <div style="padding:1.2rem; background:var(--dark); border:1px solid var(--border); border-radius:8px;">
+        <div style="font-size:0.65rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--gray2); margin-bottom:0.65rem;">カラーチャート参照</div>
+        <p style="font-size:0.78rem; color:var(--gray); line-height:1.8;">実物のスウォッチは<a href="color.html" style="color:var(--red2); text-decoration:none;">カラーチャート</a>でご確認ください。</p>
+        <a href="color.html" class="btn btn-ghost btn-full" style="margin-top:0.65rem; font-size:0.75rem; padding:0.6rem 1rem;">
+          カラーチャートを見る
+        </a>
+      </div>
+    </div>
+
+  </div><!-- /sim-layout -->
+
+  <div class="cta-strip">
+    <div class="cta-strip-text">
+      <h3>オーダーはここから</h3>
+      <p>ご希望のカラーが決まったらお気軽にお問い合わせください。</p>
+    </div>
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+      <a href="contact.html" class="btn btn-red">オーダーフォームへ →</a>
+      <a href="custom.html" class="btn btn-ghost">カスタム詳細を見る</a>
+    </div>
+  </div>
+
+</div><!-- /main-wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="IG Rod Planning" style="height:40px; width:auto; display:block;" />
+        </a>
+        <p>自分色のオリジナル釣竿を作ってみませんか。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げるロッドビルダーです。</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="strixedge.html">STRIX EDGE</a></li>
+          <li><a href="gtlj.html">GTLJ</a></li>
+          <li><a href="gtj.html">GT J</a></li>
+          <li><a href="gtslj.html">GTSLJ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html">オリジナルロッド制作</a></li>
+          <li><a href="services.html">リメイク</a></li>
+          <li><a href="services.html">カラーカスタム</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></li>
+          <li><a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Hidden source image -->
+<img id="rod-source" src="rod-base2.png" style="display:none;" crossorigin="anonymous">
+
+<script>
+// ===== COLOR DATA =====
+var BLANK_COLORS = [
+  { id:'b001', name:'001 ホワイト',  hex:'#c2c8c9', img:'swatches/b001.jpg' },
+  { id:'b002', name:'002 ブラック',  hex:'#2e2d2f', img:'swatches/b002.jpg' },
+  { id:'b003', name:'003 ブルー',    hex:'#4e88d0', img:'swatches/b003.jpg' },
+  { id:'b004', name:'004 レッド',    hex:'#ac1d2b', img:'swatches/b004.jpg' },
+  { id:'b005', name:'005 イエロー',  hex:'#cfd233', img:'swatches/b005.jpg' },
+  { id:'b006', name:'006 グリーン',  hex:'#224239', img:'swatches/b006.jpg' },
+  { id:'b007', name:'007 シルバー',  hex:'#a3a7a8', img:'swatches/b007.jpg' },
+  { id:'b008', name:'008 ゴールド',  hex:'#998b24', img:'swatches/b008.jpg' },
+  { id:'b009', name:'009 ブルー',    hex:'#0c528a', img:'swatches/b009.jpg' },
+  { id:'b010', name:'010 レッド',    hex:'#7f2123', img:'swatches/b010.jpg' },
+  { id:'b011', name:'011 グリーン',  hex:'#1b7954', img:'swatches/b011.jpg' },
+  { id:'b012', name:'012 オレンジ',  hex:'#b3570a', img:'swatches/b012.jpg' },
+  { id:'b013', name:'013 グリーン',  hex:'#6acb48', img:'swatches/b013.jpg' },
+  { id:'b014', name:'014 イエロー',  hex:'#cfe52e', img:'swatches/b014.jpg' },
+  { id:'b015', name:'015 ピンク',    hex:'#ed3e92', img:'swatches/b015.jpg' },
+  { id:'b016', name:'016 オレンジ',  hex:'#e85816', img:'swatches/b016.jpg' },
+];
+
+var THREAD_COLORS = [
+  { id:'t101',   name:'101 ホワイト',    hex:'#f1f3f3', img:'swatches/t101.jpg',   cat:'ダル' },
+  { id:'t102',   name:'102 ブラック',    hex:'#152036', img:'swatches/t102.jpg',   cat:'ダル' },
+  { id:'t112',   name:'112 ダークグレー',hex:'#74767a', img:'swatches/t112.jpg',   cat:'ダル' },
+  { id:'t118lg', name:'118 ライトグレー',hex:'#ced3d5', img:'swatches/t118lg.jpg', cat:'ダル' },
+  { id:'t172',   name:'172 ライトグリーン',hex:'#4ea75c',img:'swatches/t172.jpg',  cat:'ダル' },
+  { id:'t202g',  name:'202 グリーン',    hex:'#33673e', img:'swatches/t202g.jpg',  cat:'ダル' },
+  { id:'t103',   name:'103 レッド',      hex:'#bd2f22', img:'swatches/t103.jpg',   cat:'ダル' },
+  { id:'t104',   name:'104 オレンジ',    hex:'#d86531', img:'swatches/t104.jpg',   cat:'ダル' },
+  { id:'t166',   name:'166 パープル',    hex:'#7c327f', img:'swatches/t166.jpg',   cat:'ダル' },
+  { id:'t109',   name:'109 ターコイズ',  hex:'#63b8c9', img:'swatches/t109.jpg',   cat:'ダル' },
+  { id:'t145',   name:'145 ライトブルー',hex:'#8bbbdc', img:'swatches/t145.jpg',   cat:'ダル' },
+  { id:'t118b',  name:'118 ブルー',      hex:'#2960a8', img:'swatches/t118b.jpg',  cat:'ダル' },
+  { id:'t105',   name:'105 イエロー',    hex:'#e9e663', img:'swatches/t105.jpg',   cat:'ダル' },
+  { id:'t106',   name:'106 ネイビー',    hex:'#13223a', img:'swatches/t106.jpg',   cat:'ダル' },
+  { id:'t107',   name:'107 ピンク',      hex:'#d5a2bd', img:'swatches/t107.jpg',   cat:'ダル' },
+  { id:'t201',   name:'201 シルバー',    hex:'#a9aaa3', img:'swatches/t201.jpg',   cat:'メタリック' },
+  { id:'t202go', name:'202 ゴールド',    hex:'#ac935d', img:'swatches/t202go.jpg', cat:'メタリック' },
+  { id:'t237',   name:'237 ピンク',      hex:'#a6748a', img:'swatches/t237.jpg',   cat:'メタリック' },
+  { id:'t203',   name:'203 レッド',      hex:'#c14337', img:'swatches/t203.jpg',   cat:'メタリック' },
+  { id:'t206',   name:'206 Dピンク',     hex:'#962245', img:'swatches/t206.jpg',   cat:'メタリック' },
+  { id:'t207',   name:'207 パープル',    hex:'#471b54', img:'swatches/t207.jpg',   cat:'メタリック' },
+  { id:'t208',   name:'208 ブルー',      hex:'#1f4185', img:'swatches/t208.jpg',   cat:'メタリック' },
+  { id:'t209',   name:'209 ライトブルー',hex:'#4691b5', img:'swatches/t209.jpg',   cat:'メタリック' },
+  { id:'t210',   name:'210 グリーン',    hex:'#295b36', img:'swatches/t210.jpg',   cat:'メタリック' },
+  { id:'t211',   name:'211 カッパー',    hex:'#9f4d2f', img:'swatches/t211.jpg',   cat:'メタリック' },
+  { id:'t212',   name:'212 ブラウン',    hex:'#3c2421', img:'swatches/t212.jpg',   cat:'メタリック' },
+  { id:'t213',   name:'213 ブロンズ',    hex:'#362c2b', img:'swatches/t213.jpg',   cat:'メタリック' },
+  { id:'t301',   name:'301 イエロー',    hex:'#e9e663', img:'swatches/t301.jpg',   cat:'NCP' },
+  { id:'t302',   name:'302 オレンジ',    hex:'#dd792f', img:'swatches/t302.jpg',   cat:'NCP' },
+  { id:'t303',   name:'303 グリーン',    hex:'#86be87', img:'swatches/t303.jpg',   cat:'NCP' },
+  { id:'t304',   name:'304 レッド',      hex:'#cd3b26', img:'swatches/t304.jpg',   cat:'NCP' },
+  { id:'t305',   name:'305 ピンク',      hex:'#d65170', img:'swatches/t305.jpg',   cat:'NCP' },
+];
+
+// ===== ROD REGION CONSTANTS (image: rod-base2.png, 2000×734) =====
+var ROD_SRC_Y  = 275;
+var ROD_SRC_H  = 155;
+var ROD_FULL_W = 2000;
+
+// x < REEL_SEAT_X = rod blank area (tip + wraps + blank)
+// x >= REEL_SEAT_X = reel seat + grip (kept at original dark tone)
+var REEL_SEAT_X = 1165;
+// x < TIP_END_X = tip section (separate coloring)
+var TIP_END_X   = 48;
+// Brightness threshold: >= this = background pixel (not part of rod)
+var BG_THRESH   = 242;
+
+// Thread wrap regions [x_start, x_end] detected from pixel scan at rod midline
+var WRAP_REGIONS = [
+  [49,97],[128,157],[188,218],[250,279],[320,350],
+  [391,426],[469,503],[547,582],[641,675],[698,732],
+  [803,832],[856,890],[934,959],[1021,1048],[1109,1143]
+];
+// Pinline width (pixels on each side of each wrap = the pinline band)
+var PINLINE_W = 5;
+
+// ===== STATE =====
+var state = {
+  blank:   { id:'b004', name:'004 レッド',   hex:'#ac1d2b' },
+  thread:  { id:'t101', name:'101 ホワイト', hex:'#f1f3f3' },
+  pinline: null,
+  tip:     null,
+};
+var activePart = 'blank';
+var activeCat  = 'ダル';
+var rodMask    = null;
+var rodOrigPx  = null;
+var rodImg     = null;
+var rodBodyTop = 65;
+var rodBodyBot = 88;
+
+// ===== CANVAS SETUP =====
+function initCanvas() {
+  rodImg = document.getElementById('rod-source');
+  if (rodImg.complete) {
+    processRodImage();
+  } else {
+    rodImg.onload = processRodImage;
+    rodImg.onerror = function() {
+      document.getElementById('rod-loading').textContent = '画像の読み込みに失敗しました';
+    };
+  }
+}
+
+// Precompute per-pixel brightness and region mask from the cropped image
+function processRodImage() {
+  var W = ROD_FULL_W, H = ROD_SRC_H;
+  var offscreen = document.createElement('canvas');
+  offscreen.width = W; offscreen.height = H;
+  var ctx = offscreen.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(rodImg, 0, ROD_SRC_Y, W, H, 0, 0, W, H);
+  var imgData = ctx.getImageData(0, 0, W, H);
+  var px = imgData.data;
+  var N = W * H;
+
+  // === STEP 1: BFS flood fill from edges to find TRUE background ===
+  // Background = bright pixels (>= BG_THRESH) that are connected to canvas edges.
+  // Rod interior pixels (even if bright/white) are enclosed by outlines → not background.
+  var isBg = new Uint8Array(N);
+  var queue = new Int32Array(N);
+  var qHead = 0, qTail = 0;
+
+  function seedBg(idx) {
+    if (isBg[idx]) return;
+    var pi = idx << 2;
+    if ((px[pi] + px[pi+1] + px[pi+2]) / 3 >= BG_THRESH) {
+      isBg[idx] = 1;
+      queue[qTail++] = idx;
+    }
+  }
+  // Seed all 4 edges
+  for (var xi = 0; xi < W; xi++) { seedBg(xi); seedBg((H-1)*W + xi); }
+  for (var yi = 0; yi < H; yi++) { seedBg(yi*W); seedBg(yi*W + W-1); }
+  // BFS expand (4-connected)
+  while (qHead < qTail) {
+    var cur = queue[qHead++];
+    var cx = cur % W, cy = (cur / W) | 0;
+    var neighbors = [];
+    if (cx > 0)   neighbors.push(cur - 1);
+    if (cx < W-1) neighbors.push(cur + 1);
+    if (cy > 0)   neighbors.push(cur - W);
+    if (cy < H-1) neighbors.push(cur + W);
+    for (var k = 0; k < neighbors.length; k++) {
+      var ni = neighbors[k];
+      if (isBg[ni]) continue;
+      var npi = ni << 2;
+      if ((px[npi] + px[npi+1] + px[npi+2]) / 3 >= BG_THRESH) {
+        isBg[ni] = 1;
+        queue[qTail++] = ni;
+      }
+    }
+  }
+
+  // === STEP 2: Determine rod body y-range by scanning "clean" blank columns ===
+  // Sample columns between wrap regions to find the consistent rod body band.
+  var betweenWrapSamples = [];
+  for (var bx = TIP_END_X + 5; bx < REEL_SEAT_X - 5; bx += 3) {
+    var inWrap = false;
+    for (var wk = 0; wk < WRAP_REGIONS.length; wk++) {
+      if (bx >= WRAP_REGIONS[wk][0] - 3 && bx <= WRAP_REGIONS[wk][1] + 3) { inWrap = true; break; }
+    }
+    if (inWrap) continue;
+    var bTop = -1, bBot = -1;
+    for (var by = 0; by < H; by++) {
+      if (!isBg[by * W + bx]) { if (bTop === -1) bTop = by; bBot = by; }
+    }
+    if (bTop !== -1 && bBot - bTop >= 4 && bBot - bTop <= 30) {
+      betweenWrapSamples.push([bTop, bBot]);
+    }
+  }
+  // Compute median rod body top/bottom
+  var rodBodyTopArr = betweenWrapSamples.map(function(s){return s[0];}).sort(function(a,b){return a-b;});
+  var rodBodyBotArr = betweenWrapSamples.map(function(s){return s[1];}).sort(function(a,b){return a-b;});
+  var midIdx = (rodBodyTopArr.length / 2) | 0;
+  var ROD_Y_TOP = rodBodyTopArr[midIdx] - 4;  // median topY - 4px margin
+  var ROD_Y_BOT = rodBodyBotArr[midIdx] + 4;  // median botY + 4px margin
+
+  // === STEP 3: For each x column in rod region, fill between rod edges (clamped to rod body band) ===
+  var isRod = new Uint8Array(N); // 1 = inside rod body
+  for (var xi2 = 0; xi2 < W; xi2++) {
+    var topY = -1, botY = -1;
+    for (var yi2 = ROD_Y_TOP; yi2 <= ROD_Y_BOT; yi2++) {
+      var idx2 = yi2 * W + xi2;
+      if (!isBg[idx2]) {
+        if (topY === -1) topY = yi2;
+        botY = yi2;
+      }
+    }
+    if (topY !== -1 && botY - topY >= 1) {
+      for (var yi3 = topY; yi3 <= botY; yi3++) {
+        isRod[yi3 * W + xi2] = 1;
+      }
+    }
+  }
+
+  // Precompute pinline x-ranges (±PINLINE_W outside each wrap)
+  var pinlineRanges = [];
+  for (var j = 0; j < WRAP_REGIONS.length; j++) {
+    var wr = WRAP_REGIONS[j];
+    pinlineRanges.push([wr[0] - PINLINE_W, wr[0] - 1]);
+    pinlineRanges.push([wr[1] + 1, wr[1] + PINLINE_W]);
+  }
+
+  // === STEP 3: Assign region labels ===
+  // 0=bg, 1=grip/reel, 2=blank, 3=wrap, 4=tip, 5=pinline
+  var mask = new Uint8Array(N);
+  for (var i = 0; i < N; i++) {
+    if (!isRod[i]) { mask[i] = 0; continue; } // background or outside rod
+
+    var xi = i % W;
+
+    // Right side: reel seat + grip - keep original
+    if (xi >= REEL_SEAT_X) { mask[i] = 1; continue; }
+
+    // Tip section
+    if (xi < TIP_END_X) { mask[i] = 4; continue; }
+
+    // Check pinline zones
+    var isPL = false;
+    for (var j = 0; j < pinlineRanges.length; j++) {
+      if (xi >= pinlineRanges[j][0] && xi <= pinlineRanges[j][1]) { isPL = true; break; }
+    }
+    if (isPL) { mask[i] = 5; continue; }
+
+    // Check thread wrap zones
+    var isWrap = false;
+    for (var j = 0; j < WRAP_REGIONS.length; j++) {
+      if (xi >= WRAP_REGIONS[j][0] && xi <= WRAP_REGIONS[j][1]) { isWrap = true; break; }
+    }
+    mask[i] = isWrap ? 3 : 2;  // 3=wrap, 2=blank
+  }
+
+  rodMask = mask;
+  // Store original pixel data for shading in renderRod
+  rodOrigPx = px;
+  // Store rod body y-range for thread band rendering
+  rodBodyTop = ROD_Y_TOP;
+  rodBodyBot = ROD_Y_BOT;
+  document.getElementById('rod-loading').style.display = 'none';
+  renderRod();
+}
+
+function hexToRgb(hex) {
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16)
+  ];
+}
+
+function blendColor(c, origR, origG, origB) {
+  // Blend: color fully shown in bright rod body areas, dark outlines stay dark
+  var shade = (origR + origG + origB) / (3 * 255);
+  var boost = shade * 0.5 + 0.5;
+  return [
+    Math.min(Math.round(c[0] * boost), origR),
+    Math.min(Math.round(c[1] * boost), origG),
+    Math.min(Math.round(c[2] * boost), origB)
+  ];
+}
+
+function renderRod() {
+  if (!rodMask) return;
+  var canvas = document.getElementById('rod-canvas');
+  var W = ROD_FULL_W, H = ROD_SRC_H;
+  canvas.width  = W;
+  canvas.height = H;
+  var ctx = canvas.getContext('2d');
+
+  var cBlank   = hexToRgb(state.blank.hex);
+  var cThread  = hexToRgb(state.thread.hex);
+  var cPinline = state.pinline ? hexToRgb(state.pinline.hex) : cThread;
+  var cTip     = state.tip     ? hexToRgb(state.tip.hex)     : cBlank;
+
+  // ---- PASS 1: pixel-by-pixel base coat ----
+  // All rod pixels get BLANK color (wraps & pinline zones included).
+  // Only tip gets tip color; grip/reel keeps original.
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+  var imgData = ctx.getImageData(0, 0, W, H);
+  var pixels  = imgData.data;
+
+  for (var i = 0; i < W * H; i++) {
+    var r = rodMask[i];
+    if (r === 0) continue;  // background stays white
+    var pi = i << 2;
+    var oR = rodOrigPx[pi], oG = rodOrigPx[pi+1], oB = rodOrigPx[pi+2];
+    var out;
+    if (r === 1) {
+      out = [oR, oG, oB]; // grip: keep original
+    } else if (r === 4) {
+      out = blendColor(cTip, oR, oG, oB);
+    } else {
+      // mask 2 (blank), 3 (wrap zone), 5 (pinline zone) → all blank color
+      out = blendColor(cBlank, oR, oG, oB);
+    }
+    pixels[pi]=out[0]; pixels[pi+1]=out[1]; pixels[pi+2]=out[2]; pixels[pi+3]=255;
+  }
+  ctx.putImageData(imgData, 0, 0);
+
+  // ---- PASS 2: thread wrap bands (narrow rectangles) ----
+  // Draw thin colored bands at each guide wrap position
+  var BAND_W   = 14;  // thread wrap band width (px in 2000px canvas)
+  var yTop = rodBodyTop;
+  var yH   = rodBodyBot - rodBodyTop + 1;
+
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.fillStyle = state.thread.hex;
+  for (var wi = 0; wi < WRAP_REGIONS.length; wi++) {
+    var wr = WRAP_REGIONS[wi];
+    var cx = (wr[0] + wr[1]) / 2;
+    ctx.fillRect(cx - BAND_W / 2, yTop, BAND_W, yH);
+  }
+
+  // ---- PASS 3: pinline bands (very thin, at wrap edges) ----
+  if (state.pinline) {
+    ctx.fillStyle = state.pinline.hex;
+  } else {
+    ctx.fillStyle = state.thread.hex;
+  }
+  var PL_W = 4;
+  for (var wi2 = 0; wi2 < WRAP_REGIONS.length; wi2++) {
+    var wr2 = WRAP_REGIONS[wi2];
+    ctx.fillRect(wr2[0] - PINLINE_W - PL_W/2, yTop, PL_W, yH);
+    ctx.fillRect(wr2[1] + PINLINE_W - PL_W/2, yTop, PL_W, yH);
+  }
+
+  // ---- PASS 4: multiply-overlay original image (preserve dark guide outlines) ----
+  ctx.drawImage(rodImg, 0, ROD_SRC_Y, W, H, 0, 0, W, H);
+  ctx.globalCompositeOperation = 'source-over';
+}
+
+// ===== COLOR APPLICATION =====
+function applyColor(part, color) {
+  if (part === 'blank')   state.blank   = { id: color.id, name: color.name, hex: color.hex };
+  else if (part === 'thread')  state.thread  = { id: color.id, name: color.name, hex: color.hex };
+  else if (part === 'pinline') state.pinline = { id: color.id, name: color.name, hex: color.hex };
+  else if (part === 'tip')     state.tip     = { id: color.id, name: color.name, hex: color.hex };
+  renderRod();
+  updateSummary();
+  document.querySelectorAll('.swatch-item[data-part="' + part + '"]').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.id === color.id);
+  });
+  document.getElementById('tab-dot-' + part).style.background = color.hex;
+  document.getElementById('tab-dot-' + part).style.opacity = '1';
+}
+
+function updateSummary() {
+  document.getElementById('sum-dot-blank').style.background  = state.blank.hex;
+  document.getElementById('sum-name-blank').textContent       = state.blank.name;
+  document.getElementById('sum-dot-thread').style.background = state.thread.hex;
+  document.getElementById('sum-name-thread').textContent      = state.thread.name;
+  if (state.pinline) {
+    document.getElementById('sum-dot-pinline').style.background = state.pinline.hex;
+    document.getElementById('sum-dot-pinline').style.opacity    = '1';
+    document.getElementById('sum-name-pinline').textContent     = state.pinline.name;
+  } else {
+    document.getElementById('sum-dot-pinline').style.background = state.thread.hex;
+    document.getElementById('sum-dot-pinline').style.opacity    = '0.3';
+    document.getElementById('sum-name-pinline').textContent     = '未設定';
+  }
+  if (state.tip) {
+    document.getElementById('sum-dot-tip').style.background = state.tip.hex;
+    document.getElementById('sum-dot-tip').style.opacity    = '1';
+    document.getElementById('sum-name-tip').textContent     = state.tip.name;
+  } else {
+    document.getElementById('sum-dot-tip').style.background = state.blank.hex;
+    document.getElementById('sum-dot-tip').style.opacity    = '0.3';
+    document.getElementById('sum-name-tip').textContent     = '未設定';
+  }
+}
+
+// ===== PART SELECTOR =====
+function selectPart(part) {
+  activePart = part;
+  document.querySelectorAll('.part-tab').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.part === part);
+  });
+  ['blank','thread','pinline','tip'].forEach(function(p) {
+    document.getElementById('palette-' + p).classList.toggle('visible', p === part);
+  });
+  var showCats = part !== 'blank';
+  document.getElementById('cat-tabs').style.display = showCats ? 'flex' : 'none';
+  var labels = {
+    blank:   'ブランクスカラーを選択',
+    thread:  'スレッドカラーを選択',
+    pinline: 'ピンラインカラーを選択（任意）',
+    tip:     'ティップカラーを選択（任意）'
+  };
+  document.getElementById('palette-title').textContent = labels[part];
+  if (showCats) applyCatFilter(part, activeCat);
+}
+
+function switchCat(btn) {
+  activeCat = btn.dataset.cat;
+  document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  applyCatFilter(activePart, activeCat);
+}
+
+function applyCatFilter(part, cat) {
+  var prefix = (part === 'thread') ? 'thread' : (part === 'pinline') ? 'pinline' : 'tip';
+  ['ダル', 'メタリック', 'NCP'].forEach(function(c) {
+    document.getElementById('pg-' + prefix + '-' + c).style.display = c === cat ? 'block' : 'none';
+  });
+}
+
+// ===== RESET =====
+function resetColors() {
+  state.pinline = null;
+  state.tip     = null;
+  ['pinline','tip'].forEach(function(p) {
+    document.getElementById('tab-dot-' + p).style.opacity = '0.3';
+    document.querySelectorAll('.swatch-item[data-part="' + p + '"]').forEach(function(el) { el.classList.remove('active'); });
+  });
+  var b004 = BLANK_COLORS.find(function(c) { return c.id === 'b004'; });
+  var t101 = THREAD_COLORS.find(function(c) { return c.id === 't101'; });
+  applyColor('blank', b004);
+  applyColor('thread', t101);
+  updateSummary();
+}
+
+// ===== BUILD SWATCH GRIDS =====
+function buildSwatch(color, part, gridEl) {
+  var item = document.createElement('div');
+  item.className = 'swatch-item';
+  item.dataset.id   = color.id;
+  item.dataset.part = part;
+  item.innerHTML =
+    '<img src="' + color.img + '" alt="' + color.name + '" loading="lazy">' +
+    '<div class="swatch-item-name">' + color.name.split(' ')[0] + '</div>';
+  item.addEventListener('click', function() { applyColor(part, color); });
+  gridEl.appendChild(item);
+}
+
+function buildGrids() {
+  var gb = document.getElementById('grid-blank');
+  BLANK_COLORS.forEach(function(c) { buildSwatch(c, 'blank', gb); });
+  var cats = ['ダル', 'メタリック', 'NCP'];
+  cats.forEach(function(cat) {
+    THREAD_COLORS.filter(function(c) { return c.cat === cat; }).forEach(function(c) {
+      buildSwatch(c, 'thread',  document.getElementById('grid-thread-'  + cat));
+      buildSwatch(c, 'pinline', document.getElementById('grid-pinline-' + cat));
+      buildSwatch(c, 'tip',     document.getElementById('grid-tip-'     + cat));
+    });
+  });
+}
+
+// ===== INIT =====
+buildGrids();
+document.querySelectorAll('.swatch-item[data-id="b004"][data-part="blank"]').forEach(function(el) { el.classList.add('active'); });
+document.querySelectorAll('.swatch-item[data-id="t101"][data-part="thread"]').forEach(function(el) { el.classList.add('active'); });
+initCanvas();
+
+// ===== NAV =====
+(function() {
+  var ham = document.getElementById('hamburger');
+  var ul  = document.querySelector('nav ul');
+  if (!ham) return;
+  ham.addEventListener('click', function() {
+    ham.classList.toggle('is-active');
+    ul.classList.toggle('is-open');
+  });
+  document.querySelectorAll('.has-drop > a').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        a.parentElement.classList.toggle('is-open');
+      }
+    });
+  });
+  document.querySelectorAll('.dropdown a, nav ul > li:not(.has-drop) > a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      ham.classList.remove('is-active');
+      ul.classList.remove('is-open');
+      document.querySelectorAll('.has-drop').forEach(function(d) { d.classList.remove('is-open'); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
