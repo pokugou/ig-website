@@ -139,12 +139,122 @@
     /* ── HERO ── */
     .hero {
       min-height: 100vh;
-      display: grid;
-      place-items: center;
       position: relative;
       overflow: hidden;
+    }
+
+    /* ── HERO SLIDER ── */
+    .hero-slides {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
       padding: 8rem 3rem 5rem;
       text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease;
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .hero-slide-strix {
+      display: grid;
+    }
+
+    .hero-slide-strix .strix-slide-bg {
+      position: absolute; inset: 0;
+      background: var(--black);
+    }
+
+    .hero-slide-strix .strix-slide-inner {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 8rem 3rem 5rem;
+      width: 100%;
+    }
+
+    .hero-slide-strix .strix-slide-img {
+      width: 100%;
+      border-radius: 4px;
+      display: block;
+      filter: brightness(0.9);
+    }
+
+    .hero-slide-strix .strix-slide-text { text-align: left; }
+    .hero-slide-strix .strix-slide-catch {
+      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      font-weight: 900;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .hero-slide-strix .strix-slide-catch .em { color: var(--red2); }
+    .hero-slide-strix .strix-slide-detail {
+      font-size: 0.82rem; color: var(--gray); line-height: 1.7; margin-bottom: 1.25rem;
+    }
+
+    .hero-dots {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .hero-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(248,248,248,0.25);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .hero-dot.active {
+      background: var(--red);
+      transform: scale(1.4);
+    }
+
+    .hero-prev, .hero-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .hero-prev:hover, .hero-next:hover { background: var(--red); color: #fff; }
+    .hero-prev { left: 1.5rem; }
+    .hero-next { right: 1.5rem; }
+
+    @media(max-width:768px) {
+      .hero-slide-strix .strix-slide-inner { grid-template-columns: 1fr; gap: 1.5rem; padding: 6rem 1.5rem 4rem; }
+      .hero-prev, .hero-next { display: none; }
     }
 
     .hero-bg {
@@ -908,29 +1018,65 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-line"></div>
-  <div class="hero-content">
-    <div class="hero-tag">
-      <span class="hero-tag-dot"></span>
-      Custom Rod &#x30FB; 株式会社IG
+<section class="hero" id="hero">
+  <div class="hero-slides" id="heroSlides">
+
+    <!-- Slide 1: メインヒーロー -->
+    <div class="hero-slide active">
+      <div class="hero-bg"></div>
+      <div class="hero-line"></div>
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="hero-tag-dot"></span>
+          Custom Rod &#x30FB; 株式会社IG
+        </div>
+        <div class="hero-brand" style="display:flex; align-items:center; justify-content:center; gap:1.5rem; margin-bottom:0.5rem;">
+          <img src="logo.png" alt="IG Rod Planning" style="height:clamp(130px,18vw,180px); width:auto; display:block; flex-shrink:0;" />
+          <h1 style="margin-bottom:0; text-align:left;">
+            <span class="accent"><span style="font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:-0.05em;display:inline-block;transform:scaleX(1.1);transform-origin:left;">IG</span> Rod</span><br />Planning
+          </h1>
+        </div>
+        <p class="hero-catch"><span class="hc-item">オリジナルロッド制作</span><span class="hc-sep"> &#x30FB; </span><span class="hc-item">リメイク</span><span class="hc-sep"> &#x30FB; </span><span class="hc-item">カラーカスタム</span></p>
+        <div class="hero-actions">
+          <a href="order.html" class="btn btn-red">オーダーはこちら &#x2192;</a>
+          <a href="#products" class="btn btn-ghost">ロッドを見る</a>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <div class="scroll-line"></div>
+        <span>scroll</span>
+      </div>
     </div>
-    <div class="hero-brand" style="display:flex; align-items:center; justify-content:center; gap:1.5rem; margin-bottom:0.5rem;">
-      <img src="logo.png" alt="IG Rod Planning" style="height:clamp(130px,18vw,180px); width:auto; display:block; flex-shrink:0;" />
-      <h1 style="margin-bottom:0; text-align:left;">
-        <span class="accent"><span style="font-family:'Noto Sans JP',sans-serif;font-weight:700;letter-spacing:-0.05em;display:inline-block;transform:scaleX(1.1);transform-origin:left;">IG</span> Rod</span><br />Planning
-      </h1>
+
+    <!-- Slide 2: STRIX EDGE PICK UP -->
+    <div class="hero-slide hero-slide-strix">
+      <div class="strix-slide-bg"></div>
+      <div class="strix-slide-inner">
+        <div>
+          <img class="strix-slide-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
+        </div>
+        <div class="strix-slide-text">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;flex-wrap:wrap;">
+            <div style="display:inline-flex;align-items:center;gap:0.3rem;background:var(--red);color:#fff;font-size:0.75rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;padding:0.4rem 1rem;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,0 100%);line-height:1;">★ PICK UP</div>
+            <div class="eyebrow" style="margin-bottom:0;">Featured</div>
+          </div>
+          <div style="margin-bottom:0.5rem;"><div class="new-badge" style="margin-bottom:0;">2026年2月下旬 発売予定</div></div>
+          <h2 style="font-size:clamp(1.6rem,3vw,2.4rem);font-family:'Adventor',sans-serif;font-weight:900;letter-spacing:-0.02em;margin:0.2rem 0 0.4rem;text-transform:uppercase;">STRIX EDGE</h2>
+          <p class="strix-slide-catch">響きが違う。<br />見えない<span class="em">「触れ」</span>が見える。</p>
+          <p class="strix-slide-detail">海中から届く微細な信号をチタントップで捉える。軽量バランス設計が生む繊細な操作感。ただ軽いだけではない、"伝わる軽さ"。</p>
+          <a href="#strix" class="btn btn-red">詳細を見る &#x2192;</a>
+        </div>
+      </div>
     </div>
-    <p class="hero-catch"><span class="hc-item">オリジナルロッド制作</span><span class="hc-sep"> &#x30FB; </span><span class="hc-item">リメイク</span><span class="hc-sep"> &#x30FB; </span><span class="hc-item">カラーカスタム</span></p>
-    <div class="hero-actions">
-      <a href="order.html" class="btn btn-red">オーダーはこちら &#x2192;</a>
-      <a href="#products" class="btn btn-ghost">ロッドを見る</a>
-    </div>
+
   </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span>scroll</span>
+
+  <!-- ナビ -->
+  <button class="hero-prev" id="heroPrev">&#8592;</button>
+  <button class="hero-next" id="heroNext">&#8594;</button>
+  <div class="hero-dots" id="heroDots">
+    <button class="hero-dot active" data-idx="0"></button>
+    <button class="hero-dot" data-idx="1"></button>
   </div>
 </section>
 
@@ -1550,6 +1696,32 @@
     });
     card.addEventListener('mouseleave', () => { card.style.transform = ''; });
   });
+</script>
+<script>
+window.__heroTimer && clearInterval(window.__heroTimer);
+(function(){
+  const slides = document.getElementById('heroSlides');
+  const dots = document.querySelectorAll('.hero-dot');
+  const prev = document.getElementById('heroPrev');
+  const next = document.getElementById('heroNext');
+  if (!slides || !prev || !next) return;
+  let cur = 0;
+  const total = 2;
+
+  function goTo(n) {
+    cur = (n + total) % total;
+    Array.from(slides.children).forEach((s,i) => s.classList.toggle('active', i === cur));
+    dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+    clearInterval(window.__heroTimer);
+    window.__heroTimer = setInterval(() => goTo(cur + 1), 5000);
+  }
+
+  prev.addEventListener('click', () => goTo(cur - 1));
+  next.addEventListener('click', () => goTo(cur + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.idx)));
+  clearInterval(window.__heroTimer);
+  window.__heroTimer = setInterval(() => goTo(cur + 1), 5000);
+})();
 </script>
 <script>
 (function(){
