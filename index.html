@@ -463,6 +463,19 @@
     .genre-banner:hover .genre-banner-bar,
     .genre-banner.active .genre-banner-bar { transform: scaleX(1); }
     .prod-card.genre-hidden { display: none; }
+    /* Products grid collapsed by default, expands when genre is active */
+    .products-grid {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, opacity 0.4s ease, margin-top 0.4s ease;
+      opacity: 0;
+      margin-top: 0;
+    }
+    .products-grid.genre-active {
+      max-height: 4000px;
+      opacity: 1;
+      margin-top: 2rem;
+    }
 
     /* ── STRIX EDGE FEATURE ── */
     .strix-feature {
@@ -968,7 +981,7 @@
     <div class="products-grid stagger">
 
       <!-- STRIX EDGE -->
-      <a class="prod-card" href="strixedge.html" data-genre="offshore">
+      <a class="prod-card genre-hidden" href="strixedge.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
         </div>
@@ -989,7 +1002,7 @@
       </a>
 
       <!-- GT-LJ -->
-      <a class="prod-card" href="gtlj.html" data-genre="offshore">
+      <a class="prod-card genre-hidden" href="gtlj.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gtlj-banner.png" alt="GT-LJ Light Jigging" loading="lazy" />
         </div>
@@ -1013,7 +1026,7 @@
       </a>
 
       <!-- GT-J -->
-      <a class="prod-card" href="gtj.html" data-genre="offshore bottom">
+      <a class="prod-card genre-hidden" href="gtj.html" data-genre="offshore bottom">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gtj-banner.png" alt="GT-J Jigging" loading="lazy" />
         </div>
@@ -1035,7 +1048,7 @@
       </a>
 
       <!-- GTSLJ -->
-      <a class="prod-card" href="gtslj.html" data-genre="offshore">
+      <a class="prod-card genre-hidden" href="gtslj.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gtslj-banner.png" alt="GTSLJ" loading="lazy" />
         </div>
@@ -1056,7 +1069,7 @@
       </a>
 
       <!-- GTR -->
-      <a class="prod-card" href="gtr.html" data-genre="offshore">
+      <a class="prod-card genre-hidden" href="gtr.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gtr-banner.png" alt="GTR Tairubber Rod" loading="lazy" />
         </div>
@@ -1077,7 +1090,7 @@
       </a>
 
       <!-- GTS -->
-      <a class="prod-card" href="gts.html" data-genre="offshore">
+      <a class="prod-card genre-hidden" href="gts.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gts-banner.png" alt="GTS" loading="lazy" />
         </div>
@@ -1098,7 +1111,7 @@
       </a>
 
       <!-- VS九絵 -->
-      <a class="prod-card" href="vskue.html" data-genre="shore bottom">
+      <a class="prod-card genre-hidden" href="vskue.html" data-genre="shore bottom">
         <div class="prod-img-wrap">
           <img class="prod-img" src="vskue-banner.png" alt="VS九絵 磯ロッド" loading="lazy" />
         </div>
@@ -1130,7 +1143,10 @@
         <img class="strix-img" src="https://ig-rod.jp/wp-content/uploads/2025/10/全体画像.jpg" alt="STRIX EDGE 全体画像" loading="lazy" />
       </div>
       <div class="reveal">
-        <div class="new-badge">2026年2月下旬 発売予定</div>
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+          <div class="new-badge" style="margin-bottom:0;">2026年2月下旬 発売予定</div>
+          <span style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--red2);">&#9135;&#9135; PICK UP</span>
+        </div>
         <div class="eyebrow">Featured</div>
         <h2 class="section-title" style="margin-bottom:1rem">STRIX EDGE</h2>
         <p class="strix-catch">
@@ -1517,14 +1533,25 @@
       const filter = btn.dataset.filter;
       const isActive = btn.classList.contains('active');
       genreBtns.forEach(b => b.classList.remove('active'));
+      const grid = document.querySelector('.products-grid');
       if (!isActive) {
         btn.classList.add('active');
         prodCards.forEach(card => {
           const genres = (card.dataset.genre || '').split(' ');
-          card.classList.toggle('genre-hidden', !genres.includes(filter));
+          const show = genres.includes(filter);
+          card.classList.toggle('genre-hidden', !show);
+          if (show) { card.style.opacity = '1'; card.style.transform = 'none'; }
         });
+        grid.classList.add('genre-active');
+        // Scroll grid into view smoothly
+        setTimeout(() => grid.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
       } else {
-        prodCards.forEach(card => card.classList.remove('genre-hidden'));
+        grid.classList.remove('genre-active');
+        setTimeout(() => {
+          prodCards.forEach(card => {
+            card.classList.add('genre-hidden');
+          });
+        }, 400);
       }
     });
   });
