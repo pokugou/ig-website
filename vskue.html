@@ -37,6 +37,13 @@
     .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
     .dropdown-genre { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red); padding: 0.65rem 1.1rem 0.2rem; pointer-events: none; border-top: 1px solid var(--border); }
     .dropdown-genre:first-child { border-top: none; padding-top: 0.45rem; }
+    .dropdown .has-subdrop { position: relative; }
+    .dropdown .has-subdrop > a { display: flex; justify-content: space-between; align-items: center; }
+    .dropdown .has-subdrop > a::after { content: '›'; font-size: 1.1rem; opacity: 0.45; margin-left: 1rem; line-height: 1; }
+    .subdropdown { display: none; position: absolute; left: 100%; top: -1px; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 500; }
+    .dropdown .has-subdrop:hover > .subdropdown { display: block; }
+    .subdropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .subdropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
     .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
     .nav-contact:hover { background: var(--red2) !important; }
 
@@ -142,6 +149,12 @@
       .has-drop.is-open .dropdown { display: block; }
       .dropdown { position: static; border: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.03); min-width: unset; }
       .dropdown li a { padding: 0.75rem 2rem; }
+      .dropdown .has-subdrop:hover > .subdropdown { display: none; }
+      .dropdown .has-subdrop.is-open > .subdropdown { display: block; }
+      .subdropdown { position: static; border: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.02); min-width: unset; }
+      .subdropdown li a { padding: 0.65rem 3rem; }
+      .dropdown .has-subdrop > a::after { transition: transform 0.25s; display: inline-block; }
+      .dropdown .has-subdrop.is-open > a::after { transform: rotate(90deg); }
       .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
       .hero-content { padding: 0 1.5rem 4rem; }
       .specs-grid { grid-template-columns: repeat(2, 1fr); }
@@ -165,22 +178,38 @@
     <li class="has-drop">
       <a href="products.html">商品一覧</a>
       <ul class="dropdown">
-        <li class="dropdown-genre">オフショア</li>
-        <li><a href="strixedge.html">STRIX EDGE</a></li>
-        <li><a href="gtlj.html">GTLJ</a></li>
-        <li><a href="gtj.html">GT J</a></li>
-        <li><a href="gtslj.html">GTSLJ</a></li>
-        <li><a href="gts.html">GTS</a></li>
-        <li><a href="gtr.html">GTR</a></li>
-        <li><a href="squria.html">SQURIA</a></li>
-        <li class="dropdown-genre">ショア</li>
-        <li><a href="vskue.html">VS九絵</a></li>
-        <li><a href="gtx.html">GTX</a></li>
-        <li class="dropdown-genre">船竿</li>
-        <li><a href="ika.html">イカ竿</a></li>
-        <li class="dropdown-genre">底物</li>
-        <li><a href="ishidai.html">石鯛竿</a></li>
-        <li><a href="vskue.html">VS九絵</a></li>
+        <li class="has-subdrop">
+          <a href="products.html">オフショア</a>
+          <ul class="subdropdown">
+            <li><a href="strixedge.html">STRIX EDGE</a></li>
+            <li><a href="gtlj.html">GTLJ</a></li>
+            <li><a href="gtj.html">GT J</a></li>
+            <li><a href="gtslj.html">GTSLJ</a></li>
+            <li><a href="gts.html">GTS</a></li>
+            <li><a href="gtr.html">GTR</a></li>
+            <li><a href="squria.html">SQURIA</a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop">
+          <a href="products.html">ショア</a>
+          <ul class="subdropdown">
+            <li><a href="vskue.html">VS九絵</a></li>
+            <li><a href="gtx.html">GTX</a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop">
+          <a href="products.html">船竿</a>
+          <ul class="subdropdown">
+            <li><a href="ika.html">イカ竿</a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop">
+          <a href="products.html">底物</a>
+          <ul class="subdropdown">
+            <li><a href="ishidai.html">石鯛竿</a></li>
+            <li><a href="vskue.html">VS九絵</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="services.html">サービス</a></li>
@@ -403,11 +432,23 @@
       }
     });
   });
-  document.querySelectorAll('.dropdown a, nav ul > li:not(.has-drop) > a').forEach(function(a){
+  document.querySelectorAll('.subdropdown a, nav ul > li:not(.has-drop) > a').forEach(function(a){
     a.addEventListener('click', function(){
       ham.classList.remove('is-active');
       ul.classList.remove('is-open');
       document.querySelectorAll('.has-drop').forEach(function(d){ d.classList.remove('is-open'); });
+      document.querySelectorAll('.dropdown .has-subdrop').forEach(function(d){ d.classList.remove('is-open'); });
+    });
+  });
+  document.querySelectorAll('.dropdown .has-subdrop > a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        var li = a.parentElement;
+        var wasOpen = li.classList.contains('is-open');
+        document.querySelectorAll('.dropdown .has-subdrop').forEach(function(el){ el.classList.remove('is-open'); });
+        if (!wasOpen) li.classList.add('is-open');
+      }
     });
   });
 })();
