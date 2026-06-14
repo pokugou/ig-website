@@ -116,6 +116,8 @@
       transition: color 0.2s, background 0.2s;
     }
     .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .dropdown-genre { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red); padding: 0.65rem 1.1rem 0.2rem; pointer-events: none; border-top: 1px solid var(--border); }
+    .dropdown-genre:first-child { border-top: none; padding-top: 0.45rem; }
     .dropdown li.sub a { padding-left: 1.9rem; font-size: 0.73rem; color: rgba(248,248,248,0.38); }
     .dropdown li.sub a::before { content: '└ '; font-size: 0.6rem; opacity: 0.5; }
 
@@ -993,12 +995,17 @@
     <li class="has-drop">
       <a href="products.html">商品一覧</a>
       <ul class="dropdown">
+        <li class="dropdown-genre">オフショア</li>
         <li><a href="strixedge.html">STRIX EDGE</a></li>
         <li><a href="gtlj.html">GTLJ</a></li>
         <li><a href="gtj.html">GT J</a></li>
         <li><a href="gtslj.html">GTSLJ</a></li>
         <li><a href="gts.html">GTS</a></li>
         <li><a href="gtr.html">GTR</a></li>
+        <li class="dropdown-genre">ショア</li>
+        <li><a href="vskue.html">VS九絵</a></li>
+        <li class="dropdown-genre">底物</li>
+        <li><a href="gtj.html">GT J</a></li>
         <li><a href="ishidai.html">石鯛竿</a></li>
         <li><a href="vskue.html">VS九絵</a></li>
       </ul>
