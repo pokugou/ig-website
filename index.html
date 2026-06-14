@@ -490,7 +490,7 @@
     /* ── GENRE BANNERS ── */
     .genre-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 2px;
       background: var(--border);
       border: 1px solid var(--border);
@@ -530,6 +530,11 @@
       background:
         radial-gradient(ellipse at 50% 30%, rgba(180,80,15,0.35) 0%, transparent 60%),
         linear-gradient(155deg, #100600 0%, #2e1100 55%, #431700 100%);
+    }
+    .genre-banner-bg.boat {
+      background:
+        radial-gradient(ellipse at 60% 40%, rgba(10,100,160,0.4) 0%, transparent 60%),
+        linear-gradient(155deg, #030a14 0%, #071d30 55%, #0a2640 100%);
     }
     .genre-banner-overlay {
       position: absolute;
@@ -1004,8 +1009,9 @@
         <li><a href="gtr.html">GTR</a></li>
         <li class="dropdown-genre">ショア</li>
         <li><a href="vskue.html">VS九絵</a></li>
+        <li class="dropdown-genre">船竿</li>
+        <li><a href="ika.html">イカ竿</a></li>
         <li class="dropdown-genre">底物</li>
-        <li><a href="gtj.html">GT J</a></li>
         <li><a href="ishidai.html">石鯛竿</a></li>
         <li><a href="vskue.html">VS九絵</a></li>
       </ul>
@@ -1121,13 +1127,23 @@
         </div>
         <div class="genre-banner-bar"></div>
       </button>
+      <button class="genre-banner" data-filter="boat">
+        <div class="genre-banner-bg boat"></div>
+        <div class="genre-banner-overlay"></div>
+        <div class="genre-banner-content">
+          <div class="genre-banner-en">Boat Rod</div>
+          <div class="genre-banner-name">船竿</div>
+          <div class="genre-banner-models">イカ竿</div>
+        </div>
+        <div class="genre-banner-bar"></div>
+      </button>
       <button class="genre-banner" data-filter="bottom">
         <div class="genre-banner-bg bottom"></div>
         <div class="genre-banner-overlay"></div>
         <div class="genre-banner-content">
           <div class="genre-banner-en">Bottom</div>
           <div class="genre-banner-name">底物</div>
-          <div class="genre-banner-models">GTJ &middot; 石鯛竿 &middot; VS九絵</div>
+          <div class="genre-banner-models">石鯛竿 &middot; VS九絵</div>
         </div>
         <div class="genre-banner-bar"></div>
       </button>
@@ -1181,7 +1197,7 @@
       </a>
 
       <!-- GT-J -->
-      <a class="prod-card genre-hidden" href="gtj.html" data-genre="offshore bottom">
+      <a class="prod-card genre-hidden" href="gtj.html" data-genre="offshore">
         <div class="prod-img-wrap">
           <img class="prod-img" src="gtj-banner.png" alt="GT-J Jigging" loading="lazy" />
         </div>
@@ -1256,6 +1272,27 @@
           <div class="prod-specs">
             <span class="spec-tag">スロージギング</span>
             <span class="spec-tag">ディープジギング</span>
+            <span class="spec-tag">オフショア</span>
+          </div>
+          <div class="prod-footer">
+            <div class="prod-price"><strong>お問い合わせ</strong></div>
+            <div class="prod-arrow">&#x2197;</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- イカ竿 -->
+      <a class="prod-card genre-hidden" href="ika.html" data-genre="boat">
+        <div class="prod-img-wrap" style="background: radial-gradient(ellipse at 55% 35%, rgba(10,80,140,0.5) 0%, transparent 60%), linear-gradient(155deg,#020810 0%,#061a2e 50%,#092440 100%); min-height:200px; display:flex; align-items:center; justify-content:center;">
+          <span style="font-size:4rem; font-weight:900; color:rgba(30,120,200,0.2); letter-spacing:-0.03em; font-family:'Noto Sans JP',sans-serif;">イカ</span>
+        </div>
+        <div class="prod-body">
+          <div class="prod-name">イカ竿</div>
+          <div class="prod-sub">Squid Rod</div>
+          <p class="prod-desc">イカメタル・ティップランに特化した船竿。専用調子設計の高感度ブランクスと軽量バランスで、オフショアのイカ釣りを次のステージへ。</p>
+          <div class="prod-specs">
+            <span class="spec-tag">イカメタル</span>
+            <span class="spec-tag">ティップラン</span>
             <span class="spec-tag">オフショア</span>
           </div>
           <div class="prod-footer">
