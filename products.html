@@ -61,23 +61,24 @@
     /* MAIN */
     .main-wrap { max-width: 1200px; margin: 0 auto; padding: 6rem 3rem; }
 
-    /* PRODUCT GRID */
-    .prod-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 4rem; }
-    .prod-card { display: flex; flex-direction: column; background: var(--dark); text-decoration: none; color: inherit; transition: background 0.25s; }
-    .prod-card:hover { background: var(--dark2); }
-    .prod-img-wrap { aspect-ratio: 16/9; overflow: hidden; }
-    .prod-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
-    .prod-card:hover .prod-img { transform: scale(1.04); }
-    .prod-body { padding: 1.75rem; flex: 1; display: flex; flex-direction: column; }
-    .prod-num { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; color: var(--red2); margin-bottom: 0.5rem; font-family: 'DM Sans',sans-serif; }
-    .prod-name { font-size: 1.25rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
-    .prod-sub { font-size: 0.72rem; color: var(--gray2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; font-family: 'DM Sans',sans-serif; }
-    .prod-desc { font-size: 0.83rem; color: var(--gray); line-height: 1.8; margin-bottom: 1rem; flex: 1; }
-    .prod-specs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
-    .spec-tag { font-size: 0.65rem; padding: 0.25rem 0.6rem; border: 1px solid var(--border2); color: var(--gray2); letter-spacing: 0.05em; }
-    .prod-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border); margin-top: auto; }
-    .prod-price { font-size: 0.85rem; font-weight: 700; }
-    .prod-arrow { font-size: 1rem; color: var(--red2); }
+    /* GENRE SECTIONS */
+    .genre-section { margin-bottom: 3.5rem; }
+    .genre-heading { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border); }
+    .genre-heading-en { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); font-family: 'DM Sans',sans-serif; }
+    .genre-heading-name { font-size: 1rem; font-weight: 900; letter-spacing: -0.01em; }
+    .genre-heading-count { font-size: 0.7rem; color: var(--gray2); margin-left: auto; }
+
+    /* ICON GRID */
+    .icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem 1.25rem; margin-bottom: 0.5rem; }
+    .icon-card { text-decoration: none; color: inherit; display: flex; flex-direction: column; }
+    .icon-thumb { aspect-ratio: 4/3; overflow: hidden; background: var(--dark2); border: 1px solid var(--border); margin-bottom: 0.55rem; transition: border-color 0.25s; }
+    .icon-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .icon-card:hover .icon-img { transform: scale(1.06); }
+    .icon-card:hover .icon-thumb { border-color: rgba(204,34,0,0.45); }
+    .icon-deco { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .icon-name { font-size: 0.88rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.1rem; line-height: 1.25; transition: color 0.2s; }
+    .icon-card:hover .icon-name { color: var(--red2); }
+    .icon-type { font-size: 0.65rem; color: var(--gray2); text-transform: uppercase; letter-spacing: 0.08em; font-family: 'DM Sans',sans-serif; }
 
     /* STRIX FEATURE */
     .strix-feature { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 3rem; margin-bottom: 4rem; }
@@ -124,7 +125,7 @@
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     @media (max-width: 1024px) {
-      .prod-grid { grid-template-columns: repeat(2,1fr); }
+      .icon-grid { grid-template-columns: repeat(4, 1fr); }
       .strix-inner { grid-template-columns: 1fr; gap: 3rem; }
       .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
       .main-wrap { padding: 5rem 2rem; }
@@ -149,12 +150,16 @@
       .dropdown .has-subdrop > a::after { transition: transform 0.25s; display: inline-block; }
       .dropdown .has-subdrop.is-open > a::after { transform: rotate(90deg); }
       .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
-      .prod-grid { grid-template-columns: 1fr; }
+      .icon-grid { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+      .icon-name { font-size: 0.82rem; }
       .footer-top { grid-template-columns: 1fr; gap: 2rem; }
       .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
       footer { padding: 3rem 1.5rem 2rem; }
       .page-header { padding: 7rem 1.5rem 3rem; }
       .main-wrap { padding: 4rem 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .icon-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -229,243 +234,132 @@
 
 <div class="main-wrap">
 
-  <div class="prod-grid">
-    <!-- STRIX EDGE -->
-    <a class="prod-card" href="strixedge.html">
-      <div class="prod-img-wrap">
-        <img class="prod-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
-      </div>
-      <div class="prod-body">
-        
-        <div class="prod-name">STRIX EDGE</div>
-        <div class="prod-sub">IKAMETAL</div>
-        <p class="prod-desc">響きが違う。見えない「触れ」が見える。チタントップが海中の微細な信号を捉え、軽量バランス設計が生む繊細な操作感。Fuji製SiCチタンガイドを標準装備。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">イカメタル</span>
-          <span class="spec-tag">オモリグ</span>
+  <!-- オフショア -->
+  <div class="genre-section">
+    <div class="genre-heading">
+      <span class="genre-heading-en">Offshore</span>
+      <span class="genre-heading-name">オフショア</span>
+      <span class="genre-heading-count">7 モデル</span>
+    </div>
+    <div class="icon-grid">
+      <a class="icon-card" href="strixedge.html">
+        <div class="icon-thumb">
+          <img class="icon-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
         </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>¥39,300〜</strong>（税別）</div>
-          <div class="prod-arrow">&#x2197;</div>
+        <div class="icon-name">STRIX EDGE</div>
+        <div class="icon-type">Ikametal</div>
+      </a>
+      <a class="icon-card" href="gtlj.html">
+        <div class="icon-thumb">
+          <img class="icon-img" src="gtlj-banner.png" alt="GTLJ" loading="lazy" />
         </div>
-      </div>
-    </a>
+        <div class="icon-name">GTLJ</div>
+        <div class="icon-type">Light Jigging</div>
+      </a>
+      <a class="icon-card" href="gtj.html">
+        <div class="icon-thumb">
+          <img class="icon-img" src="gtj-banner.png" alt="GT J" loading="lazy" />
+        </div>
+        <div class="icon-name">GT J</div>
+        <div class="icon-type">Jigging</div>
+      </a>
+      <a class="icon-card" href="gtslj.html">
+        <div class="icon-thumb">
+          <img class="icon-img" src="gtslj-banner.png" alt="GTSLJ" loading="lazy" />
+        </div>
+        <div class="icon-name">GTSLJ</div>
+        <div class="icon-type">Offshore Light</div>
+      </a>
+      <a class="icon-card" href="gts.html">
+        <div class="icon-thumb">
+          <img class="icon-img" src="gts-banner.png" alt="GTS" loading="lazy" />
+        </div>
+        <div class="icon-name">GTS</div>
+        <div class="icon-type">Slow Jigging</div>
+      </a>
+      <a class="icon-card" href="gtr.html">
+        <div class="icon-thumb">
+          <img class="icon-img" src="gtr-banner.png" alt="GTR" loading="lazy" />
+        </div>
+        <div class="icon-name">GTR</div>
+        <div class="icon-type">Tairubber</div>
+      </a>
+      <a class="icon-card" href="squria.html">
+        <div class="icon-thumb" style="background: radial-gradient(ellipse at 70% 20%, rgba(0,160,160,0.3) 0%, transparent 55%), linear-gradient(155deg,#040810 0%,#081628 45%,#0c2030 100%);">
+          <div class="icon-deco"><span style="font-size:2.2rem; font-weight:900; color:rgba(0,200,180,0.2); font-family:'DM Sans',sans-serif;">S</span></div>
+        </div>
+        <div class="icon-name">SQURIA</div>
+        <div class="icon-type">Tiprun</div>
+      </a>
+    </div>
+  </div>
 
-    <!-- GT-LJ -->
-    <a class="prod-card" href="gtlj.html">
-      <div class="prod-img-wrap">
-        <img class="prod-img" src="gtlj-banner.png" alt="GT-LJ" loading="lazy" />
-      </div>
-      <div class="prod-body">
-        
-        <div class="prod-name">GTLJ</div>
-        <div class="prod-sub">Light Jigging</div>
-        <p class="prod-desc">カーボンチューブラーのシャープさとソリッドの粘りを両立。24t・30t混在弾性カーボン採用のライトジギングロッド。青物・真イカ・根魚など多彩なターゲットに対応。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">ライトジギング</span>
-          <span class="spec-tag">ジギング</span>
-          <span class="spec-tag">スロージギング</span>
-          <span class="spec-tag">タイジギング</span>
-          <span class="spec-tag">ディープタイラバ</span>
+  <!-- ショア -->
+  <div class="genre-section">
+    <div class="genre-heading">
+      <span class="genre-heading-en">Shore</span>
+      <span class="genre-heading-name">ショア</span>
+      <span class="genre-heading-count">2 モデル</span>
+    </div>
+    <div class="icon-grid">
+      <a class="icon-card" href="vskue.html">
+        <div class="icon-thumb">
+          <img class="icon-img" src="vskue-banner.png" alt="VS九絵" loading="lazy" />
         </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>¥31,300〜</strong>（税別）</div>
-          <div class="prod-arrow">&#x2197;</div>
+        <div class="icon-name">VS九絵</div>
+        <div class="icon-type">Shore Rock</div>
+      </a>
+      <a class="icon-card" href="gtx.html">
+        <div class="icon-thumb" style="background: radial-gradient(ellipse at 30% 20%, rgba(10,120,60,0.3) 0%, transparent 55%), linear-gradient(155deg,#040a06 0%,#071508 45%,#0a1e0c 100%);">
+          <div class="icon-deco"><span style="font-size:2.2rem; font-weight:900; color:rgba(30,180,80,0.22); font-family:'DM Sans',sans-serif;">X</span></div>
         </div>
-      </div>
-    </a>
+        <div class="icon-name">GTX</div>
+        <div class="icon-type">Shore Casting</div>
+      </a>
+    </div>
+  </div>
 
-    <!-- GT-J -->
-    <a class="prod-card" href="gtj.html">
-      <div class="prod-img-wrap">
-        <img class="prod-img" src="gtj-banner.png" alt="GT-J" loading="lazy" />
-      </div>
-      <div class="prod-body">
-        
-        <div class="prod-name">GT J</div>
-        <div class="prod-sub">Jigging</div>
-        <p class="prod-desc">操作性と粘りを追求したジギングロッド。フルベンドデザインによる滑らかなヒット感と、バット部まで曲がりきる弾力が魚とのやり取りを制する。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">ジギング</span>
-          <span class="spec-tag">青物</span>
-          <span class="spec-tag">底物</span>
+  <!-- 船竿 -->
+  <div class="genre-section">
+    <div class="genre-heading">
+      <span class="genre-heading-en">Boat</span>
+      <span class="genre-heading-name">船竿</span>
+      <span class="genre-heading-count">1 モデル</span>
+    </div>
+    <div class="icon-grid">
+      <a class="icon-card" href="ika.html">
+        <div class="icon-thumb" style="background: radial-gradient(ellipse at 55% 35%, rgba(10,80,140,0.5) 0%, transparent 60%), linear-gradient(155deg,#020810 0%,#061a2e 50%,#092440 100%);">
+          <div class="icon-deco"><span style="font-size:2rem; font-weight:900; color:rgba(30,120,200,0.25); font-family:'Noto Sans JP',sans-serif;">イカ</span></div>
         </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>¥33,800〜</strong>（税別）</div>
-          <div class="prod-arrow">&#x2197;</div>
-        </div>
-      </div>
-    </a>
+        <div class="icon-name">イカ竿</div>
+        <div class="icon-type">Squid Rod</div>
+      </a>
+    </div>
+  </div>
 
-    <!-- GTSLJ -->
-    <a class="prod-card" href="gtslj.html">
-      <div class="prod-img-wrap">
-        <img class="prod-img" src="gtslj-banner.png" alt="GTSLJ" loading="lazy" />
-      </div>
-      <div class="prod-body">
-
-        <div class="prod-name">GTSLJ</div>
-        <div class="prod-sub">Offshore Light Rod</div>
-        <p class="prod-desc">遊び尽くせるオフショアライトロッド。SLJ〜ライトジギング、タイラバ、タイジギングまで対応。軽量設計と高強度ブランクスで長時間の釣行も快適に。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">SLJ</span>
-          <span class="spec-tag">タイラバ</span>
-          <span class="spec-tag">タイジギング</span>
+  <!-- 底物 -->
+  <div class="genre-section">
+    <div class="genre-heading">
+      <span class="genre-heading-en">Bottom</span>
+      <span class="genre-heading-name">底物</span>
+      <span class="genre-heading-count">2 モデル</span>
+    </div>
+    <div class="icon-grid">
+      <a class="icon-card" href="ishidai.html">
+        <div class="icon-thumb" style="background: radial-gradient(ellipse at 60% 30%, rgba(100,80,50,0.5) 0%, transparent 60%), linear-gradient(155deg,#050404 0%,#0f0a06 50%,#1a1008 100%);">
+          <div class="icon-deco"><span style="font-size:2rem; font-weight:900; color:rgba(200,168,75,0.22); font-family:'Noto Sans JP',sans-serif;">石</span></div>
         </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>¥31,300〜</strong>（税別）</div>
-          <div class="prod-arrow">&#x2197;</div>
+        <div class="icon-name">石鯛竿</div>
+        <div class="icon-type">Bottom Rock</div>
+      </a>
+      <a class="icon-card" href="vskue.html">
+        <div class="icon-thumb">
+          <img class="icon-img" src="vskue-banner.png" alt="VS九絵" loading="lazy" />
         </div>
-      </div>
-    </a>
-
-    <!-- GTS -->
-    <a class="prod-card" href="gts.html">
-      <div class="prod-img-wrap">
-        <img class="prod-img" src="gts-banner.png" alt="GTS" loading="lazy" />
-      </div>
-      <div class="prod-body">
-        <div class="prod-name">GTS</div>
-        <div class="prod-sub">Slow Jigging Rod</div>
-        <p class="prod-desc">しなやかさと粘り強さを高次元で融合したスロージギングロッド。追従性で曲げて、感じて、掛ける。深場の大型魚を狙う至高の一本。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">スロージギング</span>
-          <span class="spec-tag">ディープジギング</span>
-          <span class="spec-tag">オフショア</span>
-        </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>お問い合わせ</strong></div>
-          <div class="prod-arrow">&#x2197;</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- GTR -->
-    <a class="prod-card" href="gtr.html">
-      <div class="prod-img-wrap">
-        <img class="prod-img" src="gtr-banner.png" alt="GTR" loading="lazy" />
-      </div>
-      <div class="prod-body">
-        <div class="prod-name">GTR</div>
-        <div class="prod-sub">Tairubber Rod</div>
-        <p class="prod-desc">真鯛との駆け引きを支配するタイラバロッド。繊細な感度で吸い込みバイトを捉え、粘り強いバットでデカマダイとのファイトを制する。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">タイラバ</span>
-          <span class="spec-tag">タイジギング</span>
-          <span class="spec-tag">オフショア</span>
-        </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>お問い合わせ</strong></div>
-          <div class="prod-arrow">&#x2197;</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- SQURIA -->
-    <a class="prod-card" href="squria.html">
-      <div class="prod-img-wrap" style="background: radial-gradient(ellipse at 70% 20%, rgba(0,160,160,0.22) 0%, transparent 55%), radial-gradient(ellipse at 20% 80%, rgba(80,0,160,0.18) 0%, transparent 50%), linear-gradient(155deg,#040810 0%,#081628 45%,#0c2030 100%); min-height:200px; display:flex; align-items:center; justify-content:center;">
-        <span style="font-size:4rem; font-weight:900; color:rgba(0,200,180,0.15); letter-spacing:-0.03em; font-family:'DM Sans',sans-serif;">P</span>
-      </div>
-      <div class="prod-body">
-        <div class="prod-name">SQURIA<small style="font-size:0.6em; font-weight:400; color:var(--gray2); margin-left:0.3em;">仮称</small></div>
-        <div class="prod-sub">Tiprun Rod</div>
-        <p class="prod-desc">オフショアのティップランエギングに特化。極薄ソリッドティップが捉える微細なイカのアタリを手元まで一切逃さない、専用設計のティップランロッド。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">ティップラン</span>
-          <span class="spec-tag">エギング</span>
-          <span class="spec-tag">オフショア</span>
-        </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>お問い合わせ</strong></div>
-          <div class="prod-arrow">&#x2197;</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- イカ竿 -->
-    <a class="prod-card" href="ika.html">
-      <div class="prod-img-wrap" style="background: radial-gradient(ellipse at 55% 35%, rgba(10,80,140,0.5) 0%, transparent 60%), linear-gradient(155deg,#020810 0%,#061a2e 50%,#092440 100%); min-height:200px; display:flex; align-items:center; justify-content:center;">
-        <span style="font-size:4rem; font-weight:900; color:rgba(30,120,200,0.2); letter-spacing:-0.03em; font-family:'Noto Sans JP',sans-serif;">イカ</span>
-      </div>
-      <div class="prod-body">
-        <div class="prod-name">イカ竿</div>
-        <div class="prod-sub">Squid Rod</div>
-        <p class="prod-desc">イカメタル・ティップランに特化した船竿。専用調子設計の高感度ブランクスと軽量バランスで、オフショアのイカ釣りを次のステージへ。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">イカメタル</span>
-          <span class="spec-tag">ティップラン</span>
-          <span class="spec-tag">オフショア</span>
-        </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>お問い合わせ</strong></div>
-          <div class="prod-arrow">&#x2197;</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- 石鯛竿 -->
-    <a class="prod-card" href="ishidai.html">
-      <div class="prod-img-wrap" style="background: radial-gradient(ellipse at 60% 30%, rgba(100,80,50,0.5) 0%, transparent 60%), linear-gradient(155deg,#050404 0%,#0f0a06 50%,#1a1008 100%); min-height:200px; display:flex; align-items:center; justify-content:center;">
-        <span style="font-size:4rem; font-weight:900; color:rgba(200,168,75,0.18); letter-spacing:-0.03em; font-family:'Noto Sans JP',sans-serif;">石</span>
-      </div>
-      <div class="prod-body">
-        <div class="prod-name">石鯛竿</div>
-        <div class="prod-sub">Bottom Rock Rod</div>
-        <p class="prod-desc">岩礁の底に潜む石鯛・石垣鯛を制する底物専用ロッド。剛と柔のバランスで強引な根走りを止め、吸い込みバイトを確実に掛ける。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">石鯛</span>
-          <span class="spec-tag">石垣鯛</span>
-          <span class="spec-tag">底物</span>
-        </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>お問い合わせ</strong></div>
-          <div class="prod-arrow">&#x2197;</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- GTX -->
-    <a class="prod-card" href="gtx.html">
-      <div class="prod-img-wrap" style="background: radial-gradient(ellipse at 30% 20%, rgba(10,120,60,0.28) 0%, transparent 55%), linear-gradient(155deg,#040a06 0%,#071508 45%,#0a1e0c 100%); min-height:200px; display:flex; align-items:center; justify-content:center;">
-        <span style="font-size:4rem; font-weight:900; color:rgba(30,180,80,0.18); letter-spacing:-0.03em; font-family:'DM Sans',sans-serif;">X</span>
-      </div>
-      <div class="prod-body">
-        <div class="prod-name">GTX</div>
-        <div class="prod-sub">Shore Casting Rod</div>
-        <p class="prod-desc">磯・サーフから大型回遊魚を狙う、飛距離とパワーを極めたショアキャスティング専用ロッド。高反発カーボンブランクスが遠くの魚を射程に収める。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">ショアキャスティング</span>
-          <span class="spec-tag">磯</span>
-          <span class="spec-tag">ショア</span>
-        </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>お問い合わせ</strong></div>
-          <div class="prod-arrow">&#x2197;</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- VS九絵 -->
-    <a class="prod-card" href="vskue.html">
-      <div class="prod-img-wrap">
-        <img class="prod-img" src="vskue-banner.png" alt="VS九絵 磯ロッド" loading="lazy" />
-      </div>
-      <div class="prod-body">
-        <div class="prod-name">VS九絵</div>
-        <div class="prod-sub">Shore Rock Rod</div>
-        <p class="prod-desc">挑む者だけが獲れる。磯の王者・九絵を獲るために生まれた専用ロッド。圧倒的なパワーと粘りで荒磯の怪物を制する。</p>
-        <div class="prod-specs">
-          <span class="spec-tag">磯釣り</span>
-          <span class="spec-tag">底物</span>
-          <span class="spec-tag">ショア</span>
-        </div>
-        <div class="prod-footer">
-          <div class="prod-price"><strong>お問い合わせ</strong></div>
-          <div class="prod-arrow">&#x2197;</div>
-        </div>
-      </div>
-    </a>
-
+        <div class="icon-name">VS九絵</div>
+        <div class="icon-type">Shore Rock</div>
+      </a>
+    </div>
   </div>
 
   <!-- STRIX FEATURE -->
