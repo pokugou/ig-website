@@ -62,23 +62,22 @@
     .main-wrap { max-width: 1200px; margin: 0 auto; padding: 6rem 3rem; }
 
     /* GENRE SECTIONS */
-    .genre-section { margin-bottom: 3.5rem; }
-    .genre-heading { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border); }
-    .genre-heading-en { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); font-family: 'DM Sans',sans-serif; }
-    .genre-heading-name { font-size: 1rem; font-weight: 900; letter-spacing: -0.01em; }
-    .genre-heading-count { font-size: 0.7rem; color: var(--gray2); margin-left: auto; }
+    .genre-section { margin-bottom: 4rem; }
+    .genre-heading { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--border2); }
+    .genre-heading-name { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.02em; }
+    .genre-heading-en { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); font-family: 'DM Sans',sans-serif; }
 
     /* ICON GRID */
-    .icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem 1.25rem; margin-bottom: 0.5rem; }
+    .icon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
     .icon-card { text-decoration: none; color: inherit; display: flex; flex-direction: column; }
-    .icon-thumb { aspect-ratio: 16/9; overflow: hidden; background: var(--dark2); border: 1px solid var(--border); margin-bottom: 0.55rem; transition: border-color 0.25s; }
+    .icon-thumb { aspect-ratio: 16/9; overflow: hidden; background: var(--dark2); border: 1px solid var(--border); border-bottom: none; transition: border-color 0.25s; }
     .icon-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
-    .icon-card:hover .icon-img { transform: scale(1.06); }
-    .icon-card:hover .icon-thumb { border-color: rgba(204,34,0,0.45); }
+    .icon-card:hover .icon-img { transform: scale(1.04); }
+    .icon-card:hover .icon-thumb { border-color: rgba(204,34,0,0.5); }
     .icon-deco { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-    .icon-name { font-size: 0.88rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.1rem; line-height: 1.25; transition: color 0.2s; }
+    .icon-label { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-top: none; padding: 0.5rem 0.75rem; font-size: 0.72rem; color: var(--gray2); letter-spacing: 0.1em; text-align: center; font-family: 'DM Sans',sans-serif; }
+    .icon-name { padding: 0.55rem 0 0; font-size: 1rem; font-weight: 800; letter-spacing: -0.01em; color: rgba(248,248,248,0.88); transition: color 0.2s; line-height: 1.3; }
     .icon-card:hover .icon-name { color: var(--red2); }
-    .icon-type { font-size: 0.65rem; color: var(--gray2); text-transform: uppercase; letter-spacing: 0.08em; font-family: 'DM Sans',sans-serif; }
 
     /* STRIX FEATURE */
     .strix-feature { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 3rem; margin-bottom: 4rem; }
@@ -125,7 +124,7 @@
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     @media (max-width: 1024px) {
-      .icon-grid { grid-template-columns: repeat(4, 1fr); }
+      .icon-grid { grid-template-columns: repeat(2, 1fr); }
       .strix-inner { grid-template-columns: 1fr; gap: 3rem; }
       .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
       .main-wrap { padding: 5rem 2rem; }
@@ -150,8 +149,9 @@
       .dropdown .has-subdrop > a::after { transition: transform 0.25s; display: inline-block; }
       .dropdown .has-subdrop.is-open > a::after { transform: rotate(90deg); }
       .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
-      .icon-grid { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
-      .icon-name { font-size: 0.82rem; }
+      .icon-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+      .icon-name { font-size: 0.9rem; }
+      .genre-heading-name { font-size: 1.3rem; }
       .footer-top { grid-template-columns: 1fr; gap: 2rem; }
       .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
       footer { padding: 3rem 1.5rem 2rem; }
@@ -159,7 +159,7 @@
       .main-wrap { padding: 4rem 1.5rem; }
     }
     @media (max-width: 480px) {
-      .icon-grid { grid-template-columns: repeat(2, 1fr); }
+      .icon-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -237,59 +237,58 @@
   <!-- オフショア -->
   <div class="genre-section">
     <div class="genre-heading">
-      <span class="genre-heading-en">Offshore</span>
       <span class="genre-heading-name">オフショア</span>
-      <span class="genre-heading-count">7 モデル</span>
+      <span class="genre-heading-en">OFFSHORE</span>
     </div>
     <div class="icon-grid">
       <a class="icon-card" href="strixedge.html">
         <div class="icon-thumb">
           <img class="icon-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
         </div>
+        <div class="icon-label">イカメタル・オモリグ</div>
         <div class="icon-name">STRIX EDGE</div>
-        <div class="icon-type">Ikametal</div>
       </a>
       <a class="icon-card" href="gtlj.html">
         <div class="icon-thumb">
           <img class="icon-img" src="gtlj-banner.png" alt="GTLJ" loading="lazy" />
         </div>
+        <div class="icon-label">ライトジギング</div>
         <div class="icon-name">GTLJ</div>
-        <div class="icon-type">Light Jigging</div>
       </a>
       <a class="icon-card" href="gtj.html">
         <div class="icon-thumb">
           <img class="icon-img" src="gtj-banner.png" alt="GT J" loading="lazy" />
         </div>
+        <div class="icon-label">ジギング</div>
         <div class="icon-name">GT J</div>
-        <div class="icon-type">Jigging</div>
       </a>
       <a class="icon-card" href="gtslj.html">
         <div class="icon-thumb">
           <img class="icon-img" src="gtslj-banner.png" alt="GTSLJ" loading="lazy" />
         </div>
+        <div class="icon-label">SLJ・タイラバ・タイジギング</div>
         <div class="icon-name">GTSLJ</div>
-        <div class="icon-type">Offshore Light</div>
       </a>
       <a class="icon-card" href="gts.html">
         <div class="icon-thumb">
           <img class="icon-img" src="gts-banner.png" alt="GTS" loading="lazy" />
         </div>
+        <div class="icon-label">スロージギング</div>
         <div class="icon-name">GTS</div>
-        <div class="icon-type">Slow Jigging</div>
       </a>
       <a class="icon-card" href="gtr.html">
         <div class="icon-thumb">
           <img class="icon-img" src="gtr-banner.png" alt="GTR" loading="lazy" />
         </div>
+        <div class="icon-label">タイラバ</div>
         <div class="icon-name">GTR</div>
-        <div class="icon-type">Tairubber</div>
       </a>
       <a class="icon-card" href="squria.html">
         <div class="icon-thumb" style="background: radial-gradient(ellipse at 70% 20%, rgba(0,160,160,0.3) 0%, transparent 55%), linear-gradient(155deg,#040810 0%,#081628 45%,#0c2030 100%);">
-          <div class="icon-deco"><span style="font-size:2.2rem; font-weight:900; color:rgba(0,200,180,0.2); font-family:'DM Sans',sans-serif;">S</span></div>
+          <div class="icon-deco"><span style="font-size:2.5rem; font-weight:900; color:rgba(0,200,180,0.2); font-family:'DM Sans',sans-serif;">S</span></div>
         </div>
+        <div class="icon-label">ティップラン・エギング</div>
         <div class="icon-name">SQURIA</div>
-        <div class="icon-type">Tiprun</div>
       </a>
     </div>
   </div>
@@ -297,24 +296,23 @@
   <!-- ショア -->
   <div class="genre-section">
     <div class="genre-heading">
-      <span class="genre-heading-en">Shore</span>
       <span class="genre-heading-name">ショア</span>
-      <span class="genre-heading-count">2 モデル</span>
+      <span class="genre-heading-en">SHORE</span>
     </div>
     <div class="icon-grid">
       <a class="icon-card" href="vskue.html">
         <div class="icon-thumb">
           <img class="icon-img" src="vskue-banner.png" alt="VS九絵" loading="lazy" />
         </div>
+        <div class="icon-label">磯・底物</div>
         <div class="icon-name">VS九絵</div>
-        <div class="icon-type">Shore Rock</div>
       </a>
       <a class="icon-card" href="gtx.html">
         <div class="icon-thumb" style="background: radial-gradient(ellipse at 30% 20%, rgba(10,120,60,0.3) 0%, transparent 55%), linear-gradient(155deg,#040a06 0%,#071508 45%,#0a1e0c 100%);">
-          <div class="icon-deco"><span style="font-size:2.2rem; font-weight:900; color:rgba(30,180,80,0.22); font-family:'DM Sans',sans-serif;">X</span></div>
+          <div class="icon-deco"><span style="font-size:2.5rem; font-weight:900; color:rgba(30,180,80,0.22); font-family:'DM Sans',sans-serif;">X</span></div>
         </div>
+        <div class="icon-label">ショアキャスティング</div>
         <div class="icon-name">GTX</div>
-        <div class="icon-type">Shore Casting</div>
       </a>
     </div>
   </div>
@@ -322,17 +320,16 @@
   <!-- 船竿 -->
   <div class="genre-section">
     <div class="genre-heading">
-      <span class="genre-heading-en">Boat</span>
       <span class="genre-heading-name">船竿</span>
-      <span class="genre-heading-count">1 モデル</span>
+      <span class="genre-heading-en">BOAT</span>
     </div>
     <div class="icon-grid">
       <a class="icon-card" href="ika.html">
         <div class="icon-thumb" style="background: radial-gradient(ellipse at 55% 35%, rgba(10,80,140,0.5) 0%, transparent 60%), linear-gradient(155deg,#020810 0%,#061a2e 50%,#092440 100%);">
-          <div class="icon-deco"><span style="font-size:2rem; font-weight:900; color:rgba(30,120,200,0.25); font-family:'Noto Sans JP',sans-serif;">イカ</span></div>
+          <div class="icon-deco"><span style="font-size:2.5rem; font-weight:900; color:rgba(30,120,200,0.25); font-family:'Noto Sans JP',sans-serif;">イカ</span></div>
         </div>
+        <div class="icon-label">イカメタル・ティップラン</div>
         <div class="icon-name">イカ竿</div>
-        <div class="icon-type">Squid Rod</div>
       </a>
     </div>
   </div>
@@ -340,24 +337,23 @@
   <!-- 底物 -->
   <div class="genre-section">
     <div class="genre-heading">
-      <span class="genre-heading-en">Bottom</span>
       <span class="genre-heading-name">底物</span>
-      <span class="genre-heading-count">2 モデル</span>
+      <span class="genre-heading-en">BOTTOM</span>
     </div>
     <div class="icon-grid">
       <a class="icon-card" href="ishidai.html">
         <div class="icon-thumb" style="background: radial-gradient(ellipse at 60% 30%, rgba(100,80,50,0.5) 0%, transparent 60%), linear-gradient(155deg,#050404 0%,#0f0a06 50%,#1a1008 100%);">
-          <div class="icon-deco"><span style="font-size:2rem; font-weight:900; color:rgba(200,168,75,0.22); font-family:'Noto Sans JP',sans-serif;">石</span></div>
+          <div class="icon-deco"><span style="font-size:2.5rem; font-weight:900; color:rgba(200,168,75,0.22); font-family:'Noto Sans JP',sans-serif;">石</span></div>
         </div>
+        <div class="icon-label">石鯛・石垣鯛</div>
         <div class="icon-name">石鯛竿</div>
-        <div class="icon-type">Bottom Rock</div>
       </a>
       <a class="icon-card" href="vskue.html">
         <div class="icon-thumb">
           <img class="icon-img" src="vskue-banner.png" alt="VS九絵" loading="lazy" />
         </div>
+        <div class="icon-label">磯・底物</div>
         <div class="icon-name">VS九絵</div>
-        <div class="icon-type">Shore Rock</div>
       </a>
     </div>
   </div>
