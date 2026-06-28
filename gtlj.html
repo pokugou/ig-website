@@ -83,12 +83,18 @@
 
     /* MODEL TABLE */
     .model-table-wrap { margin-top: 3rem; overflow-x: auto; }
-    .model-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); }
-    .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: left; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray2); border-bottom: 1px solid var(--border); white-space: nowrap; }
-    .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 1px solid var(--border); color: var(--gray); }
+    .model-table { width: 100%; border-collapse: collapse; border: 2px solid var(--border2); }
+    .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: left; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray2); border-bottom: 2px solid rgba(255,255,255,0.2); white-space: nowrap; }
+    .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 2px solid rgba(255,255,255,0.1); color: var(--gray); }
     .model-table tr:last-child td { border-bottom: none; }
     .model-table tr:hover td { background: rgba(255,255,255,0.02); color: var(--white); }
-    .model-name { font-weight: 700; color: var(--white) !important; }
+    .model-name { font-weight: 700; color: var(--white) !important; font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em; }
+    .model-table td.num { text-align: right; font-family: 'DM Sans', sans-serif; }
+    .model-table th.num { text-align: right; }
+    .model-table tr.type-break td { border-top: 2px solid rgba(255,255,255,0.22); }
+    .type-badge { display: inline-block; padding: 0.15rem 0.6rem; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; border-radius: 2px; white-space: nowrap; }
+    .type-badge.spin { background: rgba(204,34,0,0.15); color: var(--red2); border: 1px solid rgba(204,34,0,0.3); }
+    .type-badge.bait { background: rgba(200,168,75,0.12); color: #c8a84b; border: 1px solid rgba(200,168,75,0.25); }
 
     /* CTA */
     .cta-section { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 5rem 3rem; }
@@ -274,22 +280,83 @@
       <table class="model-table">
         <thead>
           <tr>
-            <th>Model</th>
-            <th>全長</th>
-            <th>継数</th>
-            <th>カーボン</th>
-            <th>対応スタイル</th>
-            <th>価格（税別）</th>
+            <th>タイプ</th>
+            <th>品番</th>
+            <th class="num">全長(m)</th>
+            <th class="num">平均自重(g)</th>
+            <th class="num">継数(本)</th>
+            <th class="num">仕舞寸法(cm)</th>
+            <th class="num">先径/元径(mm)</th>
+            <th class="num">適合ジグ(g)</th>
+            <th class="num">定価（税抜）</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="model-name">GTLJ</td>
-            <td>1.91m</td>
-            <td>1ピース</td>
-            <td>24t / 30t 混在弾性</td>
-            <td>ベイト / スピニング</td>
-            <td>¥31,300〜</td>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTLJ63ULB</td>
+            <td class="num">1.91</td>
+            <td class="num">105</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.78 / 11.0</td>
+            <td class="num">〜160</td>
+            <td class="num">¥31,300</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTLJ63LB</td>
+            <td class="num">1.91</td>
+            <td class="num">107</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.82 / 11.3</td>
+            <td class="num">〜180</td>
+            <td class="num">¥32,300</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTLJ63MB</td>
+            <td class="num">1.91</td>
+            <td class="num">112</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.9 / 11.7</td>
+            <td class="num">〜200</td>
+            <td class="num">¥33,500</td>
+          </tr>
+          <tr class="type-break">
+            <td><span class="type-badge spin">スピニング</span></td>
+            <td class="model-name">GTLJ63ULS</td>
+            <td class="num">1.91</td>
+            <td class="num">110</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.78 / 11.0</td>
+            <td class="num">〜160</td>
+            <td class="num">¥31,300</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge spin">スピニング</span></td>
+            <td class="model-name">GTLJ63LS</td>
+            <td class="num">1.91</td>
+            <td class="num">112</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.82 / 11.3</td>
+            <td class="num">〜180</td>
+            <td class="num">¥32,300</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge spin">スピニング</span></td>
+            <td class="model-name">GTLJ63MS</td>
+            <td class="num">1.91</td>
+            <td class="num">121</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.9 / 11.7</td>
+            <td class="num">〜200</td>
+            <td class="num">¥33,500</td>
           </tr>
         </tbody>
       </table>
