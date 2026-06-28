@@ -108,11 +108,13 @@
     /* MODEL TABLE */
     .model-table-wrap { margin-top: 3rem; overflow-x: auto; }
     .model-table { width: 100%; border-collapse: collapse; border: 3px solid var(--border2); }
-    .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: left; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray2); border-bottom: 3px solid rgba(255,255,255,0.2); white-space: nowrap; vertical-align: middle; }
-    .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 3px solid rgba(255,255,255,0.1); color: var(--gray); vertical-align: middle; }
+    .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: center; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: none; color: var(--gray2); border-bottom: 3px solid rgba(255,255,255,0.2); white-space: nowrap; vertical-align: middle; }
+    .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 3px solid rgba(255,255,255,0.1); color: var(--gray); vertical-align: middle; text-align: center; }
     .model-table tr:last-child td { border-bottom: none; }
     .model-table tr:hover td { background: rgba(255,255,255,0.02); color: var(--white); }
-    .model-name { font-weight: 700; color: var(--white) !important; white-space: nowrap; }
+    .model-name { font-weight: 700; color: var(--white) !important; font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em; white-space: nowrap; }
+    .model-table td.num { text-align: center; font-family: 'DM Sans', sans-serif; }
+    .model-table th.num { text-align: center; }
 
     /* FEATURES */
     .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 3rem; }
@@ -316,7 +318,7 @@
       </div>
       <div class="spec-cell">
         <div class="spec-cell-label">価格（税別）</div>
-        <div class="spec-cell-val">お問い合わせ</div>
+        <div class="spec-cell-val">¥88,000〜</div>
       </div>
     </div>
 
@@ -324,27 +326,66 @@
       <table class="model-table">
         <thead>
           <tr>
-            <th>Model</th>
-            <th>全長</th>
-            <th>継数</th>
-            <th>適合錘</th>
-            <th>適合ライン</th>
-            <th>価格（税別）</th>
+            <th>品番</th>
+            <th class="num">全長(m)</th>
+            <th class="num">継数(本)</th>
+            <th class="num">仕舞寸法(cm)</th>
+            <th class="num">平均自重(g)</th>
+            <th class="num">先径/元径(mm)</th>
+            <th class="num">錘負荷(号)</th>
+            <th class="num">カーボン含有率(%)</th>
+            <th class="num">ベース価格（税抜）</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="model-name">VS石鯛</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
+            <td class="model-name">500MH</td>
+            <td class="num">5.00</td>
+            <td class="num">4</td>
+            <td class="num">130</td>
+            <td class="num">550</td>
+            <td class="num">2.2 / 23.0</td>
+            <td class="num">15〜40</td>
+            <td class="num">98</td>
+            <td class="num">¥98,000</td>
+          </tr>
+          <tr>
+            <td class="model-name">535MH</td>
+            <td class="num">5.35</td>
+            <td class="num">4</td>
+            <td class="num">142</td>
+            <td class="num">582</td>
+            <td class="num">2.2 / 24.0</td>
+            <td class="num">15〜40</td>
+            <td class="num">98</td>
+            <td class="num">¥98,000</td>
+          </tr>
+          <tr>
+            <td class="model-name">450MH</td>
+            <td class="num">4.8</td>
+            <td class="num">3</td>
+            <td class="num">160</td>
+            <td class="num">430</td>
+            <td class="num">–</td>
+            <td class="num">15〜40</td>
+            <td class="num">98</td>
+            <td class="num">¥88,000</td>
+          </tr>
+          <tr>
+            <td class="model-name">530MH</td>
+            <td class="num">5.3</td>
+            <td class="num">3</td>
+            <td class="num">177</td>
+            <td class="num">480</td>
+            <td class="num">1.8 / 21.0</td>
+            <td class="num">30〜50</td>
+            <td class="num">98</td>
+            <td class="num">¥120,000</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p style="margin-top:1rem; font-size:0.78rem; color:var(--gray2);">※ スペック詳細はお問い合わせください。カスタムオーダー対応。</p>
+    <p style="margin-top:1rem; font-size:0.78rem; color:var(--gray2);">※ スペック・価格は変更となる場合があります。詳細はお問い合わせください。</p>
   </div>
 </div>
 
