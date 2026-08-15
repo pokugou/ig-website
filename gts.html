@@ -89,10 +89,15 @@
     /* MODEL TABLE */
     .model-table-wrap { margin-top: 3rem; overflow-x: auto; }
     .model-table { width: 100%; border-collapse: collapse; border: 3px solid var(--border2); }
-    .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: left; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray2); border-bottom: 3px solid rgba(255,255,255,0.2); white-space: nowrap; vertical-align: middle; }
-    .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 3px solid rgba(255,255,255,0.1); color: var(--gray); vertical-align: middle; }
+    .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: center; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: none; color: var(--gray2); border-bottom: 3px solid rgba(255,255,255,0.2); white-space: nowrap; vertical-align: middle; }
+    .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 3px solid rgba(255,255,255,0.1); color: var(--gray); vertical-align: middle; text-align: center; }
     .model-table tr:last-child td { border-bottom: none; }
     .model-table tr:hover td { background: rgba(255,255,255,0.02); color: var(--white); }
+    .model-table td.num { text-align: center; font-family: 'DM Sans', sans-serif; }
+    .model-table th.num { text-align: center; }
+    .model-name { font-weight: 700; color: var(--white) !important; font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em; white-space: nowrap; }
+    .type-badge { display: inline-block; padding: 0.15rem 0.6rem; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; border-radius: 2px; white-space: nowrap; vertical-align: middle; }
+    .type-badge.bait { background: rgba(200,168,75,0.12); color: #c8a84b; border: 1px solid rgba(200,168,75,0.25); }
     .model-name { font-weight: 700; color: var(--white) !important; white-space: nowrap; }
 
     /* FEATURES */
@@ -295,7 +300,7 @@
       </div>
       <div class="spec-cell">
         <div class="spec-cell-label">価格（税別）</div>
-        <div class="spec-cell-val">お問い合わせ</div>
+        <div class="spec-cell-val">¥33,000〜</div>
       </div>
     </div>
 
@@ -303,27 +308,87 @@
       <table class="model-table">
         <thead>
           <tr>
-            <th>Model</th>
-            <th>全長</th>
-            <th>継数</th>
-            <th>対応ジグ重量</th>
-            <th>対応ライン（PE）</th>
-            <th>価格（税別）</th>
+            <th>タイプ</th>
+            <th>品番</th>
+            <th class="num">全長(m)</th>
+            <th class="num">平均自重(g)</th>
+            <th class="num">継数(本)</th>
+            <th class="num">仕舞寸法(cm)</th>
+            <th class="num">先径/元径(mm)</th>
+            <th class="num">適合ジグ(g)</th>
+            <th class="num">定価（税抜）</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="model-name">GTS</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTS632</td>
+            <td class="num">1.91</td>
+            <td class="num">110</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.8/10.5</td>
+            <td class="num">〜160</td>
+            <td class="num">¥35,600</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTS5102</td>
+            <td class="num">1.91</td>
+            <td class="num">99</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.5/8.8</td>
+            <td class="num">〜160</td>
+            <td class="num">¥35,300</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTS633</td>
+            <td class="num">1.91</td>
+            <td class="num">112</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.8/10.8</td>
+            <td class="num">〜200</td>
+            <td class="num">¥36,300</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTS5103</td>
+            <td class="num">1.91</td>
+            <td class="num">101</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.5/8.10</td>
+            <td class="num">〜200</td>
+            <td class="num">¥36,000</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTS634</td>
+            <td class="num">1.91</td>
+            <td class="num">119</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.8/11.0</td>
+            <td class="num">〜280</td>
+            <td class="num">¥36,800</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">GTS5104</td>
+            <td class="num">1.91</td>
+            <td class="num">104</td>
+            <td class="num">1</td>
+            <td class="num">191</td>
+            <td class="num">1.5/8.12</td>
+            <td class="num">〜280</td>
+            <td class="num">¥33,000</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p style="margin-top:1rem; font-size:0.78rem; color:var(--gray2);">※ スペック詳細はお問い合わせください。カスタムオーダー対応。</p>
   </div>
 </div>
 
