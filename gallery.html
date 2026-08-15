@@ -86,6 +86,33 @@
     .gallery-placeholder-icon { font-size: 2rem; opacity: 0.3; }
     .gallery-placeholder-label { font-size: 0.72rem; letter-spacing: 0.08em; opacity: 0.4; }
 
+    /* STATS BAR */
+    .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 4rem; }
+    .stat-cell { background: var(--dark2); padding: 2rem; text-align: center; }
+    .stat-num { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; letter-spacing: -0.03em; color: var(--white); line-height: 1; margin-bottom: 0.4rem; }
+    .stat-num span { font-size: 0.55em; font-weight: 400; color: var(--gray2); }
+    .stat-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray2); }
+
+    /* BUILD HISTORY */
+    .section-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .section-head h2 { font-size: 1rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+    .section-head-en { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.16em; color: var(--gray2); text-transform: uppercase; }
+    .build-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 4rem; }
+    .build-card { background: var(--dark2); position: relative; overflow: hidden; cursor: pointer; }
+    .build-photo { aspect-ratio: 4/3; overflow: hidden; background: var(--dark); position: relative; }
+    .build-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; display: block; }
+    .build-card:hover .build-photo img { transform: scale(1.06); }
+    .build-photo-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--gray2); font-size: 0.68rem; letter-spacing: 0.1em; opacity: 0.35; }
+    .build-info { padding: 1.1rem 1.2rem 1.3rem; }
+    .build-model { font-size: 1rem; font-weight: 900; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
+    .build-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+    .build-tag { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; padding: 0.2rem 0.55rem; border: 1px solid; }
+    .build-tag-genre { color: var(--red2); border-color: rgba(232,48,16,0.35); background: rgba(232,48,16,0.08); }
+    .build-tag-type { color: var(--gray2); border-color: var(--border2); background: transparent; }
+    .build-date { font-size: 0.68rem; color: var(--gray2); letter-spacing: 0.06em; }
+    .build-card-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--border2); transition: background 0.3s; }
+    .build-card:hover .build-card-line { background: var(--red2); }
+
     /* INSTAGRAM CTA */
     .ig-cta { background: var(--dark); border: 1px solid var(--border); padding: 4rem 3rem; text-align: center; margin-bottom: 4rem; }
     .ig-cta-icon { font-size: 2.5rem; margin-bottom: 1rem; }
@@ -127,6 +154,7 @@
     @media (max-width: 1024px) {
       .gallery-grid { grid-template-columns: repeat(2, 1fr); }
       .gallery-item.wide { grid-column: span 2; }
+      .build-grid { grid-template-columns: repeat(2, 1fr); }
       .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
       .main-wrap { padding: 5rem 2rem; }
       .page-header { padding: 8rem 2rem 4rem; }
@@ -153,6 +181,8 @@
       .gallery-grid { grid-template-columns: 1fr; }
       .gallery-item.wide { grid-column: span 1; aspect-ratio: 4/3; }
       .gallery-item.tall { aspect-ratio: 4/3; }
+      .build-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: 1fr; }
       .footer-top { grid-template-columns: 1fr; gap: 2rem; }
       .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
       footer { padding: 3rem 1.5rem 2rem; }
@@ -232,19 +262,173 @@
 
 <div class="main-wrap">
 
-  <!-- FILTER -->
-  <div class="filter-tabs">
-    <button class="filter-tab active">すべて</button>
-    <button class="filter-tab">STRIX EDGE</button>
-    <button class="filter-tab">GT-LJ / GT-J</button>
-    <button class="filter-tab">カラーカスタム</button>
-    <button class="filter-tab">リメイク</button>
-    <button class="filter-tab">フィールド</button>
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-cell">
+      <div class="stat-num">2020<span>年〜</span></div>
+      <div class="stat-label">創業</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">10<span>種以上</span></div>
+      <div class="stat-label">取扱いモデル</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-num">1<span>本1本</span></div>
+      <div class="stat-label">手作り仕上げ</div>
+    </div>
   </div>
 
-  <!-- GALLERY -->
+  <!-- FILTER -->
+  <div class="filter-tabs" id="filter-tabs">
+    <button class="filter-tab active" data-cat="all">すべて</button>
+    <button class="filter-tab" data-cat="strix">STRIX EDGE</button>
+    <button class="filter-tab" data-cat="gtlj">GTLJ</button>
+    <button class="filter-tab" data-cat="gtj">GT J / GTS</button>
+    <button class="filter-tab" data-cat="custom">カラーカスタム</button>
+    <button class="filter-tab" data-cat="remake">リメイク</button>
+  </div>
+
+  <!-- BUILD HISTORY CARDS -->
+  <div class="section-head">
+    <h2>制作実績</h2>
+    <span class="section-head-en">Production History</span>
+  </div>
+
+  <div class="build-grid" id="build-grid">
+
+    <!-- STRIX EDGE -->
+    <div class="build-card" data-cat="strix">
+      <div class="build-card-line"></div>
+      <div class="build-photo">
+        <img src="https://ig-rod.jp/wp-content/uploads/2025/10/全体画像.jpg" alt="STRIX EDGE SE510ML-S" loading="lazy" />
+      </div>
+      <div class="build-info">
+        <div class="build-model">STRIX EDGE SE510ML-S</div>
+        <div class="build-tags">
+          <span class="build-tag build-tag-genre">イカメタル/ティップラン</span>
+          <span class="build-tag build-tag-type">スピニング</span>
+        </div>
+        <div class="build-date">カスタムロッド</div>
+      </div>
+    </div>
+
+    <!-- STRIX EDGE bait -->
+    <div class="build-card" data-cat="strix">
+      <div class="build-card-line"></div>
+      <div class="build-photo">
+        <img src="strixedge-banner.png" alt="STRIX EDGE SE66ML-B" loading="lazy" />
+      </div>
+      <div class="build-info">
+        <div class="build-model">STRIX EDGE SE66ML-B</div>
+        <div class="build-tags">
+          <span class="build-tag build-tag-genre">イカメタル/ティップラン</span>
+          <span class="build-tag build-tag-type">ベイト</span>
+        </div>
+        <div class="build-date">カスタムロッド</div>
+      </div>
+    </div>
+
+    <!-- GTLJ -->
+    <div class="build-card" data-cat="gtlj">
+      <div class="build-card-line"></div>
+      <div class="build-photo">
+        <img src="gtlj-photo1.jpg" alt="GTLJ" loading="lazy" />
+      </div>
+      <div class="build-info">
+        <div class="build-model">GTLJ63MS-B</div>
+        <div class="build-tags">
+          <span class="build-tag build-tag-genre">万能ライトジギング</span>
+          <span class="build-tag build-tag-type">ベイト</span>
+        </div>
+        <div class="build-date">カスタムロッド</div>
+      </div>
+    </div>
+
+    <!-- GTLJ spinning -->
+    <div class="build-card" data-cat="gtlj">
+      <div class="build-card-line"></div>
+      <div class="build-photo">
+        <img src="gtlj-photo2.jpg" alt="GTLJ スピニング" loading="lazy" />
+      </div>
+      <div class="build-info">
+        <div class="build-model">GTLJ63MS-S</div>
+        <div class="build-tags">
+          <span class="build-tag build-tag-genre">万能ライトジギング</span>
+          <span class="build-tag build-tag-type">スピニング</span>
+        </div>
+        <div class="build-date">カスタムロッド</div>
+      </div>
+    </div>
+
+    <!-- GTLJ guide -->
+    <div class="build-card" data-cat="gtlj">
+      <div class="build-card-line"></div>
+      <div class="build-photo">
+        <img src="gtlj-photo3.jpg" alt="GTLJ ガイド" loading="lazy" />
+      </div>
+      <div class="build-info">
+        <div class="build-model">GTLJ — ガイド詳細</div>
+        <div class="build-tags">
+          <span class="build-tag build-tag-genre">万能ライトジギング</span>
+        </div>
+        <div class="build-date">制作工程</div>
+      </div>
+    </div>
+
+    <!-- GTJ -->
+    <div class="build-card" data-cat="gtj">
+      <div class="build-card-line"></div>
+      <div class="build-photo">
+        <img src="gtj-banner.png" alt="GT J" loading="lazy" />
+      </div>
+      <div class="build-info">
+        <div class="build-model">GT J GTJ62MS</div>
+        <div class="build-tags">
+          <span class="build-tag build-tag-genre">ジギング</span>
+          <span class="build-tag build-tag-type">スピニング</span>
+        </div>
+        <div class="build-date">カスタムロッド</div>
+      </div>
+    </div>
+
+    <!-- Placeholders -->
+    <div class="build-card" data-cat="custom">
+      <div class="build-card-line"></div>
+      <div class="build-photo">
+        <div class="build-photo-placeholder">Coming Soon</div>
+      </div>
+      <div class="build-info">
+        <div class="build-model" style="color:var(--gray2);">カラーカスタム</div>
+        <div class="build-tags">
+          <span class="build-tag build-tag-genre">カラーカスタム</span>
+        </div>
+        <div class="build-date">準備中</div>
+      </div>
+    </div>
+
+    <div class="build-card" data-cat="remake">
+      <div class="build-card-line"></div>
+      <div class="build-photo">
+        <div class="build-photo-placeholder">Coming Soon</div>
+      </div>
+      <div class="build-info">
+        <div class="build-model" style="color:var(--gray2);">リメイク</div>
+        <div class="build-tags">
+          <span class="build-tag build-tag-genre">リメイク</span>
+        </div>
+        <div class="build-date">準備中</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PHOTO GALLERY -->
+  <div class="section-head">
+    <h2>フォトギャラリー</h2>
+    <span class="section-head-en">Photo Gallery</span>
+  </div>
+
   <div class="gallery-grid">
-    <!-- Row 1 -->
     <div class="gallery-item wide">
       <img class="gallery-img" src="https://ig-rod.jp/wp-content/uploads/2025/10/全体画像.jpg" alt="STRIX EDGE 全体" loading="lazy" />
       <div class="gallery-overlay">
@@ -253,19 +437,24 @@
       </div>
     </div>
     <div class="gallery-item">
-      <img class="gallery-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
-      <div class="gallery-overlay">
-        <div class="gallery-tag">STRIX EDGE</div>
-        <div class="gallery-caption">STRIX EDGE — ティップ詳細</div>
-      </div>
-    </div>
-
-    <!-- Row 2 -->
-    <div class="gallery-item">
-      <img class="gallery-img" src="gtlj-banner.png" alt="GT-LJ" loading="lazy" />
+      <img class="gallery-img" src="gtlj-photo1.jpg" alt="GTLJ" loading="lazy" />
       <div class="gallery-overlay">
         <div class="gallery-tag">GTLJ</div>
-        <div class="gallery-caption">GT-LJ — Light Jigging</div>
+        <div class="gallery-caption">GTLJ — フルロッド</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="gtlj-photo2.jpg" alt="GTLJ" loading="lazy" />
+      <div class="gallery-overlay">
+        <div class="gallery-tag">GTLJ</div>
+        <div class="gallery-caption">GTLJ — ロッド全景</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="gtlj-photo3.jpg" alt="GTLJ ガイド" loading="lazy" />
+      <div class="gallery-overlay">
+        <div class="gallery-tag">GTLJ</div>
+        <div class="gallery-caption">GTLJ — ガイドクローズアップ</div>
       </div>
     </div>
     <div class="gallery-item">
@@ -274,16 +463,6 @@
         <div class="gallery-tag">GT J</div>
         <div class="gallery-caption">GT-J — Jigging Rod</div>
       </div>
-    </div>
-
-    <!-- Placeholders for future photos -->
-    <div class="gallery-item gallery-placeholder">
-      <div class="gallery-placeholder-icon">&#x1F4F7;</div>
-      <div class="gallery-placeholder-label">Coming Soon</div>
-    </div>
-    <div class="gallery-item gallery-placeholder">
-      <div class="gallery-placeholder-icon">&#x1F4F7;</div>
-      <div class="gallery-placeholder-label">Coming Soon</div>
     </div>
     <div class="gallery-item gallery-placeholder">
       <div class="gallery-placeholder-icon">&#x1F4F7;</div>
@@ -400,6 +579,26 @@
         document.querySelectorAll('.dropdown .has-subdrop').forEach(function(el){ el.classList.remove('is-open'); });
         if (!wasOpen) li.classList.add('is-open');
       }
+    });
+  });
+})();
+
+// Filter tabs
+(function(){
+  var tabs = document.querySelectorAll('#filter-tabs .filter-tab');
+  var cards = document.querySelectorAll('#build-grid .build-card');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      var cat = tab.dataset.cat;
+      cards.forEach(function(card){
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
     });
   });
 })();
