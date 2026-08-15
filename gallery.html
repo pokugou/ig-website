@@ -275,13 +275,6 @@
 
 <div class="main-wrap">
 
-  <!-- FILTER -->
-  <div class="filter-tabs" id="filter-tabs">
-    <button class="filter-tab active" data-cat="all">すべて</button>
-    <button class="filter-tab" data-cat="color">カラーギャラリー</button>
-    <button class="filter-tab" data-cat="remake">リメイク</button>
-  </div>
-
   <!-- BUILD HISTORY CARDS -->
   <div class="section-head">
     <h2>制作実績</h2>
@@ -686,25 +679,6 @@
   });
 })();
 
-// Filter tabs
-(function(){
-  var tabs = document.querySelectorAll('#filter-tabs .filter-tab');
-  var cards = document.querySelectorAll('#build-grid .build-card');
-  tabs.forEach(function(tab){
-    tab.addEventListener('click', function(){
-      tabs.forEach(function(t){ t.classList.remove('active'); });
-      tab.classList.add('active');
-      var cat = tab.dataset.cat;
-      cards.forEach(function(card){
-        if (cat === 'all' || card.dataset.cat === cat) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    });
-  });
-})();
 </script>
 </body>
 </html>
