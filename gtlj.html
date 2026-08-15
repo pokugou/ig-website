@@ -99,6 +99,21 @@
 
     /* CTA */
     .cta-section { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 5rem 3rem; }
+
+    /* PHOTO SLIDER */
+    .slider-section { background: var(--black); padding: 5rem 0; }
+    .slider-inner { max-width: 1200px; margin: 0 auto; padding: 0 3rem; }
+    .slider-wrap { position: relative; overflow: hidden; border: 1px solid var(--border2); }
+    .slider-track { display: flex; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
+    .slider-slide { min-width: 100%; aspect-ratio: 16/7; overflow: hidden; background: #fff; display: flex; align-items: center; justify-content: center; }
+    .slider-slide img { width: 100%; height: 100%; object-fit: contain; }
+    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(8,8,8,0.7); border: 1px solid var(--border2); color: var(--white); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; z-index: 10; transition: background 0.2s; }
+    .slider-btn:hover { background: rgba(204,34,0,0.8); }
+    .slider-btn.prev { left: 1rem; }
+    .slider-btn.next { right: 1rem; }
+    .slider-dots { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.2rem; }
+    .slider-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); cursor: pointer; transition: background 0.2s, transform 0.2s; }
+    .slider-dot.active { background: var(--red2); transform: scale(1.3); }
     .cta-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
     .cta-text h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
     .cta-text p { font-size: 0.9rem; color: var(--gray); }
@@ -364,6 +379,46 @@
     </div>
   </div>
 </div>
+
+<!-- PHOTO SLIDER -->
+<div class="slider-section">
+  <div class="slider-inner">
+    <div class="section-label">Gallery</div>
+    <h2 class="section-title" style="margin-bottom:2rem;">製品ギャラリー</h2>
+    <div class="slider-wrap">
+      <div class="slider-track" id="sliderTrack">
+        <div class="slider-slide"><img src="gtlj-photo1.jpg" alt="GTLJ 全体" /></div>
+        <div class="slider-slide"><img src="gtlj-photo2.jpg" alt="GTLJ 全体2" /></div>
+        <div class="slider-slide"><img src="gtlj-photo3.jpg" alt="GTLJ ガイド" /></div>
+      </div>
+      <button class="slider-btn prev" onclick="slideMove(-1)">&#8249;</button>
+      <button class="slider-btn next" onclick="slideMove(1)">&#8250;</button>
+    </div>
+    <div class="slider-dots" id="sliderDots">
+      <div class="slider-dot active" onclick="slideTo(0)"></div>
+      <div class="slider-dot" onclick="slideTo(1)"></div>
+      <div class="slider-dot" onclick="slideTo(2)"></div>
+    </div>
+  </div>
+</div>
+<script>
+  var sliderIdx = 0;
+  var total = 3;
+  function updateSlider() {
+    document.getElementById('sliderTrack').style.transform = 'translateX(-' + (sliderIdx * 100) + '%)';
+    document.querySelectorAll('.slider-dot').forEach(function(d, i) {
+      d.classList.toggle('active', i === sliderIdx);
+    });
+  }
+  function slideMove(dir) {
+    sliderIdx = (sliderIdx + dir + total) % total;
+    updateSlider();
+  }
+  function slideTo(i) {
+    sliderIdx = i;
+    updateSlider();
+  }
+</script>
 
 <!-- FEATURES -->
 <div class="section">
