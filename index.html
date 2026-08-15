@@ -263,8 +263,17 @@
     .hero-next { right: 1.5rem; }
 
     @media(max-width:768px) {
-      .hero-slide-strix .strix-slide-inner { grid-template-columns: 1fr; gap: 1.5rem; padding: 6rem 1.5rem 4rem; }
       .hero-prev, .hero-next { display: none; }
+      .hero-slide-strix { padding: 0; }
+      .hero-slide-strix .strix-slide-bg {
+        background: linear-gradient(to top, rgba(8,8,8,0.93) 0%, rgba(8,8,8,0.3) 55%, rgba(8,8,8,0.05) 100%),
+                    url(strixedge-banner.png) center center / cover no-repeat;
+      }
+      .hero-slide-strix .strix-slide-inner {
+        grid-template-columns: 1fr; gap: 0; padding: 0 1.5rem 3rem;
+        height: 100%; align-content: end; max-width: none; margin: 0;
+      }
+      .hero-slide-strix .strix-slide-img { display: none; }
     }
 
     .hero-bg {
