@@ -93,6 +93,10 @@
     .model-table tr:last-child td { border-bottom: none; }
     .model-table tr:hover td { background: rgba(255,255,255,0.02); color: var(--white); }
     .model-name { font-weight: 700; color: var(--white) !important; white-space: nowrap; }
+    .model-table td.num { text-align: center; font-family: 'DM Sans', sans-serif; }
+    .model-table th.num { text-align: center; }
+    .type-badge { display: inline-block; padding: 0.15rem 0.6rem; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; border-radius: 2px; white-space: nowrap; vertical-align: middle; }
+    .type-badge.bait { background: rgba(200,168,75,0.12); color: #c8a84b; border: 1px solid rgba(200,168,75,0.25); }
 
     /* FEATURES */
     .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 3rem; }
@@ -289,27 +293,55 @@
       <table class="model-table">
         <thead>
           <tr>
+            <th></th>
             <th>Model</th>
-            <th>全長</th>
-            <th>継数</th>
-            <th>適合ライン</th>
-            <th>適合ハリス</th>
-            <th>価格（税別）</th>
+            <th class="num">全長 (m)</th>
+            <th class="num">自重 (g)</th>
+            <th class="num">継数</th>
+            <th class="num">仕舞 (cm)</th>
+            <th class="num">先径/元径 (mm)</th>
+            <th class="num">適合号数</th>
+            <th class="num">定価（税抜）</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="model-name">VS九絵</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
-            <td>お問い合わせ</td>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">VSK480M</td>
+            <td class="num">4.80</td>
+            <td class="num">1200</td>
+            <td class="num">4</td>
+            <td class="num">125</td>
+            <td class="num">4.0 / 24.0</td>
+            <td class="num">30〜80</td>
+            <td class="num">¥120,000</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">VSK480H</td>
+            <td class="num">4.80</td>
+            <td class="num">1250</td>
+            <td class="num">4</td>
+            <td class="num">125</td>
+            <td class="num">4.0 / 24.5</td>
+            <td class="num">50〜100</td>
+            <td class="num">¥123,000</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge bait">ベイト</span></td>
+            <td class="model-name">VSK510XH</td>
+            <td class="num">5.10</td>
+            <td class="num">1280</td>
+            <td class="num">4</td>
+            <td class="num">135</td>
+            <td class="num">3.5 / 34.6</td>
+            <td class="num">70〜200</td>
+            <td class="num">¥260,000</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p style="margin-top:1rem; font-size:0.78rem; color:var(--gray2);">※ スペック詳細はお問い合わせください。カスタムオーダー対応。</p>
+    <p style="font-size:0.72rem; color:var(--white); margin-top:0.75rem; line-height:1.7;">※ 上記ラインナップ以外にも３本継などありますので気になる方はお気軽にお問い合わせください。</p>
   </div>
 </div>
 
