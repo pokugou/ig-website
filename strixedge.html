@@ -83,7 +83,9 @@
     .feature-desc { font-size: 0.83rem; color: var(--gray); line-height: 1.8; }
 
     /* MODEL TABLE */
-    .model-table-wrap { margin-top: 1rem; overflow-x: auto; width: 100%; }
+    .model-table-wrap { margin-top: 1rem; overflow-x: auto; width: 100%; scrollbar-width: none; }
+    .model-table-wrap::-webkit-scrollbar { display: none; }
+    .model-group-header td { background: var(--dark2); padding: 0.5rem 1.25rem; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red2); text-align: left !important; border-top: 2px solid var(--red); border-bottom: 1px solid var(--border2); }
     .model-table { width: 100%; border-collapse: collapse; border: 3px solid var(--border2); }
     .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: center; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: none; color: var(--gray2); border-bottom: 3px solid rgba(255,255,255,0.2); white-space: nowrap; vertical-align: middle; }
     .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 3px solid rgba(255,255,255,0.1); color: var(--gray); vertical-align: middle; text-align: center; }
@@ -268,17 +270,6 @@
   <div class="specs-inner">
     <div class="section-label">Spec</div>
     <h2 class="section-title" style="margin-bottom:0;">主要スペック</h2>
-    <div class="specs-grid">
-      <div class="spec-cell">
-        <div class="spec-cell-label">ガイド</div>
-        <div class="spec-cell-val">Fuji SiC チタン</div>
-      </div>
-      <div class="spec-cell">
-        <div class="spec-cell-label">価格（税別）</div>
-        <div class="spec-cell-val">¥39,300〜¥39,600</div>
-      </div>
-    </div>
-
     <div class="model-table-wrap">
       <table class="model-table">
         <thead>
@@ -339,7 +330,10 @@
             <td class="num">〜30</td>
             <td class="num">¥39,600</td>
           </tr>
-          <tr class="type-break">
+          <tr class="model-group-header">
+            <td colspan="9">ティップランカスタム</td>
+          </tr>
+          <tr>
             <td><span class="type-badge spin">スピニング</span></td>
             <td class="model-name">SE510ML-TP</td>
             <td class="num">1.78</td>
