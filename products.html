@@ -72,17 +72,21 @@
     .genre-heading-name { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.02em; }
     .genre-heading-en { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); font-family: 'DM Sans',sans-serif; }
 
-    /* ICON GRID */
-    .icon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-    .icon-card { text-decoration: none; color: inherit; display: flex; flex-direction: column; }
-    .icon-thumb { aspect-ratio: 16/9; overflow: hidden; background: var(--dark2); border: 1px solid var(--border); border-bottom: none; transition: border-color 0.25s; }
-    .icon-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
-    .icon-card:hover .icon-img { transform: scale(1.04); }
-    .icon-card:hover .icon-thumb { border-color: rgba(204,34,0,0.5); }
-    .icon-deco { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-    .icon-label { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-top: none; padding: 0.5rem 0.75rem; font-size: 0.72rem; color: var(--gold); letter-spacing: 0.1em; text-align: center; font-family: 'DM Sans',sans-serif; font-weight: 700; }
-    .icon-name { padding: 0.55rem 0.75rem; font-size: 1rem; font-weight: 800; letter-spacing: -0.01em; color: rgba(248,248,248,0.88); transition: color 0.2s; line-height: 1.3; text-align: center; background: var(--dark); border: 1px solid var(--border); border-top: none; }
-    .icon-card:hover .icon-name { color: var(--red2); }
+    /* PRODUCT LIST */
+    .product-list { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .product-row { display: flex; align-items: center; gap: 1.5rem; padding: 1.1rem 1.5rem; text-decoration: none; color: inherit; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .product-row:last-child { border-bottom: none; }
+    .product-row:hover { background: rgba(255,255,255,0.03); }
+    .product-row-img { width: 120px; height: 68px; flex-shrink: 0; overflow: hidden; background: var(--dark2); }
+    .product-row-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .product-row:hover .product-row-img img { transform: scale(1.04); }
+    .product-row-deco { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .product-row-body { flex: 1; min-width: 0; }
+    .product-row-tag { font-size: 0.67rem; font-weight: 700; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; font-family: 'DM Sans',sans-serif; margin-bottom: 0.2rem; }
+    .product-row-name { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+    .product-row-desc { font-size: 0.79rem; color: var(--gray2); line-height: 1.5; }
+    .product-row-arrow { color: var(--red2); font-size: 1.1rem; flex-shrink: 0; transition: transform 0.2s; font-family: 'DM Sans',sans-serif; font-weight: 700; padding-left: 0.5rem; }
+    .product-row:hover .product-row-arrow { transform: translateX(4px); }
 
     /* STRIX FEATURE */
     .strix-feature { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 3rem; margin-bottom: 4rem; }
@@ -129,7 +133,6 @@
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     @media (max-width: 1024px) {
-      .icon-grid { grid-template-columns: repeat(2, 1fr); }
       .strix-inner { grid-template-columns: 1fr; gap: 3rem; }
       .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
       .main-wrap { padding: 5rem 2rem; }
@@ -155,8 +158,9 @@
       .dropdown .has-subdrop > a::after { transition: transform 0.25s; display: inline-block; }
       .dropdown .has-subdrop.is-open > a::after { transform: rotate(90deg); }
       .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
-      .icon-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      .icon-name { font-size: 0.9rem; }
+      .product-row-img { width: 80px; height: 46px; }
+      .product-row-name { font-size: 0.98rem; }
+      .product-row-desc { display: none; }
       .genre-heading-name { font-size: 1.3rem; }
       .footer-top { grid-template-columns: 1fr; gap: 2rem; }
       .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
@@ -165,7 +169,7 @@
       .main-wrap { padding: 4rem 1.5rem; }
     }
     @media (max-width: 480px) {
-      .icon-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .product-row { gap: 0.85rem; padding: 0.9rem 1rem; }
     }
   </style>
 </head>
@@ -253,48 +257,60 @@
       <span class="genre-heading-name">オフショア</span>
       <span class="genre-heading-en">OFFSHORE</span>
     </div>
-    <div class="icon-grid">
-      <a class="icon-card" href="strixedge.html">
-        <div class="icon-thumb">
-          <img class="icon-img" src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
+    <div class="product-list">
+      <a class="product-row" href="strixedge.html">
+        <div class="product-row-img"><img src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" /></div>
+        <div class="product-row-body">
+          <div class="product-row-tag">イカメタル・オモリグ</div>
+          <div class="product-row-name">STRIX EDGE</div>
+          <div class="product-row-desc">チタントップ搭載の高感度ロッド。微細なアタリを手元に伝える。</div>
         </div>
-        <div class="icon-label">イカメタル・オモリグ</div>
-        <div class="icon-name">STRIX EDGE</div>
+        <div class="product-row-arrow">→</div>
       </a>
-      <a class="icon-card" href="gtlj.html">
-        <div class="icon-thumb">
-          <img class="icon-img" src="gtlj-banner.png" alt="GTLJ" loading="lazy" />
+      <a class="product-row" href="gtslj.html">
+        <div class="product-row-img"><img src="gtslj-banner.png" alt="GTSLJ" loading="lazy" /></div>
+        <div class="product-row-body">
+          <div class="product-row-tag">SLJ・タイラバ・タイジギング</div>
+          <div class="product-row-name">GTSLJ</div>
+          <div class="product-row-desc">SLJからタイラバ・タイジギングまで対応する超万能ライトオフショアロッド。</div>
         </div>
-        <div class="icon-label">ライトジギング</div>
-        <div class="icon-name">GTLJ</div>
+        <div class="product-row-arrow">→</div>
       </a>
-      <a class="icon-card" href="gtj.html">
-        <div class="icon-thumb">
-          <img class="icon-img" src="gtj-banner.png" alt="GT J" loading="lazy" />
+      <a class="product-row" href="gtlj.html">
+        <div class="product-row-img"><img src="gtlj-banner.png" alt="GTLJ" loading="lazy" /></div>
+        <div class="product-row-body">
+          <div class="product-row-tag">ライトジギング</div>
+          <div class="product-row-name">GTLJ</div>
+          <div class="product-row-desc">青物からマダイまで広く対応。扱いやすい万能ライトジギングロッド。</div>
         </div>
-        <div class="icon-label">ジギング</div>
-        <div class="icon-name">GT J</div>
+        <div class="product-row-arrow">→</div>
       </a>
-      <a class="icon-card" href="gtslj.html">
-        <div class="icon-thumb">
-          <img class="icon-img" src="gtslj-banner.png" alt="GTSLJ" loading="lazy" />
+      <a class="product-row" href="gtj.html">
+        <div class="product-row-img"><img src="gtj-banner.png" alt="GT J" loading="lazy" /></div>
+        <div class="product-row-body">
+          <div class="product-row-tag">ジギング</div>
+          <div class="product-row-name">GT J</div>
+          <div class="product-row-desc">ジギング専用設計。パワーと操作性を高いレベルで両立したモデル。</div>
         </div>
-        <div class="icon-label">SLJ・タイラバ・タイジギング</div>
-        <div class="icon-name">GTSLJ</div>
+        <div class="product-row-arrow">→</div>
       </a>
-      <a class="icon-card" href="gts.html">
-        <div class="icon-thumb">
-          <img class="icon-img" src="gts-banner.png" alt="GTS" loading="lazy" />
+      <a class="product-row" href="gts.html">
+        <div class="product-row-img"><img src="gts-banner.png" alt="GTS" loading="lazy" /></div>
+        <div class="product-row-body">
+          <div class="product-row-tag">スロージギング</div>
+          <div class="product-row-name">GTS</div>
+          <div class="product-row-desc">スロージギング専用。深場の大型魚を攻略するロングロッド。</div>
         </div>
-        <div class="icon-label">スロージギング</div>
-        <div class="icon-name">GTS</div>
+        <div class="product-row-arrow">→</div>
       </a>
-      <a class="icon-card" href="gtr.html">
-        <div class="icon-thumb">
-          <img class="icon-img" src="gtr-banner.png" alt="GTR" loading="lazy" />
+      <a class="product-row" href="gtr.html">
+        <div class="product-row-img"><img src="gtr-banner.png" alt="GTR" loading="lazy" /></div>
+        <div class="product-row-body">
+          <div class="product-row-tag">タイラバ</div>
+          <div class="product-row-name">GTR</div>
+          <div class="product-row-desc">タイラバ専用。繊細なアタリを捉える柔軟ティップ設計。</div>
         </div>
-        <div class="icon-label">タイラバ</div>
-        <div class="icon-name">GTR</div>
+        <div class="product-row-arrow">→</div>
       </a>
     </div>
   </div>
@@ -305,13 +321,17 @@
       <span class="genre-heading-name">ショア</span>
       <span class="genre-heading-en">SHORE</span>
     </div>
-    <div class="icon-grid">
-      <a class="icon-card" href="gtx.html">
-        <div class="icon-thumb" style="background: radial-gradient(ellipse at 30% 20%, rgba(10,120,60,0.3) 0%, transparent 55%), linear-gradient(155deg,#040a06 0%,#071508 45%,#0a1e0c 100%);">
-          <div class="icon-deco"><span style="font-size:2.5rem; font-weight:900; color:rgba(30,180,80,0.22); font-family:'DM Sans',sans-serif;">X</span></div>
+    <div class="product-list">
+      <a class="product-row" href="gtx.html">
+        <div class="product-row-img" style="background: radial-gradient(ellipse at 30% 20%, rgba(10,120,60,0.3) 0%, transparent 55%), linear-gradient(155deg,#040a06 0%,#071508 45%,#0a1e0c 100%);">
+          <div class="product-row-deco"><span style="font-size:2rem; font-weight:900; color:rgba(30,180,80,0.35); font-family:'DM Sans',sans-serif;">X</span></div>
         </div>
-        <div class="icon-label">ショアキャスティング</div>
-        <div class="icon-name">GTX</div>
+        <div class="product-row-body">
+          <div class="product-row-tag">ロックショア</div>
+          <div class="product-row-name">GTX</div>
+          <div class="product-row-desc">ショアキャスティング専用。大型青物を狙うパワーロッド。</div>
+        </div>
+        <div class="product-row-arrow">→</div>
       </a>
     </div>
   </div>
@@ -322,13 +342,17 @@
       <span class="genre-heading-name">船竿</span>
       <span class="genre-heading-en">BOAT</span>
     </div>
-    <div class="icon-grid">
-      <a class="icon-card" href="ika.html">
-        <div class="icon-thumb" style="background: radial-gradient(ellipse at 55% 35%, rgba(10,80,140,0.5) 0%, transparent 60%), linear-gradient(155deg,#020810 0%,#061a2e 50%,#092440 100%);">
-          <div class="icon-deco"><span style="font-size:2.5rem; font-weight:900; color:rgba(30,120,200,0.25); font-family:'Noto Sans JP',sans-serif;">イカ</span></div>
+    <div class="product-list">
+      <a class="product-row" href="ika.html">
+        <div class="product-row-img" style="background: radial-gradient(ellipse at 55% 35%, rgba(10,80,140,0.5) 0%, transparent 60%), linear-gradient(155deg,#020810 0%,#061a2e 50%,#092440 100%);">
+          <div class="product-row-deco"><span style="font-size:1.5rem; font-weight:900; color:rgba(30,120,200,0.4); font-family:'Noto Sans JP',sans-serif;">イカ</span></div>
         </div>
-        <div class="icon-label">イカメタル・ティップラン</div>
-        <div class="icon-name">イカ竿</div>
+        <div class="product-row-body">
+          <div class="product-row-tag">イカメタル・ティップラン</div>
+          <div class="product-row-name">イカ竿</div>
+          <div class="product-row-desc">イカメタル・ティップラン対応の高感度船竿。</div>
+        </div>
+        <div class="product-row-arrow">→</div>
       </a>
     </div>
   </div>
@@ -339,20 +363,24 @@
       <span class="genre-heading-name">底物</span>
       <span class="genre-heading-en">BOTTOM</span>
     </div>
-    <div class="icon-grid">
-      <a class="icon-card" href="ishidai.html">
-        <div class="icon-thumb">
-          <img class="icon-img" src="ishidai-banner.png" alt="VS石鯛" loading="lazy" />
+    <div class="product-list">
+      <a class="product-row" href="ishidai.html">
+        <div class="product-row-img"><img src="ishidai-banner.png" alt="VS石鯛" loading="lazy" /></div>
+        <div class="product-row-body">
+          <div class="product-row-tag">石鯛・石垣鯛</div>
+          <div class="product-row-name">VS石鯛</div>
+          <div class="product-row-desc">磯の王者・石鯛専用。力強いパワーで根魚を制するロッド。</div>
         </div>
-        <div class="icon-label">石鯛・石垣鯛</div>
-        <div class="icon-name">VS石鯛</div>
+        <div class="product-row-arrow">→</div>
       </a>
-      <a class="icon-card" href="vskue.html">
-        <div class="icon-thumb">
-          <img class="icon-img" src="vskue-banner.png" alt="VS九絵" loading="lazy" />
+      <a class="product-row" href="vskue.html">
+        <div class="product-row-img"><img src="vskue-banner.png" alt="VS九絵" loading="lazy" /></div>
+        <div class="product-row-body">
+          <div class="product-row-tag">九絵・底物</div>
+          <div class="product-row-name">VS九絵</div>
+          <div class="product-row-desc">クエ狙いの底物専用。圧倒的なパワーで大型根魚を浮かせる。</div>
         </div>
-        <div class="icon-label">磯・底物</div>
-        <div class="icon-name">VS九絵</div>
+        <div class="product-row-arrow">→</div>
       </a>
     </div>
   </div>
