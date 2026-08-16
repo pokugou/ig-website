@@ -469,11 +469,16 @@
   });
   // Close menu when a leaf link is tapped
   document.querySelectorAll('.subdropdown a, nav ul > li:not(.has-drop) > a').forEach(function(a){
-    a.addEventListener('click', function(){
+    a.addEventListener('click', function(e){
+      var href = a.getAttribute('href');
       ham.classList.remove('is-active');
       ul.classList.remove('is-open');
       document.querySelectorAll('.has-drop').forEach(function(d){ d.classList.remove('is-open'); });
       document.querySelectorAll('.dropdown .has-subdrop').forEach(function(d){ d.classList.remove('is-open'); });
+      if (href && href !== '#') {
+        e.preventDefault();
+        window.location.href = href;
+      }
     });
   });
   document.querySelectorAll('.dropdown .has-subdrop > a').forEach(function(a){

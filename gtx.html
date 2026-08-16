@@ -439,9 +439,14 @@
     });
   });
   document.querySelectorAll('.subdropdown a, nav ul > li:not(.has-drop) > a').forEach(function(a){
-    a.addEventListener('click', function(){
+    a.addEventListener('click', function(e){
+      var href = a.getAttribute('href');
       ul.classList.remove('is-open');
       ham.classList.remove('is-active');
+      if (href && href !== '#') {
+        e.preventDefault();
+        window.location.href = href;
+      }
     });
   });
   document.querySelectorAll('.dropdown .has-subdrop > a').forEach(function(a){
