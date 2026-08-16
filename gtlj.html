@@ -68,21 +68,22 @@
 
     /* SPECS */
     .specs-section { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .specs-inner { max-width: 1200px; margin: 0 auto; padding: 5rem 3rem; }
+    .specs-inner { max-width: 1200px; margin: 0 auto; padding: 5rem 3rem 2rem; }
     .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 3rem; }
-    .spec-cell { background: var(--dark2); padding: 1.75rem; }
+    .spec-cell { background: var(--dark2); padding: 0.9rem 1.75rem; }
     .spec-cell-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gray2); margin-bottom: 0.5rem; font-family: 'DM Sans',sans-serif; }
     .spec-cell-val { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; }
 
     /* FEATURES */
     .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 3rem; }
-    .feature-card { background: var(--dark); padding: 2.5rem; }
-    .feature-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+    .feature-card { background: var(--dark); padding: 1rem 1.5rem; }
+    .feature-icon { display: none; }
     .feature-title { font-size: 1rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.6rem; }
     .feature-desc { font-size: 0.83rem; color: var(--gray); line-height: 1.8; }
 
     /* MODEL TABLE */
-    .model-table-wrap { margin-top: 3rem; overflow-x: auto; width: 100%; }
+    .model-table-wrap { margin-top: 1rem; overflow-x: auto; width: 100%; scrollbar-width: none; }
+    .model-table-wrap::-webkit-scrollbar { display: none; }
     .model-table { width: 100%; border-collapse: collapse; border: 3px solid var(--border2); }
     .model-table th { background: var(--dark2); padding: 0.85rem 1.25rem; text-align: center; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: none; color: var(--gray2); border-bottom: 3px solid rgba(255,255,255,0.2); white-space: nowrap; vertical-align: middle; }
     .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 3px solid rgba(255,255,255,0.1); color: var(--gray); vertical-align: middle; text-align: center; }
@@ -97,7 +98,7 @@
     .type-badge.bait { background: rgba(200,168,75,0.12); color: #c8a84b; border: 1px solid rgba(200,168,75,0.25); }
 
     /* CTA */
-    .cta-section { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 5rem 3rem; }
+    .cta-section { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 2rem 3rem; }
 
     /* PHOTO SLIDER */
     .slider-section { background: var(--black); padding: 5rem 0; }
@@ -202,7 +203,6 @@
             <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
             <li><a href="gts.html">GTS <span class="nav-genre">スロージギング</span></a></li>
             <li><a href="gtr.html">GTR <span class="nav-genre">タイラバ</span></a></li>
-            <li><a href="squria.html">SQURIA</a></li>
           </ul>
         </li>
         <li class="has-subdrop">
@@ -232,6 +232,7 @@
       <a href="color.html">カスタムオーダー</a>
       <ul class="dropdown">
         <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="order.html">オーダーシート</a></li>
         <li><a href="color.html">カラーチャート</a></li>
       </ul>
     </li>
@@ -271,25 +272,6 @@
   <div class="specs-inner">
     <div class="section-label">Spec</div>
     <h2 class="section-title" style="margin-bottom:0;">主要スペック</h2>
-    <div class="specs-grid">
-      <div class="spec-cell">
-        <div class="spec-cell-label">全長</div>
-        <div class="spec-cell-val">1.91m</div>
-      </div>
-      <div class="spec-cell">
-        <div class="spec-cell-label">継数</div>
-        <div class="spec-cell-val">1ピース</div>
-      </div>
-      <div class="spec-cell">
-        <div class="spec-cell-label">対応スタイル</div>
-        <div class="spec-cell-val">ベイト / スピニング</div>
-      </div>
-      <div class="spec-cell">
-        <div class="spec-cell-label">価格（税別）</div>
-        <div class="spec-cell-val">¥31,300〜</div>
-      </div>
-    </div>
-
     <div class="model-table-wrap">
       <table class="model-table">
         <thead>
@@ -419,10 +401,10 @@
 </script>
 
 <!-- FEATURES -->
-<div class="section">
+<div class="section" style="padding-top:0; padding-bottom:1.5rem;">
   <div class="section-label">Features</div>
   <h2 class="section-title">3つの特長</h2>
-  <div class="features-grid">
+  <div class="features-grid" style="margin-top:0.75rem;">
     <div class="feature-card">
       <div class="feature-icon">🎣</div>
       <div class="feature-title">マルチバイアス設計</div>
@@ -473,7 +455,6 @@
           <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
         <li><a href="gts.html">GTS <span class="nav-genre">スロージギング</span></a></li>
           <li><a href="gtr.html">GTR <span class="nav-genre">タイラバ</span></a></li>
-          <li><a href="squria.html">SQURIA</a></li>
           <li><a href="gtx.html">GTX</a></li>
           <li><a href="ika.html">イカ竿</a></li>
         <li><a href="ishidai.html">VS石鯛</a></li>
