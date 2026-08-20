@@ -1513,15 +1513,34 @@ function showConfirm() {
   overlay.classList.add('open');
   overlay.scrollTop = 0;
   document.body.style.overflow = 'hidden';
+
+  // スマホで全体を1画面に収める
+  if (window.innerWidth <= 600) {
+    var box = document.getElementById('confirm-overlay').querySelector('.confirm-box');
+    box.style.zoom = '';
+    setTimeout(function() {
+      var scale = (window.innerHeight / box.scrollHeight) * 0.97;
+      if (scale < 1) {
+        box.style.zoom = scale.toFixed(3);
+        overlay.style.overflowY = 'hidden';
+      }
+    }, 30);
+  }
+}
+
+function resetConfirmOverlay() {
+  var overlay = document.getElementById('confirm-overlay');
+  overlay.classList.remove('open');
+  overlay.style.overflowY = '';
+  var box = overlay.querySelector('.confirm-box');
+  if (box) box.style.zoom = '';
+  document.body.style.overflow = '';
 }
 
 // 確認オーバーレイ：戻るボタン
-document.getElementById('confirm-back-top').addEventListener('click', function() {
-  document.getElementById('confirm-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-});
+document.getElementById('confirm-back-top').addEventListener('click', resetConfirmOverlay);
 document.getElementById('confirm-btn-back').addEventListener('click', function() {
-  document.getElementById('confirm-overlay').classList.remove('open');
+  resetConfirmOverlay();
   document.body.style.overflow = '';
 });
 
@@ -1548,7 +1567,7 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
     + '税込合計：'     + document.getElementById('p-total').textContent;
 
   // 確認画面を閉じて成功画面へ
-  document.getElementById('confirm-overlay').classList.remove('open');
+  resetConfirmOverlay();
   document.getElementById('success-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 
