@@ -1352,22 +1352,46 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
   var form = e.target;
 
   // バリデーション
-  var ok = true;
+  var errors = [];
+  var FIELD_LABELS = {
+    'name': 'お客様名', 'email': 'メールアドレス', 'tel': '電話番号',
+    'model': 'モデル選択', 'guide': 'ガイド仕様', 'grip': 'グリップ仕様',
+    'shipping': '送料', 'address': '送り先住所', 'payment': 'お支払い方法'
+  };
+  var COLOR_LABELS = { 'blank-color': 'ブランクスカラー', 'tip-color': 'ティップカラー' };
+  var THREAD_LABELS = { 'thread-main': 'メインスレッド', 'thread-tip': 'ティップ部分スレッド', 'thread-pin': 'ピンラインスレッド' };
+
   form.querySelectorAll('input[required]:not([type="hidden"]), select[required], textarea[required]').forEach(function(el) {
     el.style.borderColor = '';
-    if (!el.value.trim()) { el.style.borderColor = 'var(--red2)'; ok = false; }
+    if (!el.value.trim()) {
+      el.style.borderColor = 'var(--red2)';
+      errors.push(FIELD_LABELS[el.name] || el.name);
+    }
   });
   ['blank-color','tip-color'].forEach(function(field) {
     var hiddenEl = document.getElementById('f-' + field);
     var wrapEl   = document.getElementById('cm-wrap-' + field);
-    if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); ok = false; }
+    if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); errors.push(COLOR_LABELS[field]); }
   });
   ['thread-main','thread-tip','thread-pin'].forEach(function(field) {
     var hiddenEl = document.getElementById('f-' + field);
     var wrapEl   = document.getElementById('cm-wrap-' + field);
-    if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); ok = false; }
+    if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); errors.push(THREAD_LABELS[field]); }
   });
-  if (!ok) { alert('必須項目を入力してください。'); return; }
+  var errDiv = document.getElementById('form-error-msg');
+  if (errors.length > 0) {
+    if (!errDiv) {
+      errDiv = document.createElement('div');
+      errDiv.id = 'form-error-msg';
+      errDiv.style.cssText = 'margin:1rem 0; padding:1rem 1.25rem; background:rgba(204,34,0,0.1); border:1px solid var(--red2); border-radius:4px; font-size:0.82rem; line-height:2; color:var(--red);';
+      var submitBtn = document.querySelector('.btn-submit');
+      submitBtn.parentNode.insertBefore(errDiv, submitBtn);
+    }
+    errDiv.innerHTML = errors.map(function(label) { return '・' + label + ' が未選択 / 未入力です。'; }).join('<br>');
+    errDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (errDiv) errDiv.remove();
 
   showConfirm();
 });
