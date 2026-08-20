@@ -239,8 +239,8 @@
 
     @media (max-width: 600px) {
       /* 確認画面：モバイル1画面に収める */
-      .confirm-overlay { padding: 0; }
-      .confirm-box { border-left: none; border-right: none; border-radius: 0; }
+      .confirm-overlay { padding: 0; overflow: hidden; }
+      .confirm-box { border-left: none; border-right: none; border-radius: 0; zoom: 0.72; width: calc(100vw / 0.72); max-width: none; margin-left: 0; }
       .confirm-eyebrow { display: none; }
       .confirm-title { font-size: 0.92rem; }
       .confirm-head { padding: 0.55rem 0.9rem 0.5rem; }
@@ -1514,22 +1514,19 @@ function showConfirm() {
   overlay.scrollTop = 0;
   document.body.style.overflow = 'hidden';
 
-  // 確認画面を1画面に収める（上下左右ぴったり）
-  var box = overlay.querySelector('.confirm-box');
-  box.style.zoom = '';
-  box.style.width = '';
-  overlay.style.overflow = '';
+  // 確認画面を1画面に収める（JS で精密計算して CSS zoom を上書き）
+  var _cbox = document.querySelector('#confirm-overlay .confirm-box');
+  _cbox.style.zoom = '1';
+  _cbox.style.width = window.innerWidth + 'px';
   setTimeout(function() {
-    var oh = box.scrollHeight;
-    var vh = window.innerHeight;
     var vw = window.innerWidth;
-    if (oh > vh) {
-      var s = (vh / oh) * 0.95;
-      box.style.zoom = s.toFixed(4);
-      box.style.width = Math.ceil(vw / s) + 'px';
-      overlay.style.overflow = 'hidden';
-    }
-  }, 300);
+    var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    var oh = _cbox.scrollHeight;
+    var s = (vh / oh) * 0.93;
+    if (s >= 1) s = 1;
+    _cbox.style.zoom = s.toFixed(4);
+    _cbox.style.width = Math.ceil(vw / s) + 'px';
+  }, 400);
 }
 
 function resetConfirmOverlay() {
@@ -1537,7 +1534,7 @@ function resetConfirmOverlay() {
   overlay.classList.remove('open');
   overlay.style.overflowY = '';
   var box = overlay.querySelector('.confirm-box');
-  if (box) { box.style.zoom = ''; box.style.width = ''; }
+  if (box) { box.style.zoom = ''; box.style.width = ''; box.style.marginLeft = ''; }
   document.body.style.overflow = '';
 }
 
