@@ -614,7 +614,13 @@
 
       <div class="field">
         <label>ネーム仕様</label>
-        <input type="text" name="name-custom" placeholder="例：TANAKA / 田中　（希望しない場合は空欄）" />
+        <select name="name-custom" id="sel-name">
+          <option value="定番ネームのみ（＋¥0）">定番ネームのみ（＋¥0）</option>
+          <option value="オリジナルネーム（１箇所 ¥1,200）">オリジナルネーム（１箇所 ¥1,200）</option>
+        </select>
+        <div id="name-original-note" style="display:none; margin-top:0.6rem; font-size:0.82rem; color:var(--gray2); background:rgba(255,255,255,0.04); border:1px solid var(--border2); border-radius:4px; padding:0.7rem 1rem; line-height:1.7;">
+          ご希望の文字（ローマ字・漢字・カタカナ等）を下の<strong style="color:var(--white);">自由記入欄</strong>にご記入ください。
+        </div>
       </div>
     </div>
 
@@ -1664,6 +1670,16 @@ document.getElementById('btn-save-success').addEventListener('click', function()
           });
       }, 300);
     }
+  });
+})();
+
+// --- ネーム仕様トグル ---
+(function(){
+  var sel = document.getElementById('sel-name');
+  var note = document.getElementById('name-original-note');
+  if (!sel || !note) return;
+  sel.addEventListener('change', function(){
+    note.style.display = sel.value.indexOf('オリジナル') !== -1 ? 'block' : 'none';
   });
 })();
 
