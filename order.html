@@ -1519,19 +1519,17 @@ function showConfirm() {
   box.style.zoom = '';
   box.style.width = '';
   overlay.style.overflow = '';
-  requestAnimationFrame(function() {
-    requestAnimationFrame(function() {
-      var oh = box.scrollHeight;
-      var vh = window.innerHeight;
-      var vw = window.innerWidth;
-      if (oh > vh) {
-        var scale = (vh / oh) * 0.97;
-        box.style.zoom = scale.toFixed(4);
-        box.style.width = Math.ceil(vw / scale) + 'px';
-        overlay.style.overflow = 'hidden';
-      }
-    });
-  });
+  setTimeout(function() {
+    var oh = box.scrollHeight;
+    var vh = window.innerHeight;
+    var vw = window.innerWidth;
+    if (oh > vh) {
+      var s = (vh / oh) * 0.95;
+      box.style.zoom = s.toFixed(4);
+      box.style.width = Math.ceil(vw / s) + 'px';
+      overlay.style.overflow = 'hidden';
+    }
+  }, 300);
 }
 
 function resetConfirmOverlay() {
