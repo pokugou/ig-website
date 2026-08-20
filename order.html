@@ -1514,16 +1514,20 @@ function showConfirm() {
   overlay.scrollTop = 0;
   document.body.style.overflow = 'hidden';
 
-  // 確認画面を1画面に収める（スクロールなし）
+  // 確認画面を1画面に収める（上下左右ぴったり）
   var box = overlay.querySelector('.confirm-box');
   box.style.zoom = '';
+  box.style.width = '';
   overlay.style.overflow = '';
   requestAnimationFrame(function() {
     requestAnimationFrame(function() {
       var oh = box.scrollHeight;
       var vh = window.innerHeight;
+      var vw = window.innerWidth;
       if (oh > vh) {
-        box.style.zoom = (vh / oh * 0.97).toFixed(3);
+        var scale = (vh / oh) * 0.97;
+        box.style.zoom = scale.toFixed(4);
+        box.style.width = Math.ceil(vw / scale) + 'px';
         overlay.style.overflow = 'hidden';
       }
     });
@@ -1535,7 +1539,7 @@ function resetConfirmOverlay() {
   overlay.classList.remove('open');
   overlay.style.overflowY = '';
   var box = overlay.querySelector('.confirm-box');
-  if (box) box.style.zoom = '';
+  if (box) { box.style.zoom = ''; box.style.width = ''; }
   document.body.style.overflow = '';
 }
 
