@@ -1087,7 +1087,7 @@
       </a>
       <button type="button" class="share-btn share-save" id="btn-save-image">
         <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-        画像として保存
+        画像に保存してLINEに送る
       </button>
     </div>
     <div class="confirm-actions">
@@ -1119,7 +1119,7 @@
       </a>
       <button type="button" class="share-btn share-save" id="btn-save-success">
         <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-        画像として保存
+        画像に保存してLINEに送る
       </button>
     </div>
     <div class="success-note">
@@ -1602,7 +1602,8 @@ function buildOrderCard() {
   document.getElementById('order-card').innerHTML = html;
 }
 
-// --- 画像として保存 ---
+// --- 画像に保存してLINEに送る ---
+var SAVE_BTN_LABEL = '<svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 画像に保存してLINEに送る';
 function saveAsImage(btnEl) {
   if (!window.html2canvas) { alert('ライブラリを読み込み中です。しばらく待ってからお試しください。'); return; }
   buildOrderCard();
@@ -1616,16 +1617,23 @@ function saveAsImage(btnEl) {
     backgroundColor: '#0f0f0f',
     logging: false
   }).then(function(canvas) {
-    var link = document.createElement('a');
-    link.download = 'ig-rod-order-' + new Date().toISOString().slice(0,10) + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    if (btnEl) {
-      btnEl.classList.remove('is-loading');
-      btnEl.innerHTML = '<svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 画像として保存';
-    }
+    var filename = 'ig-rod-order-' + new Date().toISOString().slice(0,10) + '.png';
+    canvas.toBlob(function(blob) {
+      var file = new File([blob], filename, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: 'IGロッド オーダー内容' })
+          .catch(function() {});
+      } else {
+        // PCなどシェアAPIが使えない場合はダウンロード
+        var link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+      if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.innerHTML = SAVE_BTN_LABEL; }
+    }, 'image/png');
   }).catch(function() {
-    if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.textContent = '画像として保存'; }
+    if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.innerHTML = SAVE_BTN_LABEL; }
     alert('画像の生成に失敗しました。スクリーンショットをご利用ください。');
   });
 }
