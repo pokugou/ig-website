@@ -302,7 +302,8 @@
   <!-- ROD PREVIEW -->
   <div class="rod-card">
     <div class="rod-card-label">PREVIEW — ロッドカラープレビュー</div>
-    <svg id="rod-svg" viewBox="0 0 1400 230" xmlns="http://www.w3.org/2000/svg">
+    <canvas id="rod-canvas" style="width:100%;display:block;border-radius:4px;"></canvas>
+    <svg id="rod-svg" viewBox="0 0 1400 230" xmlns="http://www.w3.org/2000/svg" style="display:none">
       <defs>
         <!-- Strong cylinder gradient for blank/tip: bright specular top, deep shadow bottom -->
         <linearGradient id="cyl-rod" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
@@ -709,26 +710,90 @@ function partLabel(part) {
   return map[part] || '';
 }
 
-// ===== RENDER SVG =====
-function renderSVG() {
-  document.getElementById('svg-tip').setAttribute('fill', state.tip.hex);
-  document.getElementById('svg-blank').setAttribute('fill', state.blank.hex);
-  document.querySelectorAll('.svg-thread').forEach(function(el) {
-    el.setAttribute('fill', state.thread.hex);
-  });
-  document.getElementById('svg-reelseat').setAttribute('fill', state.reelseat.hex);
-  document.getElementById('svg-trigger').setAttribute('fill', darken(state.reelseat.hex, 0.75));
-  document.querySelectorAll('.svg-rs-hood').forEach(function(el) {
-    el.setAttribute('fill', lighten(state.reelseat.hex, 1.25));
-  });
-  document.querySelectorAll('.svg-grip').forEach(function(el) {
-    el.setAttribute('fill', state.grip ? state.grip.hex : '#1a1a1a');
-  });
+// ===== CANVAS ROD PREVIEW =====
+var rodOrigData = null;
+var rodCanvas, rodCtx;
+
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  var max = Math.max(r,g,b), min = Math.min(r,g,b);
+  var h=0, s=0, l=(max+min)/2;
+  if (max !== min) {
+    var d = max - min;
+    s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max) {
+      case r: h = ((g-b)/d + (g<b?6:0))/6; break;
+      case g: h = ((b-r)/d + 2)/6; break;
+      case b: h = ((r-g)/d + 4)/6; break;
+    }
+  }
+  return { h: h*360, s: s, l: l };
 }
 
-function lighten(hex, factor) {
-  var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  return 'rgb(' + Math.min(255,Math.round(r*factor)) + ',' + Math.min(255,Math.round(g*factor)) + ',' + Math.min(255,Math.round(b*factor)) + ')';
+function hslToRgb(h, s, l) {
+  h /= 360;
+  var r, g, b;
+  if (s === 0) { r = g = b = l; }
+  else {
+    var hue2rgb = function(p,q,t) {
+      if (t<0) t+=1; if (t>1) t-=1;
+      if (t<1/6) return p+(q-p)*6*t;
+      if (t<1/2) return q;
+      if (t<2/3) return p+(q-p)*(2/3-t)*6;
+      return p;
+    };
+    var q = l<0.5 ? l*(1+s) : l+s-l*s, p = 2*l-q;
+    r = hue2rgb(p,q,h+1/3); g = hue2rgb(p,q,h); b = hue2rgb(p,q,h-1/3);
+  }
+  return { r: Math.round(r*255), g: Math.round(g*255), b: Math.round(b*255) };
+}
+
+function hexToHsl(hex) {
+  var r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return rgbToHsl(r, g, b);
+}
+
+function hueInRange(h, lo, hi) {
+  if (lo <= hi) return h >= lo && h <= hi;
+  return h >= lo || h <= hi;
+}
+
+function initRodCanvas() {
+  rodCanvas = document.getElementById('rod-canvas');
+  rodCtx = rodCanvas.getContext('2d');
+  var img = new Image();
+  img.onload = function() {
+    rodCanvas.width = img.naturalWidth;
+    rodCanvas.height = img.naturalHeight;
+    rodCtx.drawImage(img, 0, 0);
+    try { rodOrigData = rodCtx.getImageData(0, 0, rodCanvas.width, rodCanvas.height); }
+    catch(e) { console.warn('Canvas getImageData blocked:', e); }
+    renderSVG();
+  };
+  img.src = 'rod-diagram.jpg';
+}
+
+// ===== RENDER SVG =====
+function renderSVG() {
+  if (rodOrigData) {
+    var blankHsl = hexToHsl(state.blank.hex);
+    var tipHsl   = hexToHsl(state.tip.hex);
+    var data = new Uint8ClampedArray(rodOrigData.data);
+    for (var i = 0; i < data.length; i += 4) {
+      var r=data[i], g=data[i+1], b=data[i+2];
+      var hsl = rgbToHsl(r, g, b);
+      if (hsl.l > 0.88 || hsl.s < 0.12) continue; // skip white bg and near-neutral
+      var newRgb;
+      if (hueInRange(hsl.h, 340, 28)) {            // red/blank hue range
+        newRgb = hslToRgb(blankHsl.h, hsl.s, hsl.l);
+        data[i]=newRgb.r; data[i+1]=newRgb.g; data[i+2]=newRgb.b;
+      } else if (hueInRange(hsl.h, 52, 98)) {       // yellow-green/tip hue range
+        newRgb = hslToRgb(tipHsl.h, hsl.s, hsl.l);
+        data[i]=newRgb.r; data[i+1]=newRgb.g; data[i+2]=newRgb.b;
+      }
+    }
+    rodCtx.putImageData(new ImageData(data, rodCanvas.width, rodCanvas.height), 0, 0);
+  }
 }
 
 function darken(hex, factor) {
@@ -853,8 +918,8 @@ document.getElementById('btn-order').addEventListener('click', function(e) {
 
 // ===== INIT =====
 renderSwatches();
-renderSVG();
 renderSummary();
+initRodCanvas(); // loads image then calls renderSVG()
 </script>
 </body>
 </html>
