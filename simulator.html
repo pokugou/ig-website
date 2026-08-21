@@ -302,150 +302,175 @@
   <!-- ROD PREVIEW -->
   <div class="rod-card">
     <div class="rod-card-label">PREVIEW — ロッドカラープレビュー</div>
-    <svg id="rod-svg" viewBox="0 0 1400 210" xmlns="http://www.w3.org/2000/svg">
+    <svg id="rod-svg" viewBox="0 0 1400 190" xmlns="http://www.w3.org/2000/svg">
       <defs>
+        <!-- Cylindrical highlight gradient (top=bright, bottom=dark) -->
         <linearGradient id="cyl-shade" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-          <stop offset="0%"   stop-color="#fff" stop-opacity="0.42"/>
-          <stop offset="30%"  stop-color="#fff" stop-opacity="0.06"/>
-          <stop offset="65%"  stop-color="#000" stop-opacity="0.08"/>
-          <stop offset="100%" stop-color="#000" stop-opacity="0.54"/>
+          <stop offset="0%"   stop-color="#fff" stop-opacity="0.45"/>
+          <stop offset="28%"  stop-color="#fff" stop-opacity="0.07"/>
+          <stop offset="65%"  stop-color="#000" stop-opacity="0.09"/>
+          <stop offset="100%" stop-color="#000" stop-opacity="0.56"/>
         </linearGradient>
-        <linearGradient id="cyl-shade-grip" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-          <stop offset="0%"   stop-color="#fff" stop-opacity="0.20"/>
-          <stop offset="35%"  stop-color="#fff" stop-opacity="0.04"/>
-          <stop offset="70%"  stop-color="#000" stop-opacity="0.12"/>
-          <stop offset="100%" stop-color="#000" stop-opacity="0.52"/>
+        <linearGradient id="cyl-grip" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+          <stop offset="0%"   stop-color="#fff" stop-opacity="0.22"/>
+          <stop offset="32%"  stop-color="#fff" stop-opacity="0.05"/>
+          <stop offset="68%"  stop-color="#000" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#000" stop-opacity="0.55"/>
         </linearGradient>
-        <linearGradient id="cyl-shade-metal" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-          <stop offset="0%"   stop-color="#fff" stop-opacity="0.65"/>
-          <stop offset="30%"  stop-color="#fff" stop-opacity="0.14"/>
-          <stop offset="65%"  stop-color="#000" stop-opacity="0.10"/>
-          <stop offset="100%" stop-color="#000" stop-opacity="0.68"/>
+        <linearGradient id="cyl-metal" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+          <stop offset="0%"   stop-color="#fff" stop-opacity="0.70"/>
+          <stop offset="28%"  stop-color="#fff" stop-opacity="0.18"/>
+          <stop offset="60%"  stop-color="#000" stop-opacity="0.10"/>
+          <stop offset="100%" stop-color="#000" stop-opacity="0.72"/>
         </linearGradient>
       </defs>
 
-      <!-- ===== TIP (▲ティップカラー): x=20→108, hw 0→2 ===== -->
-      <polygon id="svg-tip" points="20,80 108,78 108,82" fill="#cfd233"/>
-      <polygon points="20,80 108,78 108,82" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- ===== ▲ TIP COLOR (x=20→132, hw 0→2, center Y=72) ===== -->
+      <polygon id="svg-tip" points="20,72 132,70 132,74" fill="#cfd233"/>
+      <polygon points="20,72 132,70 132,74" fill="url(#cyl-shade)" style="pointer-events:none"/>
 
-      <!-- Tip thread wrap (ティップ部分スレッド): x=106→116 -->
-      <polygon class="svg-thread" points="106,78.0 116,77.8 116,82.2 106,82.0" fill="#222"/>
-      <polygon points="106,78.0 116,77.8 116,82.2 106,82.0" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- Tip thread wrap (ティップ部分スレッド, x=130→142) -->
+      <polygon class="svg-thread" points="130,70.0 142,69.8 142,74.2 130,74.0" fill="#222"/>
+      <polygon points="130,70.0 142,69.8 142,74.2 130,74.0" fill="url(#cyl-shade)" style="pointer-events:none"/>
 
-      <!-- ===== BLANK BODY (①ブランクスカラー): x=108→770, hw 2→13 ===== -->
-      <polygon id="svg-blank" points="108,78 770,67 770,93 108,82" fill="#ac1d2b"/>
-      <polygon points="108,78 770,67 770,93 108,82" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- ===== ① BLANK BODY (x=130→900, hw 2→11, center Y=72) ===== -->
+      <!-- top: (130,70)→(900,61)  bot: (900,83)→(130,74) -->
+      <polygon id="svg-blank" points="130,70 900,61 900,83 130,74" fill="#ac1d2b"/>
+      <polygon points="130,70 900,61 900,83 130,74" fill="url(#cyl-shade)" style="pointer-events:none"/>
 
-      <!-- ===== THREAD WRAPS (②〜④スレッド) at each guide ===== -->
-      <polygon class="svg-thread" points="133,77.5 143,77.4 143,82.6 133,82.5" fill="#222"/>
-      <polygon points="133,77.5 143,77.4 143,82.6 133,82.5" fill="url(#cyl-shade)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="193,76.5 203,76.4 203,83.6 193,83.5" fill="#222"/>
-      <polygon points="193,76.5 203,76.4 203,83.6 193,83.5" fill="url(#cyl-shade)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="279,75.1 289,75.0 289,85.0 279,84.9" fill="#222"/>
-      <polygon points="279,75.1 289,75.0 289,85.0 279,84.9" fill="url(#cyl-shade)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="366,73.7 376,73.5 376,86.5 366,86.3" fill="#222"/>
-      <polygon points="366,73.7 376,73.5 376,86.5 366,86.3" fill="url(#cyl-shade)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="452,72.3 462,72.1 462,87.9 452,87.7" fill="#222"/>
-      <polygon points="452,72.3 462,72.1 462,87.9 452,87.7" fill="url(#cyl-shade)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="539,70.8 549,70.7 549,89.3 539,89.2" fill="#222"/>
-      <polygon points="539,70.8 549,70.7 549,89.3 539,89.2" fill="url(#cyl-shade)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="619,69.5 629,69.3 629,90.7 619,90.5" fill="#222"/>
-      <polygon points="619,69.5 629,69.3 629,90.7 619,90.5" fill="url(#cyl-shade)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="685,68.4 695,68.2 695,91.8 685,91.6" fill="#222"/>
-      <polygon points="685,68.4 695,68.2 695,91.8 685,91.6" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- ===== ②〜④ THREAD WRAPS at each guide ===== -->
+      <!-- G1 x=158, hw≈2.37 → y=69.63/74.37 -->
+      <polygon class="svg-thread" points="154,69.7 162,69.6 162,74.4 154,74.3" fill="#222"/>
+      <polygon points="154,69.7 162,69.6 162,74.4 154,74.3" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- G2 x=230, hw≈3.21 → y=68.79/75.21 -->
+      <polygon class="svg-thread" points="226,68.8 234,68.7 234,75.3 226,75.2" fill="#222"/>
+      <polygon points="226,68.8 234,68.7 234,75.3 226,75.2" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- G3 x=320, hw≈4.26 → y=67.74/76.26 -->
+      <polygon class="svg-thread" points="316,67.8 324,67.7 324,76.3 316,76.2" fill="#222"/>
+      <polygon points="316,67.8 324,67.7 324,76.3 316,76.2" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- G4 x=420, hw≈5.42 → y=66.58/77.42 -->
+      <polygon class="svg-thread" points="416,66.6 424,66.5 424,77.5 416,77.4" fill="#222"/>
+      <polygon points="416,66.6 424,66.5 424,77.5 416,77.4" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- G5 x=530, hw≈6.70 → y=65.30/78.70 -->
+      <polygon class="svg-thread" points="526,65.4 534,65.3 534,78.7 526,78.6" fill="#222"/>
+      <polygon points="526,65.4 534,65.3 534,78.7 526,78.6" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- G6 x=645, hw≈8.04 → y=63.96/80.04 -->
+      <polygon class="svg-thread" points="641,64.0 649,63.9 649,80.1 641,80.0" fill="#222"/>
+      <polygon points="641,64.0 649,63.9 649,80.1 641,64.0" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- G7 x=758, hw≈9.35 → y=62.65/81.35 -->
+      <polygon class="svg-thread" points="754,62.7 762,62.6 762,81.4 754,81.3" fill="#222"/>
+      <polygon points="754,62.7 762,62.6 762,81.4 754,81.3" fill="url(#cyl-shade)" style="pointer-events:none"/>
+      <!-- G8 (stripping) x=858, hw≈10.51 → y=61.49/82.51 -->
+      <polygon class="svg-thread" points="854,61.5 862,61.4 862,82.6 854,82.5" fill="#222"/>
+      <polygon points="854,61.5 862,61.4 862,82.6 854,82.5" fill="url(#cyl-shade)" style="pointer-events:none"/>
 
-      <!-- ===== GUIDE RINGS (small proportional O-rings) ===== -->
-      <!-- tiptop at x=108 -->
-      <g stroke="#666" fill="none">
-        <line x1="108" y1="78" x2="108" y2="73" stroke-width="0.8"/>
-        <circle cx="108" cy="71" r="2.2" stroke-width="1.3"/>
+      <!-- ===== GUIDE RINGS (small O-rings, get larger toward handle) ===== -->
+      <!-- tiptop at x=132 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="132" y1="70" x2="132" y2="65.5" stroke-width="0.9"/>
+        <circle cx="132" cy="63.5" r="2" stroke-width="1.4"/>
       </g>
-      <!-- guide 1 at x=138, r=3 -->
-      <g stroke="#666" fill="none">
-        <line x1="138" y1="77.5" x2="138" y2="71" stroke-width="1.0"/>
-        <circle cx="138" cy="68" r="3" stroke-width="1.5"/>
+      <!-- G1 x=158 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="158" y1="69.6" x2="158" y2="64" stroke-width="1.0"/>
+        <circle cx="158" cy="61.5" r="2.5" stroke-width="1.6"/>
       </g>
-      <!-- guide 2 at x=198, r=4 -->
-      <g stroke="#666" fill="none">
-        <line x1="198" y1="76.5" x2="198" y2="69" stroke-width="1.1"/>
-        <circle cx="198" cy="65" r="4" stroke-width="1.7"/>
+      <!-- G2 x=230 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="230" y1="68.8" x2="230" y2="63" stroke-width="1.1"/>
+        <circle cx="230" cy="60" r="3" stroke-width="1.7"/>
       </g>
-      <!-- guide 3 at x=284, r=5 -->
-      <g stroke="#666" fill="none">
-        <line x1="284" y1="75.1" x2="284" y2="67" stroke-width="1.3"/>
-        <circle cx="284" cy="62" r="5" stroke-width="1.9"/>
+      <!-- G3 x=320 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="320" y1="67.7" x2="320" y2="61" stroke-width="1.2"/>
+        <circle cx="320" cy="57.5" r="3.5" stroke-width="1.8"/>
       </g>
-      <!-- guide 4 at x=371, r=6 -->
-      <g stroke="#666" fill="none">
-        <line x1="371" y1="73.6" x2="371" y2="64" stroke-width="1.5"/>
-        <circle cx="371" cy="58" r="6" stroke-width="2.1"/>
+      <!-- G4 x=420 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="420" y1="66.5" x2="420" y2="59" stroke-width="1.4"/>
+        <circle cx="420" cy="55" r="4" stroke-width="2.0"/>
       </g>
-      <!-- guide 5 at x=457, r=7 -->
-      <g stroke="#666" fill="none">
-        <line x1="457" y1="72.2" x2="457" y2="62" stroke-width="1.7"/>
-        <circle cx="457" cy="55" r="7" stroke-width="2.2"/>
+      <!-- G5 x=530 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="530" y1="65.3" x2="530" y2="57" stroke-width="1.5"/>
+        <circle cx="530" cy="52.5" r="4.5" stroke-width="2.1"/>
       </g>
-      <!-- guide 6 at x=544, r=8 -->
-      <g stroke="#666" fill="none">
-        <line x1="544" y1="70.8" x2="544" y2="59" stroke-width="1.9"/>
-        <circle cx="544" cy="51" r="8" stroke-width="2.4"/>
+      <!-- G6 x=645 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="645" y1="64.0" x2="645" y2="55" stroke-width="1.7"/>
+        <circle cx="645" cy="50" r="5" stroke-width="2.3"/>
       </g>
-      <!-- guide 7 at x=624, r=9 -->
-      <g stroke="#666" fill="none">
-        <line x1="624" y1="69.4" x2="624" y2="57" stroke-width="2.1"/>
-        <circle cx="624" cy="48" r="9" stroke-width="2.6"/>
+      <!-- G7 x=758 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="758" y1="62.6" x2="758" y2="52" stroke-width="1.9"/>
+        <circle cx="758" cy="46.5" r="5.5" stroke-width="2.5"/>
       </g>
-      <!-- stripping guide at x=690, r=11 -->
-      <g stroke="#666" fill="none">
-        <line x1="690" y1="68.3" x2="690" y2="54" stroke-width="2.3"/>
-        <circle cx="690" cy="43" r="11" stroke-width="2.9"/>
+      <!-- G8 stripping x=858 -->
+      <g stroke="#555" fill="none" stroke-linecap="round">
+        <line x1="858" y1="61.5" x2="858" y2="50" stroke-width="2.1"/>
+        <circle cx="858" cy="44" r="6" stroke-width="2.7"/>
       </g>
 
-      <!-- ===== FORE GRIP (⑤EVAグリップ前): x=770→868 ===== -->
-      <path id="svg-grip-front" d="M770,67 C782,64 790,63 800,63 L868,63 L868,97 C855,97 844,97 800,97 C790,97 782,96 770,93 Z" fill="#1a1a1a"/>
-      <path d="M770,67 C782,64 790,63 800,63 L868,63 L868,97 C855,97 844,97 800,97 C790,97 782,96 770,93 Z" fill="url(#cyl-shade-grip)" style="pointer-events:none"/>
+      <!-- ===== ⑤ FORE GRIP (EVA): x=900→992 ===== -->
+      <!-- Smooth transition from blank end (hw=11) to grip (hw=16) -->
+      <path id="svg-grip-front" d="M900,61 C910,58.5 918,57 928,57 L992,57 L992,87 C918,87 910,85.5 900,83 Z" fill="#1a1a1a"/>
+      <path d="M900,61 C910,58.5 918,57 928,57 L992,57 L992,87 C918,87 910,85.5 900,83 Z" fill="url(#cyl-grip)" style="pointer-events:none"/>
+      <!-- EVA texture rings on fore grip -->
+      <line x1="920" y1="57" x2="920" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="940" y1="57" x2="940" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="960" y1="57" x2="960" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="980" y1="57" x2="980" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
 
-      <!-- ===== REEL SEAT (⑥リールシート): x=868→988 ===== -->
-      <!-- Fore collar -->
-      <rect x="866" y="62" width="18" height="36" rx="2" fill="#aaa"/>
-      <rect x="866" y="62" width="18" height="36" rx="2" fill="url(#cyl-shade-metal)" style="pointer-events:none"/>
-      <!-- Main seat body -->
-      <rect id="svg-reelseat" x="884" y="60" width="88" height="40" fill="#888"/>
-      <rect x="884" y="60" width="88" height="40" fill="url(#cyl-shade-metal)" style="pointer-events:none"/>
-      <!-- Trigger (downward teardrop) -->
-      <path id="svg-trigger" d="M902,100 L946,100 Q944,114 924,122 Q904,114 902,100 Z" fill="#666"/>
-      <path d="M902,100 L946,100 Q944,114 924,122 Q904,114 902,100 Z" fill="url(#cyl-shade-metal)" style="pointer-events:none"/>
-      <!-- Rear collar -->
-      <rect x="972" y="62" width="18" height="36" rx="2" fill="#aaa"/>
-      <rect x="972" y="62" width="18" height="36" rx="2" fill="url(#cyl-shade-metal)" style="pointer-events:none"/>
+      <!-- ===== ⑥ REEL SEAT: x=992→1140 ===== -->
+      <!-- Fore metal hood -->
+      <rect x="990" y="58" width="22" height="28" rx="3" fill="#bbb"/>
+      <rect x="990" y="58" width="22" height="28" rx="3" fill="url(#cyl-metal)" style="pointer-events:none"/>
+      <!-- Main reel seat body, hw=19 → y=53/91 -->
+      <rect id="svg-reelseat" x="1012" y="53" width="106" height="38" fill="#8a8a8a"/>
+      <rect x="1012" y="53" width="106" height="38" fill="url(#cyl-metal)" style="pointer-events:none"/>
+      <!-- Trigger (prominent teardrop pointing down) -->
+      <path id="svg-trigger" d="M1032,91 L1088,91 Q1086,108 1060,117 Q1034,108 1032,91 Z" fill="#6a6a6a"/>
+      <path d="M1032,91 L1088,91 Q1086,108 1060,117 Q1034,108 1032,91 Z" fill="url(#cyl-metal)" style="pointer-events:none"/>
+      <!-- Rear metal hood -->
+      <rect x="1118" y="58" width="22" height="28" rx="3" fill="#bbb"/>
+      <rect x="1118" y="58" width="22" height="28" rx="3" fill="url(#cyl-metal)" style="pointer-events:none"/>
 
-      <!-- ===== REAR GRIP (⑤EVAグリップ後): x=988→1222 ===== -->
-      <rect id="svg-grip-rear" x="988" y="63" width="234" height="34" rx="4" fill="#1a1a1a"/>
-      <rect x="988" y="63" width="234" height="34" rx="4" fill="url(#cyl-shade-grip)" style="pointer-events:none"/>
+      <!-- ===== ⑤ REAR GRIP (EVA): x=1140→1370 ===== -->
+      <rect id="svg-grip-rear" x="1140" y="57" width="230" height="30" rx="5" fill="#1a1a1a"/>
+      <rect x="1140" y="57" width="230" height="30" rx="5" fill="url(#cyl-grip)" style="pointer-events:none"/>
+      <!-- EVA texture rings on rear grip -->
+      <line x1="1165" y1="57" x2="1165" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="1195" y1="57" x2="1195" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="1225" y1="57" x2="1225" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="1255" y1="57" x2="1255" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="1285" y1="57" x2="1285" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="1315" y1="57" x2="1315" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
+      <line x1="1345" y1="57" x2="1345" y2="87" stroke="#111" stroke-width="1.2" opacity="0.5"/>
 
-      <!-- ===== BUTT CAP: x=1220→1246 ===== -->
-      <rect x="1220" y="65" width="26" height="30" rx="14" fill="#111"/>
-      <rect x="1220" y="65" width="26" height="30" rx="14" fill="url(#cyl-shade-grip)" style="pointer-events:none"/>
+      <!-- ===== BUTT CAP: x=1368→1392 ===== -->
+      <ellipse cx="1380" cy="72" rx="12" ry="16" fill="#111"/>
+      <ellipse cx="1380" cy="72" rx="12" ry="16" fill="url(#cyl-grip)" style="pointer-events:none"/>
 
       <!-- ===== CALLOUT LABELS ===== -->
-      <g font-family="'Noto Sans JP',sans-serif" fill="#333">
-        <line x1="63" y1="80" x2="63" y2="148" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
-        <text x="63" y="159" text-anchor="middle" font-size="11" fill="#444">▲ティップカラー</text>
-
-        <line x1="111" y1="78" x2="111" y2="138" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
-        <text x="111" y="149" text-anchor="middle" font-size="10" fill="#777">ティップ部分スレッド</text>
-
-        <line x1="390" y1="69" x2="390" y2="148" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
-        <text x="390" y="161" text-anchor="middle" font-size="12" fill="#222" font-weight="700">①ブランクスカラー</text>
-
-        <line x1="544" y1="67" x2="590" y2="148" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
-        <text x="590" y="161" text-anchor="middle" font-size="12" fill="#222" font-weight="700">②〜④スレッド</text>
-
-        <line x1="928" y1="100" x2="928" y2="158" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
-        <text x="928" y="171" text-anchor="middle" font-size="12" fill="#222" font-weight="700">⑥リールシート</text>
-
-        <line x1="1104" y1="63" x2="1104" y2="148" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
-        <text x="1104" y="161" text-anchor="middle" font-size="12" fill="#222" font-weight="700">⑤EVAグリップ</text>
+      <g font-family="'Noto Sans JP',sans-serif">
+        <!-- ▲ティップカラー -->
+        <line x1="72" y1="72" x2="72" y2="140" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
+        <text x="72" y="152" text-anchor="middle" font-size="11" fill="#444">▲ティップカラー</text>
+        <!-- ティップ部分スレッド -->
+        <line x1="136" y1="70" x2="136" y2="130" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
+        <text x="136" y="141" text-anchor="middle" font-size="10" fill="#777">ティップ部分スレッド</text>
+        <!-- ①ブランクスカラー -->
+        <line x1="430" y1="65" x2="430" y2="140" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
+        <text x="430" y="153" text-anchor="middle" font-size="12" fill="#222" font-weight="700">①ブランクスカラー</text>
+        <!-- ②〜④スレッド -->
+        <line x1="645" y1="63" x2="700" y2="140" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
+        <text x="700" y="153" text-anchor="middle" font-size="12" fill="#222" font-weight="700">②〜④スレッド</text>
+        <!-- ⑥リールシート -->
+        <line x1="1060" y1="108" x2="1060" y2="152" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
+        <text x="1060" y="164" text-anchor="middle" font-size="12" fill="#222" font-weight="700">⑥リールシート</text>
+        <!-- ⑤EVAグリップ -->
+        <line x1="1255" y1="57" x2="1255" y2="140" stroke="#bbb" stroke-width="0.7" stroke-dasharray="3,2"/>
+        <text x="1255" y="153" text-anchor="middle" font-size="12" fill="#222" font-weight="700">⑤EVAグリップ</text>
       </g>
     </svg>
   </div>
