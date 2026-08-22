@@ -70,7 +70,7 @@ $body = <<<EOT
 {$note}
 EOT;
 
-$headers  = 'From: noreply@ig-rod.jp' . "\r\n";
+$headers  = 'From: go@ig-rod.jp' . "\r\n";
 $headers .= 'Reply-To: ' . $email . "\r\n";
 $headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 
@@ -126,7 +126,7 @@ IG Rod Planning
 https://ig-rod.jp
 ──────────────────────
 EOT;
-$reply_headers  = 'From: IG Rod Planning <noreply@ig-rod.jp>' . "\r\n";
+$reply_headers  = 'From: IG Rod Planning <go@ig-rod.jp>' . "\r\n";
 $reply_headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 
 mb_send_mail($email, $reply_subject, $reply_body, $reply_headers);

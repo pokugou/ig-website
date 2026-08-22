@@ -28,7 +28,7 @@ $admin_body = <<<EOT
 内容：
 {$message}
 EOT;
-$admin_headers  = 'From: noreply@ig-rod.jp' . "\r\n";
+$admin_headers  = 'From: go@ig-rod.jp' . "\r\n";
 $admin_headers .= 'Reply-To: ' . $email . "\r\n";
 $admin_headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 
@@ -61,7 +61,7 @@ IG Rod Planning
 https://ig-rod.jp
 ──────────────────────
 EOT;
-$reply_headers  = 'From: IG Rod Planning <noreply@ig-rod.jp>' . "\r\n";
+$reply_headers  = 'From: IG Rod Planning <go@ig-rod.jp>' . "\r\n";
 $reply_headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 
 mb_send_mail($email, $reply_subject, $reply_body, $reply_headers);
