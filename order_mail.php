@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$to = 'info@ig-rod.jp';
+$to = 'go@ig-rod.jp';
 
 $name    = trim($_POST['name']    ?? '');
 $email   = trim($_POST['email']   ?? '');
