@@ -827,14 +827,14 @@
         <p class="cm-warn">※上記三つを選択した場合はこちらから再度見積させて頂きます。</p>
       </div>
       <div>
-        <h4 class="cm-section-title">フラット通常色 ¥8,000UP</h4>
+        <h4 class="cm-section-title">フラット通常色 ¥3,000UP</h4>
         <div class="cm-grid">
-          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="001 ホワイト" data-img="swatches/b001.jpg"><img src="swatches/b001.jpg" alt="ホワイト"><div class="cm-color-info"><span class="cm-color-num">001</span><span class="cm-color-name">ホワイト</span></div></button>
-          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="002 ブラック" data-img="swatches/b002.jpg"><img src="swatches/b002.jpg" alt="ブラック"><div class="cm-color-info"><span class="cm-color-num">002</span><span class="cm-color-name">ブラック</span></div></button>
-          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="003 ブルー" data-img="swatches/b003.jpg"><img src="swatches/b003.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">003</span><span class="cm-color-name">ブルー</span></div></button>
-          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="004 レッド" data-img="swatches/b004.jpg"><img src="swatches/b004.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">004</span><span class="cm-color-name">レッド</span></div></button>
-          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="005 イエロー" data-img="swatches/b005.jpg"><img src="swatches/b005.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">005</span><span class="cm-color-name">イエロー</span></div></button>
-          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="006 グリーン" data-img="swatches/b006.jpg"><img src="swatches/b006.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">006</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="001 ホワイト" data-img="swatches/b001.jpg" data-price="3000"><img src="swatches/b001.jpg" alt="ホワイト"><div class="cm-color-info"><span class="cm-color-num">001</span><span class="cm-color-name">ホワイト</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="002 ブラック" data-img="swatches/b002.jpg" data-price="3000"><img src="swatches/b002.jpg" alt="ブラック"><div class="cm-color-info"><span class="cm-color-num">002</span><span class="cm-color-name">ブラック</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="003 ブルー" data-img="swatches/b003.jpg" data-price="3000"><img src="swatches/b003.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">003</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="004 レッド" data-img="swatches/b004.jpg" data-price="3000"><img src="swatches/b004.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">004</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="005 イエロー" data-img="swatches/b005.jpg" data-price="3000"><img src="swatches/b005.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">005</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="006 グリーン" data-img="swatches/b006.jpg" data-price="3000"><img src="swatches/b006.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">006</span><span class="cm-color-name">グリーン</span></div></button>
         </div>
       </div>
       <div>
@@ -1235,8 +1235,8 @@ cmFields.forEach(function(field) {
       this.classList.add('selected');
       // hidden inputに値セット
       document.getElementById('f-' + field).value = val;
-      // お任せ料金をリセットして再計算
-      cmPrices[field] = 0;
+      // カラー料金を記録して再計算
+      cmPrices[field] = parseInt(this.dataset.price || 0);
       calcPrice();
       // トリガーボタン表示更新
       var txt = document.getElementById('cm-ttxt-' + field);
