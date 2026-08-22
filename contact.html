@@ -617,7 +617,7 @@
         通常2〜3営業日以内にご返信いたします。
       </p>
 
-    <form class="contact-form" id="contactForm" action="https://ig-rod.jp/contact/" method="get" target="_blank">
+    <form class="contact-form" id="contactForm" novalidate>
       <div class="form-group">
         <label class="form-label" for="name">
           お名前
@@ -810,6 +810,48 @@
 </footer>
 
 <script>
+// --- お問い合わせフォーム送信 ---
+(function(){
+  var form = document.getElementById('contactForm');
+  if (!form) return;
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var name    = form.querySelector('#name').value.trim();
+    var email   = form.querySelector('#email').value.trim();
+    var subject = form.querySelector('#subject').value;
+    var message = form.querySelector('#message').value.trim();
+    if (!name || !email || !subject || !message) {
+      alert('必須項目をすべて入力してください。');
+      return;
+    }
+    var btn = form.querySelector('.form-submit');
+    btn.disabled = true;
+    btn.textContent = '送信中...';
+    var data = new FormData();
+    data.append('name', name);
+    data.append('email', email);
+    data.append('subject', subject);
+    data.append('message', message);
+    fetch('contact_mail.php', { method: 'POST', body: data })
+      .then(function(res) { return res.json(); })
+      .then(function(json) {
+        if (json.ok) {
+          form.style.display = 'none';
+          document.getElementById('formSuccess').style.display = 'block';
+        } else {
+          alert('送信に失敗しました。お手数ですが go@ig-rod.jp まで直接ご連絡ください。');
+          btn.disabled = false;
+          btn.textContent = '送信する →';
+        }
+      })
+      .catch(function() {
+        alert('送信に失敗しました。お手数ですが go@ig-rod.jp まで直接ご連絡ください。');
+        btn.disabled = false;
+        btn.textContent = '送信する →';
+      });
+  });
+})();
+
 // --- 連絡方法タブ ---
 (function(){
   var tabEmail  = document.getElementById('tab-email');
