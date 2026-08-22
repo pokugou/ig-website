@@ -534,9 +534,13 @@
       <span class="tab-dot" id="dot-thread" style="background:#f1f3f3;border-color:#f1f3f3;"></span>
       ②〜④スレッド
     </button>
+    <button class="part-tab" data-part="tipthread">
+      <span class="tab-dot" id="dot-tipthread" style="background:#f1f3f3;border-color:#f1f3f3;"></span>
+      ▲ティップスレッド
+    </button>
     <button class="part-tab" data-part="tip">
       <span class="tab-dot" id="dot-tip" style="background:#cfd233;border-color:#cfd233;"></span>
-      ▲ティップカラー
+      ティップカラー
     </button>
     <button class="part-tab" data-part="reelseat">
       <span class="tab-dot" id="dot-reelseat" style="background:#888;border-color:#888;"></span>
@@ -567,8 +571,13 @@
         <div class="summary-name" id="sum-name-thread">101 ホワイト</div>
       </div>
       <div class="summary-row">
+        <div class="summary-dot" id="sum-dot-tipthread" style="background:#f1f3f3;"></div>
+        <div class="summary-part">▲ティップスレッド</div>
+        <div class="summary-name" id="sum-name-tipthread">101 ホワイト</div>
+      </div>
+      <div class="summary-row">
         <div class="summary-dot" id="sum-dot-tip" style="background:#cfd233;"></div>
-        <div class="summary-part">▲ティップ</div>
+        <div class="summary-part">ティップカラー</div>
         <div class="summary-name" id="sum-name-tip">005 イエロー</div>
       </div>
       <div class="summary-row">
@@ -689,22 +698,23 @@ var REELSEAT_COLORS = BLANK_COLORS;
 // ===== STATE =====
 var activePart = 'blank';
 var state = {
-  blank:    { id:'b004', name:'004 レッド',    hex:'#ac1d2b' },
-  thread:   { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
-  tip:      { id:'b005', name:'005 イエロー',  hex:'#cfd233' },
-  reelseat: { id:'b007', name:'007 シルバー',   hex:'#a3a7a8' },
+  blank:     { id:'b004', name:'004 レッド',    hex:'#ac1d2b' },
+  thread:    { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
+  tipthread: { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
+  tip:       { id:'b005', name:'005 イエロー',  hex:'#cfd233' },
+  reelseat:  { id:'b007', name:'007 シルバー',   hex:'#a3a7a8' },
 };
 
 // ===== HELPERS =====
 function getColors(part) {
   if (part === 'blank' || part === 'tip') return { type:'flat', colors: BLANK_COLORS };
-  if (part === 'thread') return { type:'cat', colors: THREAD_COLORS };
+  if (part === 'thread' || part === 'tipthread') return { type:'cat', colors: THREAD_COLORS };
   if (part === 'reelseat') return { type:'flat', colors: REELSEAT_COLORS };
   return { type:'flat', colors: [] };
 }
 
 function partLabel(part) {
-  var map = { blank:'ブランクスカラーを選択', thread:'スレッドカラーを選択', tip:'ティップカラーを選択', reelseat:'リールシートカラーを選択' };
+  var map = { blank:'ブランクスカラーを選択', thread:'スレッドカラーを選択', tipthread:'ティップスレッドカラーを選択', tip:'ティップカラーを選択', reelseat:'リールシートカラーを選択' };
   return map[part] || '';
 }
 
@@ -804,20 +814,23 @@ function renderSVG() {
     }
     rodCtx.putImageData(new ImageData(data, rodCanvas.width, rodCanvas.height), 0, 0);
   }
-  // Draw thread wraps directly on canvas using screen blend
-  // (screen blend: color shows on dark areas, white stays white)
+  // Draw thread wraps on canvas using screen blend
   rodCtx.save();
   rodCtx.globalCompositeOperation = 'screen';
-  rodCtx.fillStyle = state.thread.hex;
-  // Thread wrap positions [x, y, w, h] in 1206×792 image coords
-  var threads = [
-    // Top view: dark bands detected along rod centerline (y≈376-400)
-    [338,376,20,26],[402,377,20,24],[481,378,24,22],
-    [575,376,24,22],[692,373,28,22],[854,369,34,24],
-    // Bottom view: dark bands in handle closeup (y≈480-520)
-    [194,480,30,28],[310,480,32,28],[372,490,36,28]
+  // Tip-section thread wraps (▲ティップスレッド) — first 2 top-view + 1 bottom-view
+  var tipThreads = [
+    [338,376,20,26],[402,377,20,24],   // top view tip-end guides
+    [194,480,30,28]                     // bottom view tip-end guide
   ];
-  threads.forEach(function(t) { rodCtx.fillRect(t[0],t[1],t[2],t[3]); });
+  // Main thread wraps (②〜④スレッド) — remaining positions
+  var mainThreads = [
+    [481,378,24,22],[575,376,24,22],[692,373,28,22],[854,369,34,24], // top view
+    [310,480,32,28],[372,490,36,28]  // bottom view
+  ];
+  rodCtx.fillStyle = state.tipthread.hex;
+  tipThreads.forEach(function(t) { rodCtx.fillRect(t[0],t[1],t[2],t[3]); });
+  rodCtx.fillStyle = state.thread.hex;
+  mainThreads.forEach(function(t) { rodCtx.fillRect(t[0],t[1],t[2],t[3]); });
   rodCtx.restore();
 }
 
@@ -878,7 +891,7 @@ function selectColor(colorId) {
 
 // ===== RENDER SUMMARY =====
 function renderSummary() {
-  var parts = ['blank','thread','tip','reelseat'];
+  var parts = ['blank','thread','tipthread','tip','reelseat'];
   parts.forEach(function(p) {
     var s = state[p];
     var dot = document.getElementById('sum-dot-' + p);
