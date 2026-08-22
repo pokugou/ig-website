@@ -819,12 +819,12 @@ function renderSVG() {
   rodCtx.globalCompositeOperation = 'screen';
   // Tip-section thread wraps (▲ティップスレッド) — 4 small guides in yellow-green tip section
   var tipThreads = [
-    [68,325,22,65],[118,325,28,65],[146,322,36,68],[215,315,28,70]
+    [68,325,22,55],[118,308,28,44],[146,338,36,52],[215,308,28,50]
   ];
   // Main thread wraps (②〜④スレッド)
   var mainThreads = [
     [338,376,20,26],[402,377,20,24],[481,378,24,22],[575,376,24,22],[692,373,28,22],[854,369,34,24], // top view
-    [194,480,30,28],[310,480,32,28],[372,490,36,28]  // bottom view (all 3)
+    [194,476,30,14],[310,476,32,14],[332,423,80,24]  // bottom view — shortened to avoid text labels
   ];
   rodCtx.fillStyle = state.tipthread.hex;
   tipThreads.forEach(function(t) { rodCtx.fillRect(t[0],t[1],t[2],t[3]); });
