@@ -817,15 +817,14 @@ function renderSVG() {
   // Draw thread wraps on canvas using screen blend
   rodCtx.save();
   rodCtx.globalCompositeOperation = 'screen';
-  // Tip-section thread wraps (▲ティップスレッド) — first 2 top-view + 1 bottom-view
+  // Tip-section thread wraps (▲ティップスレッド) — 4 small guides in yellow-green tip section
   var tipThreads = [
-    [338,376,20,26],[402,377,20,24],   // top view tip-end guides
-    [194,480,30,28]                     // bottom view tip-end guide
+    [73,330,16,40],[130,325,18,40],[152,325,26,40],[204,320,30,45]
   ];
-  // Main thread wraps (②〜④スレッド) — remaining positions
+  // Main thread wraps (②〜④スレッド)
   var mainThreads = [
-    [481,378,24,22],[575,376,24,22],[692,373,28,22],[854,369,34,24], // top view
-    [310,480,32,28],[372,490,36,28]  // bottom view
+    [338,376,20,26],[402,377,20,24],[481,378,24,22],[575,376,24,22],[692,373,28,22],[854,369,34,24], // top view
+    [194,480,30,28],[310,480,32,28],[372,490,36,28]  // bottom view (all 3)
   ];
   rodCtx.fillStyle = state.tipthread.hex;
   tipThreads.forEach(function(t) { rodCtx.fillRect(t[0],t[1],t[2],t[3]); });
