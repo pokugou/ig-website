@@ -797,11 +797,23 @@ function renderSVG() {
     var blankHsl = hexToHsl(state.blank.hex);
     var tipHsl   = hexToHsl(state.tip.hex);
     var data = new Uint8ClampedArray(rodOrigData.data);
+    var rsHsl  = hexToHsl(state.reelseat.hex);
+    var W = rodCanvas.width;
     for (var i = 0; i < data.length; i += 4) {
       var r=data[i], g=data[i+1], b=data[i+2];
       var hsl = rgbToHsl(r, g, b);
-      if (hsl.l > 0.88 || hsl.s < 0.12) continue; // skip white bg and near-neutral
+      if (hsl.l > 0.88 || hsl.l < 0.04) continue; // skip white bg and pure black
+      var px = (i/4) % W;
+      var py = Math.floor((i/4) / W);
       var newRgb;
+      // Reel seat region (bottom view): gray/metallic pixels in bounding box
+      var inRS = (px >= 295 && px <= 640 && py >= 450 && py <= 660);
+      if (inRS && hsl.s < 0.15) {
+        newRgb = hslToRgb(rsHsl.h, rsHsl.s * 0.85, hsl.l);
+        data[i]=newRgb.r; data[i+1]=newRgb.g; data[i+2]=newRgb.b;
+        continue;
+      }
+      if (hsl.s < 0.12) continue; // skip near-neutral outside RS region
       if (hueInRange(hsl.h, 340, 28)) {            // red/blank hue range
         newRgb = hslToRgb(blankHsl.h, hsl.s, hsl.l);
         data[i]=newRgb.r; data[i+1]=newRgb.g; data[i+2]=newRgb.b;
