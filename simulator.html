@@ -302,29 +302,9 @@
   <!-- ROD PREVIEW -->
   <div class="rod-card">
     <div class="rod-card-label">PREVIEW — ロッドカラープレビュー</div>
-    <div style="position:relative;line-height:0;">
+    <div style="position:relative;line-height:0;isolation:isolate;">
     <canvas id="rod-canvas" style="width:100%;display:block;border-radius:4px;"></canvas>
     <!-- Thread wrap overlays (screen blend = colorizes dark threads, leaves white bg unchanged) -->
-    <svg id="thread-overlay" viewBox="0 0 1206 792"
-         style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"
-         xmlns="http://www.w3.org/2000/svg">
-      <g style="mix-blend-mode:screen;">
-        <!-- Top view: thread wraps at each guide position -->
-        <polygon class="ov-thread" points="185,248 199,247 199,256 185,257" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="231,245 245,244 245,253 231,254" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="298,241 312,240 312,250 298,251" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="383,235 397,234 397,246 383,247" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="487,228 501,227 501,241 487,242" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="593,221 607,220 607,235 593,236" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="693,214 707,213 707,230 693,231" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="778,209 792,208 792,226 778,227" fill="#f1f3f3"/>
-        <!-- Bottom view: thread wraps visible on blank section -->
-        <polygon class="ov-thread" points="752,440 766,433 766,441 752,448" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="806,416 820,409 820,417 806,424" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="875,387 889,380 889,388 875,395" fill="#f1f3f3"/>
-        <polygon class="ov-thread" points="950,355 964,348 964,356 950,363" fill="#f1f3f3"/>
-      </g>
-    </svg>
     </div>
     <svg id="rod-svg" viewBox="0 0 1400 230" xmlns="http://www.w3.org/2000/svg" style="display:none">
       <defs>
@@ -807,7 +787,7 @@ function renderSVG() {
       var py = Math.floor((i/4) / W);
       var newRgb;
       // Reel seat region (bottom view): gray/metallic pixels in bounding box
-      var inRS = (px >= 520 && px <= 1080 && py >= 450 && py <= 680);
+      var inRS = (px >= 450 && px <= 600 && py >= 445 && py <= 545);
       if (inRS && hsl.s < 0.15 && hsl.l > 0.28) {
         newRgb = hslToRgb(rsHsl.h, rsHsl.s * 0.85, hsl.l);
         data[i]=newRgb.r; data[i+1]=newRgb.g; data[i+2]=newRgb.b;
@@ -824,10 +804,21 @@ function renderSVG() {
     }
     rodCtx.putImageData(new ImageData(data, rodCanvas.width, rodCanvas.height), 0, 0);
   }
-  // Update thread overlay polygons
-  document.querySelectorAll('.ov-thread').forEach(function(el) {
-    el.setAttribute('fill', state.thread.hex);
-  });
+  // Draw thread wraps directly on canvas using screen blend
+  // (screen blend: color shows on dark areas, white stays white)
+  rodCtx.save();
+  rodCtx.globalCompositeOperation = 'screen';
+  rodCtx.fillStyle = state.thread.hex;
+  // Thread wrap positions [x, y, w, h] in 1206×792 image coords
+  var threads = [
+    // Top view: dark bands detected along rod centerline (y≈376-400)
+    [338,376,20,26],[402,377,20,24],[481,378,24,22],
+    [575,376,24,22],[692,373,28,22],[854,369,34,24],
+    // Bottom view: dark bands in handle closeup (y≈480-520)
+    [194,480,30,28],[310,480,32,28],[372,490,36,28]
+  ];
+  threads.forEach(function(t) { rodCtx.fillRect(t[0],t[1],t[2],t[3]); });
+  rodCtx.restore();
 }
 
 function darken(hex, factor) {
