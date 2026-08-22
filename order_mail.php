@@ -32,7 +32,7 @@ function send_image_mail($to, $subject, $img_b64, $name, $from, $reply_to = '') 
     $html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
           . '<meta name="viewport" content="width=device-width,initial-scale=1"></head>'
           . '<body style="margin:0;padding:0;background:#0a0a0a;">'
-          . '<img src="cid:' . $cid . '" style="max-width:100%;display:block;" alt="' . h($name) . ' オーダー内容">'
+          . '<img src="cid:' . $cid . '" style="max-width:80%;display:block;" alt="' . h($name) . ' オーダー内容">'
           . '</body></html>';
 
     $body  = '--' . $rb . "\r\n";
