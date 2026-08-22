@@ -55,22 +55,23 @@ function send_html_mail($to, $subject, $html_body, $from, $reply_to = '') {
 // 通常行（値が空なら非表示）
 function mrow($label, $val) {
     if ($val === '' || $val === null) return '';
-    $L = 'padding:5px 10px;font-size:11px;color:#999;width:36%;background:#1c1c1c;border-bottom:1px solid #252525;vertical-align:top;';
-    $V = 'padding:5px 10px;font-size:11px;color:#ebebeb;background:#141414;border-bottom:1px solid #252525;vertical-align:top;';
+    $L = 'padding:3px 8px;font-size:10px;color:#999;width:36%;background:#1c1c1c;border-bottom:1px solid #252525;vertical-align:top;';
+    $V = 'padding:3px 8px;font-size:10px;color:#ebebeb;background:#141414;border-bottom:1px solid #252525;vertical-align:top;';
     return '<tr><td style="'.$L.'">'.h($label).'</td><td style="'.$V.'">'.h($val).'</td></tr>';
 }
 
-// 料金行（値が空なら非表示）
+// 料金行（空・¥0は非表示）
 function prow($label, $val) {
     if ($val === '' || $val === null) return '';
-    $L = 'padding:5px 10px;font-size:11px;color:#999;width:36%;background:#1c1c1c;border-bottom:1px solid #252525;';
-    $V = 'padding:5px 10px;font-size:11px;color:#ebebeb;background:#141414;border-bottom:1px solid #252525;text-align:right;';
+    if (strpos($val, '¥0') !== false) return '';
+    $L = 'padding:3px 8px;font-size:10px;color:#999;width:36%;background:#1c1c1c;border-bottom:1px solid #252525;';
+    $V = 'padding:3px 8px;font-size:10px;color:#ebebeb;background:#141414;border-bottom:1px solid #252525;text-align:right;';
     return '<tr><td style="'.$L.'">'.h($label).'</td><td style="'.$V.'">'.h($val).'</td></tr>';
 }
 
 // 区切り行（グループ見出し）
 function msep($label) {
-    return '<tr><td colspan="2" style="padding:4px 10px;font-size:9px;font-weight:700;letter-spacing:0.12em;'
+    return '<tr><td colspan="2" style="padding:2px 8px;font-size:9px;font-weight:700;letter-spacing:0.1em;'
          . 'color:#cc2200;background:#181818;border-bottom:1px solid #252525;border-top:2px solid #252525;">'
          . h($label) . '</td></tr>';
 }
@@ -116,21 +117,21 @@ function build_confirm_html($name, $email, $tel, $model,
         . prow('ティップカラー',   $p_tip_color)
         . prow('ネーム仕様',       $p_name)
         . '<tr>'
-          . '<td style="padding:6px 10px;font-size:11px;font-weight:700;color:#f0f0f0;background:#222;border-bottom:1px solid #333;">合計金額（税抜）</td>'
-          . '<td style="padding:6px 10px;font-size:11px;font-weight:700;color:#f0f0f0;background:#222;border-bottom:1px solid #333;text-align:right;">'.h($p_subtotal).'</td>'
+          . '<td style="padding:4px 8px;font-size:10px;font-weight:700;color:#f0f0f0;background:#222;border-bottom:1px solid #333;">合計金額（税抜）</td>'
+          . '<td style="padding:4px 8px;font-size:10px;font-weight:700;color:#f0f0f0;background:#222;border-bottom:1px solid #333;text-align:right;">'.h($p_subtotal).'</td>'
         . '</tr>'
         . '<tr>'
-          . '<td style="padding:8px 10px;font-size:12px;font-weight:700;color:#c8a44a;background:#1a1609;">税込合計金額</td>'
-          . '<td style="padding:8px 10px;font-size:15px;font-weight:900;color:#c8a44a;background:#1a1609;text-align:right;">'.h($p_total).'</td>'
+          . '<td style="padding:6px 8px;font-size:11px;font-weight:700;color:#c8a44a;background:#1a1609;">税込合計金額</td>'
+          . '<td style="padding:6px 8px;font-size:14px;font-weight:900;color:#c8a44a;background:#1a1609;text-align:right;">'.h($p_total).'</td>'
         . '</tr>';
 
     return '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">'
          . '<meta name="viewport" content="width=device-width,initial-scale=1"></head>'
          . '<body style="margin:0;padding:8px;background:#0a0a0a;font-family:\'Helvetica Neue\',Arial,\'Noto Sans JP\',sans-serif;">'
          . '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:500px;margin:0 auto;border:1px solid #2a2a2a;">'
-         . '<tr><td style="padding:10px 10px 8px;background:#111;border-bottom:2px solid #cc2200;">'
-           . '<div style="font-size:9px;font-weight:700;letter-spacing:0.15em;color:#cc2200;">IG Rod Planning</div>'
-           . '<div style="font-size:14px;font-weight:900;color:#f8f8f8;margin-top:2px;">'.$title.'</div>'
+         . '<tr><td style="padding:7px 8px 6px;background:#111;border-bottom:2px solid #cc2200;">'
+           . '<div style="font-size:8px;font-weight:700;letter-spacing:0.15em;color:#cc2200;">IG Rod Planning</div>'
+           . '<div style="font-size:13px;font-weight:900;color:#f8f8f8;margin-top:1px;">'.$title.'</div>'
          . '</td></tr>'
          . '<tr><td style="padding:0;">'
            . '<table width="100%" cellpadding="0" cellspacing="0">'.$rows.'</table>'
