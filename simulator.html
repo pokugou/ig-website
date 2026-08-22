@@ -807,7 +807,7 @@ function renderSVG() {
       var py = Math.floor((i/4) / W);
       var newRgb;
       // Reel seat region (bottom view): gray/metallic pixels in bounding box
-      var inRS = (px >= 295 && px <= 640 && py >= 450 && py <= 660);
+      var inRS = (px >= 350 && px <= 1100 && py >= 420 && py <= 700);
       if (inRS && hsl.s < 0.15) {
         newRgb = hslToRgb(rsHsl.h, rsHsl.s * 0.85, hsl.l);
         data[i]=newRgb.r; data[i+1]=newRgb.g; data[i+2]=newRgb.b;
