@@ -628,8 +628,23 @@
         <select name="grip" id="sel-grip" required>
           <option value="eva"    data-price="0">EVA（＋¥0）</option>
           <option value="cork"   data-price="3800">コルクグリップ（＋¥3,800）</option>
-          <option value="reel"   data-price="6000">リールシート塗装（＋¥6,000）</option>
+          <option value="reel"   data-price="0">リールシート塗装（カラー選択で＋¥6,000）</option>
         </select>
+      </div>
+
+      <!-- リールシートカラー（リールシート塗装選択時のみ表示） -->
+      <div class="field" id="reel-color-field" style="display:none">
+        <label>リールシートカラー<span class="req">必須</span></label>
+        <div class="cm-wrap" id="cm-wrap-reel-color">
+          <button type="button" class="cm-trigger" id="cm-trigger-reel-color">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-reel-color" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-reel-color">カラーチャートから選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+        <input type="hidden" name="reel-color" id="f-reel-color" />
       </div>
 
       <div class="field">
@@ -716,6 +731,10 @@
       <div class="price-row" id="pr-tip-color-row" style="display:none">
         <span class="price-label">ティップカラー（お任せ）</span>
         <span class="price-val" id="p-tip-color">＋¥0</span>
+      </div>
+      <div class="price-row" id="pr-reel-color-row" style="display:none">
+        <span class="price-label">リールシートカラー</span>
+        <span class="price-val" id="p-reel-color">＋¥0</span>
       </div>
       <div class="price-row">
         <span class="price-label">合計（税抜）</span>
@@ -861,6 +880,58 @@
         <h4 class="cm-section-title">マジョーラ色 ¥4,200UP</h4>
         <div class="cm-grid">
           <button type="button" class="cm-color-btn" data-field="tip-color" data-val="017 ブルーパープルマジョーラ" data-img="swatches/b017.jpg" data-price="4200"><img src="swatches/b017.jpg" alt="ブルーパープルマジョーラ"><div class="cm-color-info"><span class="cm-color-num">017</span><span class="cm-color-name">ブルーパープルマジョーラ</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REEL COLOR MODAL ===== -->
+<div class="cm-overlay" id="cm-overlay-reel-color">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">リールシートカラーを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-reel-color">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="cm-body">
+      <p class="cm-note">※全カテゴリー共通 ＋¥6,000</p>
+      <div>
+        <h4 class="cm-section-title">フラット通常色 ¥6,000</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="001 ホワイト" data-img="swatches/b001.jpg" data-price="6000"><img src="swatches/b001.jpg" alt="ホワイト"><div class="cm-color-info"><span class="cm-color-num">001</span><span class="cm-color-name">ホワイト</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="002 ブラック" data-img="swatches/b002.jpg" data-price="6000"><img src="swatches/b002.jpg" alt="ブラック"><div class="cm-color-info"><span class="cm-color-num">002</span><span class="cm-color-name">ブラック</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="003 ブルー" data-img="swatches/b003.jpg" data-price="6000"><img src="swatches/b003.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">003</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="004 レッド" data-img="swatches/b004.jpg" data-price="6000"><img src="swatches/b004.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">004</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="005 イエロー" data-img="swatches/b005.jpg" data-price="6000"><img src="swatches/b005.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">005</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="006 グリーン" data-img="swatches/b006.jpg" data-price="6000"><img src="swatches/b006.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">006</span><span class="cm-color-name">グリーン</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラットメタリック色 ¥6,000</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="007 シルバー" data-img="swatches/b007.jpg" data-price="6000"><img src="swatches/b007.jpg" alt="シルバー"><div class="cm-color-info"><span class="cm-color-num">007</span><span class="cm-color-name">シルバー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="008 ゴールド" data-img="swatches/b008.jpg" data-price="6000"><img src="swatches/b008.jpg" alt="ゴールド"><div class="cm-color-info"><span class="cm-color-num">008</span><span class="cm-color-name">ゴールド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="009 ブルー" data-img="swatches/b009.jpg" data-price="6000"><img src="swatches/b009.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">009</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="010 レッド" data-img="swatches/b010.jpg" data-price="6000"><img src="swatches/b010.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">010</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="011 グリーン" data-img="swatches/b011.jpg" data-price="6000"><img src="swatches/b011.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">011</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="012 オレンジ" data-img="swatches/b012.jpg" data-price="6000"><img src="swatches/b012.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">012</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット蛍光色 ¥6,000</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="013 グリーン" data-img="swatches/b013.jpg" data-price="6000"><img src="swatches/b013.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">013</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="014 イエロー" data-img="swatches/b014.jpg" data-price="6000"><img src="swatches/b014.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">014</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="015 ピンク" data-img="swatches/b015.jpg" data-price="6000"><img src="swatches/b015.jpg" alt="ピンク"><div class="cm-color-info"><span class="cm-color-num">015</span><span class="cm-color-name">ピンク</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="016 オレンジ" data-img="swatches/b016.jpg" data-price="6000"><img src="swatches/b016.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">016</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">マジョーラ色 ¥6,000</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="017 ブルーパープルマジョーラ" data-img="swatches/b017.jpg" data-price="6000"><img src="swatches/b017.jpg" alt="ブルーパープルマジョーラ"><div class="cm-color-info"><span class="cm-color-num">017</span><span class="cm-color-name">ブルーパープルマジョーラ</span></div></button>
         </div>
       </div>
     </div>
@@ -1195,10 +1266,10 @@
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 // --- お任せオプション料金管理 ---
-var cmPrices = { 'blank-color': 0, 'tip-color': 0 };
+var cmPrices = { 'blank-color': 0, 'tip-color': 0, 'reel-color': 0 };
 
 // --- カラー／スレッドモーダル ---
-var cmFields = ['blank-color', 'tip-color', 'thread-main', 'thread-tip', 'thread-pin'];
+var cmFields = ['blank-color', 'tip-color', 'reel-color', 'thread-main', 'thread-tip', 'thread-pin'];
 cmFields.forEach(function(field) {
   var trigger = document.getElementById('cm-trigger-' + field);
   var overlay = document.getElementById('cm-overlay-' + field);
@@ -1328,6 +1399,7 @@ function calcPrice() {
   const grip  = parseInt(gripEl.options[gripEl.selectedIndex].dataset.price || 0);
   const blankColorPrice = cmPrices['blank-color'] || 0;
   const tipColorPrice   = cmPrices['tip-color'] || 0;
+  const reelColorPrice  = cmPrices['reel-color'] || 0;
 
   const fmt = n => '¥' + n.toLocaleString('ja-JP');
 
@@ -1341,7 +1413,13 @@ function calcPrice() {
   if (tipRow) tipRow.style.display = tipColorPrice > 0 ? '' : 'none';
   document.getElementById('p-tip-color').textContent = '＋' + fmt(tipColorPrice);
 
-  const subtotal = base + guide + grip + blankColorPrice + tipColorPrice;
+  // リールシートカラー行
+  var reelRow = document.getElementById('pr-reel-color-row');
+  if (reelRow) reelRow.style.display = reelColorPrice > 0 ? '' : 'none';
+  var reelPriceEl = document.getElementById('p-reel-color');
+  if (reelPriceEl) reelPriceEl.textContent = '＋' + fmt(reelColorPrice);
+
+  const subtotal = base + guide + grip + blankColorPrice + tipColorPrice + reelColorPrice;
   const total    = Math.round(subtotal * 1.1);
 
   document.getElementById('p-base').textContent     = fmt(base);
@@ -1353,7 +1431,24 @@ function calcPrice() {
 
 document.getElementById('sel-model').addEventListener('change', calcPrice);
 document.getElementById('sel-guide').addEventListener('change', calcPrice);
-document.getElementById('sel-grip').addEventListener('change', calcPrice);
+document.getElementById('sel-grip').addEventListener('change', function() {
+  var reelField = document.getElementById('reel-color-field');
+  if (this.value === 'reel') {
+    reelField.style.display = '';
+  } else {
+    reelField.style.display = 'none';
+    document.getElementById('f-reel-color').value = '';
+    cmPrices['reel-color'] = 0;
+    var ttxt = document.getElementById('cm-ttxt-reel-color');
+    if (ttxt) { ttxt.textContent = 'カラーチャートから選択'; ttxt.classList.remove('chosen'); }
+    var timg = document.getElementById('cm-timg-reel-color');
+    if (timg) { timg.src = ''; timg.style.display = 'none'; }
+    var wrap = document.getElementById('cm-wrap-reel-color');
+    if (wrap) wrap.classList.remove('cm-error');
+    delete formErrors['reel-color']; if (typeof updateErrorDisplay === 'function') updateErrorDisplay();
+  }
+  calcPrice();
+});
 
 // --- バリデーション管理 ---
 var formErrors = {};
@@ -1363,7 +1458,7 @@ var FIELD_LABELS = {
   'shipping': '送料', 'address': '送り先住所', 'payment': 'お支払い方法'
 };
 var PICKER_LABELS = {
-  'blank-color': 'ブランクスカラー', 'tip-color': 'ティップカラー',
+  'blank-color': 'ブランクスカラー', 'tip-color': 'ティップカラー', 'reel-color': 'リールシートカラー',
   'thread-main': 'メインスレッド', 'thread-tip': 'ティップ部分スレッド', 'thread-pin': 'ピンラインスレッド'
 };
 
@@ -1400,6 +1495,11 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
     var wrapEl   = document.getElementById('cm-wrap-' + field);
     if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); formErrors[field] = PICKER_LABELS[field]; }
   });
+  if (document.getElementById('sel-grip').value === 'reel') {
+    var reelHidden = document.getElementById('f-reel-color');
+    var reelWrap   = document.getElementById('cm-wrap-reel-color');
+    if (reelHidden && !reelHidden.value) { if (reelWrap) reelWrap.classList.add('cm-error'); formErrors['reel-color'] = 'リールシートカラー'; }
+  }
   ['thread-main','thread-tip','thread-pin'].forEach(function(field) {
     var hiddenEl = document.getElementById('f-' + field);
     var wrapEl   = document.getElementById('cm-wrap-' + field);
@@ -1450,6 +1550,7 @@ function showConfirm() {
   }
   var bc = getField('blank-color');
   var tc = getField('tip-color');
+  var rc = getField('reel-color');
   var tm = getField('thread-main');
   var tt = getField('thread-tip');
   var tp = getField('thread-pin');
@@ -1464,6 +1565,7 @@ function showConfirm() {
 
   var bcp = cmPrices['blank-color'] || 0;
   var tcp = cmPrices['tip-color'] || 0;
+  var rcp = cmPrices['reel-color'] || 0;
 
   var html = ''
     + '<div class="confirm-section"><div class="confirm-section-label">基本情報</div>'
@@ -1477,6 +1579,7 @@ function showConfirm() {
     + '<div class="confirm-section"><div class="confirm-section-label">カラーカスタム</div>'
       + row('ブランクスカラー',     bc.val, bc.img, false)
       + row('ティップカラー',       tc.val, tc.img, false)
+      + (document.getElementById('sel-grip').value === 'reel' ? row('リールシートカラー', rc.val, rc.img, false) : '')
       + row('メインスレッド',       tm.val, tm.img, true)
       + row('ティップ部分スレッド', tt.val, tt.img, true)
       + row('ピンラインスレッド',   tp.val, tp.img, true)
@@ -1509,6 +1612,7 @@ function showConfirm() {
         + '<div class="confirm-price-row"><span>グリップ仕様</span><span class="cpv">' + document.getElementById('p-grip').textContent + '</span></div>'
         + (bcp > 0 ? '<div class="confirm-price-row"><span>ブランクスカラー（お任せ）</span><span class="cpv">' + document.getElementById('p-blank-color').textContent + '</span></div>' : '')
         + (tcp > 0 ? '<div class="confirm-price-row"><span>ティップカラー（お任せ）</span><span class="cpv">' + document.getElementById('p-tip-color').textContent + '</span></div>' : '')
+        + (rcp > 0 ? '<div class="confirm-price-row"><span>リールシートカラー</span><span class="cpv">' + document.getElementById('p-reel-color').textContent + '</span></div>' : '')
         + '<div class="confirm-price-row"><span>合計（税抜）</span><span class="cpv">' + document.getElementById('p-subtotal').textContent + '</span></div>'
         + '<div class="confirm-price-total"><span class="cpl">税込合計</span><span class="cpv">' + document.getElementById('p-total').textContent + '</span></div>'
       + '</div>'
@@ -1612,7 +1716,7 @@ function buildOrderCard() {
     var hasImg = timg && timg.style.display !== 'none' && timg.src && timg.src.indexOf('swatches/') !== -1;
     return { val: document.getElementById('f-' + field).value || '—', img: hasImg ? timg.src : '' };
   }
-  var bc = gf('blank-color'), tc = gf('tip-color');
+  var bc = gf('blank-color'), tc = gf('tip-color'), rc2 = gf('reel-color');
   var tm = gf('thread-main'), tt = gf('thread-tip'), tp = gf('thread-pin');
 
   var now = new Date();
