@@ -623,6 +623,16 @@
         </select>
       </div>
 
+      <div class="field" id="torzite-layout-field" style="display:none">
+        <label>トルザイト ガイドレイアウト<span class="req">必須</span></label>
+        <select id="sel-guide-layout">
+          <option value="">選択してください</option>
+          <option value="ストレート">ストレート</option>
+          <option value="右スパイラル">右スパイラル</option>
+          <option value="左スパイラル">左スパイラル</option>
+        </select>
+      </div>
+
       <div class="field">
         <label>グリップ仕様<span class="req">必須</span></label>
         <select name="grip" id="sel-grip" required>
@@ -1433,7 +1443,19 @@ function calcPrice() {
 }
 
 document.getElementById('sel-model').addEventListener('change', calcPrice);
-document.getElementById('sel-guide').addEventListener('change', calcPrice);
+document.getElementById('sel-guide').addEventListener('change', function() {
+  var layoutField = document.getElementById('torzite-layout-field');
+  var layoutSel   = document.getElementById('sel-guide-layout');
+  if (this.value === 'torzite') {
+    layoutField.style.display = '';
+  } else {
+    layoutField.style.display = 'none';
+    layoutSel.value = '';
+    delete formErrors['guide-layout'];
+    if (typeof updateErrorDisplay === 'function') updateErrorDisplay();
+  }
+  calcPrice();
+});
 document.getElementById('sel-grip').addEventListener('change', function() {
   var reelField = document.getElementById('reel-color-field');
   if (this.value === 'reel') {
@@ -1498,6 +1520,13 @@ document.getElementById('order-form').addEventListener('submit', function(e) {
     var wrapEl   = document.getElementById('cm-wrap-' + field);
     if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); formErrors[field] = PICKER_LABELS[field]; }
   });
+  if (document.getElementById('sel-guide').value === 'torzite') {
+    var layoutSel = document.getElementById('sel-guide-layout');
+    if (layoutSel && !layoutSel.value) {
+      layoutSel.style.borderColor = 'var(--red2)';
+      formErrors['guide-layout'] = 'トルザイト ガイドレイアウト';
+    }
+  }
   if (document.getElementById('sel-grip').value === 'reel') {
     var reelHidden = document.getElementById('f-reel-color');
     var reelWrap   = document.getElementById('cm-wrap-reel-color');
@@ -1530,6 +1559,15 @@ document.getElementById('order-form').querySelectorAll('input[required]:not([typ
   });
 });
 
+// ガイドレイアウトのリアルタイムエラー解除
+document.getElementById('sel-guide-layout').addEventListener('change', function() {
+  if (this.value) {
+    this.style.borderColor = '';
+    delete formErrors['guide-layout'];
+    updateErrorDisplay();
+  }
+});
+
 // --- 確認画面を生成して表示 ---
 function showConfirm() {
   var form      = document.getElementById('order-form');
@@ -1542,6 +1580,10 @@ function showConfirm() {
 
   var modelText = modelEl.selectedIndex > 0 ? modelEl.options[modelEl.selectedIndex].text.split('　')[0].trim() : '—';
   var guideText = guideEl.options[guideEl.selectedIndex].text;
+  if (guideEl.value === 'torzite') {
+    var layoutVal = document.getElementById('sel-guide-layout').value;
+    if (layoutVal) guideText = 'トルザイトガイド・' + layoutVal + '（＋¥6,000）';
+  }
   var gripText  = gripEl.options[gripEl.selectedIndex].text;
   var shipText  = shippEl && shippEl.selectedIndex > 0 ? shippEl.options[shippEl.selectedIndex].text : '—';
   var payText   = payEl && payEl.selectedIndex > 0 ? payEl.options[payEl.selectedIndex].text : '—';
@@ -1670,6 +1712,16 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
     return;
   }
 
+  // トルザイトのレイアウト選択をガイドフィールドに結合
+  var guideEl2 = document.getElementById('sel-guide');
+  if (guideEl2.value === 'torzite') {
+    var layoutVal2 = document.getElementById('sel-guide-layout').value;
+    if (layoutVal2) data.set('guide', 'トルザイトガイド・' + layoutVal2);
+  } else {
+    var gOpts = guideEl2.options;
+    data.set('guide', gOpts[guideEl2.selectedIndex].text.split('（')[0].trim());
+  }
+
   // 料金情報をフォームデータに追加
   data.append('p_base',     document.getElementById('p-base').textContent);
   data.append('p_guide',    document.getElementById('p-guide').textContent);
@@ -1711,6 +1763,10 @@ function buildOrderCard() {
 
   var modelText = modelEl.selectedIndex > 0 ? modelEl.options[modelEl.selectedIndex].text.split('　')[0].trim() : '—';
   var guideText = guideEl.options[guideEl.selectedIndex].text;
+  if (guideEl.value === 'torzite') {
+    var layoutVal = document.getElementById('sel-guide-layout').value;
+    if (layoutVal) guideText = 'トルザイトガイド・' + layoutVal + '（＋¥6,000）';
+  }
   var gripText  = gripEl.options[gripEl.selectedIndex].text;
 
   function gf(field) {
