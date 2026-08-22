@@ -1722,12 +1722,18 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
     data.set('guide', gOpts[guideEl2.selectedIndex].text.split('（')[0].trim());
   }
 
+  // グリップ表示名を設定
+  var gripEl2 = document.getElementById('sel-grip');
+  data.set('grip', gripEl2.options[gripEl2.selectedIndex].text.split('（')[0].trim());
+
   // 料金情報をフォームデータに追加
-  data.append('p_base',     document.getElementById('p-base').textContent);
-  data.append('p_guide',    document.getElementById('p-guide').textContent);
-  data.append('p_grip',     document.getElementById('p-grip').textContent);
-  data.append('p_subtotal', document.getElementById('p-subtotal').textContent);
-  data.append('p_total',    document.getElementById('p-total').textContent);
+  data.append('p_base',        document.getElementById('p-base').textContent);
+  data.append('p_guide',       document.getElementById('p-guide').textContent);
+  data.append('p_grip',        document.getElementById('p-grip').textContent);
+  data.append('p_blank_color', document.getElementById('f-blank-color').value ? document.getElementById('p-blank-color').textContent : '');
+  data.append('p_tip_color',   document.getElementById('f-tip-color').value   ? document.getElementById('p-tip-color').textContent   : '');
+  data.append('p_subtotal',    document.getElementById('p-subtotal').textContent);
+  data.append('p_total',       document.getElementById('p-total').textContent);
 
   var btn = document.getElementById('confirm-btn-send');
   btn.disabled = true;
