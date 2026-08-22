@@ -1764,9 +1764,39 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
 
   var btn = document.getElementById('confirm-btn-send');
   btn.disabled = true;
-  btn.textContent = '送信中...';
+  btn.textContent = '生成中...';
 
-  fetch('order_mail.php', { method: 'POST', body: data })
+  // 確認画面をキャプチャしてそのままメールに添付する
+  var box     = document.querySelector('.confirm-box');
+  var lead    = box.querySelector('.confirm-lead');
+  var share   = box.querySelector('.confirm-share');
+  var actions = box.querySelector('.confirm-actions');
+
+  // ボタン類を一時非表示・zoom解除
+  lead.style.display    = 'none';
+  share.style.display   = 'none';
+  actions.style.display = 'none';
+  box.style.cssText    += ';zoom:1!important;width:375px!important;max-width:375px!important;';
+
+  var capturePromise = window.html2canvas
+    ? html2canvas(box, { scale: 1.5, useCORS: true, allowTaint: true, backgroundColor: '#111111', logging: false })
+    : Promise.resolve(null);
+
+  capturePromise.then(function(canvas) {
+    // 表示を元に戻す
+    lead.style.display    = '';
+    share.style.display   = '';
+    actions.style.display = '';
+    box.style.zoom      = '';
+    box.style.width     = '';
+    box.style.maxWidth  = '';
+
+    if (canvas) {
+      data.append('order_img', canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    }
+    btn.textContent = '送信中...';
+    return fetch('order_mail.php', { method: 'POST', body: data });
+  })
     .then(function(res) { return res.json(); })
     .then(function(json) {
       if (json.ok) {
@@ -1776,13 +1806,13 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
       } else {
         alert('送信に失敗しました。お手数ですが info@ig-rod.jp まで直接ご連絡ください。');
         btn.disabled = false;
-        btn.textContent = '送信する';
+        btn.innerHTML = '内容を確認して送信する <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
       }
     })
     .catch(function() {
       alert('送信に失敗しました。お手数ですが info@ig-rod.jp まで直接ご連絡ください。');
       btn.disabled = false;
-      btn.textContent = '送信する';
+      btn.innerHTML = '内容を確認して送信する <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
     });
 });
 
