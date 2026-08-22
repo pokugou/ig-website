@@ -725,11 +725,11 @@
         <span class="price-val" id="p-grip">＋¥0</span>
       </div>
       <div class="price-row" id="pr-blank-color-row" style="display:none">
-        <span class="price-label">ブランクスカラー（お任せ）</span>
+        <span class="price-label">ブランクスカラー</span>
         <span class="price-val" id="p-blank-color">＋¥0</span>
       </div>
       <div class="price-row" id="pr-tip-color-row" style="display:none">
-        <span class="price-label">ティップカラー（お任せ）</span>
+        <span class="price-label">ティップカラー</span>
         <span class="price-val" id="p-tip-color">＋¥0</span>
       </div>
       <div class="price-row" id="pr-reel-color-row" style="display:none">
@@ -1403,19 +1403,22 @@ function calcPrice() {
 
   const fmt = n => '¥' + n.toLocaleString('ja-JP');
 
-  // ブランクスカラー行
+  // ブランクスカラー行（色が選択されたら表示）
+  var blankSel = document.getElementById('f-blank-color').value;
   var blankRow = document.getElementById('pr-blank-color-row');
-  if (blankRow) blankRow.style.display = blankColorPrice > 0 ? '' : 'none';
+  if (blankRow) blankRow.style.display = blankSel ? '' : 'none';
   document.getElementById('p-blank-color').textContent = '＋' + fmt(blankColorPrice);
 
-  // ティップカラー行
+  // ティップカラー行（色が選択されたら表示）
+  var tipSel = document.getElementById('f-tip-color').value;
   var tipRow = document.getElementById('pr-tip-color-row');
-  if (tipRow) tipRow.style.display = tipColorPrice > 0 ? '' : 'none';
+  if (tipRow) tipRow.style.display = tipSel ? '' : 'none';
   document.getElementById('p-tip-color').textContent = '＋' + fmt(tipColorPrice);
 
-  // リールシートカラー行
+  // リールシートカラー行（色が選択されたら表示）
+  var reelSel = document.getElementById('f-reel-color').value;
   var reelRow = document.getElementById('pr-reel-color-row');
-  if (reelRow) reelRow.style.display = reelColorPrice > 0 ? '' : 'none';
+  if (reelRow) reelRow.style.display = reelSel ? '' : 'none';
   var reelPriceEl = document.getElementById('p-reel-color');
   if (reelPriceEl) reelPriceEl.textContent = '＋' + fmt(reelColorPrice);
 
@@ -1610,9 +1613,9 @@ function showConfirm() {
         + '<div class="confirm-price-row"><span>ベースモデル</span><span class="cpv">' + document.getElementById('p-base').textContent + '</span></div>'
         + '<div class="confirm-price-row"><span>ガイド仕様</span><span class="cpv">' + document.getElementById('p-guide').textContent + '</span></div>'
         + '<div class="confirm-price-row"><span>グリップ仕様</span><span class="cpv">' + document.getElementById('p-grip').textContent + '</span></div>'
-        + (bcp > 0 ? '<div class="confirm-price-row"><span>ブランクスカラー（お任せ）</span><span class="cpv">' + document.getElementById('p-blank-color').textContent + '</span></div>' : '')
-        + (tcp > 0 ? '<div class="confirm-price-row"><span>ティップカラー（お任せ）</span><span class="cpv">' + document.getElementById('p-tip-color').textContent + '</span></div>' : '')
-        + (rcp > 0 ? '<div class="confirm-price-row"><span>リールシートカラー</span><span class="cpv">' + document.getElementById('p-reel-color').textContent + '</span></div>' : '')
+        + (document.getElementById('f-blank-color').value ? '<div class="confirm-price-row"><span>ブランクスカラー</span><span class="cpv">' + document.getElementById('p-blank-color').textContent + '</span></div>' : '')
+        + (document.getElementById('f-tip-color').value ? '<div class="confirm-price-row"><span>ティップカラー</span><span class="cpv">' + document.getElementById('p-tip-color').textContent + '</span></div>' : '')
+        + (document.getElementById('f-reel-color').value ? '<div class="confirm-price-row"><span>リールシートカラー</span><span class="cpv">' + document.getElementById('p-reel-color').textContent + '</span></div>' : '')
         + '<div class="confirm-price-row"><span>合計（税抜）</span><span class="cpv">' + document.getElementById('p-subtotal').textContent + '</span></div>'
         + '<div class="confirm-price-total"><span class="cpl">税込合計</span><span class="cpv">' + document.getElementById('p-total').textContent + '</span></div>'
       + '</div>'
