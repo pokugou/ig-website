@@ -614,7 +614,8 @@
     <div id="panel-email">
       <p class="form-note">
         下記フォームに必要事項をご記入のうえ、送信してください。<br />
-        通常2〜3営業日以内にご返信いたします。
+        通常2〜3営業日以内にご返信いたします。<br />
+        ※ お急ぎの場合は <a href="https://lin.ee/8eONfci" target="_blank" rel="noopener" style="color:var(--red2);">LINE公式アカウント</a> よりご連絡ください。そちらの方が迅速に対応できます。
       </p>
 
     <form class="contact-form" id="contactForm" novalidate>
@@ -667,11 +668,14 @@
       <button class="form-submit" type="submit">
         送信する &#x2192;
       </button>
-
-      <div class="form-success" id="formSuccess">
-        お問い合わせを承りました。通常2〜3営業日以内にご返信いたします。しばらくお待ちください。
-      </div>
     </form>
+
+    <div class="form-success" id="formSuccess">
+      <div style="font-size:1.1rem; font-weight:700; margin-bottom:0.75rem;">お問い合わせありがとうございます。</div>
+      お問い合わせ内容を受け付けました。<br />
+      通常2〜3営業日以内にご返信いたします。しばらくお待ちください。<br /><br />
+      ※ お急ぎの場合は <a href="https://lin.ee/8eONfci" target="_blank" rel="noopener" style="color:var(--red2);">LINE公式アカウント</a> よりご連絡ください。
+    </div>
     </div><!-- /panel-email -->
 
     <!-- LINEパネル -->
@@ -838,6 +842,7 @@
         if (json.ok) {
           form.style.display = 'none';
           document.getElementById('formSuccess').style.display = 'block';
+          document.getElementById('formSuccess').scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
           alert('送信に失敗しました。お手数ですが go@ig-rod.jp まで直接ご連絡ください。');
           btn.disabled = false;
