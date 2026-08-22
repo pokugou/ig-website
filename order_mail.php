@@ -35,6 +35,11 @@ $p_subtotal   = trim($_POST['p_subtotal']    ?? '');
 $p_total      = trim($_POST['p_total']       ?? '');
 
 function h($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+function h2($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+function row2($label, $value, $ls, $vs) {
+    if ($value === '' || $value === '—') return '';
+    return '<tr><td style="'.$ls.'">'.h2($label).'</td><td style="'.$vs.'">'.h2($value).'</td></tr>';
+}
 
 function send_html_mail($to, $subject, $html_body, $from, $reply_to = '') {
     $encoded_subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
@@ -58,17 +63,10 @@ function build_confirm_html($name, $email, $tel, $model, $blank_color, $tip_colo
     $p_base, $p_guide, $p_grip, $p_blank_color, $p_tip_color, $p_subtotal, $p_total,
     $is_customer = false) {
 
-    function h2($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
-
     $label_style  = 'padding:3px 0;font-size:10px;color:#888;width:110px;vertical-align:top;';
     $value_style  = 'padding:3px 0;font-size:12px;color:#f0f0f0;font-weight:500;vertical-align:top;';
     $sec_style    = 'font-size:8px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#cc2200;padding:10px 0 5px;border-top:1px solid #2a2a2a;';
     $first_sec    = 'font-size:8px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#cc2200;padding:0 0 5px;';
-
-    function row2($label, $value, $ls, $vs) {
-        if ($value === '' || $value === '—') return '';
-        return '<tr><td style="'.$ls.'">' . h2($label) . '</td><td style="'.$vs.'">' . h2($value) . '</td></tr>';
-    }
 
     $order_rows = '
         <tr><td style="'.$first_sec.'" colspan="2">CUSTOMER</td></tr>'
