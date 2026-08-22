@@ -1158,6 +1158,20 @@
 <!-- ORDER SUMMARY CARD (html2canvas capture target) -->
 <div id="order-card" style="position:fixed;left:-9999px;top:0;width:375px;background:#0f0f0f;font-family:'Noto Sans JP',sans-serif;overflow:hidden;color:#f8f8f8;"></div>
 
+<!-- IMAGE PREVIEW OVERLAY -->
+<div id="img-preview-overlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.96);overflow-y:auto;-webkit-overflow-scrolling:touch;">
+  <div style="max-width:400px;margin:0 auto;padding:20px 16px 40px;">
+    <div style="font-size:8px;font-weight:700;letter-spacing:0.18em;color:#cc2200;text-align:center;margin-bottom:4px;">ORDER IMAGE</div>
+    <div style="font-size:12px;color:#888;text-align:center;margin-bottom:12px;">長押しして「写真に追加」で保存できます</div>
+    <img id="img-preview" src="" alt="オーダー内容" style="width:100%;border-radius:4px;display:block;-webkit-user-select:none;user-select:none;" />
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px;">
+      <a id="img-download-link" href="" download="" style="display:block;padding:13px;background:#222;color:#f0f0f0;border-radius:4px;text-decoration:none;font-size:13px;font-weight:700;text-align:center;">⬇ 画像を保存する</a>
+      <a href="line://" style="display:block;padding:13px;background:#06c755;color:#fff;border-radius:4px;text-decoration:none;font-size:13px;font-weight:700;text-align:center;">LINE を開く</a>
+      <button onclick="closeImgPreview()" style="padding:11px;background:transparent;color:#666;border:1px solid #333;border-radius:4px;font-size:12px;cursor:pointer;width:100%;">閉じる</button>
+    </div>
+  </div>
+</div>
+
 <!-- CONFIRMATION OVERLAY -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
@@ -1869,34 +1883,52 @@ function buildOrderCard() {
 
 // --- 画像に保存してLINEに送る ---
 var SAVE_BTN_LABEL = '<svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 画像に保存してLINEに送る';
+
+function closeImgPreview() {
+  document.getElementById('img-preview-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function showImgOverlay(dataURL, filename) {
+  document.getElementById('img-preview').src = dataURL;
+  var dl = document.getElementById('img-download-link');
+  dl.href = dataURL;
+  dl.setAttribute('download', filename);
+  document.getElementById('img-preview-overlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
 function saveAsImage(btnEl) {
   if (!window.html2canvas) { alert('ライブラリを読み込み中です。しばらく待ってからお試しください。'); return; }
   buildOrderCard();
   if (btnEl) { btnEl.classList.add('is-loading'); btnEl.textContent = '生成中…'; }
 
-  var card = document.getElementById('order-card');
-  html2canvas(card, {
+  html2canvas(document.getElementById('order-card'), {
     scale: 2,
     useCORS: true,
-    allowTaint: false,
+    allowTaint: true,
     backgroundColor: '#0f0f0f',
     logging: false
   }).then(function(canvas) {
     var filename = 'ig-rod-order-' + new Date().toISOString().slice(0,10) + '.png';
+    var dataURL = canvas.toDataURL('image/png');
+    if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.innerHTML = SAVE_BTN_LABEL; }
+
+    // Web Share API が使えればネイティブシェートシートを試みる
     canvas.toBlob(function(blob) {
       var file = new File([blob], filename, { type: 'image/png' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         navigator.share({ files: [file], title: 'IGロッド オーダー内容' })
-          .catch(function() {});
+          .catch(function(err) {
+            // キャンセル以外のエラーならオーバーレイへ
+            if (!err || err.name !== 'AbortError') { showImgOverlay(dataURL, filename); }
+          });
       } else {
-        // PCなどシェアAPIが使えない場合はダウンロード
-        var link = document.createElement('a');
-        link.download = filename;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        // 非対応ブラウザ: オーバーレイで画像表示 + 保存 + LINE起動
+        showImgOverlay(dataURL, filename);
       }
-      if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.innerHTML = SAVE_BTN_LABEL; }
     }, 'image/png');
+
   }).catch(function() {
     if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.innerHTML = SAVE_BTN_LABEL; }
     alert('画像の生成に失敗しました。スクリーンショットをご利用ください。');
