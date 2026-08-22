@@ -79,6 +79,58 @@ mb_internal_encoding('UTF-8');
 
 $result = mb_send_mail($to, $subject, $body, $headers);
 
+// ---- お客様への自動返信 ----
+$reply_subject = '【IG Rod Planning】オーダーを受け付けました';
+$reply_body = <<<EOT
+{$name} 様
+
+この度はIG Rod Planningへオーダーいただき、誠にありがとうございます。
+以下の内容でオーダーを受け付けました。
+
+━━━━━━━━━━━━━━━━━━━━━━
+■ オーダー内容
+モデル：{$model}
+ブランクスカラー：{$blank_color}
+ティップカラー：{$tip_color}
+メインスレッド：{$thread_main}
+ティップ部分スレッド：{$thread_tip}
+ピンライン：{$thread_pin}
+ガイド仕様：{$guide}
+グリップ仕様：{$grip}
+ネーム仕様：{$name_custom}
+
+■ 配送・支払
+送料：{$shipping}
+送り先住所：{$address}
+お支払い方法：{$payment}
+
+■ 料金
+ベースモデル：{$p_base}
+ガイド仕様：{$p_guide}
+グリップ仕様：{$p_grip}
+合計（税抜）：{$p_subtotal}
+税込合計：{$p_total}
+
+■ 備考
+{$note}
+━━━━━━━━━━━━━━━━━━━━━━
+
+担当者よりご連絡いたします。
+ご不明な点は go@ig-rod.jp またはLINE公式アカウントまでお気軽にお問い合わせください。
+https://lin.ee/8eONfci
+
+※ このメールは自動送信です。このメールへの返信は受け付けておりません。
+
+──────────────────────
+IG Rod Planning
+https://ig-rod.jp
+──────────────────────
+EOT;
+$reply_headers  = 'From: IG Rod Planning <noreply@ig-rod.jp>' . "\r\n";
+$reply_headers .= 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
+
+mb_send_mail($email, $reply_subject, $reply_body, $reply_headers);
+
 if ($result) {
     echo json_encode(['ok' => true]);
 } else {
