@@ -34,12 +34,9 @@ $p_tip_color  = trim($_POST['p_tip_color']   ?? '');
 $p_subtotal   = trim($_POST['p_subtotal']    ?? '');
 $p_total      = trim($_POST['p_total']       ?? '');
 
+// ---- ヘルパー関数（グローバルスコープ） ----
+
 function h($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
-function h2($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
-function row2($label, $value, $ls, $vs) {
-    if ($value === '' || $value === '—') return '';
-    return '<tr><td style="'.$ls.'">'.h2($label).'</td><td style="'.$vs.'">'.h2($value).'</td></tr>';
-}
 
 function send_html_mail($to, $subject, $html_body, $from, $reply_to = '') {
     $encoded_subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
@@ -56,94 +53,118 @@ function send_html_mail($to, $subject, $html_body, $from, $reply_to = '') {
     return mail($to, $encoded_subject, $body, $headers);
 }
 
-// ---- 確認メール HTML生成（共通テンプレート） ----
-function build_confirm_html($name, $email, $tel, $model, $blank_color, $tip_color, $reel_color,
-    $thread_main, $thread_tip, $thread_pin, $guide, $grip, $name_custom,
+// カラー値（例: "005 イエロー"）から swatch 画像タグを生成
+function swatch_img($val, $prefix) {
+    if (!$val || $val === '—') return '';
+    preg_match('/^(\d{3})/', trim($val), $m);
+    if (!$m) return '';
+    $url = 'https://ig-rod.jp/swatches/' . $prefix . $m[1] . '.jpg';
+    return '<img src="' . $url . '" width="20" height="20" '
+         . 'style="vertical-align:middle;border-radius:2px;border:1px solid rgba(255,255,255,0.2);margin-right:6px;object-fit:cover;">';
+}
+
+// セクション見出し行
+function mail_sec($label) {
+    $s = 'padding:10px 0 5px;font-size:9px;font-weight:700;letter-spacing:0.15em;color:#cc2200;border-top:1px solid #2a2a2a;';
+    return '<tr><td colspan="2" style="' . $s . '">— ' . h($label) . '</td></tr>';
+}
+
+// データ行（値が空なら非表示）
+function mail_row($label, $val, $img = '') {
+    if ($val === '' || $val === null) return '';
+    $ls = 'padding:7px 0;font-size:11px;color:#888;width:120px;vertical-align:middle;border-top:1px solid #1e1e1e;';
+    $vs = 'padding:7px 0;font-size:12px;color:#f0f0f0;font-weight:600;vertical-align:middle;border-top:1px solid #1e1e1e;';
+    return '<tr><td style="' . $ls . '">' . h($label) . '</td>'
+         . '<td style="' . $vs . '">' . $img . h($val) . '</td></tr>';
+}
+
+// 価格行
+function mail_prow($label, $val) {
+    if ($val === '' || $val === null) return '';
+    $ls = 'padding:6px 0;font-size:12px;color:#aaa;border-bottom:1px solid #222;';
+    $vs = 'padding:6px 0;font-size:12px;color:#f0f0f0;font-weight:600;text-align:right;border-bottom:1px solid #222;';
+    return '<tr><td style="' . $ls . '">' . h($label) . '</td><td style="' . $vs . '">' . h($val) . '</td></tr>';
+}
+
+// ---- メール HTML 生成 ----
+
+function build_confirm_html($name, $email, $tel, $model,
+    $blank_color, $tip_color, $reel_color,
+    $thread_main, $thread_tip, $thread_pin,
+    $guide, $grip, $name_custom,
     $shipping, $address, $payment, $note,
-    $p_base, $p_guide, $p_grip, $p_blank_color, $p_tip_color, $p_subtotal, $p_total,
-    $is_customer = false) {
+    $p_base, $p_guide, $p_grip, $p_blank_color, $p_tip_color,
+    $p_subtotal, $p_total, $is_customer = false) {
 
-    $label_style  = 'padding:3px 0;font-size:10px;color:#888;width:110px;vertical-align:top;';
-    $value_style  = 'padding:3px 0;font-size:12px;color:#f0f0f0;font-weight:500;vertical-align:top;';
-    $sec_style    = 'font-size:8px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#cc2200;padding:10px 0 5px;border-top:1px solid #2a2a2a;';
-    $first_sec    = 'font-size:8px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#cc2200;padding:0 0 5px;';
+    $title   = $is_customer ? 'オーダーを受け付けました' : h($name) . ' 様より新規オーダー';
+    $eyebrow = $is_customer ? 'ORDER RECEIVED' : 'ORDER CONFIRMATION';
 
-    $order_rows = '
-        <tr><td style="'.$first_sec.'" colspan="2">CUSTOMER</td></tr>'
-        . row2('お客様名', $name, $label_style, $value_style)
-        . row2('メール', $email, $label_style, $value_style)
-        . row2('電話番号', $tel, $label_style, $value_style)
-        . '<tr><td style="'.$sec_style.'" colspan="2">MODEL</td></tr>'
-        . row2('モデル', $model, $label_style, $value_style)
-        . '<tr><td style="'.$sec_style.'" colspan="2">COLOR CUSTOM</td></tr>'
-        . row2('ブランクスカラー', $blank_color, $label_style, $value_style)
-        . row2('ティップカラー', $tip_color, $label_style, $value_style)
-        . ($reel_color ? row2('リールシートカラー', $reel_color, $label_style, $value_style) : '')
-        . row2('メインスレッド', $thread_main, $label_style, $value_style)
-        . row2('ティップスレッド', $thread_tip, $label_style, $value_style)
-        . row2('ピンライン', $thread_pin, $label_style, $value_style)
-        . '<tr><td style="'.$sec_style.'" colspan="2">OPTIONS</td></tr>'
-        . row2('ガイド仕様', $guide, $label_style, $value_style)
-        . row2('グリップ仕様', $grip, $label_style, $value_style)
-        . row2('ネーム仕様', $name_custom, $label_style, $value_style)
-        . '<tr><td style="'.$sec_style.'" colspan="2">SHIPPING</td></tr>'
-        . row2('送料', $shipping, $label_style, $value_style)
-        . row2('送り先住所', $address, $label_style, $value_style)
-        . row2('お支払い', $payment, $label_style, $value_style);
+    $order_rows =
+        mail_sec('基本情報')
+        . mail_row('お客様名',      $name)
+        . mail_row('メールアドレス', $email)
+        . mail_row('電話番号',      $tel)
 
-    $prow = 'padding:4px 0;font-size:11px;color:#aaa;border-bottom:1px solid #222;';
-    $pval = 'padding:4px 0;font-size:11px;color:#f0f0f0;font-weight:600;text-align:right;border-bottom:1px solid #222;';
+        . mail_sec('ベースモデル')
+        . mail_row('モデル', $model)
+
+        . mail_sec('カラーカスタム')
+        . mail_row('ブランクスカラー',    $blank_color, swatch_img($blank_color, 'b'))
+        . mail_row('ティップカラー',      $tip_color,   swatch_img($tip_color,   'b'))
+        . mail_row('リールシートカラー',  $reel_color,  swatch_img($reel_color,  'b'))
+        . mail_row('メインスレッド',      $thread_main, swatch_img($thread_main, 't'))
+        . mail_row('ティップ部分スレッド', $thread_tip,  swatch_img($thread_tip,  't'))
+        . mail_row('ピンラインスレッド',   $thread_pin,  swatch_img($thread_pin,  't'))
+
+        . mail_sec('カスタムオプション')
+        . mail_row('ガイド仕様',  $guide)
+        . mail_row('グリップ仕様', $grip)
+        . mail_row('ネーム仕様',  $name_custom)
+
+        . mail_sec('配送・お支払い')
+        . mail_row('送料',         $shipping)
+        . mail_row('送り先住所',   $address)
+        . mail_row('お支払い方法', $payment)
+
+        . ($note
+            ? mail_sec('備考')
+              . '<tr><td colspan="2" style="padding:7px 0;font-size:12px;color:#e0e0e0;line-height:1.7;white-space:pre-wrap;">' . h($note) . '</td></tr>'
+            : '');
 
     $price_rows =
-        '<tr><td style="'.$prow.'">ベースモデル</td><td style="'.$pval.'">'.h2($p_base).'</td></tr>'
-        .'<tr><td style="'.$prow.'">ガイド仕様</td><td style="'.$pval.'">'.h2($p_guide).'</td></tr>'
-        .'<tr><td style="'.$prow.'">グリップ仕様</td><td style="'.$pval.'">'.h2($p_grip).'</td></tr>'
-        .($p_blank_color ? '<tr><td style="'.$prow.'">ブランクスカラー</td><td style="'.$pval.'">'.h2($p_blank_color).'</td></tr>' : '')
-        .($p_tip_color   ? '<tr><td style="'.$prow.'">ティップカラー</td><td style="'.$pval.'">'.h2($p_tip_color).'</td></tr>' : '')
-        .'<tr><td style="'.$prow.'">合計（税抜）</td><td style="'.$pval.'">'.h2($p_subtotal).'</td></tr>'
-        .'<tr><td style="padding:8px 0 2px;font-size:12px;font-weight:700;color:#f8f8f8;">税込合計</td>'
-        .'<td style="padding:8px 0 2px;font-size:18px;font-weight:900;color:#c8a44a;text-align:right;font-family:\'DM Sans\',Arial,sans-serif;">'.h2($p_total).'</td></tr>';
-
-    $note_block = $note ? '
-        <tr><td colspan="2" style="padding-top:10px;">
-          <div style="font-size:8px;color:#888;font-weight:700;letter-spacing:0.15em;margin-bottom:4px;">NOTES</div>
-          <div style="font-size:11px;color:#e0e0e0;line-height:1.6;white-space:pre-wrap;background:#0d0d0d;padding:8px;border:1px solid #2a2a2a;">'.h2($note).'</div>
-        </td></tr>' : '';
-
-    $header_label = $is_customer
-        ? '<div style="font-size:9px;color:#cc2200;font-weight:700;letter-spacing:0.2em;margin-bottom:4px;">ORDER RECEIVED</div><div style="font-size:16px;font-weight:900;color:#f8f8f8;margin-bottom:14px;">オーダーを受け付けました</div>'
-        : '<div style="font-size:9px;color:#cc2200;font-weight:700;letter-spacing:0.2em;margin-bottom:4px;">ORDER CONFIRMATION</div><div style="font-size:16px;font-weight:900;color:#f8f8f8;margin-bottom:14px;">'.h2($name).' 様より新規オーダー</div>';
+        mail_prow('ベースモデル',   $p_base)
+        . mail_prow('ガイド仕様',   $p_guide)
+        . mail_prow('グリップ仕様', $p_grip)
+        . mail_prow('ブランクスカラー', $p_blank_color)
+        . mail_prow('ティップカラー',   $p_tip_color)
+        . mail_prow('合計（税抜）', $p_subtotal);
 
     return '<!DOCTYPE html>
 <html lang="ja">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:14px;background:#0d0d0d;font-family:\'Helvetica Neue\',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;margin:0 auto;">
-<tr><td style="background:#111;border:1px solid #2a2a2a;padding:18px 20px 16px;">
+<body style="margin:0;padding:16px;background:#0d0d0d;font-family:\'Helvetica Neue\',Arial,\'Noto Sans JP\',sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;">
+<tr><td style="background:#111;border:1px solid #2a2a2a;padding:20px 22px 24px;">
 
-  ' . $header_label . '
+  <div style="font-size:9px;font-weight:700;letter-spacing:0.22em;color:#cc2200;margin-bottom:5px;">' . $eyebrow . '</div>
+  <div style="font-size:20px;font-weight:900;color:#f8f8f8;margin-bottom:18px;">' . $title . '</div>
 
   <table width="100%" cellpadding="0" cellspacing="0">
-  <tr>
-    <!-- 左：オーダー詳細 -->
-    <td style="width:55%;vertical-align:top;padding-right:16px;border-right:1px solid #2a2a2a;">
-      <table width="100%" cellpadding="0" cellspacing="0">
-        ' . $order_rows . '
-        ' . $note_block . '
-      </table>
-    </td>
+    ' . $order_rows . '
 
-    <!-- 右：料金サマリー -->
-    <td style="width:45%;vertical-align:top;padding-left:16px;">
-      <div style="font-size:8px;font-weight:700;letter-spacing:0.15em;color:#888;padding-bottom:6px;border-bottom:1px solid #2a2a2a;">PRICE SUMMARY</div>
-      <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:4px;">
+    <tr><td colspan="2" style="padding:16px 0 8px;font-size:9px;font-weight:700;letter-spacing:0.15em;color:#cc2200;border-top:1px solid #2a2a2a;">— 料金確認</td></tr>
+    <tr><td colspan="2" style="padding-bottom:4px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d0d;border:1px solid #2a2a2a;padding:12px 14px;">
         ' . $price_rows . '
+        <tr>
+          <td style="padding:10px 0 2px;font-size:13px;font-weight:700;color:#f8f8f8;">税込合計</td>
+          <td style="padding:10px 0 2px;font-size:22px;font-weight:900;color:#c8a44a;text-align:right;">' . h($p_total) . '</td>
+        </tr>
       </table>
-    </td>
-  </tr>
+    </td></tr>
   </table>
 
-  <div style="padding-top:12px;border-top:1px solid #2a2a2a;margin-top:12px;font-size:10px;color:#555;">
+  <div style="padding-top:12px;border-top:1px solid #2a2a2a;font-size:10px;color:#555;">
     IG Rod Planning — https://ig-rod.jp
   </div>
 
@@ -153,27 +174,31 @@ function build_confirm_html($name, $email, $tel, $model, $blank_color, $tip_colo
 </html>';
 }
 
+// ---- 送信 ----
+
 $html = build_confirm_html(
-    $name, $email, $tel, $model, $blank_color, $tip_color, $reel_color,
-    $thread_main, $thread_tip, $thread_pin, $guide, $grip, $name_custom,
+    $name, $email, $tel, $model,
+    $blank_color, $tip_color, $reel_color,
+    $thread_main, $thread_tip, $thread_pin,
+    $guide, $grip, $name_custom,
     $shipping, $address, $payment, $note,
-    $p_base, $p_guide, $p_grip, $p_blank_color, $p_tip_color, $p_subtotal, $p_total,
-    false
+    $p_base, $p_guide, $p_grip, $p_blank_color, $p_tip_color,
+    $p_subtotal, $p_total, false
 );
 
 $customer_html = build_confirm_html(
-    $name, $email, $tel, $model, $blank_color, $tip_color, $reel_color,
-    $thread_main, $thread_tip, $thread_pin, $guide, $grip, $name_custom,
+    $name, $email, $tel, $model,
+    $blank_color, $tip_color, $reel_color,
+    $thread_main, $thread_tip, $thread_pin,
+    $guide, $grip, $name_custom,
     $shipping, $address, $payment, $note,
-    $p_base, $p_guide, $p_grip, $p_blank_color, $p_tip_color, $p_subtotal, $p_total,
-    true
+    $p_base, $p_guide, $p_grip, $p_blank_color, $p_tip_color,
+    $p_subtotal, $p_total, true
 );
 
-// ---- 管理者宛 ----
 $admin_subject = '【オーダーフォーム】' . $name . ' 様';
 $result = send_html_mail($to, $admin_subject, $html, 'go@ig-rod.jp', $email);
 
-// ---- お客様宛 ----
 $reply_subject = '【IG Rod Planning】オーダーを受け付けました';
 send_html_mail($email, $reply_subject, $customer_html, 'IG Rod Planning <go@ig-rod.jp>');
 
