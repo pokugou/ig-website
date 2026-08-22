@@ -302,7 +302,30 @@
   <!-- ROD PREVIEW -->
   <div class="rod-card">
     <div class="rod-card-label">PREVIEW — ロッドカラープレビュー</div>
+    <div style="position:relative;line-height:0;">
     <canvas id="rod-canvas" style="width:100%;display:block;border-radius:4px;"></canvas>
+    <!-- Thread wrap overlays (screen blend = colorizes dark threads, leaves white bg unchanged) -->
+    <svg id="thread-overlay" viewBox="0 0 1206 792"
+         style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"
+         xmlns="http://www.w3.org/2000/svg">
+      <g style="mix-blend-mode:screen;">
+        <!-- Top view: thread wraps at each guide position -->
+        <polygon class="ov-thread" points="185,248 199,247 199,256 185,257" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="231,245 245,244 245,253 231,254" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="298,241 312,240 312,250 298,251" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="383,235 397,234 397,246 383,247" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="487,228 501,227 501,241 487,242" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="593,221 607,220 607,235 593,236" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="693,214 707,213 707,230 693,231" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="778,209 792,208 792,226 778,227" fill="#f1f3f3"/>
+        <!-- Bottom view: thread wraps visible on blank section -->
+        <polygon class="ov-thread" points="752,440 766,433 766,441 752,448" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="806,416 820,409 820,417 806,424" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="875,387 889,380 889,388 875,395" fill="#f1f3f3"/>
+        <polygon class="ov-thread" points="950,355 964,348 964,356 950,363" fill="#f1f3f3"/>
+      </g>
+    </svg>
+    </div>
     <svg id="rod-svg" viewBox="0 0 1400 230" xmlns="http://www.w3.org/2000/svg" style="display:none">
       <defs>
         <!-- Strong cylinder gradient for blank/tip: bright specular top, deep shadow bottom -->
@@ -681,12 +704,7 @@ var THREAD_COLORS = [
   { id:'t305',   name:'305 ピンク',        hex:'#d65170', cat:'NCP' },
 ];
 
-var REELSEAT_COLORS = [
-  { id:'r001', name:'シルバー',   hex:'#8a8a8a' },
-  { id:'r002', name:'ブラック',   hex:'#2a2a2a' },
-  { id:'r003', name:'ゴールド',   hex:'#8a7020' },
-  { id:'r004', name:'ガンメタル', hex:'#444444' },
-];
+var REELSEAT_COLORS = BLANK_COLORS;
 
 // ===== STATE =====
 var activePart = 'blank';
@@ -694,7 +712,7 @@ var state = {
   blank:    { id:'b004', name:'004 レッド',    hex:'#ac1d2b' },
   thread:   { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
   tip:      { id:'b005', name:'005 イエロー',  hex:'#cfd233' },
-  reelseat: { id:'r001', name:'シルバー',      hex:'#8a8a8a' },
+  reelseat: { id:'b007', name:'007 シルバー',   hex:'#a3a7a8' },
 };
 
 // ===== HELPERS =====
@@ -794,6 +812,10 @@ function renderSVG() {
     }
     rodCtx.putImageData(new ImageData(data, rodCanvas.width, rodCanvas.height), 0, 0);
   }
+  // Update thread overlay polygons
+  document.querySelectorAll('.ov-thread').forEach(function(el) {
+    el.setAttribute('fill', state.thread.hex);
+  });
 }
 
 function darken(hex, factor) {
