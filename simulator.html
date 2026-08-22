@@ -814,23 +814,50 @@ function renderSVG() {
     }
     rodCtx.putImageData(new ImageData(data, rodCanvas.width, rodCanvas.height), 0, 0);
   }
-  // Draw thread wraps on canvas using screen blend
-  rodCtx.save();
-  rodCtx.globalCompositeOperation = 'screen';
-  // Tip-section thread wraps (▲ティップスレッド) — 4 small guides in yellow-green tip section
+  // Draw thread wraps: pixel-level targeting to avoid text leader lines
+  // Only color narrow dark-pixel clusters (guide rings ≤ maxSpan px wide)
+  // Wide horizontal bands are label leader lines and must be skipped
   var tipThreads = [
-    [68,330,22,45],[118,310,28,38],[146,340,36,38],[215,310,28,36]
+    [68,310,40,60],[110,305,50,60],[138,305,70,70],[205,305,55,60]
   ];
-  // Main thread wraps (②〜④スレッド)
   var mainThreads = [
-    [338,376,20,26],[402,377,20,24],[481,378,24,22],[575,376,24,22],[692,373,28,22],[854,369,34,24], // top view
-    [194,476,30,14],[310,476,32,14],[332,423,80,24]  // bottom view — shortened to avoid text labels
+    [330,365,30,30],[394,366,30,28],[473,366,34,28],[566,364,36,26],[683,360,40,26],[845,356,46,28],
+    [186,468,42,22],[302,468,46,22],[324,415,100,36]
   ];
-  rodCtx.fillStyle = state.tipthread.hex;
-  tipThreads.forEach(function(t) { rodCtx.fillRect(t[0],t[1],t[2],t[3]); });
-  rodCtx.fillStyle = state.thread.hex;
-  mainThreads.forEach(function(t) { rodCtx.fillRect(t[0],t[1],t[2],t[3]); });
-  rodCtx.restore();
+  function paintNarrowDark(rects, color, maxSpan) {
+    var cr=parseInt(color.slice(1,3),16), cg=parseInt(color.slice(3,5),16), cb=parseInt(color.slice(5,7),16);
+    var W=rodCanvas.width, orig=rodOrigData.data;
+    var img=rodCtx.getImageData(0,0,rodCanvas.width,rodCanvas.height), d=img.data;
+    rects.forEach(function(r) {
+      for (var row=r[1]; row<r[1]+r[3]; row++) {
+        var darkXs=[];
+        for (var col=r[0]; col<r[0]+r[2]; col++) {
+          var oi=(row*W+col)*4;
+          if ((orig[oi]+orig[oi+1]+orig[oi+2])/3 < 70) darkXs.push(col);
+        }
+        // Split into clusters, color only narrow ones
+        var clusters=[],cur=null;
+        darkXs.forEach(function(cx){
+          if(!cur||cx-cur.e>3){if(cur)clusters.push(cur);cur={s:cx,e:cx,xs:[cx]};}
+          else{cur.e=cx;cur.xs.push(cx);}
+        });
+        if(cur)clusters.push(cur);
+        clusters.forEach(function(cl){
+          if(cl.e-cl.s<=maxSpan){
+            cl.xs.forEach(function(cx){
+              var i=(row*W+cx)*4;
+              d[i]=Math.min(255,cr+d[i]-cr*d[i]/255);
+              d[i+1]=Math.min(255,cg+d[i+1]-cg*d[i+1]/255);
+              d[i+2]=Math.min(255,cb+d[i+2]-cb*d[i+2]/255);
+            });
+          }
+        });
+      }
+    });
+    rodCtx.putImageData(img,0,0);
+  }
+  paintNarrowDark(tipThreads, state.tipthread.hex, 24);
+  paintNarrowDark(mainThreads, state.thread.hex, 50);
 }
 
 function darken(hex, factor) {
