@@ -660,8 +660,8 @@
       <div class="field">
         <label>ネーム仕様</label>
         <select name="name-custom" id="sel-name">
-          <option value="定番ネームのみ（＋¥0）">定番ネームのみ（＋¥0）</option>
-          <option value="オリジナルネーム（１箇所 ¥1,200）">オリジナルネーム（１箇所 ¥1,200）</option>
+          <option value="定番ネームのみ（＋¥0）" data-price="0">定番ネームのみ（＋¥0）</option>
+          <option value="オリジナルネーム（１箇所 ¥1,200）" data-price="1200">オリジナルネーム（１箇所 ¥1,200）</option>
         </select>
         <div id="name-original-note" style="display:none; margin-top:0.6rem; font-size:0.82rem; color:var(--gray2); background:rgba(255,255,255,0.04); border:1px solid var(--border2); border-radius:4px; padding:0.7rem 1rem; line-height:1.7;">
           ご希望の文字（ローマ字・漢字・カタカナ等）を下の<strong style="color:var(--white);">自由記入欄</strong>にご記入ください。
@@ -745,6 +745,10 @@
       <div class="price-row" id="pr-reel-color-row" style="display:none">
         <span class="price-label">リールシートカラー</span>
         <span class="price-val" id="p-reel-color">＋¥0</span>
+      </div>
+      <div class="price-row" id="pr-name-row" style="display:none">
+        <span class="price-label">ネーム仕様</span>
+        <span class="price-val" id="p-name">＋¥0</span>
       </div>
       <div class="price-row">
         <span class="price-label">合計（税抜）</span>
@@ -1410,6 +1414,8 @@ function calcPrice() {
   const blankColorPrice = cmPrices['blank-color'] || 0;
   const tipColorPrice   = cmPrices['tip-color'] || 0;
   const reelColorPrice  = cmPrices['reel-color'] || 0;
+  const nameEl  = document.getElementById('sel-name');
+  const namePrice = parseInt(nameEl.options[nameEl.selectedIndex].dataset.price || 0);
 
   const fmt = n => '¥' + n.toLocaleString('ja-JP');
 
@@ -1432,7 +1438,12 @@ function calcPrice() {
   var reelPriceEl = document.getElementById('p-reel-color');
   if (reelPriceEl) reelPriceEl.textContent = '＋' + fmt(reelColorPrice);
 
-  const subtotal = base + guide + grip + blankColorPrice + tipColorPrice + reelColorPrice;
+  // ネーム仕様行
+  var nameRow = document.getElementById('pr-name-row');
+  if (nameRow) nameRow.style.display = namePrice > 0 ? '' : 'none';
+  document.getElementById('p-name').textContent = '＋' + fmt(namePrice);
+
+  const subtotal = base + guide + grip + blankColorPrice + tipColorPrice + reelColorPrice + namePrice;
   const total    = Math.round(subtotal * 1.1);
 
   document.getElementById('p-base').textContent     = fmt(base);
@@ -1657,6 +1668,7 @@ function showConfirm() {
         + '<div class="confirm-price-row"><span>グリップ仕様</span><span class="cpv">' + document.getElementById('p-grip').textContent + '</span></div>'
         + (document.getElementById('f-blank-color').value ? '<div class="confirm-price-row"><span>ブランクスカラー</span><span class="cpv">' + document.getElementById('p-blank-color').textContent + '</span></div>' : '')
         + (document.getElementById('f-tip-color').value ? '<div class="confirm-price-row"><span>ティップカラー</span><span class="cpv">' + document.getElementById('p-tip-color').textContent + '</span></div>' : '')
+        + (document.getElementById('pr-name-row').style.display !== 'none' ? '<div class="confirm-price-row"><span>ネーム仕様</span><span class="cpv">' + document.getElementById('p-name').textContent + '</span></div>' : '')
         + '<div class="confirm-price-row"><span>合計（税抜）</span><span class="cpv">' + document.getElementById('p-subtotal').textContent + '</span></div>'
         + '<div class="confirm-price-total"><span class="cpl">税込合計</span><span class="cpv">' + document.getElementById('p-total').textContent + '</span></div>'
       + '</div>'
@@ -1732,6 +1744,7 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
   data.append('p_grip',        document.getElementById('p-grip').textContent);
   data.append('p_blank_color', document.getElementById('f-blank-color').value ? document.getElementById('p-blank-color').textContent : '');
   data.append('p_tip_color',   document.getElementById('f-tip-color').value   ? document.getElementById('p-tip-color').textContent   : '');
+  data.append('p_name',        document.getElementById('pr-name-row').style.display !== 'none' ? document.getElementById('p-name').textContent : '');
   data.append('p_subtotal',    document.getElementById('p-subtotal').textContent);
   data.append('p_total',       document.getElementById('p-total').textContent);
 
@@ -1953,6 +1966,7 @@ document.getElementById('btn-save-success').addEventListener('click', function()
   if (!sel || !note) return;
   sel.addEventListener('change', function(){
     note.style.display = sel.value.indexOf('オリジナル') !== -1 ? 'block' : 'none';
+    calcPrice();
   });
 })();
 
