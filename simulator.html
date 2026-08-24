@@ -806,11 +806,10 @@ function renderSVG() {
   // Image: rod-diagram.png (842×595)
   // Top view rod body: y≈178-213. Bottom view: y≈278-355.
 
-  // 1. Blank: rod body + grips
+  // 1. Blank: rod body
   paintFill([
     [30,  176, 790,  38],  // top view rod body (x=30-820)
-    [30,  300, 295,  25],  // bottom view rod body thin section (x=30-325)
-    [505, 285, 315,  65]   // bottom view rear grip + rod section right of reel seat
+    [30,  300, 295,  25]   // bottom view rod body thin section (x=30-325)
   ], state.blank.hex);
 
   // 2. Tip: top view tip section (tip to guide 4)
@@ -835,8 +834,11 @@ function renderSVG() {
     [160, 285,  40,  45]   // bottom view guide 2
   ], state.thread.hex);
 
-  // 5. Reel seat mechanism only (bottom view center section)
-  paintFill([[318, 278, 192, 80]], state.reelseat.hex);
+  // 5. Reel seat mechanism + rear grip (bottom view)
+  paintFill([
+    [318, 278, 192, 80],  // reel seat mechanism
+    [664, 283, 157, 60]   // rear grip (③グリップ right)
+  ], state.reelseat.hex);
 
   rodCtx.putImageData(new ImageData(data, W, rodCanvas.height), 0, 0);
 }
