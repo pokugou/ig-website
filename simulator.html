@@ -809,7 +809,8 @@ function renderSVG() {
   // 1. Blank: rod body
   paintFill([
     [30,  176, 790,  38],  // top view rod body (x=30-820)
-    [30,  300, 295,  25]   // bottom view rod body thin section (x=30-325)
+    [30,  300, 295,  25],  // bottom view rod body thin section left (x=30-325)
+    [505, 300, 162,  22]   // bottom view rod body between reel seat and rear grip
   ], state.blank.hex);
 
   // 2. Tip: top view tip section (tip to guide 4)
