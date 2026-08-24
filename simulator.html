@@ -787,19 +787,21 @@ function renderSVG() {
   var data = new Uint8ClampedArray(rodOrigData.data);
   var W = rodCanvas.width;
 
-  // Paint fill pixels above threshold in each rect with the target color.
-  // Default threshold 238 paints only near-white (skips background gray ~226 and outlines <100).
-  // Lower threshold (e.g. 80) paints everything except dark outlines.
-  function paintFill(rects, hex, threshold) {
-    if (threshold === undefined) threshold = 238;
+  // Paint fill pixels in each rect with the target color.
+  // minT: minimum avg to paint (default 238 = near-white only).
+  // maxT: optional upper bound — pixels above maxT are also painted if > 238.
+  //   This lets us paint mechanism body (minT-maxT) + white fills (238+) while skipping background (~226).
+  function paintFill(rects, hex, minT, maxT) {
+    if (minT === undefined) minT = 238;
     var cr=parseInt(hex.slice(1,3),16), cg=parseInt(hex.slice(3,5),16), cb=parseInt(hex.slice(5,7),16);
     rects.forEach(function(r) {
       for (var y=r[1],ey=r[1]+r[3]; y<ey; y++) {
         for (var x=r[0],ex=r[0]+r[2]; x<ex; x++) {
           var i=(y*W+x)*4;
-          if ((data[i]+data[i+1]+data[i+2])/3 > threshold) {
-            data[i]=cr; data[i+1]=cg; data[i+2]=cb;
-          }
+          var avg=(data[i]+data[i+1]+data[i+2])/3;
+          var paint = avg > minT;
+          if (maxT !== undefined) paint = (avg > minT && avg <= maxT) || avg > 238;
+          if (paint) { data[i]=cr; data[i+1]=cg; data[i+2]=cb; }
         }
       }
     });
@@ -837,8 +839,8 @@ function renderSVG() {
     [160, 285,  40,  45]   // bottom view guide 2
   ], state.thread.hex);
 
-  // 5. Reel seat mechanism (threshold=80 to paint all non-outline pixels) + rear grip
-  paintFill([[338, 280, 128, 95]], state.reelseat.hex, 80);
+  // 5. Reel seat mechanism: paint body (avg 80-212) + white fills (238+), skip background (~226)
+  paintFill([[338, 280, 128, 95]], state.reelseat.hex, 80, 212);
   paintFill([[668, 280,  98, 65]], state.reelseat.hex);
 
   rodCtx.putImageData(new ImageData(data, W, rodCanvas.height), 0, 0);
