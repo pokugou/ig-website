@@ -803,39 +803,39 @@ function renderSVG() {
     });
   }
 
-  // Image: rod-diagram.png (1536×1024)
-  // Top view rod: y≈365-445. Bottom view handle: y≈528-700.
+  // Image: rod-diagram.png (842×595)
+  // Top view rod body: y≈178-213. Bottom view: y≈278-355.
 
   // 1. Blank: rod body
   paintFill([
-    [180, 368, 1312, 68],  // top view rod body (x=180-1492)
-    [50,  586,  436,  50]  // bottom view rod body (x=50-486)
+    [30,  176, 790,  38],  // top view rod body (x=30-820)
+    [30,  300, 295,  25]   // bottom view rod body thin section (x=30-325)
   ], state.blank.hex);
 
-  // 2. Tip: top view tip section
-  paintFill([[50, 362, 138, 86]], state.tip.hex);
+  // 2. Tip: top view tip section (tip to guide 4)
+  paintFill([[30, 176, 232, 38]], state.tip.hex);
 
   // 3. Tip thread wraps (first 4 guides from tip)
   paintFill([
-    [47,  366, 120,  84],  // guide 1 (tip ring structure)
-    [156, 372,  64,  56],  // guide 2
-    [274, 374,  56,  52],  // guide 3
-    [398, 376,  56,  48]   // guide 4
+    [30,  176,  42,  38],  // guide 1 (tip ring)
+    [97,  178,  26,  28],  // guide 2
+    [157, 179,  28,  26],  // guide 3
+    [224, 180,  28,  25]   // guide 4
   ], state.tipthread.hex);
 
   // 4. Main thread wraps (guides 5-9 in top view + 2 in bottom view)
   paintFill([
-    [525, 375,  58,  50],  // guide 5
-    [654, 374,  62,  52],  // guide 6
-    [927, 366,  70,  66],  // guide 7
-    [1176, 358,  72,  78], // guide 8
-    [1428, 350,  78,  96], // guide 9
-    [98,  573,  66,  66],  // bottom view guide 1
-    [284, 575,  62,  62]   // bottom view guide 2
+    [296, 181,  28,  22],  // guide 5
+    [365, 181,  30,  22],  // guide 6
+    [471, 179,  22,  24],  // guide 7
+    [645, 177,  26,  28],  // guide 8
+    [787, 175,  24,  30],  // guide 9
+    [60,  285,  40,  45],  // bottom view guide 1
+    [160, 285,  40,  45]   // bottom view guide 2
   ], state.thread.hex);
 
   // 5. Reel seat + grips (bottom view handle section)
-  paintFill([[480, 524, 1060, 180]], state.reelseat.hex);
+  paintFill([[315, 278, 510, 75]], state.reelseat.hex);
 
   rodCtx.putImageData(new ImageData(data, W, rodCanvas.height), 0, 0);
 }
