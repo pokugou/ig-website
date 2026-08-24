@@ -639,24 +639,22 @@
 <script>
 // ===== COLOR DATA =====
 var BLANK_COLORS = [
-  { id:'b001', name:'001 ホワイト',   hex:'#c2c8c9' },
-  { id:'b002', name:'002 ブラック',   hex:'#2e2d2f' },
-  { id:'b003', name:'003 ブルー',     hex:'#4e88d0' },
-  { id:'b004', name:'004 レッド',     hex:'#ac1d2b' },
-  { id:'b005', name:'005 イエロー',   hex:'#cfd233' },
-  { id:'b006', name:'006 グリーン',   hex:'#224239' },
-  { id:'b007', name:'007 シルバー',   hex:'#a3a7a8' },
-  { id:'b008', name:'008 ゴールド',   hex:'#998b24' },
-  { id:'b009', name:'009 ネイビーブルー', hex:'#0c528a' },
-  { id:'b010', name:'010 ディープレッド', hex:'#7f2123' },
-  { id:'b011', name:'011 エメラルド', hex:'#1b7954' },
-  { id:'b012', name:'012 オレンジ',   hex:'#b3570a' },
-  { id:'b013', name:'013 ライムグリーン', hex:'#6acb48' },
-  { id:'b014', name:'014 チャート',   hex:'#cfe52e' },
-  { id:'b015', name:'015 ピンク',     hex:'#ed3e92' },
-  { id:'b016', name:'016 バーントオレンジ', hex:'#e85816' },
-  { id:'b017', name:'017 ネイビー',       hex:'#0a1f44' },
-  { id:'b018', name:'018 ターコイズ',     hex:'#63b8c9' },
+  { id:'c001', name:'001 ホワイト',   hex:'#cbd1d4', cat:'フラット通常色' },
+  { id:'c002', name:'002 ブラック',   hex:'#676968', cat:'フラット通常色' },
+  { id:'c003', name:'003 ブルー',     hex:'#75a1d7', cat:'フラット通常色' },
+  { id:'c004', name:'004 レッド',     hex:'#b93c4b', cat:'フラット通常色' },
+  { id:'c005', name:'005 イエロー',   hex:'#d7db43', cat:'フラット通常色' },
+  { id:'c006', name:'006 グリーン',   hex:'#294a43', cat:'フラット通常色' },
+  { id:'c007', name:'007 シルバー',   hex:'#d5dbdf', cat:'フラットメタリック色' },
+  { id:'c008', name:'008 ゴールド',   hex:'#c6b632', cat:'フラットメタリック色' },
+  { id:'c009', name:'009 ブルー',     hex:'#075491', cat:'フラットメタリック色' },
+  { id:'c010', name:'010 レッド',     hex:'#932124', cat:'フラットメタリック色' },
+  { id:'c011', name:'011 グリーン',   hex:'#157e53', cat:'フラットメタリック色' },
+  { id:'c012', name:'012 オレンジ',   hex:'#f18a12', cat:'フラットメタリック色' },
+  { id:'c013', name:'013 グリーン',   hex:'#99d889', cat:'フラット蛍光色' },
+  { id:'c014', name:'014 イエロー',   hex:'#d1e836', cat:'フラット蛍光色' },
+  { id:'c015', name:'015 ピンク',     hex:'#f470ae', cat:'フラット蛍光色' },
+  { id:'c016', name:'016 オレンジ',   hex:'#ea5610', cat:'フラット蛍光色' },
 ];
 
 var THREAD_COLORS = [
@@ -698,18 +696,18 @@ var REELSEAT_COLORS = BLANK_COLORS;
 // ===== STATE =====
 var activePart = 'blank';
 var state = {
-  blank:     { id:'b004', name:'004 レッド',    hex:'#ac1d2b' },
+  blank:     { id:'c004', name:'004 レッド',    hex:'#b93c4b', cat:'フラット通常色' },
   thread:    { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
   tipthread: { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
-  tip:       { id:'b005', name:'005 イエロー',  hex:'#cfd233' },
-  reelseat:  { id:'b007', name:'007 シルバー',   hex:'#a3a7a8' },
+  tip:       { id:'c005', name:'005 イエロー',  hex:'#d7db43', cat:'フラット通常色' },
+  reelseat:  { id:'c007', name:'007 シルバー',  hex:'#d5dbdf', cat:'フラットメタリック色' },
 };
 
 // ===== HELPERS =====
 function getColors(part) {
-  if (part === 'blank' || part === 'tip') return { type:'flat', colors: BLANK_COLORS };
+  if (part === 'blank' || part === 'tip') return { type:'cat', colors: BLANK_COLORS };
   if (part === 'thread' || part === 'tipthread') return { type:'cat', colors: THREAD_COLORS };
-  if (part === 'reelseat') return { type:'flat', colors: REELSEAT_COLORS };
+  if (part === 'reelseat') return { type:'cat', colors: REELSEAT_COLORS };
   return { type:'flat', colors: [] };
 }
 
