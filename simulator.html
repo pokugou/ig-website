@@ -841,7 +841,6 @@ function renderSVG() {
 
   // 5. Reel seat mechanism: paint body (avg 80-212) + white fills (238+), skip background (~226)
   paintFill([[338, 280, 128, 95]], state.reelseat.hex, 80, 212);
-  paintFill([[668, 280,  98, 65]], state.reelseat.hex);
 
   rodCtx.putImageData(new ImageData(data, W, rodCanvas.height), 0, 0);
 }
