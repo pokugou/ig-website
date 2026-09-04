@@ -83,6 +83,8 @@
     .section-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     @page { size: A4; margin: 1.2cm; }
   }
+
+  .pdf-capture .sheet-remove { display: none; }
 </style>
 </head>
 <body>
@@ -91,10 +93,11 @@
     <button type="button" id="btn-add">＋ シートを追加</button>
     <div class="toolbar-right">
       <button type="button" class="secondary" id="btn-reset">クリア</button>
+      <button type="button" class="secondary" id="btn-save">まとめて保存</button>
       <button type="button" id="btn-print">まとめて印刷</button>
     </div>
   </div>
-  <p class="toolbar-hint">複数枚追加してから「まとめて印刷」→印刷ダイアログの送信先で「PDFに保存」を選ぶと、まとめて1つのPDFになります。</p>
+  <p class="toolbar-hint">複数枚追加したら「まとめて保存」で全シートを1つのPDFファイルとして直接ダウンロード、「まとめて印刷」でプリンターへの印刷ができます。</p>
 
   <div class="sheets" id="sheets">
   <div class="sheet">
@@ -261,6 +264,8 @@
   </div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
   var sheetsEl = document.getElementById('sheets');
   var template = document.querySelector('.sheet');
@@ -325,6 +330,41 @@
     document.querySelectorAll('.sheet select').forEach(function(el){ el.selectedIndex = 0; });
     document.querySelectorAll('.sheet input[type="checkbox"]').forEach(function(el){ el.checked = false; });
     document.querySelectorAll('.guide-custom-row').forEach(function(el){ el.style.display = 'none'; });
+  });
+
+  document.getElementById('btn-save').addEventListener('click', async function(){
+    var btn = this;
+    var originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '作成中…';
+    document.body.classList.add('pdf-capture');
+    try {
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth();
+      var pageH = pdf.internal.pageSize.getHeight();
+      var margin = 8;
+      var sheetEls = document.querySelectorAll('.sheet');
+      for (var i = 0; i < sheetEls.length; i++) {
+        var canvas = await html2canvas(sheetEls[i], { scale: 2, backgroundColor: '#ffffff' });
+        var imgData = canvas.toDataURL('image/jpeg', 0.92);
+        var imgW = pageW - margin * 2;
+        var imgH = imgW * canvas.height / canvas.width;
+        if (imgH > pageH - margin * 2) {
+          imgH = pageH - margin * 2;
+          imgW = imgH * canvas.width / canvas.height;
+        }
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      }
+      pdf.save('受注シート_' + todayISO().replace(/-/g, '') + '.pdf');
+    } catch (e) {
+      console.error(e);
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      document.body.classList.remove('pdf-capture');
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
   });
 </script>
 
