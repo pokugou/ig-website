@@ -58,6 +58,10 @@
 
   .hint { font-size: 0.68rem; color: var(--sub); margin-top: 0.2rem; }
 
+  .add-sheet-bar { max-width: 800px; margin: 0 auto 2rem; text-align: center; }
+  .add-sheet-bar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.7rem 1.6rem; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; letter-spacing: 0.03em; width: 100%; }
+  .add-sheet-bar button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+
   @media (max-width: 640px) {
     body { padding: 1rem 0.6rem 3rem; }
     .toolbar { flex-wrap: wrap; }
@@ -74,7 +78,7 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .toolbar-hint { display: none; }
+    .toolbar, .toolbar-hint, .add-sheet-bar { display: none; }
     .sheets { max-width: 100%; gap: 0; }
     .sheet { border: none; padding: 0.4cm 0.6cm; }
     .sheet + .sheet { page-break-before: always; }
@@ -264,6 +268,10 @@
   </div>
   </div>
 
+  <div class="add-sheet-bar">
+    <button type="button" id="btn-add-bottom">＋ 次のシートを追加</button>
+  </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -321,6 +329,7 @@
   updateRemoveVisibility();
 
   document.getElementById('btn-add').addEventListener('click', addSheet);
+  document.getElementById('btn-add-bottom').addEventListener('click', addSheet);
 
   document.getElementById('btn-print').addEventListener('click', function(){ window.print(); });
 
