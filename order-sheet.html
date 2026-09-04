@@ -43,14 +43,6 @@
   .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
   .cols2 .row { grid-template-columns: 100px 1fr; }
 
-  .price-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 0.3rem; }
-  .price-table th, .price-table td { border-bottom: 1px dotted var(--line2); padding: 0.4rem 0.3rem; text-align: left; }
-  .price-table th { font-size: 0.68rem; color: var(--sub); font-weight: 700; }
-  .price-table td.amt { text-align: right; white-space: nowrap; width: 110px; }
-  .price-table input.amt-input { width: 100%; text-align: right; border: none; font-family: inherit; font-size: 0.85rem; background: transparent; }
-  .price-table input.amt-input:focus { outline: none; background: #fff8e0; }
-  .price-total-row td { border-bottom: none; border-top: 2px solid var(--ink); font-weight: 900; font-size: 1rem; padding-top: 0.6rem; }
-
   .memo-box { border: 1px solid var(--line2); min-height: 3.4em; padding: 0.5rem 0.6rem; }
   .memo-box textarea { width: 100%; height: 100%; min-height: 3rem; border: none; font-family: inherit; font-size: 0.85rem; resize: vertical; background: transparent; }
   .memo-box textarea:focus { outline: none; }
@@ -70,7 +62,7 @@
     body { background: #fff; padding: 0; }
     .toolbar { display: none; }
     .sheet { border: none; max-width: 100%; padding: 0.4cm 0.6cm; }
-    .row input, .row select, .row textarea, .meta-item input, .meta-item select, .price-table input.amt-input, .memo-box textarea { background: transparent !important; }
+    .row input, .row select, .row textarea, .meta-item input, .meta-item select, .memo-box textarea { background: transparent !important; }
     .section-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     @page { size: A4; margin: 1.2cm; }
   }
@@ -151,46 +143,46 @@
       <div class="row">
         <label>モデル選択</label>
         <select id="f-model">
-          <option value="" data-price="0">選択してください</option>
+          <option value="">選択してください</option>
           <optgroup label="── STRIX EDGE　イカメタル ──">
-            <option data-price="39300">SE510ML-B（ベイト）　¥39,300</option>
-            <option data-price="39600">SE66ML-B（ベイト）　¥39,600</option>
-            <option data-price="39300">SE510ML-S（スピニング）　¥39,300</option>
-            <option data-price="39600">SE66ML-S（スピニング）　¥39,600</option>
+            <option>SE510ML-B（ベイト）</option>
+            <option>SE66ML-B（ベイト）</option>
+            <option>SE510ML-S（スピニング）</option>
+            <option>SE66ML-S（スピニング）</option>
           </optgroup>
           <optgroup label="── STRIX EDGE　ティップランカスタム ──">
-            <option data-price="41200">SE510ML-TR（スピニング）　¥41,200</option>
-            <option data-price="41500">SE66ML-TR（スピニング）　¥41,500</option>
+            <option>SE510ML-TR（スピニング）</option>
+            <option>SE66ML-TR（スピニング）</option>
           </optgroup>
           <optgroup label="── GTLJ　ライトジギング ──">
-            <option data-price="32800">GTLJ63ULB（ベイト）　¥32,800</option>
-            <option data-price="33200">GTLJ63LB（ベイト）　¥33,200</option>
-            <option data-price="34500">GTLJ63MB（ベイト）　¥34,500</option>
-            <option data-price="32800">GTLJ63ULS（スピニング）　¥32,800</option>
-            <option data-price="33200">GTLJ63LS（スピニング）　¥33,200</option>
-            <option data-price="34500">GTLJ63MS（スピニング）　¥34,500</option>
+            <option>GTLJ63ULB（ベイト）</option>
+            <option>GTLJ63LB（ベイト）</option>
+            <option>GTLJ63MB（ベイト）</option>
+            <option>GTLJ63ULS（スピニング）</option>
+            <option>GTLJ63LS（スピニング）</option>
+            <option>GTLJ63MS（スピニング）</option>
           </optgroup>
           <optgroup label="── GTSLJ　超万能ライトオフショアロッド ──">
-            <option data-price="29800">GTSLJ62UL-B（ベイト）　¥29,800</option>
-            <option data-price="29800">GTSLJ63L-B（ベイト）　¥29,800</option>
-            <option data-price="29800">GTSLJ62UL-S（スピニング）　¥29,800</option>
-            <option data-price="29800">GTSLJ63L-S（スピニング）　¥29,800</option>
+            <option>GTSLJ62UL-B（ベイト）</option>
+            <option>GTSLJ63L-B（ベイト）</option>
+            <option>GTSLJ62UL-S（スピニング）</option>
+            <option>GTSLJ63L-S（スピニング）</option>
           </optgroup>
           <optgroup label="── GTS　スロージギング ──">
-            <option data-price="35600">GTS632（ベイト）　¥35,600</option>
-            <option data-price="35300">GTS5102（ベイト）　¥35,300</option>
-            <option data-price="36300">GTS633（ベイト）　¥36,300</option>
-            <option data-price="36000">GTS5103（ベイト）　¥36,000</option>
-            <option data-price="36800">GTS634（ベイト）　¥36,800</option>
-            <option data-price="33000">GTS5104（ベイト）　¥33,000</option>
+            <option>GTS632（ベイト）</option>
+            <option>GTS5102（ベイト）</option>
+            <option>GTS633（ベイト）</option>
+            <option>GTS5103（ベイト）</option>
+            <option>GTS634（ベイト）</option>
+            <option>GTS5104（ベイト）</option>
           </optgroup>
           <optgroup label="── GTJ　ジギング ──">
-            <option data-price="33800">GTJ62MLS（スピニング）　¥33,800</option>
-            <option data-price="34800">GTJ62MS（スピニング）　¥34,800</option>
-            <option data-price="35800">GTJ62MHS（スピニング）　¥35,800</option>
-            <option data-price="33800">GTLJ63ULS（ベイト）　¥33,800</option>
-            <option data-price="34800">GTLJ63LS（ベイト）　¥34,800</option>
-            <option data-price="35800">GTLJ63MS（ベイト）　¥35,800</option>
+            <option>GTJ62MLS（スピニング）</option>
+            <option>GTJ62MS（スピニング）</option>
+            <option>GTJ62MHS（スピニング）</option>
+            <option>GTLJ63ULS（ベイト）</option>
+            <option>GTLJ63LS（ベイト）</option>
+            <option>GTLJ63MS（ベイト）</option>
           </optgroup>
         </select>
       </div>
@@ -219,25 +211,25 @@
         <div>
           <div class="row"><label>ガイド仕様</label>
             <select id="f-guide">
-              <option data-price="0">ストレート（＋¥0）</option>
-              <option data-price="0">右スパイラル（＋¥0）</option>
-              <option data-price="0">左スパイラル（＋¥0）</option>
-              <option data-price="6000">トルザイトガイド（＋¥6,000）</option>
+              <option>ストレート</option>
+              <option>右スパイラル</option>
+              <option>左スパイラル</option>
+              <option>トルザイトガイド</option>
             </select>
           </div>
           <div class="row"><label>グリップ仕様</label>
             <select id="f-grip">
-              <option data-price="0">EVA（＋¥0）</option>
-              <option data-price="3800">コルクグリップ（＋¥3,800）</option>
-              <option data-price="6000">リールシート塗装（＋¥6,000）</option>
+              <option>EVA</option>
+              <option>コルクグリップ</option>
+              <option>リールシート塗装</option>
             </select>
           </div>
         </div>
         <div>
           <div class="row"><label>ネーム仕様</label>
             <select id="f-name">
-              <option data-price="0">定番ネームのみ（＋¥0）</option>
-              <option data-price="1200">オリジナルネーム（＋¥1,200）</option>
+              <option>定番ネームのみ</option>
+              <option>オリジナルネーム</option>
             </select>
           </div>
           <div class="row"><label>ネーム内容</label><input type="text" placeholder="オリジナル時のみ記入"></div>
@@ -248,19 +240,6 @@
     <div class="section">
       <div class="section-title">こだわり・備考</div>
       <div class="memo-box"><textarea rows="2" placeholder="カラーコーディネートの希望、特記事項など"></textarea></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">金額</div>
-      <table class="price-table">
-        <tr><th>項目</th><th style="text-align:right; width:110px;">金額</th></tr>
-        <tr><td>ベースモデル</td><td class="amt" id="p-model">¥0</td></tr>
-        <tr><td>ガイドオプション</td><td class="amt" id="p-guide">¥0</td></tr>
-        <tr><td>グリップオプション</td><td class="amt" id="p-grip">¥0</td></tr>
-        <tr><td>ネームオプション</td><td class="amt" id="p-name">¥0</td></tr>
-        <tr><td>カラーオプション（手入力）</td><td class="amt"><input type="text" class="amt-input" id="p-color" placeholder="0" inputmode="numeric"></td></tr>
-        <tr class="price-total-row"><td>合計</td><td class="amt" id="p-total">¥0</td></tr>
-      </table>
     </div>
 
     <div class="section">
@@ -281,32 +260,6 @@
   </div>
 
 <script>
-  function yen(n) { return '¥' + Math.round(n).toLocaleString('ja-JP'); }
-
-  function selPrice(sel) {
-    var opt = sel.options[sel.selectedIndex];
-    return opt ? (parseFloat(opt.getAttribute('data-price')) || 0) : 0;
-  }
-
-  function recalc() {
-    var pModel = selPrice(document.getElementById('f-model'));
-    var pGuide = selPrice(document.getElementById('f-guide'));
-    var pGrip  = selPrice(document.getElementById('f-grip'));
-    var pName  = selPrice(document.getElementById('f-name'));
-    var pColor = parseFloat((document.getElementById('p-color').value || '0').replace(/[^0-9.-]/g, '')) || 0;
-
-    document.getElementById('p-model').textContent = yen(pModel);
-    document.getElementById('p-guide').textContent = yen(pGuide);
-    document.getElementById('p-grip').textContent  = yen(pGrip);
-    document.getElementById('p-name').textContent  = yen(pName);
-    document.getElementById('p-total').textContent = yen(pModel + pGuide + pGrip + pName + pColor);
-  }
-
-  ['f-model','f-guide','f-grip','f-name'].forEach(function(id){
-    document.getElementById(id).addEventListener('change', recalc);
-  });
-  document.getElementById('p-color').addEventListener('input', recalc);
-
   (function setToday(){
     var d = new Date();
     var iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
@@ -320,10 +273,7 @@
     document.querySelectorAll('.sheet input[type="text"], .sheet input[type="tel"], .sheet input[type="email"], .sheet textarea').forEach(function(el){ el.value = ''; });
     document.querySelectorAll('.sheet select').forEach(function(el){ el.selectedIndex = 0; });
     document.querySelectorAll('.sheet input[type="checkbox"]').forEach(function(el){ el.checked = false; });
-    recalc();
   });
-
-  recalc();
 </script>
 
 </body>
