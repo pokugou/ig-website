@@ -58,6 +58,20 @@
 
   .hint { font-size: 0.68rem; color: var(--sub); margin-top: 0.2rem; }
 
+  @media (max-width: 640px) {
+    body { padding: 1rem 0.6rem 3rem; }
+    .toolbar { flex-wrap: wrap; }
+    .toolbar-right { flex: 1; }
+    .toolbar button { flex: 1; padding: 0.6rem 0.8rem; font-size: 0.78rem; }
+    .sheet { padding: 1.4rem 1.1rem 1.8rem; }
+    .sheet-head { flex-wrap: wrap; gap: 0.6rem; }
+    .sheet-head-right { align-items: flex-start; }
+    .meta-grid { grid-template-columns: repeat(2, 1fr); }
+    .cols2 { grid-template-columns: 1fr; gap: 0; }
+    .cols2 .row { grid-template-columns: 100px 1fr; }
+    .row { grid-template-columns: 100px 1fr; }
+  }
+
   @media print {
     body { background: #fff; padding: 0; }
     .toolbar, .toolbar-hint { display: none; }
@@ -139,7 +153,7 @@
           </div>
         </div>
       </div>
-      <div class="row" style="grid-template-columns:130px 1fr;">
+      <div class="row">
         <label>送り先住所</label>
         <textarea rows="2"></textarea>
       </div>
