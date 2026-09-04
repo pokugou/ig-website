@@ -26,9 +26,8 @@
   .sheet { background: var(--paper); border: 1px solid var(--line2); padding: 2.2rem 2.5rem 2.6rem; }
 
   .sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1.4rem; }
-  .sheet-head-left { display: flex; align-items: baseline; gap: 0.7rem; }
   .sheet-head h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.06em; }
-  .sheet-no { display: flex; align-items: baseline; gap: 0.3rem; font-size: 0.85rem; font-weight: 700; color: var(--red); }
+  .sheet-no { display: flex; align-items: baseline; gap: 0.3rem; font-size: 0.85rem; font-weight: 700; color: var(--red); margin-bottom: 0.6rem; }
   .sheet-no input { width: 3em; border: none; border-bottom: 1px solid var(--red); background: transparent; font-family: inherit; font-size: inherit; font-weight: inherit; color: inherit; text-align: center; padding: 0.05rem 0; }
   .sheet-no input:focus { outline: none; background: #fff8e0; }
   .sheet-head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
@@ -86,11 +85,10 @@
   <div class="sheets" id="sheets">
   <div class="sheet">
 
+    <span class="sheet-no">No.<input type="text" class="sheet-no-input" value="1"></span>
+
     <div class="sheet-head">
-      <div class="sheet-head-left">
-        <h1>受注シート</h1>
-        <span class="sheet-no">No.<input type="text" class="sheet-no-input" value="1"></span>
-      </div>
+      <h1>受注シート</h1>
       <div class="sheet-head-right">
         <div class="brand">IG Rod Planning ／ 社内共有用</div>
         <button type="button" class="sheet-remove">このシートを削除</button>
