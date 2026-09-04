@@ -212,7 +212,15 @@
       <div class="section-title">カスタムオプション</div>
       <div class="cols2">
         <div>
-          <div class="row"><label>ガイド仕様</label><input type="text"></div>
+          <div class="row"><label>ガイド仕様</label>
+            <select class="guide-select">
+              <option>ステンレス</option>
+              <option>チタン</option>
+              <option>トルザイト</option>
+              <option value="入力">入力</option>
+            </select>
+          </div>
+          <div class="row guide-custom-row" style="display:none"><label>ガイド仕様（入力）</label><input type="text" class="guide-custom"></div>
           <div class="row"><label>グリップ仕様</label><input type="text"></div>
         </div>
         <div>
@@ -260,13 +268,23 @@
     });
   }
 
+  function bindGuideSelect(sheet) {
+    var sel = sheet.querySelector('.guide-select');
+    var row = sheet.querySelector('.guide-custom-row');
+    sel.addEventListener('change', function(){
+      row.style.display = sel.value === '入力' ? '' : 'none';
+    });
+  }
+
   function addSheet() {
     var clone = template.cloneNode(true);
     clone.querySelectorAll('input[type="text"], input[type="tel"], textarea').forEach(function(el){ el.value = ''; });
     clone.querySelectorAll('select').forEach(function(el){ el.selectedIndex = 0; });
+    clone.querySelector('.guide-custom-row').style.display = 'none';
     clone.querySelector('.order-date').value = todayISO();
     clone.querySelector('.sheet-no-input').value = document.querySelectorAll('.sheet').length + 1;
     bindRemove(clone);
+    bindGuideSelect(clone);
     sheetsEl.appendChild(clone);
     updateRemoveVisibility();
     clone.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -275,6 +293,7 @@
   document.querySelectorAll('.sheet').forEach(function(sheet){
     sheet.querySelector('.order-date').value = todayISO();
     bindRemove(sheet);
+    bindGuideSelect(sheet);
   });
   updateRemoveVisibility();
 
@@ -287,6 +306,7 @@
     document.querySelectorAll('.sheet input[type="text"], .sheet input[type="tel"], .sheet input[type="email"], .sheet textarea').forEach(function(el){ el.value = ''; });
     document.querySelectorAll('.sheet select').forEach(function(el){ el.selectedIndex = 0; });
     document.querySelectorAll('.sheet input[type="checkbox"]').forEach(function(el){ el.checked = false; });
+    document.querySelectorAll('.guide-custom-row').forEach(function(el){ el.style.display = 'none'; });
   });
 </script>
 
