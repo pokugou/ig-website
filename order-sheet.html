@@ -14,17 +14,25 @@
   }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 2rem 1rem 4rem; }
 
-  .toolbar { max-width: 800px; margin: 0 auto 1rem; display: flex; justify-content: flex-end; gap: 0.6rem; }
+  .toolbar { max-width: 800px; margin: 0 auto 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; }
+  .toolbar-right { display: flex; gap: 0.6rem; }
   .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; letter-spacing: 0.03em; }
   .toolbar button:hover { background: var(--red); border-color: var(--red); }
   .toolbar button.secondary { background: #fff; color: var(--ink); }
   .toolbar button.secondary:hover { background: #eee; border-color: var(--ink); color: var(--ink); }
+  .toolbar-hint { max-width: 800px; margin: 0 auto 1rem; font-size: 0.72rem; color: var(--sub); }
 
-  .sheet { max-width: 800px; margin: 0 auto; background: var(--paper); border: 1px solid var(--line2); padding: 2.2rem 2.5rem 2.6rem; }
+  .sheets { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+  .sheet { background: var(--paper); border: 1px solid var(--line2); padding: 2.2rem 2.5rem 2.6rem; }
 
   .sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1.4rem; }
+  .sheet-head-left { display: flex; align-items: baseline; gap: 0.7rem; }
   .sheet-head h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.06em; }
+  .sheet-no { font-size: 0.85rem; font-weight: 700; color: var(--red); }
+  .sheet-head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
   .sheet-head .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
+  .sheet-remove { font-family: inherit; font-size: 0.68rem; color: var(--sub); background: none; border: 1px solid var(--line2); padding: 0.2rem 0.55rem; cursor: pointer; }
+  .sheet-remove:hover { color: var(--red); border-color: var(--red); }
 
   .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 1.4rem; }
   .meta-item label { display: block; font-size: 0.65rem; font-weight: 700; color: var(--sub); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
@@ -51,8 +59,11 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar { display: none; }
-    .sheet { border: none; max-width: 100%; padding: 0.4cm 0.6cm; }
+    .toolbar, .toolbar-hint { display: none; }
+    .sheets { max-width: 100%; gap: 0; }
+    .sheet { border: none; padding: 0.4cm 0.6cm; }
+    .sheet + .sheet { page-break-before: always; }
+    .sheet-remove { display: none; }
     .row input, .row select, .row textarea, .meta-item input, .meta-item select, .memo-box textarea { background: transparent !important; }
     .section-title { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     @page { size: A4; margin: 1.2cm; }
@@ -62,21 +73,32 @@
 <body>
 
   <div class="toolbar">
-    <button type="button" class="secondary" id="btn-reset">クリア</button>
-    <button type="button" id="btn-print">この内容で印刷</button>
+    <button type="button" id="btn-add">＋ シートを追加</button>
+    <div class="toolbar-right">
+      <button type="button" class="secondary" id="btn-reset">クリア</button>
+      <button type="button" id="btn-print">まとめて印刷</button>
+    </div>
   </div>
+  <p class="toolbar-hint">複数枚追加してから「まとめて印刷」→印刷ダイアログの送信先で「PDFに保存」を選ぶと、まとめて1つのPDFになります。</p>
 
+  <div class="sheets" id="sheets">
   <div class="sheet">
 
     <div class="sheet-head">
-      <h1>受注シート</h1>
-      <div class="brand">IG Rod Planning ／ 社内共有用</div>
+      <div class="sheet-head-left">
+        <h1>受注シート</h1>
+        <span class="sheet-no">No.1</span>
+      </div>
+      <div class="sheet-head-right">
+        <div class="brand">IG Rod Planning ／ 社内共有用</div>
+        <button type="button" class="sheet-remove">このシートを削除</button>
+      </div>
     </div>
 
     <div class="meta-grid">
       <div class="meta-item">
         <label>受注日</label>
-        <input type="date" id="f-order-date">
+        <input type="date" class="order-date">
       </div>
       <div class="meta-item">
         <label>受注番号</label>
@@ -84,7 +106,7 @@
       </div>
       <div class="meta-item">
         <label>受付方法</label>
-        <select id="f-source">
+        <select>
           <option>メール</option>
           <option>LINE</option>
           <option>インスタ</option>
@@ -93,7 +115,7 @@
       </div>
       <div class="meta-item">
         <label>受付担当</label>
-        <select id="f-staff">
+        <select>
           <option>石谷豪</option>
         </select>
       </div>
@@ -127,7 +149,7 @@
       <div class="section-title">ベースモデル</div>
       <div class="row">
         <label>モデル選択</label>
-        <select id="f-model">
+        <select>
           <option value="">選択してください</option>
           <optgroup label="── STRIX EDGE　イカメタル ──">
             <option>SE510ML-B（ベイト）</option>
@@ -199,7 +221,7 @@
         </div>
         <div>
           <div class="row"><label>ネーム仕様</label>
-            <select id="f-name">
+            <select>
               <option>定番ネームのみ</option>
               <option>オリジナルネーム</option>
             </select>
@@ -215,13 +237,52 @@
     </div>
 
   </div>
+  </div>
 
 <script>
-  (function setToday(){
+  var sheetsEl = document.getElementById('sheets');
+  var template = document.querySelector('.sheet');
+
+  function todayISO() {
     var d = new Date();
-    var iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    document.getElementById('f-order-date').value = iso;
-  })();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function renumber() {
+    var sheets = document.querySelectorAll('.sheet');
+    sheets.forEach(function(sheet, i){
+      sheet.querySelector('.sheet-no').textContent = 'No.' + (i + 1);
+      sheet.querySelector('.sheet-remove').style.display = sheets.length > 1 ? '' : 'none';
+    });
+  }
+
+  function bindRemove(sheet) {
+    sheet.querySelector('.sheet-remove').addEventListener('click', function(){
+      if (document.querySelectorAll('.sheet').length <= 1) return;
+      if (!confirm('このシートを削除しますか？')) return;
+      sheet.remove();
+      renumber();
+    });
+  }
+
+  function addSheet() {
+    var clone = template.cloneNode(true);
+    clone.querySelectorAll('input[type="text"], input[type="tel"], textarea').forEach(function(el){ el.value = ''; });
+    clone.querySelectorAll('select').forEach(function(el){ el.selectedIndex = 0; });
+    clone.querySelector('.order-date').value = todayISO();
+    bindRemove(clone);
+    sheetsEl.appendChild(clone);
+    renumber();
+    clone.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.querySelectorAll('.sheet').forEach(function(sheet){
+    sheet.querySelector('.order-date').value = todayISO();
+    bindRemove(sheet);
+  });
+  renumber();
+
+  document.getElementById('btn-add').addEventListener('click', addSheet);
 
   document.getElementById('btn-print').addEventListener('click', function(){ window.print(); });
 
