@@ -41,15 +41,11 @@
   .row textarea { resize: vertical; min-height: 2.4em; line-height: 1.5; }
 
   .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
-  .cols2 .row { grid-template-columns: 100px 1fr; }
+  .cols2 .row { grid-template-columns: 132px 1fr; }
 
   .memo-box { border: 1px solid var(--line2); min-height: 3.4em; padding: 0.5rem 0.6rem; }
   .memo-box textarea { width: 100%; height: 100%; min-height: 3rem; border: none; font-family: inherit; font-size: 0.85rem; resize: vertical; background: transparent; }
   .memo-box textarea:focus { outline: none; }
-
-  .status-row { display: flex; gap: 1.6rem; flex-wrap: wrap; font-size: 0.85rem; }
-  .status-row label { display: flex; align-items: center; gap: 0.4rem; font-weight: 700; }
-  .status-row input[type="checkbox"] { width: 16px; height: 16px; }
 
   .sign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.2rem; }
   .sign-box { border: 1px solid var(--line2); padding: 0.6rem 0.8rem; }
@@ -190,7 +186,7 @@
         </div>
         <div>
           <div class="row"><label>メインスレッド</label><input type="text"></div>
-          <div class="row"><label>ティップ部分</label><input type="text"></div>
+          <div class="row"><label>ティップ部分スレッド</label><input type="text"></div>
           <div class="row"><label>ピンライン</label><input type="text"></div>
         </div>
       </div>
@@ -219,16 +215,6 @@
     <div class="section">
       <div class="section-title">こだわり・備考</div>
       <div class="memo-box"><textarea rows="2" placeholder="カラーコーディネートの希望、特記事項など"></textarea></div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">社内ステータス</div>
-      <div class="status-row">
-        <label><input type="checkbox"> 入金確認済み</label>
-        <label><input type="checkbox"> 発注書送付済み</label>
-        <label><input type="checkbox"> 製作着手</label>
-        <label><input type="checkbox"> 発送完了</label>
-      </div>
     </div>
 
     <div class="sign-grid">
