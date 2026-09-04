@@ -35,7 +35,7 @@
   .sheet-remove { font-family: inherit; font-size: 0.68rem; color: var(--sub); background: none; border: 1px solid var(--line2); padding: 0.2rem 0.55rem; cursor: pointer; }
   .sheet-remove:hover { color: var(--red); border-color: var(--red); }
 
-  .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 1.4rem; }
+  .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 1.4rem; }
   .meta-item label { display: block; font-size: 0.65rem; font-weight: 700; color: var(--sub); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
   .meta-item input, .meta-item select { width: 100%; border: none; border-bottom: 1px solid var(--line); font-family: inherit; font-size: 0.85rem; padding: 0.25rem 0.1rem; background: transparent; }
   .meta-item input:focus, .meta-item select:focus { outline: none; border-bottom: 1px solid var(--red); }
@@ -99,10 +99,6 @@
       <div class="meta-item">
         <label>受注日</label>
         <input type="date" class="order-date">
-      </div>
-      <div class="meta-item">
-        <label>受注番号</label>
-        <input type="text" placeholder="例：20260905-01">
       </div>
       <div class="meta-item">
         <label>受付方法</label>
