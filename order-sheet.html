@@ -98,10 +98,11 @@
     <div class="toolbar-right">
       <button type="button" class="secondary" id="btn-reset">クリア</button>
       <button type="button" class="secondary" id="btn-save">まとめて保存</button>
+      <button type="button" class="secondary" id="btn-export">生産スケジュール用に書き出す</button>
       <button type="button" id="btn-print">まとめて印刷</button>
     </div>
   </div>
-  <p class="toolbar-hint">複数枚追加したら「まとめて保存」で全シートを1つのPDFファイルとして直接ダウンロード、「まとめて印刷」でプリンターへの印刷ができます。</p>
+  <p class="toolbar-hint">複数枚追加したら「まとめて保存」で全シートを1つのPDFファイルとして直接ダウンロード、「まとめて印刷」でプリンターへの印刷ができます。「生産スケジュール用に書き出す」でダウンロードしたファイルは、Claudeに伝えれば生産スケジュールへ自動で追加できます。</p>
 
   <div class="sheets" id="sheets">
   <div class="sheet">
@@ -123,7 +124,7 @@
       </div>
       <div class="meta-item">
         <label>希望納期</label>
-        <input type="date">
+        <input type="date" class="due-date">
       </div>
       <div class="meta-item">
         <label>受付方法</label>
@@ -146,7 +147,7 @@
       <div class="section-title">お客様情報</div>
       <div class="cols2">
         <div>
-          <div class="row"><label>お名前</label><input type="text"></div>
+          <div class="row"><label>お名前</label><input type="text" class="customer-name"></div>
           <div class="row"><label>電話番号</label><input type="tel"></div>
         </div>
         <div>
@@ -214,6 +215,7 @@
           </optgroup>
         </select>
       </div>
+      <div class="row"><label>本数</label><input type="number" class="qty" value="1" min="1" style="max-width:6em"></div>
     </div>
 
     <div class="section">
@@ -312,6 +314,7 @@
     clone.querySelectorAll('input[type="text"], input[type="tel"], textarea').forEach(function(el){ el.value = ''; });
     clone.querySelectorAll('select').forEach(function(el){ el.selectedIndex = 0; });
     clone.querySelector('.guide-custom-row').style.display = 'none';
+    clone.querySelector('.qty').value = 1;
     clone.querySelector('.order-date').value = todayISO();
     clone.querySelector('.sheet-no-input').value = document.querySelectorAll('.sheet').length + 1;
     bindRemove(clone);
@@ -339,6 +342,43 @@
     document.querySelectorAll('.sheet select').forEach(function(el){ el.selectedIndex = 0; });
     document.querySelectorAll('.sheet input[type="checkbox"]').forEach(function(el){ el.checked = false; });
     document.querySelectorAll('.guide-custom-row').forEach(function(el){ el.style.display = 'none'; });
+    document.querySelectorAll('.qty').forEach(function(el){ el.value = 1; });
+  });
+
+  document.getElementById('btn-export').addEventListener('click', function(){
+    var rows = [];
+    document.querySelectorAll('.sheet').forEach(function(sheet){
+      var name = sheet.querySelector('.customer-name').value.trim();
+      var due = sheet.querySelector('.due-date').value;
+      var qty = sheet.querySelector('.qty').value;
+      var note = sheet.querySelector('.memo-box textarea').value.trim();
+      if (!name && !due) return;
+      var dueFmt = '';
+      if (due) {
+        var parts = due.split('-');
+        dueFmt = parts[0] + '/' + Number(parts[1]) + '/' + Number(parts[2]);
+      }
+      rows.push({
+        '出荷希望日': dueFmt,
+        '顧客名': name,
+        '返答納期': '',
+        '本数': qty ? Number(qty) : 1,
+        '概要': note
+      });
+    });
+    if (rows.length === 0) {
+      alert('お名前か希望納期が入力されているシートがありません。');
+      return;
+    }
+    var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'seisan-sync-' + todayISO().replace(/-/g, '') + '-' + Date.now() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   });
 
   document.getElementById('btn-save').addEventListener('click', async function(){
