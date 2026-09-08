@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>塗装指示書 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #111; --sub: #555; --line: #999; --line2: #ccc;
+    --red: #cc2200; --bg: #f2f2f0; --paper: #ffffff;
+  }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
+
+  .toolbar { max-width: 900px; margin: 0 auto 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .toolbar-right { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.1rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; letter-spacing: 0.03em; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; border-color: var(--ink); color: var(--ink); }
+  .toolbar-hint { max-width: 900px; margin: 0 auto 1.2rem; font-size: 0.72rem; color: var(--sub); }
+
+  .pages { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+  .page { background: var(--paper); border: 1px solid var(--line2); padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+
+  .card { border: 1px solid var(--ink); padding: 0.8rem 0.9rem 0.7rem; position: relative; }
+  .page .card:nth-child(1) { border-right: none; border-bottom: none; }
+  .page .card:nth-child(2) { border-bottom: none; }
+  .page .card:nth-child(3) { border-right: none; }
+
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
+  .card-head h2 { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.06em; }
+  .card-head .card-date { font-size: 0.72rem; color: var(--sub); display: flex; align-items: center; gap: 0.2rem; }
+  .card-head .card-date input { border: none; border-bottom: 1px solid var(--line); background: transparent; font-family: inherit; font-size: 0.72rem; padding: 0.1rem; color: inherit; width: 6.5em; }
+
+  .card-table { width: 100%; border-collapse: collapse; }
+  .card-table td { border: 1px solid var(--line); padding: 0.3rem 0.4rem; font-size: 0.8rem; vertical-align: top; }
+  .card-table td.label { width: 26%; font-weight: 700; background: #fafafa; white-space: nowrap; }
+  .card-table input, .card-table textarea {
+    width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.8rem; color: inherit; padding: 0.1rem;
+  }
+  .card-table input:focus, .card-table textarea:focus { outline: none; background: #fff8e0; }
+  .card-table textarea { resize: vertical; min-height: 2.6em; line-height: 1.5; }
+  .card-table textarea.notes { min-height: 2.4em; }
+
+  .del-card-btn { border: none; background: none; color: var(--sub); cursor: pointer; font-size: 0.72rem; padding: 0.1rem 0.3rem; }
+  .del-card-btn:hover { color: var(--red); }
+
+  .add-page-bar { max-width: 900px; margin: 0 auto 2rem; text-align: center; }
+  .add-page-bar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.7rem 1.6rem; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; width: 100%; }
+  .add-page-bar button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+
+  @media (max-width: 700px) {
+    .page { grid-template-columns: 1fr; }
+    .page .card:nth-child(1) { border-right: 1px solid var(--ink); border-bottom: none; }
+    .page .card:nth-child(2) { border-bottom: none; }
+    .page .card:nth-child(3) { border-right: 1px solid var(--ink); }
+    .card-table td.label { width: 32%; }
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .toolbar-hint, .add-page-bar { display: none; }
+    .pages { max-width: 100%; gap: 0; }
+    .page { border: none; padding: 0.3cm; }
+    .page + .page { page-break-before: always; }
+    .del-card-btn { display: none; }
+    @page { size: A4; margin: 0.8cm; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <button type="button" class="secondary" id="btn-reset">クリア</button>
+    <div class="toolbar-right">
+      <button type="button" class="secondary" id="btn-export">塗装状況をスケジュールに反映</button>
+      <button type="button" class="secondary" id="btn-save">PDFとして保存</button>
+      <button type="button" id="btn-print">印刷</button>
+    </div>
+  </div>
+  <p class="toolbar-hint">1ページに4枚。印刷後は点線代わりのマス目に沿って4つに切り分けてください。「塗装状況をスケジュールに反映」でダウンロードしたファイルは、Claudeに伝えれば生産スケジュールの塗装状況を自動で更新できます。</p>
+
+  <div class="pages" id="pages"></div>
+
+  <div class="add-page-bar">
+    <button type="button" id="btn-add-page">＋ もう4枚追加</button>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  var pagesEl = document.getElementById('pages');
+
+  function todayParts() {
+    var d = new Date();
+    return { y: d.getFullYear(), m: d.getMonth() + 1, day: d.getDate(), iso: d.toISOString().slice(0, 10) };
+  }
+
+  function makeCard() {
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML =
+      '<div class="card-head">' +
+        '<h2>塗装指示書</h2>' +
+        '<div class="card-date">記入日：<input type="date" class="f-date"><button type="button" class="del-card-btn">クリア</button></div>' +
+      '</div>' +
+      '<table class="card-table">' +
+        '<tr><td class="label">お客様名</td><td><input type="text" class="f-customer"></td></tr>' +
+        '<tr><td class="label">カラー</td><td><textarea class="f-color" placeholder="ブランクス：&#10;ティップ："></textarea></td></tr>' +
+        '<tr><td class="label">希望納期</td><td><input type="text" class="f-due"></td></tr>' +
+        '<tr><td class="label">塗り残し</td><td><input type="text" class="f-margin" value="20mm"></td></tr>' +
+        '<tr><td class="label">表面</td><td><input type="text" class="f-surface" value="フラット加工済"></td></tr>' +
+        '<tr><td class="label">ブランクス</td><td><input type="text" class="f-blank"></td></tr>' +
+        '<tr><td class="label">合計本数</td><td><input type="text" class="f-qty"></td></tr>' +
+        '<tr><td class="label">備考欄</td><td><textarea class="f-notes notes"></textarea></td></tr>' +
+      '</table>';
+    var t = todayParts();
+    card.querySelector('.f-date').value = t.iso;
+    card.querySelector('.del-card-btn').addEventListener('click', function () {
+      if (!confirm('このカードの内容をクリアしますか？')) return;
+      card.querySelectorAll('input[type="text"], textarea').forEach(function (el) { el.value = ''; });
+      card.querySelector('.f-margin').value = '20mm';
+      card.querySelector('.f-surface').value = 'フラット加工済';
+      card.querySelector('.f-date').value = todayParts().iso;
+    });
+    return card;
+  }
+
+  function addPage() {
+    var page = document.createElement('div');
+    page.className = 'page';
+    for (var i = 0; i < 4; i++) page.appendChild(makeCard());
+    pagesEl.appendChild(page);
+    return page;
+  }
+
+  addPage();
+
+  document.getElementById('btn-add-page').addEventListener('click', function () {
+    var page = addPage();
+    page.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+
+  document.getElementById('btn-reset').addEventListener('click', function () {
+    if (!confirm('入力内容をすべてクリアしますか？')) return;
+    pagesEl.innerHTML = '';
+    addPage();
+  });
+
+  document.getElementById('btn-export').addEventListener('click', function () {
+    var rows = [];
+    document.querySelectorAll('.card').forEach(function (card) {
+      var customer = card.querySelector('.f-customer').value.trim();
+      var qty = card.querySelector('.f-qty').value.trim();
+      if (!customer) return;
+      rows.push({ '顧客名': customer, '本数': qty, '塗装状況': '塗装依頼済み' });
+    });
+    if (rows.length === 0) {
+      alert('お客様名が入力されているカードがありません。');
+      return;
+    }
+    var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'tosou-sync-' + todayParts().iso.replace(/-/g, '') + '-' + Date.now() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this;
+    var originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '作成中…';
+    try {
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth();
+      var pageH = pdf.internal.pageSize.getHeight();
+      var margin = 6;
+      var pageEls = document.querySelectorAll('.page');
+      for (var i = 0; i < pageEls.length; i++) {
+        var canvas = await html2canvas(pageEls[i], { scale: 2, backgroundColor: '#ffffff' });
+        var imgData = canvas.toDataURL('image/jpeg', 0.92);
+        var imgW = pageW - margin * 2;
+        var imgH = imgW * canvas.height / canvas.width;
+        if (imgH > pageH - margin * 2) {
+          imgH = pageH - margin * 2;
+          imgW = imgH * canvas.width / canvas.height;
+        }
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      }
+      pdf.save('塗装指示書_' + todayParts().iso.replace(/-/g, '') + '.pdf');
+    } catch (e) {
+      console.error(e);
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  });
+</script>
+
+</body>
+</html>
