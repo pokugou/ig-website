@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>カスタムオーダーシート（見積）| IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #111; --sub: #555; --line: #999; --line2: #ccc;
+    --red: #cc2200; --bg: #f2f2f0; --paper: #ffffff;
+  }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 2rem 1rem 4rem; }
+
+  .toolbar { max-width: 760px; margin: 0 auto 1rem; display: flex; justify-content: flex-end; gap: 0.6rem; flex-wrap: wrap; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; letter-spacing: 0.03em; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; border-color: var(--ink); color: var(--ink); }
+
+  .sheet { max-width: 760px; margin: 0 auto; background: var(--paper); border: 1px solid var(--line2); padding: 2.2rem 2.5rem 2.6rem; }
+
+  .sheet-head { text-align: center; border-bottom: 3px solid var(--ink); padding-bottom: 0.9rem; margin-bottom: 1.2rem; }
+  .sheet-head h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.1em; }
+  .sheet-head .fill-date { margin-top: 0.5rem; font-size: 0.8rem; color: var(--sub); display: flex; justify-content: center; align-items: center; gap: 0.4rem; }
+  .sheet-head .fill-date input { border: none; border-bottom: 1px solid var(--line); background: transparent; font-family: inherit; font-size: 0.8rem; padding: 0.15rem 0.2rem; color: inherit; }
+
+  .top-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 0.8rem; margin-bottom: 1.2rem; }
+  .field label { display: block; font-size: 0.65rem; font-weight: 700; color: var(--sub); letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+  .field input, .field select, .field textarea {
+    width: 100%; border: none; border-bottom: 1px solid var(--line); background: transparent;
+    font-family: inherit; font-size: 0.9rem; padding: 0.4rem 0.1rem; color: inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-bottom-color: var(--red); background: #fff8e0; }
+  .name-suffix { display: flex; align-items: baseline; gap: 0.4rem; }
+  .name-suffix span { font-size: 0.9rem; color: var(--sub); white-space: nowrap; }
+
+  .spec-row { display: grid; grid-template-columns: 190px 1fr; align-items: baseline; gap: 0.8rem; padding: 0.5rem 0; border-bottom: 1px dotted var(--line2); }
+  .spec-row label { font-size: 0.82rem; font-weight: 700; }
+  .spec-row input { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.88rem; padding: 0.2rem 0.1rem; color: inherit; }
+  .spec-row input:focus { outline: none; background: #fff8e0; }
+  .spec-row .thread-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .spec-row .thread-pair div { display: flex; align-items: baseline; gap: 0.4rem; }
+  .spec-row .thread-pair span { font-size: 0.72rem; color: var(--sub); white-space: nowrap; }
+
+  .section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; color: var(--red); margin: 1.4rem 0 0.6rem; text-transform: uppercase; }
+
+  .memo-box { border: 1px solid var(--line2); padding: 0.6rem 0.7rem; }
+  .memo-box textarea { width: 100%; min-height: 4.5rem; border: none; font-family: inherit; font-size: 0.86rem; resize: vertical; background: transparent; line-height: 1.7; }
+  .memo-box textarea:focus { outline: none; }
+
+  .price-table { width: 100%; border-collapse: collapse; margin-top: 0.4rem; }
+  .price-table th { text-align: left; font-size: 0.65rem; font-weight: 700; color: var(--sub); padding: 0.3rem 0.3rem; border-bottom: 1px solid var(--line); }
+  .price-table th.amt-col { text-align: right; width: 130px; }
+  .price-table th.del-col { width: 32px; }
+  .price-table td { padding: 0.3rem 0.3rem; border-bottom: 1px dotted var(--line2); }
+  .price-table td input.item-name { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.86rem; padding: 0.3rem 0.2rem; color: inherit; }
+  .price-table td input.item-amt { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.86rem; padding: 0.3rem 0.2rem; text-align: right; color: inherit; }
+  .price-table td input:focus { outline: none; background: #fff8e0; }
+  .price-table .del-row-btn { border: none; background: none; color: var(--sub); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0.2rem; }
+  .price-table .del-row-btn:hover { color: var(--red); }
+  .add-row-btn { margin-top: 0.6rem; font-family: inherit; font-size: 0.78rem; font-weight: 700; color: var(--sub); background: none; border: 1px dashed var(--line); padding: 0.45rem 0.9rem; cursor: pointer; width: 100%; }
+  .add-row-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+  .total-rows { margin-top: 0.6rem; }
+  .total-row { display: flex; justify-content: space-between; padding: 0.35rem 0.3rem; font-size: 0.88rem; }
+  .total-row.grand { border-top: 2px solid var(--ink); margin-top: 0.3rem; padding-top: 0.6rem; font-weight: 900; font-size: 1.1rem; }
+
+  .footer { margin-top: 1.8rem; padding-top: 1rem; border-top: 1px solid var(--line2); text-align: center; font-size: 0.78rem; color: var(--sub); line-height: 1.8; }
+  .footer .company { font-size: 0.9rem; font-weight: 700; color: var(--ink); letter-spacing: 0.04em; }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem 0.6rem 3rem; }
+    .sheet { padding: 1.4rem 1.1rem 1.8rem; }
+    .top-grid { grid-template-columns: 1fr; }
+    .spec-row { grid-template-columns: 1fr; gap: 0.2rem; }
+    .spec-row .thread-pair { grid-template-columns: 1fr; }
+    .price-table th.del-col, .price-table td.del-col { width: 28px; }
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar { display: none; }
+    .sheet { border: none; max-width: 100%; padding: 0.4cm 0.6cm; }
+    .field input, .field select, .field textarea, .spec-row input, .memo-box textarea, .price-table input { background: transparent !important; }
+    .add-row-btn, .del-row-btn { display: none; }
+    @page { size: A4; margin: 1.2cm; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <button type="button" class="secondary" id="btn-reset">クリア</button>
+    <button type="button" class="secondary" id="btn-save">PDFとして保存</button>
+    <button type="button" id="btn-print">印刷</button>
+  </div>
+
+  <div class="sheet">
+
+    <div class="sheet-head">
+      <h1>カスタムオーダーシート</h1>
+      <div class="fill-date">記入日：<input type="date" id="f-fill-date"></div>
+    </div>
+
+    <div class="top-grid">
+      <div class="field">
+        <label>お客様名</label>
+        <div class="name-suffix"><input type="text" id="f-customer" placeholder="お客様名"><span>様</span></div>
+      </div>
+      <div class="field">
+        <label>納期</label>
+        <input type="text" id="f-lead-time" placeholder="例：60〜90日">
+      </div>
+    </div>
+
+    <div class="spec-row">
+      <label>ベースモデル</label>
+      <div style="display:grid; grid-template-columns:1fr 120px; gap:0.6rem;">
+        <input type="text" id="f-model" placeholder="例：SE510ML-B">
+        <select id="f-type">
+          <option value="">タイプ</option>
+          <option>ベイト</option>
+          <option>スピニング</option>
+        </select>
+      </div>
+    </div>
+    <div class="spec-row"><label>①ブランクスカラー</label><input type="text" id="f-blank-color"></div>
+    <div class="spec-row"><label>②グリップ仕様／シート種類</label><input type="text" id="f-grip"></div>
+    <div class="spec-row">
+      <label>③スレッド仕様</label>
+      <div class="thread-pair">
+        <div><span>上巻</span><input type="text" id="f-thread-upper"></div>
+        <div><span>下巻</span><input type="text" id="f-thread-lower"></div>
+      </div>
+    </div>
+    <div class="spec-row"><label>④ガイド仕様</label><input type="text" id="f-guide"></div>
+    <div class="spec-row"><label>⑤ネーム仕様</label><input type="text" id="f-name"></div>
+
+    <div class="section-title">こだわり等</div>
+    <div class="memo-box"><textarea id="f-notes" placeholder="仕様の詳細、色の変わり目、こだわりポイントなど"></textarea></div>
+
+    <div class="section-title">料金内訳</div>
+    <table class="price-table">
+      <thead><tr><th>項目</th><th class="amt-col">金額</th><th class="del-col"></th></tr></thead>
+      <tbody id="price-rows"></tbody>
+    </table>
+    <button type="button" class="add-row-btn" id="btn-add-row">＋ 項目を追加</button>
+
+    <div class="total-rows">
+      <div class="total-row"><span>税抜合計</span><span id="subtotal">¥0</span></div>
+      <div class="total-row"><span>消費税（10%）</span><span id="tax">¥0</span></div>
+      <div class="total-row grand"><span>税込合計</span><span id="total">¥0</span></div>
+    </div>
+
+    <div class="footer">
+      <div class="company">IG Rod Planning</div>
+      <div>〒188-0004　東京都西東京市西原町5-3-30-301</div>
+      <div>TEL：090-1798-5613</div>
+    </div>
+
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  var rowsBody = document.getElementById('price-rows');
+
+  function yen(n) { return '¥' + Math.round(n).toLocaleString('ja-JP'); }
+
+  function recalc() {
+    var subtotal = 0;
+    rowsBody.querySelectorAll('tr').forEach(function (tr) {
+      var v = parseFloat((tr.querySelector('.item-amt').value || '0').replace(/[^0-9.-]/g, ''));
+      subtotal += isNaN(v) ? 0 : v;
+    });
+    var tax = Math.round(subtotal * 0.1);
+    document.getElementById('subtotal').textContent = yen(subtotal);
+    document.getElementById('tax').textContent = yen(tax);
+    document.getElementById('total').textContent = yen(subtotal + tax);
+  }
+
+  function addRow(name, amount) {
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td><input type="text" class="item-name" placeholder="例：ブランクスカラー：マットブラック"></td>' +
+      '<td><input type="text" class="item-amt" placeholder="0" inputmode="numeric"></td>' +
+      '<td><button type="button" class="del-row-btn" title="削除">✕</button></td>';
+    tr.querySelector('.item-name').value = name || '';
+    tr.querySelector('.item-amt').value = amount != null ? amount : '';
+    tr.querySelector('.item-amt').addEventListener('input', recalc);
+    tr.querySelector('.del-row-btn').addEventListener('click', function () {
+      tr.remove();
+      recalc();
+    });
+    rowsBody.appendChild(tr);
+    return tr;
+  }
+
+  document.getElementById('btn-add-row').addEventListener('click', function () {
+    var tr = addRow();
+    tr.querySelector('.item-name').focus();
+    recalc();
+  });
+
+  document.getElementById('f-fill-date').valueAsDate = new Date();
+
+  addRow('ベース価格', '');
+  recalc();
+
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+
+  document.getElementById('btn-reset').addEventListener('click', function () {
+    if (!confirm('入力内容をすべてクリアしますか？')) return;
+    document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function (el) { el.value = ''; });
+    document.getElementById('f-type').selectedIndex = 0;
+    rowsBody.innerHTML = '';
+    addRow('ベース価格', '');
+    recalc();
+  });
+
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this;
+    var originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '作成中…';
+    var toolbar = document.querySelector('.toolbar');
+    toolbar.style.visibility = 'hidden';
+    try {
+      var sheetEl = document.querySelector('.sheet');
+      var canvas = await html2canvas(sheetEl, { scale: 2, backgroundColor: '#ffffff' });
+      var imgData = canvas.toDataURL('image/jpeg', 0.92);
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth();
+      var pageH = pdf.internal.pageSize.getHeight();
+      var margin = 8;
+      var imgW = pageW - margin * 2;
+      var imgH = imgW * canvas.height / canvas.width;
+      if (imgH > pageH - margin * 2) {
+        imgH = pageH - margin * 2;
+        imgW = imgH * canvas.width / canvas.height;
+      }
+      pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      var customer = document.getElementById('f-customer').value.trim() || '見積';
+      pdf.save('オーダーシート_' + customer + '.pdf');
+    } catch (e) {
+      console.error(e);
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      toolbar.style.visibility = '';
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  });
+</script>
+
+</body>
+</html>
