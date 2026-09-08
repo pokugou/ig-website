@@ -23,12 +23,17 @@
   .toolbar-hint { max-width: 900px; margin: 0 auto 1.2rem; font-size: 0.72rem; color: var(--sub); }
 
   .pages { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
-  .page { background: var(--paper); border: 1px solid var(--line2); padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .page { background: var(--paper); border: 1px solid var(--line2); padding: 1.4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; position: relative; }
+  .page::before, .page::after { content: ''; position: absolute; color: var(--line); pointer-events: none; }
+  .page::before { top: 0.4rem; bottom: 0.4rem; left: 50%; width: 0; border-left: 1.5px dashed var(--line); transform: translateX(-50%); }
+  .page::after { left: 0.4rem; right: 0.4rem; top: 50%; height: 0; border-top: 1.5px dashed var(--line); transform: translateY(-50%); }
+  .cut-mark { position: absolute; font-size: 0.9rem; color: var(--sub); z-index: 1; }
+  .cut-mark.top { top: -0.15rem; left: 50%; transform: translate(-50%, -50%) rotate(90deg); }
+  .cut-mark.bottom { bottom: -0.15rem; left: 50%; transform: translate(-50%, 50%) rotate(90deg); }
+  .cut-mark.left { top: 50%; left: -0.15rem; transform: translate(-50%, -50%); }
+  .cut-mark.right { top: 50%; right: -0.15rem; transform: translate(50%, -50%); }
 
-  .card { border: 1px solid var(--ink); padding: 0.8rem 0.9rem 0.7rem; position: relative; }
-  .page .card:nth-child(1) { border-right: none; border-bottom: none; }
-  .page .card:nth-child(2) { border-bottom: none; }
-  .page .card:nth-child(3) { border-right: none; }
+  .card { border: 1px solid var(--ink); padding: 0.8rem 0.9rem 0.7rem; position: relative; background: var(--paper); z-index: 2; }
 
   .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
   .card-head h2 { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.06em; }
@@ -54,9 +59,7 @@
 
   @media (max-width: 700px) {
     .page { grid-template-columns: 1fr; }
-    .page .card:nth-child(1) { border-right: 1px solid var(--ink); border-bottom: none; }
-    .page .card:nth-child(2) { border-bottom: none; }
-    .page .card:nth-child(3) { border-right: 1px solid var(--ink); }
+    .page::before, .page::after, .cut-mark { display: none; }
     .card-table td.label { width: 32%; }
   }
 
@@ -133,6 +136,12 @@
     var page = document.createElement('div');
     page.className = 'page';
     for (var i = 0; i < 4; i++) page.appendChild(makeCard());
+    ['top', 'bottom', 'left', 'right'].forEach(function (pos) {
+      var mark = document.createElement('span');
+      mark.className = 'cut-mark ' + pos;
+      mark.textContent = '✂';
+      page.appendChild(mark);
+    });
     pagesEl.appendChild(page);
     return page;
   }
