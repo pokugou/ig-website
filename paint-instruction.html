@@ -39,6 +39,8 @@
 
   .card { border: 1px solid var(--ink); padding: 0.8rem 0.9rem 0.7rem; position: relative; background: var(--paper); z-index: 2; display: flex; flex-direction: column; }
 
+  .pdf-capture .page { height: 281mm; }
+
   .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
   .card-head h2 { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.06em; }
   .card-head .card-date { font-size: 0.72rem; color: var(--sub); display: flex; align-items: center; gap: 0.2rem; }
@@ -74,7 +76,7 @@
     body { background: #fff; padding: 0; }
     .toolbar, .toolbar-hint, .add-page-bar, .top-links { display: none; }
     .pages { max-width: 100%; gap: 0; }
-    .page { border: none; padding: 0.3cm; }
+    .page { border: none; padding: 0.3cm; height: 281mm; }
     .page + .page { page-break-before: always; }
     .del-card-btn { display: none; }
     @page { size: A4; margin: 0.8cm; }
@@ -243,6 +245,7 @@
     var originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '作成中…';
+    document.body.classList.add('pdf-capture');
     try {
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var pageW = pdf.internal.pageSize.getWidth();
@@ -266,6 +269,7 @@
       console.error(e);
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
+      document.body.classList.remove('pdf-capture');
       btn.disabled = false;
       btn.textContent = originalLabel;
     }
