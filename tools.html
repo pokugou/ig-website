@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>社内ツール一覧 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #111; --sub: #555; --line: #ccc; --line2: #e2e2e2;
+    --red: #cc2200; --bg: #f2f2f0; --paper: #ffffff;
+  }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 2rem 1.2rem 4rem; }
+
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  header { border-bottom: 3px solid var(--ink); padding-bottom: 0.9rem; margin-bottom: 1.8rem; }
+  header h1 { font-size: 1.6rem; font-weight: 900; letter-spacing: 0.06em; }
+  header .brand { margin-top: 0.4rem; font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .card { display: flex; flex-direction: column; gap: 0.5rem; background: var(--paper); border: 1px solid var(--line); padding: 1.4rem 1.3rem; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.1s; }
+  .card:hover { border-color: var(--red); transform: translateY(-1px); }
+  .card .icon { font-size: 1.8rem; line-height: 1; }
+  .card h2 { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.02em; }
+  .card p { font-size: 0.78rem; color: var(--sub); line-height: 1.6; }
+  .card .go { margin-top: auto; font-size: 0.72rem; font-weight: 700; color: var(--red); letter-spacing: 0.03em; }
+
+  footer { margin-top: 2rem; font-size: 0.72rem; color: var(--sub); text-align: center; }
+
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header>
+      <h1>社内ツール一覧</h1>
+      <div class="brand">IG Rod Planning ／ 社内共有用</div>
+    </header>
+
+    <div class="grid">
+      <a class="card" href="order-sheet.html">
+        <span class="icon">📝</span>
+        <h2>受注シート</h2>
+        <p>電話・来店注文の控え。複数枚まとめて印刷／PDF保存できます。</p>
+        <span class="go">開く →</span>
+      </a>
+
+      <a class="card" href="production-schedule.html">
+        <span class="icon">📅</span>
+        <h2>生産スケジュール</h2>
+        <p>納期・本数・塗装状況をまとめて管理する一覧表です。</p>
+        <span class="go">開く →</span>
+      </a>
+
+      <a class="card" href="quote.html">
+        <span class="icon">💰</span>
+        <h2>見積もりシート</h2>
+        <p>カスタムオーダーの仕様と料金内訳をまとめたお客様向け見積書です。</p>
+        <span class="go">開く →</span>
+      </a>
+
+      <a class="card" href="paint-instruction.html">
+        <span class="icon">🎨</span>
+        <h2>塗装指示書</h2>
+        <p>1ページ4枚、切り分けて塗装に渡すための指示書です。</p>
+        <span class="go">開く →</span>
+      </a>
+    </div>
+
+    <footer>IG Rod Planning</footer>
+  </div>
+
+</body>
+</html>
