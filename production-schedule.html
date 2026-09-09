@@ -25,8 +25,11 @@
   .save-bar { background: var(--paper); border: 1px solid var(--line); padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
   .save-bar p { font-size: 0.74rem; color: var(--sub); line-height: 1.6; }
   .save-bar .unsaved { color: var(--red); font-weight: 700; }
+  .save-bar .buttons { display: flex; gap: 0.6rem; flex-wrap: wrap; }
   .save-btn { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.3rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; white-space: nowrap; }
   .save-btn:hover { background: var(--red); border-color: var(--red); }
+  .save-btn.secondary { background: #fff; color: var(--ink); }
+  .save-btn.secondary:hover { background: #eee; border-color: var(--ink); color: var(--ink); }
 
   .add-box { background: var(--paper); border: 1px solid var(--line); padding: 1.1rem 1.2rem; margin-bottom: 1.4rem; }
   .add-box-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; color: var(--sub); margin-bottom: 0.7rem; text-transform: uppercase; }
@@ -68,6 +71,15 @@
     table { min-width: 700px; }
     .save-bar { flex-direction: column; align-items: stretch; }
   }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .save-bar, .add-box, .filter-row, .col-del, .del-btn { display: none; }
+    .wrap { max-width: 100%; }
+    .table-wrap { border: none; }
+    td input[type="text"] { background: transparent !important; }
+    @page { size: A4 landscape; margin: 1cm; }
+  }
 </style>
 </head>
 <body>
@@ -80,7 +92,11 @@
 
     <div class="save-bar">
       <p id="save-status">読み込み中…</p>
-      <button type="button" class="save-btn" id="btn-save">この内容を保存（ダウンロード）</button>
+      <div class="buttons">
+        <button type="button" class="save-btn secondary" id="btn-print">印刷</button>
+        <button type="button" class="save-btn secondary" id="btn-pdf">PDFとして保存</button>
+        <button type="button" class="save-btn" id="btn-save">この内容を保存（ダウンロード）</button>
+      </div>
     </div>
 
     <div class="add-box">
@@ -131,6 +147,8 @@
     </div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
   var rowsBody = document.getElementById('rows-body');
   var PAINT_OPTIONS = ['未着手', '塗装依頼済み', '塗装完了'];
@@ -273,6 +291,50 @@
     customerEl.focus();
     markDirty();
     render();
+  });
+
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+
+  document.getElementById('btn-pdf').addEventListener('click', async function () {
+    var btn = this;
+    var originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '作成中…';
+    try {
+      var target = document.querySelector('.table-wrap');
+      var canvas = await html2canvas(target, { scale: 2, backgroundColor: '#ffffff', windowWidth: 1100 });
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+      var pageW = pdf.internal.pageSize.getWidth();
+      var pageH = pdf.internal.pageSize.getHeight();
+      var margin = 8;
+      var imgW = pageW - margin * 2;
+      var pxPerMm = canvas.width / imgW;
+      var pageContentPx = (pageH - margin * 2) * pxPerMm;
+
+      var renderedPx = 0;
+      var first = true;
+      while (renderedPx < canvas.height) {
+        var sliceH = Math.min(pageContentPx, canvas.height - renderedPx);
+        var sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = sliceH;
+        sliceCanvas.getContext('2d').drawImage(canvas, 0, renderedPx, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+        var imgData = sliceCanvas.toDataURL('image/jpeg', 0.92);
+        var imgH = sliceH / pxPerMm;
+        if (!first) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', margin, margin, imgW, imgH);
+        renderedPx += sliceH;
+        first = false;
+      }
+      var d = new Date();
+      pdf.save('生産スケジュール_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.pdf');
+    } catch (e) {
+      console.error(e);
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
   });
 
   document.getElementById('btn-save').addEventListener('click', function () {
