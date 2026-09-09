@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>過去の受注一覧 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #111; --sub: #555; --line: #ccc; --line2: #e2e2e2;
+    --red: #cc2200; --bg: #f2f2f0; --paper: #ffffff;
+  }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 1.6rem 1.2rem 4rem; }
+
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  .top-links { margin-bottom: 0.6rem; }
+  .top-links a { font-size: 0.8rem; font-weight: 700; color: var(--red); text-decoration: none; }
+  .top-links a:hover { text-decoration: underline; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.6rem; }
+  header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
+  header .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
+
+  .search-box { margin-bottom: 1rem; }
+  .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.75rem 1rem; }
+  .search-box input:focus { outline: none; border-color: var(--red); }
+
+  .status-line { font-size: 0.74rem; color: var(--sub); margin-bottom: 1.2rem; }
+
+  .order-card { background: var(--paper); border: 1px solid var(--line); margin-bottom: 0.8rem; }
+  .order-summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.9rem 1.1rem; cursor: pointer; }
+  .order-summary:hover { background: #fafafa; }
+  .order-summary .who { font-weight: 700; font-size: 0.95rem; }
+  .order-summary .when { font-size: 0.75rem; color: var(--sub); white-space: nowrap; }
+  .order-summary .arrow { font-size: 0.7rem; color: var(--sub); transition: transform 0.15s; flex-shrink: 0; }
+  .order-card.open .arrow { transform: rotate(90deg); }
+
+  .order-detail { display: none; border-top: 1px solid var(--line2); padding: 0.9rem 1.1rem 1.1rem; }
+  .order-card.open .order-detail { display: block; }
+  .detail-grid { display: grid; grid-template-columns: 140px 1fr; gap: 0.35rem 0.8rem; font-size: 0.84rem; }
+  .detail-grid dt { color: var(--sub); font-weight: 700; }
+  .detail-grid dd { white-space: pre-wrap; }
+
+  .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
+
+  @media (max-width: 560px) {
+    .detail-grid { grid-template-columns: 1fr; }
+    .detail-grid dt { margin-top: 0.4rem; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="top-links">
+      <a href="order-sheet.html">← 受注シートに戻る</a>
+    </div>
+
+    <header>
+      <h1>過去の受注一覧</h1>
+      <div class="brand">IG Rod Planning ／ 社内共有用</div>
+    </header>
+
+    <div class="search-box">
+      <input type="text" id="f-search" placeholder="顧客名などで検索（納期問い合わせの時に）">
+    </div>
+
+    <p class="status-line" id="status-line">読み込み中…</p>
+
+    <div id="list"></div>
+  </div>
+
+<script>
+  var allRecords = [];
+  var searchTerm = '';
+
+  function matchesSearch(record) {
+    if (!searchTerm) return true;
+    return Object.keys(record).some(function (k) {
+      return (record[k] || '').toString().toLowerCase().indexOf(searchTerm) !== -1;
+    });
+  }
+
+  function render() {
+    var list = document.getElementById('list');
+    var visible = allRecords.filter(matchesSearch);
+    var statusText;
+    if (allRecords.length === 0) {
+      statusText = 'まだ記録がありません';
+    } else if (searchTerm) {
+      statusText = visible.length + '件 / 全' + allRecords.length + '件';
+    } else {
+      statusText = allRecords.length + '件';
+    }
+    document.getElementById('status-line').textContent = statusText;
+    if (visible.length === 0) {
+      list.innerHTML = '<p class="empty">' + (searchTerm ? '一致する受注がありません' : 'まだ受注の記録がありません') + '</p>';
+      return;
+    }
+    list.innerHTML = '';
+    visible.forEach(function (record, i) {
+      var card = document.createElement('div');
+      card.className = 'order-card';
+
+      var summary = document.createElement('div');
+      summary.className = 'order-summary';
+      var who = document.createElement('span');
+      who.className = 'who';
+      who.textContent = (record['お名前'] || record['お客様名'] || '(名前未記入)') + (record['モデル選択'] ? '　' + record['モデル選択'] : '');
+      var when = document.createElement('span');
+      when.className = 'when';
+      when.textContent = record['受注日'] || '';
+      var arrow = document.createElement('span');
+      arrow.className = 'arrow';
+      arrow.textContent = '▶';
+      summary.appendChild(who);
+      summary.appendChild(when);
+      summary.appendChild(arrow);
+      summary.addEventListener('click', function () { card.classList.toggle('open'); });
+
+      var detail = document.createElement('div');
+      detail.className = 'order-detail';
+      var dl = document.createElement('dl');
+      dl.className = 'detail-grid';
+      Object.keys(record).forEach(function (k) {
+        var dt = document.createElement('dt');
+        dt.textContent = k;
+        var dd = document.createElement('dd');
+        dd.textContent = record[k];
+        dl.appendChild(dt);
+        dl.appendChild(dd);
+      });
+      detail.appendChild(dl);
+
+      card.appendChild(summary);
+      card.appendChild(detail);
+      list.appendChild(card);
+    });
+  }
+
+  document.getElementById('f-search').addEventListener('input', function (e) {
+    searchTerm = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  fetch('./orders-archive.json?_=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('not found'); return r.json(); })
+    .then(function (data) {
+      allRecords = data.slice().reverse();
+      render();
+    })
+    .catch(function () {
+      allRecords = [];
+      render();
+    });
+</script>
+
+</body>
+</html>
