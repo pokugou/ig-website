@@ -37,22 +37,25 @@
   .cut-mark.left { top: 50%; left: -0.15rem; transform: translate(-50%, -50%); }
   .cut-mark.right { top: 50%; right: -0.15rem; transform: translate(50%, -50%); }
 
-  .card { border: 1px solid var(--ink); padding: 0.8rem 0.9rem 0.7rem; position: relative; background: var(--paper); z-index: 2; }
+  .card { border: 1px solid var(--ink); padding: 0.8rem 0.9rem 0.7rem; position: relative; background: var(--paper); z-index: 2; display: flex; flex-direction: column; }
 
   .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
   .card-head h2 { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.06em; }
   .card-head .card-date { font-size: 0.72rem; color: var(--sub); display: flex; align-items: center; gap: 0.2rem; }
   .card-head .card-date input { border: none; border-bottom: 1px solid var(--line); background: transparent; font-family: inherit; font-size: 0.72rem; padding: 0.1rem; color: inherit; width: 6.5em; }
 
-  .card-table { width: 100%; border-collapse: collapse; }
-  .card-table td { border: 1px solid var(--line); padding: 0.3rem 0.4rem; font-size: 0.8rem; vertical-align: top; }
-  .card-table td.label { width: 26%; font-weight: 700; background: #fafafa; white-space: nowrap; }
+  .card-table {
+    flex: 1; display: grid; grid-template-columns: 26% 1fr; grid-template-rows: repeat(7, auto) 1fr;
+    border-top: 1px solid var(--line); border-left: 1px solid var(--line);
+  }
+  .ct-label, .ct-value { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 0.3rem 0.4rem; font-size: 0.8rem; }
+  .ct-label { font-weight: 700; background: #fafafa; white-space: nowrap; }
+  .ct-value { display: flex; }
   .card-table input, .card-table textarea {
     width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.8rem; color: inherit; padding: 0.1rem;
   }
   .card-table input:focus, .card-table textarea:focus { outline: none; background: #fff8e0; }
-  .card-table textarea { resize: vertical; min-height: 2.6em; line-height: 1.5; }
-  .card-table textarea.notes { min-height: 2.4em; }
+  .card-table textarea { resize: none; line-height: 1.5; height: 100%; }
 
   .del-card-btn { border: none; background: none; color: var(--sub); cursor: pointer; font-size: 0.72rem; padding: 0.1rem 0.3rem; }
   .del-card-btn:hover { color: var(--red); }
@@ -64,7 +67,7 @@
   @media (max-width: 700px) {
     .page { grid-template-columns: 1fr; }
     .page::before, .page::after, .cut-mark { display: none; }
-    .card-table td.label { width: 32%; }
+    .card-table { grid-template-columns: 32% 1fr; }
   }
 
   @media print {
@@ -119,16 +122,16 @@
         '<h2>塗装指示書</h2>' +
         '<div class="card-date">記入日：<input type="date" class="f-date"><button type="button" class="del-card-btn">クリア</button></div>' +
       '</div>' +
-      '<table class="card-table">' +
-        '<tr><td class="label">お客様名</td><td><input type="text" class="f-customer"></td></tr>' +
-        '<tr><td class="label">カラー</td><td><textarea class="f-color" placeholder="ブランクス：&#10;ティップ："></textarea></td></tr>' +
-        '<tr><td class="label">希望納期</td><td><input type="text" class="f-due"></td></tr>' +
-        '<tr><td class="label">塗り残し</td><td><input type="text" class="f-margin" value="20mm"></td></tr>' +
-        '<tr><td class="label">表面</td><td><input type="text" class="f-surface" value="フラット加工済"></td></tr>' +
-        '<tr><td class="label">ブランクス</td><td><input type="text" class="f-blank"></td></tr>' +
-        '<tr><td class="label">合計本数</td><td><input type="text" class="f-qty"></td></tr>' +
-        '<tr><td class="label">備考欄</td><td><textarea class="f-notes notes"></textarea></td></tr>' +
-      '</table>';
+      '<div class="card-table">' +
+        '<div class="ct-label">お客様名</div><div class="ct-value"><input type="text" class="f-customer"></div>' +
+        '<div class="ct-label">カラー</div><div class="ct-value"><textarea class="f-color" placeholder="ブランクス：&#10;ティップ："></textarea></div>' +
+        '<div class="ct-label">希望納期</div><div class="ct-value"><input type="text" class="f-due"></div>' +
+        '<div class="ct-label">塗り残し</div><div class="ct-value"><input type="text" class="f-margin" value="20mm"></div>' +
+        '<div class="ct-label">表面</div><div class="ct-value"><input type="text" class="f-surface" value="フラット加工済"></div>' +
+        '<div class="ct-label">ブランクス</div><div class="ct-value"><input type="text" class="f-blank"></div>' +
+        '<div class="ct-label">合計本数</div><div class="ct-value"><input type="text" class="f-qty"></div>' +
+        '<div class="ct-label">備考欄</div><div class="ct-value"><textarea class="f-notes notes"></textarea></div>' +
+      '</div>';
     var t = todayParts();
     card.querySelector('.f-date').value = t.iso;
     card.querySelector('.del-card-btn').addEventListener('click', function () {
@@ -166,10 +169,11 @@
 
   function extractCardData(card) {
     var data = {};
-    card.querySelectorAll('.card-table tr').forEach(function (tr) {
-      var label = tr.querySelector('td.label');
-      var field = tr.querySelector('input, textarea');
-      if (!label || !field) return;
+    var labels = card.querySelectorAll('.card-table .ct-label');
+    labels.forEach(function (label) {
+      var valueEl = label.nextElementSibling;
+      var field = valueEl ? valueEl.querySelector('input, textarea') : null;
+      if (!field) return;
       var val = (field.value || '').trim();
       if (val) data[label.textContent.trim()] = val;
     });
