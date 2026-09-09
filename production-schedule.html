@@ -131,7 +131,7 @@
     </div>
 
     <div class="filter-row">
-      <label><input type="checkbox" id="f-hide-done"> 完了を隠す</label>
+      <label><input type="checkbox" id="f-hide-done" checked> 完了を隠す</label>
     </div>
 
     <div class="table-wrap">
@@ -161,7 +161,7 @@
   var rowsBody = document.getElementById('rows-body');
   var PAINT_OPTIONS = ['未着手', '塗装依頼済み', '塗装完了'];
   var rows = [];
-  var hideDone = false;
+  var hideDone = true;
   var dirty = false;
   var nextTempId = 1;
 
