@@ -196,7 +196,7 @@
       var margin = 6;
       var pageEls = document.querySelectorAll('.page');
       for (var i = 0; i < pageEls.length; i++) {
-        var canvas = await html2canvas(pageEls[i], { scale: 2, backgroundColor: '#ffffff' });
+        var canvas = await html2canvas(pageEls[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
         var imgData = canvas.toDataURL('image/jpeg', 0.92);
         var imgW = pageW - margin * 2;
         var imgH = imgW * canvas.height / canvas.width;
