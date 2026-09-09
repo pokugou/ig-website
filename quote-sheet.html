@@ -27,7 +27,9 @@
   .sheet-head .fill-date { margin-top: 0.5rem; font-size: 0.8rem; color: var(--sub); display: flex; justify-content: center; align-items: center; gap: 0.4rem; }
   .sheet-head .fill-date input { border: none; border-bottom: 1px solid var(--line); background: transparent; font-family: inherit; font-size: 0.8rem; padding: 0.15rem 0.2rem; color: inherit; }
 
-  .top-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 0.8rem; margin-bottom: 1.2rem; }
+  .top-grid { display: grid; grid-template-columns: 1.1fr 0.8fr 1.1fr; gap: 0.8rem; margin-bottom: 1.2rem; }
+  .field input.due-request { font-weight: 700; color: var(--red); }
+  .field input.due-request::placeholder { font-weight: 400; color: rgba(204,34,0,0.4); }
   .field label { display: block; font-size: 0.65rem; font-weight: 700; color: var(--sub); letter-spacing: 0.05em; margin-bottom: 0.3rem; }
   .field input, .field select, .field textarea {
     width: 100%; border: none; border-bottom: 1px solid var(--line); background: transparent;
@@ -115,6 +117,10 @@
       <div class="field">
         <label>納期</label>
         <input type="text" id="f-lead-time" placeholder="例：60〜90日">
+      </div>
+      <div class="field">
+        <label>希望納期</label>
+        <input type="text" id="f-due-request" class="due-request" placeholder="例：最短希望、9/20までに">
       </div>
     </div>
 
