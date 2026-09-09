@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>生産スケジュール | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #111; --sub: #555; --line: #ccc; --line2: #e2e2e2;
+    --red: #cc2200; --bg: #f2f2f0; --paper: #ffffff;
+    --done: #2e7d32; --done-bg: #eaf4ea;
+    --warn: #c87c10; --warn-bg: #fbf1e0;
+  }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 1.6rem 1.2rem 4rem; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 0.6rem; }
+  header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
+  header .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
+
+  .save-bar { background: var(--paper); border: 1px solid var(--line); padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .save-bar p { font-size: 0.74rem; color: var(--sub); line-height: 1.6; }
+  .save-bar .unsaved { color: var(--red); font-weight: 700; }
+  .save-btn { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.3rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; white-space: nowrap; }
+  .save-btn:hover { background: var(--red); border-color: var(--red); }
+
+  .add-box { background: var(--paper); border: 1px solid var(--line); padding: 1.1rem 1.2rem; margin-bottom: 1.4rem; }
+  .add-box-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; color: var(--sub); margin-bottom: 0.7rem; text-transform: uppercase; }
+  .add-grid { display: grid; grid-template-columns: 1fr 1.4fr 0.6fr 1.6fr auto; gap: 0.6rem; align-items: end; }
+  .add-grid label { display: block; font-size: 0.65rem; font-weight: 700; color: var(--sub); margin-bottom: 0.3rem; }
+  .add-grid input { width: 100%; border: 1px solid var(--line); background: var(--bg); font-family: inherit; font-size: 0.85rem; padding: 0.5rem 0.6rem; }
+  .add-grid input:focus { outline: none; border-color: var(--red); background: #fff; }
+  .add-btn { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.55rem 1.3rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; white-space: nowrap; }
+  .add-btn:hover { background: var(--red); border-color: var(--red); }
+
+  .table-wrap { background: var(--paper); border: 1px solid var(--line); overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 860px; }
+  thead th { text-align: left; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; color: #fff; background: var(--ink); padding: 0.6rem 0.7rem; white-space: nowrap; }
+  tbody td { padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line2); vertical-align: middle; }
+  tbody tr.done { background: var(--done-bg); }
+  tbody tr.done input { color: var(--sub); text-decoration: line-through; }
+  td input[type="text"] { width: 100%; border: 1px solid transparent; background: transparent; font-family: inherit; font-size: 0.84rem; padding: 0.35rem 0.4rem; color: inherit; }
+  td input[type="text"]:hover { border-color: var(--line); }
+  td input[type="text"]:focus { outline: none; border-color: var(--red); background: #fff8e0; }
+  td.col-date { width: 10%; } td.col-customer { width: 14%; } td.col-confirmed { width: 10%; }
+  td.col-qty { width: 5%; } td.col-qty input { text-align: center; } td.col-note { width: auto; }
+  td.col-paint { width: 11%; } td.col-done { width: 4%; text-align: center; } td.col-del { width: 3%; text-align: center; }
+  td.col-done input { width: 16px; height: 16px; cursor: pointer; }
+  .del-btn { border: none; background: none; color: var(--sub); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0.2rem 0.4rem; }
+  .del-btn:hover { color: var(--red); }
+  .empty-row td { text-align: center; color: var(--sub); padding: 2rem; font-size: 0.8rem; }
+
+  .paint-select { width: 100%; border: 1px solid var(--line); background: var(--bg); color: var(--sub); font-family: inherit; font-size: 0.76rem; font-weight: 700; padding: 0.35rem 0.4rem; cursor: pointer; }
+  .paint-select:focus { outline: none; }
+  .paint-select.st-progress { background: var(--warn-bg); border-color: var(--warn); color: var(--warn); }
+  .paint-select.st-done { background: var(--done-bg); border-color: var(--done); color: var(--done); }
+
+  .filter-row { display: flex; justify-content: flex-end; margin-bottom: 0.6rem; }
+  .filter-row label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.76rem; color: var(--sub); cursor: pointer; }
+
+  @media (max-width: 760px) {
+    .add-grid { grid-template-columns: 1fr 1fr; }
+    .add-btn { grid-column: 1 / -1; }
+    table { min-width: 700px; }
+    .save-bar { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header>
+      <h1>生産スケジュール</h1>
+      <div class="brand">IG Rod Planning ／ 社内共有用</div>
+    </header>
+
+    <div class="save-bar">
+      <p id="save-status">読み込み中…</p>
+      <button type="button" class="save-btn" id="btn-save">この内容を保存（ダウンロード）</button>
+    </div>
+
+    <div class="add-box">
+      <div class="add-box-title">新規追加</div>
+      <div class="add-grid">
+        <div>
+          <label>出荷希望日</label>
+          <input type="text" id="f-date" placeholder="例：2026/9/20、9月中旬">
+        </div>
+        <div>
+          <label>顧客名</label>
+          <input type="text" id="f-customer" placeholder="顧客名">
+        </div>
+        <div>
+          <label>本数</label>
+          <input type="text" id="f-qty" value="1">
+        </div>
+        <div>
+          <label>概要</label>
+          <input type="text" id="f-note" placeholder="任意">
+        </div>
+        <button type="button" class="add-btn" id="btn-add">追加</button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <label><input type="checkbox" id="f-hide-done"> 完了を隠す</label>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-date">出荷希望日</th>
+            <th class="col-customer">顧客名</th>
+            <th class="col-confirmed">返答納期</th>
+            <th class="col-qty">本数</th>
+            <th class="col-note">概要</th>
+            <th class="col-paint">塗装状況</th>
+            <th class="col-done">完了</th>
+            <th class="col-del"></th>
+          </tr>
+        </thead>
+        <tbody id="rows-body">
+          <tr class="empty-row"><td colspan="8">読み込み中…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+  var rowsBody = document.getElementById('rows-body');
+  var PAINT_OPTIONS = ['未着手', '塗装依頼済み', '塗装完了'];
+  var rows = [];
+  var hideDone = false;
+  var dirty = false;
+  var nextTempId = 1;
+
+  function markDirty() {
+    dirty = true;
+    document.getElementById('save-status').innerHTML = '<span class="unsaved">未保存の変更があります。</span> 編集が終わったら右の「この内容を保存」を押してダウンロードし、Claudeに「生産スケジュールを保存して」と伝えてください。';
+  }
+
+  function markClean(text) {
+    dirty = false;
+    document.getElementById('save-status').textContent = text;
+  }
+
+  function buildRow(row) {
+    var tr = document.createElement('tr');
+    tr.className = row.done ? 'done' : '';
+
+    function makeCell(cls, field) {
+      var td = document.createElement('td');
+      td.className = cls;
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.value = row[field] || '';
+      input.addEventListener('input', function () {
+        row[field] = input.value;
+        markDirty();
+      });
+      td.appendChild(input);
+      return td;
+    }
+
+    tr.appendChild(makeCell('col-date', 'date'));
+    tr.appendChild(makeCell('col-customer', 'customer'));
+    tr.appendChild(makeCell('col-confirmed', 'confirmed'));
+    tr.appendChild(makeCell('col-qty', 'qty'));
+    tr.appendChild(makeCell('col-note', 'note'));
+
+    var paintTd = document.createElement('td');
+    paintTd.className = 'col-paint';
+    var paintSel = document.createElement('select');
+    paintSel.className = 'paint-select';
+    var paintVal = row.paint || PAINT_OPTIONS[0];
+    PAINT_OPTIONS.forEach(function (opt) {
+      var o = document.createElement('option');
+      o.value = opt;
+      o.textContent = opt;
+      if (opt === paintVal) o.selected = true;
+      paintSel.appendChild(o);
+    });
+    function applyPaintStyle() {
+      paintSel.classList.toggle('st-progress', paintSel.value === '塗装依頼済み');
+      paintSel.classList.toggle('st-done', paintSel.value === '塗装完了');
+    }
+    applyPaintStyle();
+    paintSel.addEventListener('change', function () {
+      applyPaintStyle();
+      row.paint = paintSel.value;
+      markDirty();
+    });
+    paintTd.appendChild(paintSel);
+    tr.appendChild(paintTd);
+
+    var doneTd = document.createElement('td');
+    doneTd.className = 'col-done';
+    var doneCb = document.createElement('input');
+    doneCb.type = 'checkbox';
+    doneCb.checked = !!row.done;
+    doneCb.addEventListener('change', function () {
+      row.done = doneCb.checked;
+      markDirty();
+      render();
+    });
+    doneTd.appendChild(doneCb);
+    tr.appendChild(doneTd);
+
+    var delTd = document.createElement('td');
+    delTd.className = 'col-del';
+    var delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'del-btn';
+    delBtn.textContent = '✕';
+    delBtn.title = '削除';
+    delBtn.addEventListener('click', function () {
+      if (!confirm('この行を削除しますか？')) return;
+      rows = rows.filter(function (r) { return r !== row; });
+      markDirty();
+      render();
+    });
+    delTd.appendChild(delBtn);
+    tr.appendChild(delTd);
+
+    return tr;
+  }
+
+  function render() {
+    var visible = rows.filter(function (r) { return !(hideDone && r.done); });
+    if (visible.length === 0) {
+      rowsBody.innerHTML = '<tr class="empty-row"><td colspan="8">まだ登録がありません</td></tr>';
+      return;
+    }
+    rowsBody.innerHTML = '';
+    visible.forEach(function (row) { rowsBody.appendChild(buildRow(row)); });
+  }
+
+  document.getElementById('f-hide-done').addEventListener('change', function (e) {
+    hideDone = e.target.checked;
+    render();
+  });
+
+  document.getElementById('btn-add').addEventListener('click', function () {
+    var dateEl = document.getElementById('f-date');
+    var customerEl = document.getElementById('f-customer');
+    var qtyEl = document.getElementById('f-qty');
+    var noteEl = document.getElementById('f-note');
+    var customer = customerEl.value.trim();
+    var date = dateEl.value.trim();
+    if (!customer && !date) {
+      alert('出荷希望日か顧客名のどちらかは入力してください。');
+      return;
+    }
+    rows.push({
+      id: 'new-' + Date.now() + '-' + (nextTempId++),
+      date: date,
+      customer: customer,
+      confirmed: '',
+      qty: qtyEl.value.trim() || '1',
+      note: noteEl.value.trim(),
+      paint: '未着手',
+      done: false
+    });
+    dateEl.value = '';
+    customerEl.value = '';
+    qtyEl.value = '1';
+    noteEl.value = '';
+    customerEl.focus();
+    markDirty();
+    render();
+  });
+
+  document.getElementById('btn-save').addEventListener('click', function () {
+    var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var d = new Date();
+    var stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0');
+    a.href = url;
+    a.download = 'schedule-save-' + stamp + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    markClean('ダウンロードしました。Claudeに「生産スケジュールを保存して」と伝えると、このページに反映されます。');
+  });
+
+  window.addEventListener('beforeunload', function (e) {
+    if (!dirty) return;
+    e.preventDefault();
+    e.returnValue = '';
+  });
+
+  fetch('./schedule-data.json?_=' + Date.now())
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      rows = data;
+      markClean(rows.length + '件を表示中');
+      render();
+    })
+    .catch(function (e) {
+      console.error(e);
+      markClean('データの読み込みに失敗しました。');
+    });
+</script>
+
+</body>
+</html>
