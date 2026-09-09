@@ -115,7 +115,7 @@
       </div>
       <div class="field">
         <label>納期</label>
-        <input type="text" id="f-lead-time" placeholder="例：60〜90日">
+        <input type="text" id="f-lead-time" value="60〜90日">
       </div>
       <div class="field">
         <label>希望納期</label>
@@ -145,10 +145,8 @@
     <div class="spec-row">
       <label>③スレッド仕様</label>
       <div class="thread-stack">
-        <div class="thread-pair">
-          <div><span>上巻</span><input type="text" id="f-thread-upper"></div>
-          <div><span>下巻</span><input type="text" id="f-thread-lower"></div>
-        </div>
+        <div class="thread-single"><span>上巻</span><input type="text" id="f-thread-upper"></div>
+        <div class="thread-single"><span>下巻</span><input type="text" id="f-thread-lower"></div>
         <div class="thread-single"><span>ティップ部分</span><input type="text" id="f-thread-tip"></div>
       </div>
     </div>
@@ -231,6 +229,7 @@
   document.getElementById('btn-reset').addEventListener('click', function () {
     if (!confirm('入力内容をすべてクリアしますか？')) return;
     document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function (el) { el.value = ''; });
+    document.getElementById('f-lead-time').value = '60〜90日';
     document.getElementById('f-type').selectedIndex = 0;
     rowsBody.innerHTML = '';
     addRow('ベース価格', '');
