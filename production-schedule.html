@@ -22,6 +22,10 @@
   header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
   header .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
 
+  .search-box { margin-bottom: 1rem; }
+  .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.75rem 1rem; }
+  .search-box input:focus { outline: none; border-color: var(--red); }
+
   .save-bar { background: var(--paper); border: 1px solid var(--line); padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
   .save-bar p { font-size: 0.74rem; color: var(--sub); line-height: 1.6; }
   .save-bar .unsaved { color: var(--red); font-weight: 700; }
@@ -74,7 +78,7 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .save-bar, .add-box, .filter-row, .col-del, .del-btn { display: none; }
+    .save-bar, .search-box, .add-box, .filter-row, .col-del, .del-btn { display: none; }
     .wrap { max-width: 100%; }
     .table-wrap { border: none; }
     td input[type="text"] { background: transparent !important; }
@@ -89,6 +93,10 @@
       <h1>生産スケジュール</h1>
       <div class="brand">IG Rod Planning ／ 社内共有用</div>
     </header>
+
+    <div class="search-box">
+      <input type="text" id="f-search" placeholder="顧客名・日付・概要などで検索（納期問い合わせの時に）">
+    </div>
 
     <div class="save-bar">
       <p id="save-status">読み込み中…</p>
@@ -248,10 +256,19 @@
     return tr;
   }
 
+  var searchTerm = '';
+
+  function matchesSearch(row) {
+    if (!searchTerm) return true;
+    return ['date', 'customer', 'confirmed', 'qty', 'note', 'paint'].some(function (f) {
+      return (row[f] || '').toString().toLowerCase().indexOf(searchTerm) !== -1;
+    });
+  }
+
   function render() {
-    var visible = rows.filter(function (r) { return !(hideDone && r.done); });
+    var visible = rows.filter(function (r) { return !(hideDone && r.done) && matchesSearch(r); });
     if (visible.length === 0) {
-      rowsBody.innerHTML = '<tr class="empty-row"><td colspan="8">まだ登録がありません</td></tr>';
+      rowsBody.innerHTML = '<tr class="empty-row"><td colspan="8">' + (searchTerm ? '一致する行がありません' : 'まだ登録がありません') + '</td></tr>';
       return;
     }
     rowsBody.innerHTML = '';
@@ -260,6 +277,11 @@
 
   document.getElementById('f-hide-done').addEventListener('change', function (e) {
     hideDone = e.target.checked;
+    render();
+  });
+
+  document.getElementById('f-search').addEventListener('input', function (e) {
+    searchTerm = e.target.value.trim().toLowerCase();
     render();
   });
 

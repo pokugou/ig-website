@@ -14,6 +14,10 @@
   }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
 
+  .search-box { max-width: 900px; margin: 0 auto 0.8rem; }
+  .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.7rem 1rem; }
+  .search-box input:focus { outline: none; border-color: var(--red); }
+
   .toolbar { max-width: 900px; margin: 0 auto 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
   .toolbar-right { display: flex; gap: 0.6rem; flex-wrap: wrap; }
   .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.1rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; letter-spacing: 0.03em; }
@@ -33,7 +37,9 @@
   .cut-mark.left { top: 50%; left: -0.15rem; transform: translate(-50%, -50%); }
   .cut-mark.right { top: 50%; right: -0.15rem; transform: translate(50%, -50%); }
 
-  .card { border: 1px solid var(--ink); padding: 0.8rem 0.9rem 0.7rem; position: relative; background: var(--paper); z-index: 2; }
+  .card { border: 1px solid var(--ink); padding: 0.8rem 0.9rem 0.7rem; position: relative; background: var(--paper); z-index: 2; transition: background 0.15s, box-shadow 0.15s; }
+  .card.search-match { background: #fff8d6; box-shadow: 0 0 0 3px #f5d062 inset; }
+  .pdf-capture .card.search-match { background: var(--paper); box-shadow: none; }
 
   .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
   .card-head h2 { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.06em; }
@@ -65,16 +71,21 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .toolbar-hint, .add-page-bar { display: none; }
+    .toolbar, .toolbar-hint, .add-page-bar, .search-box { display: none; }
     .pages { max-width: 100%; gap: 0; }
     .page { border: none; padding: 0.3cm; }
     .page + .page { page-break-before: always; }
+    .card.search-match { background: #fff !important; box-shadow: none !important; }
     .del-card-btn { display: none; }
     @page { size: A4; margin: 0.8cm; }
   }
 </style>
 </head>
 <body>
+
+  <div class="search-box">
+    <input type="text" id="f-search" placeholder="顧客名などで検索（該当カードを黄色くハイライトします）">
+  </div>
 
   <div class="toolbar">
     <button type="button" class="secondary" id="btn-reset">クリア</button>
@@ -155,6 +166,25 @@
 
   document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
 
+  function cardMatches(card, term) {
+    var fields = card.querySelectorAll('input, textarea');
+    for (var i = 0; i < fields.length; i++) {
+      if ((fields[i].value || '').toLowerCase().indexOf(term) !== -1) return true;
+    }
+    return false;
+  }
+
+  document.getElementById('f-search').addEventListener('input', function (e) {
+    var term = e.target.value.trim().toLowerCase();
+    var firstMatch = null;
+    document.querySelectorAll('.card').forEach(function (card) {
+      var match = term && cardMatches(card, term);
+      card.classList.toggle('search-match', match);
+      if (match && !firstMatch) firstMatch = card;
+    });
+    if (firstMatch) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
   document.getElementById('btn-reset').addEventListener('click', function () {
     if (!confirm('入力内容をすべてクリアしますか？')) return;
     pagesEl.innerHTML = '';
@@ -189,6 +219,7 @@
     var originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '作成中…';
+    document.body.classList.add('pdf-capture');
     try {
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var pageW = pdf.internal.pageSize.getWidth();
@@ -212,6 +243,7 @@
       console.error(e);
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
+      document.body.classList.remove('pdf-capture');
       btn.disabled = false;
       btn.textContent = originalLabel;
     }

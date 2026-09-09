@@ -14,6 +14,10 @@
   }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 2rem 1rem 4rem; }
 
+  .search-box { max-width: 800px; margin: 0 auto 0.8rem; }
+  .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.7rem 1rem; }
+  .search-box input:focus { outline: none; border-color: var(--red); }
+
   .toolbar { max-width: 800px; margin: 0 auto 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; }
   .toolbar-right { display: flex; gap: 0.6rem; }
   .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; letter-spacing: 0.03em; }
@@ -23,6 +27,7 @@
   .toolbar-hint { max-width: 800px; margin: 0 auto 1rem; font-size: 0.72rem; color: var(--sub); }
 
   .sheets { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+  .sheet.search-hidden { display: none; }
   .sheet { background: var(--paper); border: 1px solid var(--line2); padding: 2.2rem 2.5rem 2.6rem; }
 
   .sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1.4rem; }
@@ -78,9 +83,10 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .toolbar-hint, .add-sheet-bar { display: none; }
+    .toolbar, .toolbar-hint, .add-sheet-bar, .search-box { display: none; }
     .sheets { max-width: 100%; gap: 0; }
     .sheet { border: none; padding: 0.4cm 0.6cm; }
+    .sheet.search-hidden { display: block !important; }
     .sheet + .sheet { page-break-before: always; }
     .sheet-remove { display: none; }
     .row input, .row select, .row textarea, .meta-item input, .meta-item select, .memo-box textarea, .sheet-no input { background: transparent !important; }
@@ -92,6 +98,10 @@
 </style>
 </head>
 <body>
+
+  <div class="search-box">
+    <input type="text" id="f-search" placeholder="顧客名などで検索（複数枚ある時に見つけやすくします）">
+  </div>
 
   <div class="toolbar">
     <button type="button" id="btn-add">＋ シートを追加</button>
@@ -310,6 +320,11 @@
   }
 
   function addSheet() {
+    var searchEl = document.getElementById('f-search');
+    if (searchEl.value) {
+      searchEl.value = '';
+      document.querySelectorAll('.sheet').forEach(function (sheet) { sheet.classList.remove('search-hidden'); });
+    }
     var clone = template.cloneNode(true);
     clone.querySelectorAll('input[type="text"], input[type="tel"], textarea').forEach(function(el){ el.value = ''; });
     clone.querySelectorAll('select').forEach(function(el){ el.selectedIndex = 0; });
@@ -333,6 +348,24 @@
 
   document.getElementById('btn-add').addEventListener('click', addSheet);
   document.getElementById('btn-add-bottom').addEventListener('click', addSheet);
+
+  function sheetMatches(sheet, term) {
+    if (!term) return true;
+    var fields = sheet.querySelectorAll('input, textarea, select');
+    for (var i = 0; i < fields.length; i++) {
+      var el = fields[i];
+      var val = el.tagName === 'SELECT' ? el.options[el.selectedIndex].textContent : el.value;
+      if ((val || '').toLowerCase().indexOf(term) !== -1) return true;
+    }
+    return false;
+  }
+
+  document.getElementById('f-search').addEventListener('input', function (e) {
+    var term = e.target.value.trim().toLowerCase();
+    document.querySelectorAll('.sheet').forEach(function (sheet) {
+      sheet.classList.toggle('search-hidden', !sheetMatches(sheet, term));
+    });
+  });
 
   document.getElementById('btn-print').addEventListener('click', function(){ window.print(); });
 
