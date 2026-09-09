@@ -14,6 +14,10 @@
   }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
 
+  .top-links { max-width: 900px; margin: 0 auto 0.6rem; text-align: right; }
+  .top-links a { font-size: 0.8rem; font-weight: 700; color: var(--red); text-decoration: none; }
+  .top-links a:hover { text-decoration: underline; }
+
   .search-box { max-width: 900px; margin: 0 auto 0.8rem; }
   .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.7rem 1rem; }
   .search-box input:focus { outline: none; border-color: var(--red); }
@@ -71,7 +75,7 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .toolbar-hint, .add-page-bar, .search-box { display: none; }
+    .toolbar, .toolbar-hint, .add-page-bar, .search-box, .top-links { display: none; }
     .pages { max-width: 100%; gap: 0; }
     .page { border: none; padding: 0.3cm; }
     .page + .page { page-break-before: always; }
@@ -83,6 +87,10 @@
 </head>
 <body>
 
+  <div class="top-links">
+    <a href="paint-history.html">📋 過去の塗装指示一覧を見る →</a>
+  </div>
+
   <div class="search-box">
     <input type="text" id="f-search" placeholder="顧客名などで検索（該当カードを黄色くハイライトします）">
   </div>
@@ -91,11 +99,12 @@
     <button type="button" class="secondary" id="btn-reset">クリア</button>
     <div class="toolbar-right">
       <button type="button" class="secondary" id="btn-export">塗装状況をスケジュールに反映</button>
+      <button type="button" class="secondary" id="btn-archive">アーカイブに保存</button>
       <button type="button" class="secondary" id="btn-save">PDFとして保存</button>
       <button type="button" id="btn-print">印刷</button>
     </div>
   </div>
-  <p class="toolbar-hint">1ページに4枚。印刷後は点線代わりのマス目に沿って4つに切り分けてください。「塗装状況をスケジュールに反映」でダウンロードしたファイルは、Claudeに伝えれば生産スケジュールの塗装状況を自動で更新できます。</p>
+  <p class="toolbar-hint">1ページに4枚。印刷後は点線代わりのマス目に沿って4つに切り分けてください。「塗装状況をスケジュールに反映」「アーカイブに保存」でダウンロードしたファイルは、Claudeに伝えればそれぞれ生産スケジュール・過去の塗装指示一覧に反映されます。</p>
 
   <div class="pages" id="pages"></div>
 
@@ -183,6 +192,47 @@
       if (match && !firstMatch) firstMatch = card;
     });
     if (firstMatch) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  function extractCardData(card) {
+    var data = {};
+    card.querySelectorAll('.card-table tr').forEach(function (tr) {
+      var label = tr.querySelector('td.label');
+      var field = tr.querySelector('input, textarea');
+      if (!label || !field) return;
+      var val = (field.value || '').trim();
+      if (val) data[label.textContent.trim()] = val;
+    });
+    var dateEl = card.querySelector('.f-date');
+    if (dateEl && dateEl.value) {
+      var parts = dateEl.value.split('-');
+      data['記入日'] = parts[0] + '/' + Number(parts[1]) + '/' + Number(parts[2]);
+    }
+    return data;
+  }
+
+  document.getElementById('btn-archive').addEventListener('click', function () {
+    var records = [];
+    document.querySelectorAll('.card').forEach(function (card) {
+      var data = extractCardData(card);
+      if (data['お客様名']) records.push(data);
+    });
+    if (records.length === 0) {
+      alert('お客様名が入力されているカードがありません。');
+      return;
+    }
+    var blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var t = todayParts();
+    var now = new Date();
+    var stamp = t.iso.replace(/-/g, '') + '-' + String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+    a.href = url;
+    a.download = 'paint-archive-' + stamp + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   });
 
   document.getElementById('btn-reset').addEventListener('click', function () {
