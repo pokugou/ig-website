@@ -107,11 +107,10 @@
       <button type="button" class="secondary" id="btn-reset">クリア</button>
       <button type="button" class="secondary" id="btn-save">まとめて保存</button>
       <button type="button" class="secondary" id="btn-export">生産スケジュール用に書き出す</button>
-      <button type="button" class="secondary" id="btn-archive">アーカイブに保存</button>
       <button type="button" id="btn-print">まとめて印刷</button>
     </div>
   </div>
-  <p class="toolbar-hint">複数枚追加したら「まとめて保存」で全シートを1つのPDFファイルとして直接ダウンロード、「まとめて印刷」でプリンターへの印刷ができます。「生産スケジュール用に書き出す」「アーカイブに保存」でダウンロードしたファイルは、Claudeに伝えればそれぞれ生産スケジュール・過去の受注一覧に反映されます。</p>
+  <p class="toolbar-hint">複数枚追加したら「まとめて保存」で全シートを1つのPDFファイルとしてダウンロードしつつ、過去の受注一覧アーカイブ用のファイルも同時にダウンロードします。「まとめて印刷」でプリンターへの印刷ができます。「生産スケジュール用に書き出す」「まとめて保存」でダウンロードしたファイルは、Claudeに伝えればそれぞれ生産スケジュール・過去の受注一覧に反映されます。</p>
 
   <div class="sheets" id="sheets">
   <div class="sheet">
@@ -380,16 +379,13 @@
     return data;
   }
 
-  document.getElementById('btn-archive').addEventListener('click', function () {
+  function downloadArchive() {
     var records = [];
     document.querySelectorAll('.sheet').forEach(function (sheet) {
       var data = extractSheetData(sheet);
       if (data['お名前'] || data['お客様名']) records.push(data);
     });
-    if (records.length === 0) {
-      alert('お名前が入力されているシートがありません。');
-      return;
-    }
+    if (records.length === 0) return;
     var blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -401,7 +397,7 @@
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-  });
+  }
 
   function defaultDueFromOrderDate(orderDateStr) {
     if (!orderDateStr) return '';
@@ -476,6 +472,7 @@
         pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       }
       pdf.save('受注シート_' + todayISO().replace(/-/g, '') + '.pdf');
+      downloadArchive();
     } catch (e) {
       console.error(e);
       alert('PDFの作成に失敗しました。もう一度お試しください。');
