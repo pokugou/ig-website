@@ -42,8 +42,9 @@
   .spec-row input { width: 100%; border: none; background: transparent; font-family: inherit; font-size: 0.88rem; padding: 0.2rem 0.1rem; color: inherit; }
   .spec-row input:focus { outline: none; background: #fff8e0; }
   .spec-row .thread-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-  .spec-row .thread-pair div { display: flex; align-items: baseline; gap: 0.4rem; }
-  .spec-row .thread-pair span { font-size: 0.72rem; color: var(--sub); white-space: nowrap; }
+  .spec-row .thread-trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+  .spec-row .thread-pair div, .spec-row .thread-trio div { display: flex; align-items: baseline; gap: 0.4rem; }
+  .spec-row .thread-pair span, .spec-row .thread-trio span { font-size: 0.72rem; color: var(--sub); white-space: nowrap; }
 
   .section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; color: var(--red); margin: 1.4rem 0 0.6rem; text-transform: uppercase; }
 
@@ -76,7 +77,7 @@
     .sheet { padding: 1.4rem 1.1rem 1.8rem; }
     .top-grid { grid-template-columns: 1fr; }
     .spec-row { grid-template-columns: 1fr; gap: 0.2rem; }
-    .spec-row .thread-pair { grid-template-columns: 1fr; }
+    .spec-row .thread-pair, .spec-row .thread-trio { grid-template-columns: 1fr; }
     .price-table th.del-col, .price-table td.del-col { width: 28px; }
   }
 
@@ -127,13 +128,20 @@
         </select>
       </div>
     </div>
-    <div class="spec-row"><label>①ブランクスカラー</label><input type="text" id="f-blank-color"></div>
+    <div class="spec-row">
+      <label>①ブランクスカラー</label>
+      <div class="thread-pair">
+        <div><span>ブランクス</span><input type="text" id="f-blank-color"></div>
+        <div><span>ティップ</span><input type="text" id="f-tip-color"></div>
+      </div>
+    </div>
     <div class="spec-row"><label>②グリップ仕様／シート種類</label><input type="text" id="f-grip"></div>
     <div class="spec-row">
       <label>③スレッド仕様</label>
-      <div class="thread-pair">
+      <div class="thread-trio">
         <div><span>上巻</span><input type="text" id="f-thread-upper"></div>
         <div><span>下巻</span><input type="text" id="f-thread-lower"></div>
+        <div><span>ティップ部分</span><input type="text" id="f-thread-tip"></div>
       </div>
     </div>
     <div class="spec-row"><label>④ガイド仕様</label><input type="text" id="f-guide"></div>
