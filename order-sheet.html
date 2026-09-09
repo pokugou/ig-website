@@ -14,9 +14,9 @@
   }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 2rem 1rem 4rem; }
 
-  .top-links { max-width: 800px; margin: 0 auto 0.6rem; text-align: right; }
-  .top-links a { font-size: 0.8rem; font-weight: 700; color: var(--red); text-decoration: none; }
-  .top-links a:hover { text-decoration: underline; }
+  .top-links { max-width: 800px; margin: 0 auto 0.6rem; display: flex; justify-content: flex-end; }
+  .top-links a { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; padding: 0.55rem 1.1rem; border: 1px solid var(--ink); background: #fff; }
+  .top-links a:hover { background: var(--red); border-color: var(--red); color: #fff; }
 
   .toolbar { max-width: 800px; margin: 0 auto 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; }
   .toolbar-right { display: flex; gap: 0.6rem; }
