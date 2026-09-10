@@ -251,7 +251,7 @@
     toolbar.style.visibility = 'hidden';
     try {
       var sheetEl = document.querySelector('.sheet');
-      var canvas = await html2canvas(sheetEl, { scale: 2, backgroundColor: '#ffffff' });
+      var canvas = await html2canvas(sheetEl, { scale: 2, backgroundColor: '#ffffff', windowWidth: 900 });
       var imgData = canvas.toDataURL('image/jpeg', 0.92);
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var pageW = pdf.internal.pageSize.getWidth();
