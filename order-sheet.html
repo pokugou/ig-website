@@ -354,6 +354,57 @@
   });
   updateRemoveVisibility();
 
+  function slashToIso(s) {
+    var parts = (s || '').split('/');
+    if (parts.length !== 3) return '';
+    return parts[0] + '-' + String(parts[1]).padStart(2, '0') + '-' + String(parts[2]).padStart(2, '0');
+  }
+
+  function setFieldValue(field, value) {
+    if (field.tagName === 'SELECT') {
+      var match = Array.from(field.options).find(function (o) {
+        return o.value === value || o.textContent.trim() === value;
+      });
+      if (match) field.value = match.value;
+    } else if (field.type === 'date') {
+      field.value = slashToIso(value);
+    } else {
+      field.value = value;
+    }
+  }
+
+  function populateSheetFromData(sheet, data) {
+    sheet.querySelectorAll('.meta-item, .row').forEach(function (container) {
+      var label = container.querySelector('label');
+      var field = container.querySelector('input, select, textarea');
+      if (!label || !field) return;
+      var key = label.textContent.trim();
+      if (data[key] === undefined) return;
+      setFieldValue(field, data[key]);
+      field.dispatchEvent(new Event('change'));
+    });
+    if (data['No.']) {
+      var noEl = sheet.querySelector('.sheet-no-input');
+      if (noEl) noEl.value = data['No.'];
+    }
+    if (data['こだわり・備考']) {
+      var memo = sheet.querySelector('.memo-box textarea');
+      if (memo) memo.value = data['こだわり・備考'];
+    }
+  }
+
+  (function loadFromHistoryIfRequested() {
+    var raw = localStorage.getItem('order-sheet-reload');
+    if (!raw) return;
+    localStorage.removeItem('order-sheet-reload');
+    try {
+      var data = JSON.parse(raw);
+      populateSheetFromData(document.querySelector('.sheet'), data);
+    } catch (e) {
+      console.error(e);
+    }
+  })();
+
   document.getElementById('btn-add').addEventListener('click', addSheet);
   document.getElementById('btn-add-bottom').addEventListener('click', addSheet);
 

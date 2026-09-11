@@ -40,6 +40,9 @@
   .order-detail { display: none; border-top: 1px solid var(--line2); padding: 1rem 1.1rem 1.2rem; }
   .order-card.open .order-detail { display: block; }
 
+  .edit-btn { display: block; width: 100%; margin-bottom: 1rem; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.6rem 1rem; cursor: pointer; }
+  .edit-btn:hover { background: var(--red); border-color: var(--red); }
+
   .detail-section { margin-bottom: 1.1rem; }
   .detail-section:last-child { margin-bottom: 0; }
   .detail-section-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #fff; background: var(--ink); display: inline-block; padding: 0.2rem 0.6rem; margin-bottom: 0.5rem; }
@@ -180,6 +183,16 @@
 
       var detail = document.createElement('div');
       detail.className = 'order-detail';
+      var editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'edit-btn';
+      editBtn.textContent = 'この内容を受注シートで編集する →';
+      editBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        localStorage.setItem('order-sheet-reload', JSON.stringify(record));
+        location.href = 'order-sheet.html?reload=1';
+      });
+      detail.appendChild(editBtn);
       detail.appendChild(buildDetail(record));
 
       card.appendChild(summary);
