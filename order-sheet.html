@@ -179,7 +179,7 @@
       <div class="section-title">ベースモデル</div>
       <div class="row">
         <label>モデル選択</label>
-        <select>
+        <select class="model-select">
           <option value="">選択してください</option>
           <optgroup label="── STRIX EDGE　イカメタル ──">
             <option>SE510ML-B（ベイト）</option>
@@ -221,8 +221,10 @@
             <option>GTLJ63LS（ベイト）</option>
             <option>GTLJ63MS（ベイト）</option>
           </optgroup>
+          <option value="入力">入力</option>
         </select>
       </div>
+      <div class="row model-custom-row" style="display:none"><label>モデル（入力）</label><input type="text" class="model-custom"></div>
       <div class="row"><label>本数</label><input type="number" class="qty" value="1" min="1" style="max-width:6em"></div>
     </div>
 
@@ -256,6 +258,13 @@
             </select>
           </div>
           <div class="row guide-custom-row" style="display:none"><label>ガイド仕様（入力）</label><input type="text" class="guide-custom"></div>
+          <div class="row"><label>ガイドレイアウト</label>
+            <select>
+              <option>ストレート</option>
+              <option>右スパイラル</option>
+              <option>左スパイラル</option>
+            </select>
+          </div>
           <div class="row"><label>グリップ仕様</label><input type="text"></div>
         </div>
         <div>
@@ -309,12 +318,17 @@
     });
   }
 
-  function bindGuideSelect(sheet) {
-    var sel = sheet.querySelector('.guide-select');
-    var row = sheet.querySelector('.guide-custom-row');
+  function bindCustomSelect(sheet, selectSelector, rowSelector) {
+    var sel = sheet.querySelector(selectSelector);
+    var row = sheet.querySelector(rowSelector);
     sel.addEventListener('change', function(){
       row.style.display = sel.value === '入力' ? '' : 'none';
     });
+  }
+
+  function bindGuideSelect(sheet) {
+    bindCustomSelect(sheet, '.guide-select', '.guide-custom-row');
+    bindCustomSelect(sheet, '.model-select', '.model-custom-row');
   }
 
   function addSheet() {
@@ -322,6 +336,7 @@
     clone.querySelectorAll('input[type="text"], input[type="tel"], textarea').forEach(function(el){ el.value = ''; });
     clone.querySelectorAll('select').forEach(function(el){ el.selectedIndex = 0; });
     clone.querySelector('.guide-custom-row').style.display = 'none';
+    clone.querySelector('.model-custom-row').style.display = 'none';
     clone.querySelector('.qty').value = 1;
     clone.querySelector('.order-date').value = todayISO();
     clone.querySelector('.sheet-no-input').value = document.querySelectorAll('.sheet').length + 1;
@@ -349,7 +364,7 @@
     document.querySelectorAll('.sheet input[type="text"], .sheet input[type="tel"], .sheet input[type="email"], .sheet textarea').forEach(function(el){ el.value = ''; });
     document.querySelectorAll('.sheet select').forEach(function(el){ el.selectedIndex = 0; });
     document.querySelectorAll('.sheet input[type="checkbox"]').forEach(function(el){ el.checked = false; });
-    document.querySelectorAll('.guide-custom-row').forEach(function(el){ el.style.display = 'none'; });
+    document.querySelectorAll('.guide-custom-row, .model-custom-row').forEach(function(el){ el.style.display = 'none'; });
     document.querySelectorAll('.qty').forEach(function(el){ el.value = 1; });
   });
 
