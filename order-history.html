@@ -47,8 +47,11 @@
   .order-detail { display: none; border-top: 1px solid var(--line2); padding: 1rem 1.1rem 1.2rem; }
   .order-card.open .order-detail { display: block; }
 
-  .edit-btn { display: block; width: 100%; margin-bottom: 1rem; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.6rem 1rem; cursor: pointer; }
+  .detail-actions { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+  .edit-btn { flex: 1; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.6rem 1rem; cursor: pointer; }
   .edit-btn:hover { background: var(--red); border-color: var(--red); }
+  .delete-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--sub); background: #fff; border: 1px solid var(--line); padding: 0.6rem 1rem; cursor: pointer; white-space: nowrap; }
+  .delete-btn:hover { color: #fff; background: var(--red); border-color: var(--red); }
 
   .detail-section { margin-bottom: 1.1rem; }
   .detail-section:last-child { margin-bottom: 0; }
@@ -59,12 +62,28 @@
 
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
 
-  .print-sheets { position: fixed; top: 0; left: -9999px; width: 760px; }
-  .print-sheet { background: var(--paper); border: 1px solid var(--line2); padding: 2rem 2.3rem; margin-bottom: 1rem; }
-  .print-sheet-head { border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: baseline; }
-  .print-sheet-head h1 { font-size: 1.4rem; font-weight: 900; letter-spacing: 0.06em; }
-  .print-sheet-head .brand { font-size: 0.7rem; font-weight: 700; color: var(--sub); }
-  .print-sheet .detail-row { font-size: 0.86rem; }
+  .print-sheets { position: fixed; top: 0; left: -9999px; width: 800px; }
+  .print-sheets .sheet { background: var(--paper); border: 1px solid var(--line2); padding: 2.2rem 2.5rem 2.6rem; margin-bottom: 1.5rem; }
+  .print-sheets .sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1.4rem; }
+  .print-sheets .sheet-head h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.06em; }
+  .print-sheets .sheet-no { display: flex; align-items: baseline; gap: 0.3rem; font-size: 0.85rem; font-weight: 700; color: var(--red); margin-bottom: 0.6rem; }
+  .print-sheets .sheet-no input { width: 16em; border: none; border-bottom: 1px solid var(--red); background: transparent; font-family: inherit; font-size: inherit; font-weight: inherit; color: inherit; padding: 0.05rem 0.2rem; }
+  .print-sheets .sheet-head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+  .print-sheets .sheet-head .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
+  .print-sheets .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 1.4rem; }
+  .print-sheets .meta-item label { display: block; font-size: 0.65rem; font-weight: 700; color: var(--sub); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+  .print-sheets .meta-item input, .print-sheets .meta-item select { width: 100%; border: none; border-bottom: 1px solid var(--line); font-family: inherit; font-size: 0.85rem; padding: 0.25rem 0.1rem; background: transparent; }
+  .print-sheets .section { margin-bottom: 1.3rem; }
+  .print-sheets .section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; color: #fff; background: var(--ink); display: inline-block; padding: 0.25rem 0.7rem; margin-bottom: 0.7rem; }
+  .print-sheets .row { display: grid; grid-template-columns: 130px 1fr; align-items: baseline; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); }
+  .print-sheets .row label { font-size: 0.78rem; font-weight: 700; color: var(--sub); }
+  .print-sheets .row input, .print-sheets .row select, .print-sheets .row textarea { width: 100%; border: none; font-family: inherit; font-size: 0.85rem; padding: 0.15rem 0.1rem; background: transparent; }
+  .print-sheets .row textarea { resize: vertical; min-height: 2.4em; line-height: 1.5; }
+  .print-sheets .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
+  .print-sheets .cols2 .row { grid-template-columns: 132px 1fr; }
+  .print-sheets .memo-box { border: 1px solid var(--line2); min-height: 3.4em; padding: 0.5rem 0.6rem; }
+  .print-sheets .memo-box textarea { width: 100%; height: 100%; min-height: 3rem; border: none; font-family: inherit; font-size: 0.85rem; resize: vertical; background: transparent; }
+  .print-sheets .hint { font-size: 0.68rem; color: var(--sub); margin-top: 0.2rem; }
 
   @media (max-width: 560px) {
     .detail-row { grid-template-columns: 1fr; gap: 0.1rem; padding: 0.4rem 0; }
@@ -95,6 +114,181 @@
   </div>
 
   <div class="print-sheets" id="print-sheets"></div>
+
+  <template id="sheet-template">
+  <div class="sheet">
+
+    <span class="sheet-no">No.<input type="text" class="sheet-no-input" value="1"></span>
+
+    <div class="sheet-head">
+      <h1>受注シート</h1>
+      <div class="sheet-head-right">
+        <div class="brand">IG Rod Planning ／ 社内共有用</div>
+      </div>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <label>受注日</label>
+        <input type="date" class="order-date">
+      </div>
+      <div class="meta-item">
+        <label>希望納期</label>
+        <input type="date" class="due-date">
+      </div>
+      <div class="meta-item">
+        <label>受付方法</label>
+        <select>
+          <option>メール</option>
+          <option>LINE</option>
+          <option>インスタ</option>
+          <option>電話</option>
+        </select>
+      </div>
+      <div class="meta-item">
+        <label>受付担当</label>
+        <select>
+          <option>石谷豪</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">お客様情報</div>
+      <div class="cols2">
+        <div>
+          <div class="row"><label>お名前</label><input type="text" class="customer-name"></div>
+          <div class="row"><label>電話番号</label><input type="tel"></div>
+        </div>
+        <div>
+          <div class="row"><label>発送方法</label>
+            <select class="shipping-select">
+              <option value="">選択</option>
+              <option>西濃運輸（営業所止め・送料無料）</option>
+              <option>個人宅宛（着払い）</option>
+              <option>その他</option>
+            </select>
+          </div>
+          <div class="row shipping-custom-row" style="display:none"><label>発送方法（入力）</label><input type="text" class="shipping-custom"></div>
+        </div>
+      </div>
+      <div class="row">
+        <label>送り先住所</label>
+        <textarea rows="2"></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">ベースモデル</div>
+      <div class="row">
+        <label>モデル選択</label>
+        <select class="model-select">
+          <option value="">選択してください</option>
+          <optgroup label="── STRIX EDGE　イカメタル ──">
+            <option>SE510ML-B（ベイト）</option>
+            <option>SE66ML-B（ベイト）</option>
+            <option>SE510ML-S（スピニング）</option>
+            <option>SE66ML-S（スピニング）</option>
+          </optgroup>
+          <optgroup label="── STRIX EDGE　ティップランカスタム ──">
+            <option>SE510ML-TR（スピニング）</option>
+            <option>SE66ML-TR（スピニング）</option>
+          </optgroup>
+          <optgroup label="── GTLJ　ライトジギング ──">
+            <option>GTLJ63ULB（ベイト）</option>
+            <option>GTLJ63LB（ベイト）</option>
+            <option>GTLJ63MB（ベイト）</option>
+            <option>GTLJ63ULS（スピニング）</option>
+            <option>GTLJ63LS（スピニング）</option>
+            <option>GTLJ63MS（スピニング）</option>
+          </optgroup>
+          <optgroup label="── GTSLJ　超万能ライトオフショアロッド ──">
+            <option>GTSLJ62UL-B（ベイト）</option>
+            <option>GTSLJ63L-B（ベイト）</option>
+            <option>GTSLJ62UL-S（スピニング）</option>
+            <option>GTSLJ63L-S（スピニング）</option>
+          </optgroup>
+          <optgroup label="── GTS　スロージギング ──">
+            <option>GTS632（ベイト）</option>
+            <option>GTS5102（ベイト）</option>
+            <option>GTS633（ベイト）</option>
+            <option>GTS5103（ベイト）</option>
+            <option>GTS634（ベイト）</option>
+            <option>GTS5104（ベイト）</option>
+          </optgroup>
+          <optgroup label="── GTJ　ジギング ──">
+            <option>GTJ62MLS（スピニング）</option>
+            <option>GTJ62MS（スピニング）</option>
+            <option>GTJ62MHS（スピニング）</option>
+            <option>GTLJ63ULS（ベイト）</option>
+            <option>GTLJ63LS（ベイト）</option>
+            <option>GTLJ63MS（ベイト）</option>
+          </optgroup>
+          <option value="入力">入力</option>
+        </select>
+      </div>
+      <div class="row model-custom-row" style="display:none"><label>モデル（入力）</label><input type="text" class="model-custom"></div>
+      <div class="row"><label>本数</label><input type="number" class="qty" value="1" min="1" style="max-width:6em"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">カラーカスタム</div>
+      <div class="cols2">
+        <div>
+          <div class="row"><label>ブランクスカラー</label><input type="text"></div>
+          <div class="row"><label>ティップカラー</label><input type="text"></div>
+          <div class="row"><label>リールシート</label><input type="text"></div>
+        </div>
+        <div>
+          <div class="row"><label>メインスレッド</label><input type="text"></div>
+          <div class="row"><label>ティップ部分スレッド</label><input type="text"></div>
+          <div class="row"><label>ピンライン</label><input type="text"></div>
+        </div>
+      </div>
+      <p class="hint">※ カラー番号は color.html のカラーチャートに準拠</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">カスタムオプション</div>
+      <div class="cols2">
+        <div>
+          <div class="row"><label>ガイド仕様</label>
+            <select class="guide-select">
+              <option>ステンレス</option>
+              <option>チタン</option>
+              <option>トルザイト</option>
+              <option value="入力">入力</option>
+            </select>
+          </div>
+          <div class="row guide-custom-row" style="display:none"><label>ガイド仕様（入力）</label><input type="text" class="guide-custom"></div>
+          <div class="row"><label>ガイドレイアウト</label>
+            <select>
+              <option>ストレート</option>
+              <option>右スパイラル</option>
+              <option>左スパイラル</option>
+            </select>
+          </div>
+          <div class="row"><label>グリップ仕様</label><input type="text"></div>
+        </div>
+        <div>
+          <div class="row"><label>ネーム仕様</label>
+            <select>
+              <option>定番ネームのみ</option>
+              <option>オリジナルネーム</option>
+            </select>
+          </div>
+          <div class="row"><label>ネーム内容</label><input type="text"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">こだわり・備考</div>
+      <div class="memo-box"><textarea rows="2"></textarea></div>
+    </div>
+
+  </div>
+  </template>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -219,6 +413,8 @@
 
       var detail = document.createElement('div');
       detail.className = 'order-detail';
+      var actions = document.createElement('div');
+      actions.className = 'detail-actions';
       var editBtn = document.createElement('button');
       editBtn.type = 'button';
       editBtn.className = 'edit-btn';
@@ -228,7 +424,22 @@
         localStorage.setItem('order-sheet-reload', JSON.stringify(record));
         location.href = 'order-sheet.html?reload=1';
       });
-      detail.appendChild(editBtn);
+      var deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.textContent = 'この記録を削除';
+      deleteBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!confirm((record['お名前'] || record['お客様名'] || 'この記録') + 'を削除しますか？\n削除後に自動でダウンロードされるファイルをClaudeに伝えると、一覧から消えます。')) return;
+        delete selected[record.__id];
+        allRecords = allRecords.filter(function (r) { return r.__id !== record.__id; });
+        downloadUpdatedArchive();
+        updateSelectBar();
+        render();
+      });
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+      detail.appendChild(actions);
       detail.appendChild(buildDetail(record));
 
       card.appendChild(summary);
@@ -249,14 +460,67 @@
     document.getElementById('select-count').textContent = count + '件選択中';
   }
 
+  function downloadUpdatedArchive() {
+    var clean = allRecords.slice().reverse().map(function (r) {
+      var copy = {};
+      Object.keys(r).forEach(function (k) { if (k.indexOf('__') !== 0) copy[k] = r[k]; });
+      return copy;
+    });
+    var blob = new Blob([JSON.stringify(clean, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var d = new Date();
+    var stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0');
+    a.href = url;
+    a.download = 'orders-archive-updated-' + stamp + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function slashToIso(s) {
+    var parts = (s || '').split('/');
+    if (parts.length !== 3) return '';
+    return parts[0] + '-' + String(parts[1]).padStart(2, '0') + '-' + String(parts[2]).padStart(2, '0');
+  }
+
+  function setFieldValue(field, value) {
+    if (field.tagName === 'SELECT') {
+      var match = Array.from(field.options).find(function (o) {
+        return o.value === value || o.textContent.trim() === value;
+      });
+      if (match) field.value = match.value;
+    } else if (field.type === 'date') {
+      field.value = slashToIso(value);
+    } else {
+      field.value = value;
+    }
+  }
+
   function buildPrintSheet(record) {
-    var sheet = document.createElement('div');
-    sheet.className = 'print-sheet';
-    var head = document.createElement('div');
-    head.className = 'print-sheet-head';
-    head.innerHTML = '<h1>受注シート</h1><div class="brand">IG Rod Planning ／ 社内共有用</div>';
-    sheet.appendChild(head);
-    sheet.appendChild(buildDetail(record));
+    var frag = document.getElementById('sheet-template').content.cloneNode(true);
+    var sheet = frag.querySelector('.sheet');
+
+    sheet.querySelectorAll('.meta-item, .row').forEach(function (container) {
+      var label = container.querySelector('label');
+      var field = container.querySelector('input, select, textarea');
+      if (!label || !field) return;
+      var key = label.textContent.trim();
+      if (record[key] === undefined) return;
+      setFieldValue(field, record[key]);
+      if (field.tagName === 'SELECT' && field.value === '入力') {
+        var customRow = container.nextElementSibling;
+        if (customRow) customRow.style.display = '';
+      }
+      if (field.tagName === 'SELECT' && field.value === 'その他') {
+        var customRow2 = container.nextElementSibling;
+        if (customRow2) customRow2.style.display = '';
+      }
+    });
+    if (record['No.']) sheet.querySelector('.sheet-no-input').value = record['No.'];
+    if (record['こだわり・備考']) sheet.querySelector('.memo-box textarea').value = record['こだわり・備考'];
+
     return sheet;
   }
 
@@ -278,7 +542,7 @@
       var pageW = pdf.internal.pageSize.getWidth();
       var pageH = pdf.internal.pageSize.getHeight();
       var margin = 8;
-      var sheetEls = container.querySelectorAll('.print-sheet');
+      var sheetEls = container.querySelectorAll('.sheet');
       for (var i = 0; i < sheetEls.length; i++) {
         var canvas = await html2canvas(sheetEls[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 900 });
         var imgData = canvas.toDataURL('image/jpeg', 0.92);
