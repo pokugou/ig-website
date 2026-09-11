@@ -1,6 +1,6 @@
 [
   { "id": "seed-01", "date": "9月7日？", "customer": "ノースキャスト", "confirmed": "", "qty": "2", "note": "", "paint": "未着手", "done": false },
-  { "id": "seed-02", "date": "最短希望", "customer": "イカ044国枝", "confirmed": "", "qty": "1", "note": "AGSガイド送りました", "paint": "未着手", "done": false },
+  { "id": "seed-02", "date": "2026/9/14", "customer": "イカ044国枝", "confirmed": "", "qty": "1", "note": "AGSガイド送りました", "paint": "未着手", "done": false },
   { "id": "seed-03", "date": "9月5日〜9月7日", "customer": "アマノ釣具", "confirmed": "", "qty": "1", "note": "", "paint": "未着手", "done": false },
   { "id": "seed-04", "date": "9月6日？", "customer": "148.小田島", "confirmed": "2026/8/27", "qty": "1", "note": "", "paint": "未着手", "done": false },
   { "id": "seed-05", "date": "9月6日？", "customer": "156.筒井", "confirmed": "2026/8/21", "qty": "1", "note": "", "paint": "未着手", "done": false },
@@ -23,5 +23,7 @@
   { "id": "seed-22", "date": "2026/9/20", "customer": "さやか（テスター）", "confirmed": "", "qty": "1", "note": "", "paint": "未着手", "done": false },
   { "id": "seed-23", "date": "2026/9/20", "customer": "196.高橋", "confirmed": "", "qty": "1", "note": "", "paint": "未着手", "done": false },
   { "id": "seed-24", "date": "8月下旬", "customer": "若菜様", "confirmed": "イカメタルロッド", "qty": "2", "note": "釣行あり", "paint": "未着手", "done": false },
-  { "id": "seed-25", "date": "10月下旬", "customer": "165.羽床", "confirmed": "", "qty": "1", "note": "", "paint": "未着手", "done": false }
+  { "id": "seed-25", "date": "10月下旬", "customer": "165.羽床", "confirmed": "", "qty": "1", "note": "", "paint": "未着手", "done": false },
+  { "id": "seed-26", "date": "2026/9/23", "customer": "あや（モニター）1/2", "confirmed": "", "qty": "1", "note": "ガイドパターンはLINEにてご連絡", "paint": "未着手", "done": false },
+  { "id": "seed-27", "date": "2026/9/23", "customer": "あや（モニター）2/2", "confirmed": "", "qty": "1", "note": "", "paint": "未着手", "done": false }
 ]
