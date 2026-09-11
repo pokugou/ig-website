@@ -37,17 +37,20 @@
   .order-summary .arrow { font-size: 0.7rem; color: var(--sub); transition: transform 0.15s; flex-shrink: 0; }
   .order-card.open .arrow { transform: rotate(90deg); }
 
-  .order-detail { display: none; border-top: 1px solid var(--line2); padding: 0.9rem 1.1rem 1.1rem; }
+  .order-detail { display: none; border-top: 1px solid var(--line2); padding: 1rem 1.1rem 1.2rem; }
   .order-card.open .order-detail { display: block; }
-  .detail-grid { display: grid; grid-template-columns: 140px 1fr; gap: 0.35rem 0.8rem; font-size: 0.84rem; }
-  .detail-grid dt { color: var(--sub); font-weight: 700; }
-  .detail-grid dd { white-space: pre-wrap; }
+
+  .detail-section { margin-bottom: 1.1rem; }
+  .detail-section:last-child { margin-bottom: 0; }
+  .detail-section-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #fff; background: var(--ink); display: inline-block; padding: 0.2rem 0.6rem; margin-bottom: 0.5rem; }
+  .detail-row { display: grid; grid-template-columns: 140px 1fr; align-items: baseline; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); font-size: 0.84rem; }
+  .detail-row .dl { font-weight: 700; color: var(--sub); }
+  .detail-row .dv { white-space: pre-wrap; }
 
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
 
   @media (max-width: 560px) {
-    .detail-grid { grid-template-columns: 1fr; }
-    .detail-grid dt { margin-top: 0.4rem; }
+    .detail-row { grid-template-columns: 1fr; gap: 0.1rem; padding: 0.4rem 0; }
   }
 </style>
 </head>
@@ -72,6 +75,64 @@
 <script>
   var allRecords = [];
   var searchTerm = '';
+
+  var SECTIONS = [
+    { title: '基本情報', fields: ['No.', '受注日', '希望納期', '受付方法', '受付担当'] },
+    { title: 'お客様情報', fields: ['お名前', 'お客様名', '電話番号', '発送方法', '送り先住所'] },
+    { title: 'ベースモデル', fields: ['モデル選択', 'モデル（入力）', '本数'] },
+    { title: 'カラーカスタム', fields: ['ブランクスカラー', 'ティップカラー', 'リールシート', 'メインスレッド', 'ティップ部分スレッド', 'ピンライン'] },
+    { title: 'カスタムオプション', fields: ['ガイド仕様', 'ガイド仕様（入力）', 'ガイドレイアウト', 'グリップ仕様', 'ネーム仕様', 'ネーム内容'] },
+    { title: 'こだわり・備考', fields: ['こだわり・備考'] }
+  ];
+
+  function buildDetail(record) {
+    var wrap = document.createElement('div');
+    var used = {};
+
+    SECTIONS.forEach(function (section) {
+      var present = section.fields.filter(function (f) { return record[f]; });
+      if (present.length === 0) return;
+      var sec = document.createElement('div');
+      sec.className = 'detail-section';
+      var title = document.createElement('div');
+      title.className = 'detail-section-title';
+      title.textContent = section.title;
+      sec.appendChild(title);
+      present.forEach(function (f) {
+        sec.appendChild(makeRow(f, record[f]));
+        used[f] = true;
+      });
+      wrap.appendChild(sec);
+    });
+
+    var rest = Object.keys(record).filter(function (k) { return !used[k]; });
+    if (rest.length > 0) {
+      var sec = document.createElement('div');
+      sec.className = 'detail-section';
+      var title = document.createElement('div');
+      title.className = 'detail-section-title';
+      title.textContent = 'その他';
+      sec.appendChild(title);
+      rest.forEach(function (k) { sec.appendChild(makeRow(k, record[k])); });
+      wrap.appendChild(sec);
+    }
+
+    return wrap;
+  }
+
+  function makeRow(label, value) {
+    var row = document.createElement('div');
+    row.className = 'detail-row';
+    var dl = document.createElement('span');
+    dl.className = 'dl';
+    dl.textContent = label;
+    var dv = document.createElement('span');
+    dv.className = 'dv';
+    dv.textContent = value;
+    row.appendChild(dl);
+    row.appendChild(dv);
+    return row;
+  }
 
   function matchesSearch(record) {
     if (!searchTerm) return true;
@@ -119,17 +180,7 @@
 
       var detail = document.createElement('div');
       detail.className = 'order-detail';
-      var dl = document.createElement('dl');
-      dl.className = 'detail-grid';
-      Object.keys(record).forEach(function (k) {
-        var dt = document.createElement('dt');
-        dt.textContent = k;
-        var dd = document.createElement('dd');
-        dd.textContent = record[k];
-        dl.appendChild(dt);
-        dl.appendChild(dd);
-      });
-      detail.appendChild(dl);
+      detail.appendChild(buildDetail(record));
 
       card.appendChild(summary);
       card.appendChild(detail);
