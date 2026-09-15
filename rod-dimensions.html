@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ロッド寸法図 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #111; --sub: #555; --line: #999; --line2: #ccc;
+    --red: #cc2200; --bg: #f2f2f0; --paper: #ffffff; --tip: #7ed321;
+  }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 2rem 1rem 4rem; }
+
+  .top-links { max-width: 1100px; margin: 0 auto 0.6rem; display: flex; justify-content: flex-end; }
+  .top-links a { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; padding: 0.55rem 1.1rem; border: 1px solid var(--ink); background: #fff; }
+  .top-links a:hover { background: var(--red); border-color: var(--red); color: #fff; }
+
+  .toolbar { max-width: 1100px; margin: 0 auto 0.5rem; display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .toolbar-right { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; letter-spacing: 0.03em; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; border-color: var(--ink); color: var(--ink); }
+  .toolbar-hint { max-width: 1100px; margin: 0 auto 1.2rem; font-size: 0.72rem; color: var(--sub); }
+
+  .sheets { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+  .sheet { background: var(--paper); border: 1px solid var(--line2); padding: 1.6rem 1.8rem 2rem; }
+
+  .sheet-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .sheet-no { display: flex; align-items: baseline; gap: 0.3rem; font-size: 0.85rem; font-weight: 700; color: var(--red); }
+  .sheet-no input { width: 4em; border: none; border-bottom: 1px solid var(--red); background: transparent; font-family: inherit; font-size: inherit; font-weight: inherit; color: inherit; padding: 0.05rem 0.2rem; }
+  .sheet-no input:focus { outline: none; background: #fff8e0; }
+  .sheet-head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+  .sheet-head-right .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
+  .sheet-remove { font-family: inherit; font-size: 0.68rem; color: var(--sub); background: none; border: 1px solid var(--line2); padding: 0.2rem 0.55rem; cursor: pointer; }
+  .sheet-remove:hover { color: var(--red); border-color: var(--red); }
+
+  .sheet-title { text-align: center; font-size: 1.4rem; font-weight: 900; letter-spacing: 0.5em; margin: 0.2rem 0 1rem; border-bottom: 3px solid var(--ink); padding-bottom: 0.6rem; }
+
+  .model-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .model-row .meta-item { flex: 1; min-width: 10em; }
+  .meta-item label { display: block; font-size: 0.62rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; margin-bottom: 0.15rem; }
+  .meta-item input { width: 100%; border: none; border-bottom: 1px solid var(--line); font-family: inherit; font-size: 0.85rem; padding: 0.2rem 0.1rem; background: transparent; }
+  .meta-item input:focus { outline: none; border-bottom: 1px solid var(--red); }
+
+  .section { margin-bottom: 1.6rem; }
+  .section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: #fff; background: var(--ink); display: inline-block; padding: 0.25rem 0.7rem; margin-bottom: 0.6rem; }
+
+  .dim-total { display: flex; align-items: center; justify-content: flex-end; gap: 0.4rem; margin-bottom: 0.4rem; }
+  .dim-total .l-label { font-size: 0.95rem; font-weight: 900; }
+  .dim-total input { width: 6em; border: 1px solid var(--ink); text-align: center; font-family: inherit; font-size: 0.85rem; padding: 0.25rem 0.3rem; }
+  .dim-total input:focus { outline: none; background: #fff8e0; }
+  .dim-total .unit { font-size: 0.75rem; color: var(--sub); }
+
+  .rod-diagram { border: 1px solid var(--line2); padding: 1rem 0.8rem 0.6rem; overflow-x: auto; }
+  .seg-track { display: flex; min-width: 100%; }
+  .seg-col { flex: 1; min-width: 78px; display: flex; flex-direction: column; align-items: center; position: relative; padding: 0 0.15rem; }
+
+  .seg-visual { position: relative; width: 100%; height: 34px; }
+  .seg-line { position: absolute; left: 0; right: 0; top: 15px; height: 5px; background: #999; border-radius: 2px; }
+  .seg-line.is-tip { background: var(--tip); }
+  .guide-dot { position: absolute; left: -1px; top: 9px; width: 11px; height: 11px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); z-index: 1; }
+  .top-diagram .seg-col:first-child .seg-visual::before { content: ''; position: absolute; left: 0; top: 16px; width: 6px; height: 3px; background: var(--tip); }
+
+  .seg-arrow { display: flex; align-items: center; justify-content: center; gap: 0.15rem; font-size: 0.6rem; color: var(--sub); border-top: 1px solid var(--line2); border-bottom: 1px solid var(--line2); padding: 0.15rem 0; width: 100%; }
+
+  .seg-input-row { display: flex; align-items: center; gap: 0.2rem; margin-top: 0.35rem; }
+  .seg-input-row input[type="text"] { width: 4.4em; text-align: center; border: 1px solid var(--line2); font-family: inherit; font-size: 0.78rem; padding: 0.2rem 0.15rem; }
+  .seg-input-row input[type="text"]:focus { outline: none; background: #fff8e0; }
+  .seg-unit { font-size: 0.65rem; color: var(--sub); }
+
+  .seg-meta-row { display: flex; align-items: center; gap: 0.3rem; margin-top: 0.3rem; font-size: 0.62rem; color: var(--sub); }
+  .seg-meta-row select { font-family: inherit; font-size: 0.68rem; border: 1px solid var(--line2); padding: 0.1rem 0.15rem; max-width: 6.5em; }
+  .seg-meta-row label { display: flex; align-items: center; gap: 0.15rem; }
+
+  .seg-del { margin-top: 0.3rem; border: none; background: none; color: var(--sub); font-size: 0.68rem; cursor: pointer; }
+  .seg-del:hover { color: var(--red); }
+
+  .add-seg-btn { margin-top: 0.6rem; font-family: inherit; font-size: 0.75rem; font-weight: 700; padding: 0.4rem 0.8rem; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
+  .add-seg-btn:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+
+  .add-sheet-bar { max-width: 1100px; margin: 0 auto 2rem; text-align: center; }
+  .add-sheet-bar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.7rem 1.6rem; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; width: 100%; }
+  .add-sheet-bar button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+
+  @media screen and (max-width: 860px) {
+    body { padding: 1rem 0.6rem 3rem; }
+    .toolbar { flex-wrap: wrap; }
+    .toolbar-right { flex: 1; }
+    .toolbar button { flex: 1; padding: 0.6rem 0.8rem; font-size: 0.78rem; }
+    .sheet { padding: 1.2rem 1rem 1.6rem; }
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .toolbar-hint, .add-sheet-bar, .top-links { display: none; }
+    .sheets { max-width: 100%; gap: 0; }
+    .sheet { border: none; padding: 0.4cm 0.6cm; }
+    .sheet + .sheet { page-break-before: always; }
+    .sheet-remove, .seg-del, .add-seg-btn { display: none; }
+    .seg-input-row input, .dim-total input, .meta-item input { background: transparent !important; }
+    @page { size: A4 landscape; margin: 1cm; }
+  }
+
+  .pdf-capture .sheet-remove, .pdf-capture .seg-del, .pdf-capture .add-seg-btn { display: none; }
+</style>
+</head>
+<body>
+
+  <div class="top-links">
+    <a href="tools.html">🛠 社内ツール一覧へ →</a>
+  </div>
+
+  <div class="toolbar">
+    <button type="button" id="btn-add">＋ シートを追加</button>
+    <div class="toolbar-right">
+      <button type="button" class="secondary" id="btn-reset">クリア</button>
+      <button type="button" class="secondary" id="btn-save">PDFとして保存</button>
+      <button type="button" id="btn-print">印刷</button>
+    </div>
+  </div>
+  <p class="toolbar-hint">各区間の mm ボックスに数値を入力するとそのまま反映されます。「区間を追加／削除」で区切りの数を調整、ティップ区間のチェックでブランク図の緑色ハイライトを切り替えられます。</p>
+
+  <div class="sheets" id="sheets">
+  <div class="sheet">
+
+    <div class="sheet-top">
+      <span class="sheet-no">No.<input type="text" class="sheet-no-input" value="1"></span>
+      <div class="sheet-head-right">
+        <div class="brand">IG Rod Planning ／ 社内共有用</div>
+        <button type="button" class="sheet-remove">このシートを削除</button>
+      </div>
+    </div>
+
+    <div class="sheet-title">ロッド寸法図</div>
+
+    <div class="model-row">
+      <div class="meta-item"><label>製品名／モデル</label><input type="text" placeholder="例）GTJ623S"></div>
+      <div class="meta-item"><label>作成日</label><input type="date" class="entry-date"></div>
+      <div class="meta-item"><label>作成者</label><input type="text"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">ブランク・ガイド間隔（穂先側から）</div>
+      <div class="dim-total">
+        <span class="l-label">L</span><input type="text" class="total-input">
+        <span class="unit">mm</span>
+      </div>
+      <div class="rod-diagram top-diagram">
+        <div class="seg-track">
+        </div>
+      </div>
+      <button type="button" class="add-seg-btn">＋ 区間を追加</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">グリップ・リールシート部</div>
+      <div class="dim-total">
+        <span class="l-label">L</span><input type="text" class="total-input">
+        <span class="unit">mm</span>
+      </div>
+      <div class="rod-diagram bottom-diagram">
+        <div class="seg-track">
+        </div>
+      </div>
+      <button type="button" class="add-seg-btn">＋ 区間を追加</button>
+    </div>
+
+  </div>
+  </div>
+
+  <div class="add-sheet-bar">
+    <button type="button" id="btn-add-bottom">＋ 次のシートを追加</button>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  var sheetsEl = document.getElementById('sheets');
+  var template = document.querySelector('.sheet');
+  var TOP_DEFAULT_COUNT = 9;
+  var TOP_DEFAULT_TIP = 4;
+  var BOTTOM_DEFAULT_COUNT = 5;
+  var BOTTOM_TYPES = ['フォアグリップ', 'リールシート前', 'リールシート', 'トリガー部', 'リアグリップ', 'その他'];
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function makeTopSegment(isTip) {
+    var col = document.createElement('div');
+    col.className = 'seg-col';
+    col.innerHTML =
+      '<div class="seg-visual"><div class="seg-line' + (isTip ? ' is-tip' : '') + '"></div><span class="guide-dot"></span></div>' +
+      '<div class="seg-arrow">◀&nbsp;区間&nbsp;▶</div>' +
+      '<div class="seg-input-row"><input type="text" placeholder=""><span class="seg-unit">mm</span></div>' +
+      '<label class="seg-meta-row"><input type="checkbox" class="tip-toggle"' + (isTip ? ' checked' : '') + '> ティップ</label>' +
+      '<button type="button" class="seg-del">× 削除</button>';
+    bindTopSegment(col);
+    return col;
+  }
+
+  function bindTopSegment(col) {
+    var toggle = col.querySelector('.tip-toggle');
+    var line = col.querySelector('.seg-line');
+    toggle.addEventListener('change', function () {
+      line.classList.toggle('is-tip', toggle.checked);
+    });
+    col.querySelector('.seg-del').addEventListener('click', function () {
+      var track = col.closest('.seg-track');
+      if (track.querySelectorAll('.seg-col').length <= 1) return;
+      col.remove();
+    });
+  }
+
+  function makeBottomSegment(typeIndex) {
+    var col = document.createElement('div');
+    col.className = 'seg-col';
+    var options = BOTTOM_TYPES.map(function (t, i) {
+      return '<option' + (i === typeIndex ? ' selected' : '') + '>' + t + '</option>';
+    }).join('');
+    col.innerHTML =
+      '<div class="seg-visual"><div class="seg-line"></div></div>' +
+      '<div class="seg-arrow">◀&nbsp;区間&nbsp;▶</div>' +
+      '<div class="seg-input-row"><input type="text" placeholder=""><span class="seg-unit">mm</span></div>' +
+      '<div class="seg-meta-row"><select class="part-type">' + options + '</select></div>' +
+      '<button type="button" class="seg-del">× 削除</button>';
+    bindBottomSegment(col);
+    applyBottomColor(col);
+    return col;
+  }
+
+  function applyBottomColor(col) {
+    var type = col.querySelector('.part-type').value;
+    var line = col.querySelector('.seg-line');
+    var colors = {
+      'フォアグリップ': '#222',
+      'リールシート前': '#888',
+      'リールシート': '#bbb',
+      'トリガー部': '#888',
+      'リアグリップ': '#222',
+      'その他': '#999'
+    };
+    line.style.background = colors[type] || '#999';
+  }
+
+  function bindBottomSegment(col) {
+    col.querySelector('.part-type').addEventListener('change', function () {
+      applyBottomColor(col);
+    });
+    col.querySelector('.seg-del').addEventListener('click', function () {
+      var track = col.closest('.seg-track');
+      if (track.querySelectorAll('.seg-col').length <= 1) return;
+      col.remove();
+    });
+  }
+
+  function fillTopTrack(track) {
+    track.innerHTML = '';
+    for (var i = 0; i < TOP_DEFAULT_COUNT; i++) {
+      track.appendChild(makeTopSegment(i < TOP_DEFAULT_TIP));
+    }
+  }
+
+  function fillBottomTrack(track) {
+    track.innerHTML = '';
+    for (var i = 0; i < BOTTOM_DEFAULT_COUNT; i++) {
+      track.appendChild(makeBottomSegment(Math.min(i, BOTTOM_TYPES.length - 1)));
+    }
+  }
+
+  function bindSheet(sheet) {
+    sheet.querySelector('.sheet-remove').addEventListener('click', function () {
+      if (document.querySelectorAll('.sheet').length <= 1) return;
+      if (!confirm('このシートを削除しますか？')) return;
+      sheet.remove();
+      updateRemoveVisibility();
+    });
+
+    var topTrack = sheet.querySelector('.top-diagram .seg-track');
+    var bottomTrack = sheet.querySelector('.bottom-diagram .seg-track');
+    fillTopTrack(topTrack);
+    fillBottomTrack(bottomTrack);
+
+    var addBtns = sheet.querySelectorAll('.add-seg-btn');
+    addBtns[0].addEventListener('click', function () {
+      topTrack.appendChild(makeTopSegment(false));
+    });
+    addBtns[1].addEventListener('click', function () {
+      bottomTrack.appendChild(makeBottomSegment(BOTTOM_TYPES.length - 1));
+    });
+  }
+
+  function updateRemoveVisibility() {
+    var sheets = document.querySelectorAll('.sheet');
+    sheets.forEach(function (sheet) {
+      sheet.querySelector('.sheet-remove').style.display = sheets.length > 1 ? '' : 'none';
+    });
+  }
+
+  function addSheet() {
+    var clone = template.cloneNode(true);
+    clone.querySelectorAll('input[type="text"], input[type="date"]').forEach(function (el) { el.value = ''; });
+    clone.querySelector('.sheet-no-input').value = document.querySelectorAll('.sheet').length + 1;
+    clone.querySelector('.entry-date').value = todayISO();
+    sheetsEl.appendChild(clone);
+    bindSheet(clone);
+    updateRemoveVisibility();
+    clone.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.querySelectorAll('.sheet').forEach(function (sheet) {
+    sheet.querySelector('.entry-date').value = todayISO();
+    bindSheet(sheet);
+  });
+  updateRemoveVisibility();
+
+  document.getElementById('btn-add').addEventListener('click', addSheet);
+  document.getElementById('btn-add-bottom').addEventListener('click', addSheet);
+
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+
+  document.getElementById('btn-reset').addEventListener('click', function () {
+    if (!confirm('入力内容をすべてクリアしますか？')) return;
+    document.querySelectorAll('.sheet input[type="text"]').forEach(function (el) { el.value = ''; });
+  });
+
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this;
+    var originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '作成中…';
+    document.body.classList.add('pdf-capture');
+    try {
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+      var pageW = pdf.internal.pageSize.getWidth();
+      var pageH = pdf.internal.pageSize.getHeight();
+      var margin = 8;
+      var sheetEls = document.querySelectorAll('.sheet');
+      for (var i = 0; i < sheetEls.length; i++) {
+        var canvas = await html2canvas(sheetEls[i], { scale: 2, backgroundColor: '#ffffff' });
+        var imgData = canvas.toDataURL('image/jpeg', 0.92);
+        var imgW = pageW - margin * 2;
+        var imgH = imgW * canvas.height / canvas.width;
+        if (imgH > pageH - margin * 2) {
+          imgH = pageH - margin * 2;
+          imgW = imgH * canvas.width / canvas.height;
+        }
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      }
+      pdf.save('ロッド寸法図_' + todayISO().replace(/-/g, '') + '.pdf');
+    } catch (e) {
+      console.error(e);
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      document.body.classList.remove('pdf-capture');
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  });
+</script>
+
+</body>
+</html>
