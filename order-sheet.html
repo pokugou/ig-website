@@ -295,6 +295,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var sheetsEl = document.getElementById('sheets');
   var template = document.querySelector('.sheet');
 
@@ -448,13 +449,7 @@
     return data;
   }
 
-  function downloadArchive() {
-    var records = [];
-    document.querySelectorAll('.sheet').forEach(function (sheet) {
-      var data = extractSheetData(sheet);
-      if (data['お名前'] || data['お客様名']) records.push(data);
-    });
-    if (records.length === 0) return;
+  function downloadArchiveFile(records) {
     var blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -468,6 +463,27 @@
     URL.revokeObjectURL(url);
   }
 
+  async function downloadArchive() {
+    var records = [];
+    document.querySelectorAll('.sheet').forEach(function (sheet) {
+      var data = extractSheetData(sheet);
+      if (data['お名前'] || data['お客様名']) records.push(data);
+    });
+    if (records.length === 0) return;
+    try {
+      var res = await fetch(SYNC_API + '/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(records)
+      });
+      if (!res.ok) throw new Error('sync failed');
+    } catch (e) {
+      console.error(e);
+      downloadArchiveFile(records);
+      alert('受注シート一覧への自動反映に失敗しました。代わりにファイルをダウンロードしたので、Claudeに伝えて反映してもらってください。');
+    }
+  }
+
   function defaultDueFromOrderDate(orderDateStr) {
     if (!orderDateStr) return '';
     var parts = orderDateStr.split('-');
@@ -477,9 +493,11 @@
     return fmtDate(d);
   }
 
-  document.getElementById('btn-export').addEventListener('click', function(){
+  document.getElementById('btn-export').addEventListener('click', async function(){
+    var btn = this;
+    var originalLabel = btn.textContent;
     var rows = [];
-    document.querySelectorAll('.sheet').forEach(function(sheet){
+    document.querySelectorAll('.sheet').forEach(function(sheet, i){
       var name = sheet.querySelector('.customer-name').value.trim();
       var due = sheet.querySelector('.due-date').value;
       var orderDate = sheet.querySelector('.order-date').value;
@@ -494,26 +512,46 @@
         dueFmt = defaultDueFromOrderDate(orderDate);
       }
       rows.push({
-        '出荷希望日': dueFmt,
-        '顧客名': name,
-        '返答納期': '',
-        '本数': qty ? Number(qty) : 1,
-        '概要': note
+        id: 'os-' + Date.now() + '-' + i,
+        date: dueFmt,
+        customer: name,
+        confirmed: '',
+        qty: qty ? Number(qty) : 1,
+        note: note,
+        paint: '未着手',
+        done: false
       });
     });
     if (rows.length === 0) {
       alert('お名前か希望納期が入力されているシートがありません。');
       return;
     }
-    var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'seisan-sync-' + todayISO().replace(/-/g, '') + '-' + Date.now() + '.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    btn.disabled = true;
+    btn.textContent = '反映中…';
+    try {
+      var res = await fetch(SYNC_API + '/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rows)
+      });
+      if (!res.ok) throw new Error('sync failed');
+      alert('生産スケジュールに反映しました。');
+    } catch (e) {
+      console.error(e);
+      var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'seisan-sync-' + todayISO().replace(/-/g, '') + '-' + Date.now() + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      alert('生産スケジュールへの自動反映に失敗しました。代わりにファイルをダウンロードしたので、Claudeに伝えて反映してもらってください。');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
   });
 
   document.getElementById('btn-save').addEventListener('click', async function(){
@@ -541,7 +579,7 @@
         pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       }
       pdf.save('受注シート_' + todayISO().replace(/-/g, '') + '.pdf');
-      downloadArchive();
+      await downloadArchive();
     } catch (e) {
       console.error(e);
       alert('PDFの作成に失敗しました。もう一度お試しください。');

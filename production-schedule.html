@@ -108,7 +108,7 @@
       <div class="buttons">
         <button type="button" class="save-btn secondary" id="btn-print">印刷</button>
         <button type="button" class="save-btn secondary" id="btn-pdf">PDFとして保存</button>
-        <button type="button" class="save-btn" id="btn-save">この内容を保存（ダウンロード）</button>
+        <button type="button" class="save-btn" id="btn-save">この内容を保存</button>
       </div>
     </div>
 
@@ -163,6 +163,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var rowsBody = document.getElementById('rows-body');
   var PAINT_OPTIONS = ['未着手', '塗装依頼済み', '塗装完了'];
   var rows = [];
@@ -172,7 +173,7 @@
 
   function markDirty() {
     dirty = true;
-    document.getElementById('save-status').innerHTML = '<span class="unsaved">未保存の変更があります。</span> 編集が終わったら右の「この内容を保存」を押してダウンロードし、Claudeに「生産スケジュールを保存して」と伝えてください。';
+    document.getElementById('save-status').innerHTML = '<span class="unsaved">未保存の変更があります。</span> 編集が終わったら右の「この内容を保存」を押してください。';
   }
 
   function markClean(text) {
@@ -364,19 +365,37 @@
     }
   });
 
-  document.getElementById('btn-save').addEventListener('click', function () {
-    var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    var d = new Date();
-    var stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0');
-    a.href = url;
-    a.download = 'schedule-save-' + stamp + '.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    markClean('ダウンロードしました。Claudeに「生産スケジュールを保存して」と伝えると、このページに反映されます。');
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this;
+    var originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '保存中…';
+    try {
+      var res = await fetch(SYNC_API + '/schedule', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rows)
+      });
+      if (!res.ok) throw new Error('sync failed');
+      markClean('保存しました。');
+    } catch (e) {
+      console.error(e);
+      var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      var d = new Date();
+      var stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0');
+      a.href = url;
+      a.download = 'schedule-save-' + stamp + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      alert('保存の自動反映に失敗しました。代わりにファイルをダウンロードしたので、Claudeに伝えて反映してもらってください。');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
   });
 
   window.addEventListener('beforeunload', function (e) {
@@ -385,7 +404,7 @@
     e.returnValue = '';
   });
 
-  fetch('./schedule-data.json?_=' + Date.now())
+  fetch(SYNC_API + '/schedule?_=' + Date.now())
     .then(function (r) { return r.json(); })
     .then(function (data) {
       rows = data;
