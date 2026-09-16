@@ -109,12 +109,10 @@
     <button type="button" id="btn-add">＋ シートを追加</button>
     <div class="toolbar-right">
       <button type="button" class="secondary" id="btn-reset">クリア</button>
-      <button type="button" class="secondary" id="btn-save">まとめて保存</button>
-      <button type="button" class="secondary" id="btn-export">生産スケジュール用に書き出す</button>
-      <button type="button" id="btn-print">まとめて印刷</button>
+      <button type="button" id="btn-save">まとめて保存</button>
     </div>
   </div>
-  <p class="toolbar-hint">複数枚追加したら「まとめて保存」で全シートを1つのPDFファイルとしてダウンロードしつつ、受注シート一覧アーカイブ用のファイルも同時にダウンロードします。「まとめて印刷」でプリンターへの印刷ができます。「生産スケジュール用に書き出す」「まとめて保存」でダウンロードしたファイルは、Claudeに伝えればそれぞれ生産スケジュール・受注シート一覧に反映されます。</p>
+  <p class="toolbar-hint">複数枚追加したら「まとめて保存」で全シートを1つのPDFファイルとしてダウンロードしつつ、受注シート一覧と生産スケジュールにも自動で反映されます。</p>
 
   <div class="sheets" id="sheets">
   <div class="sheet">
@@ -416,8 +414,6 @@
   document.getElementById('btn-add').addEventListener('click', addSheet);
   document.getElementById('btn-add-bottom').addEventListener('click', addSheet);
 
-  document.getElementById('btn-print').addEventListener('click', function(){ window.print(); });
-
   document.getElementById('btn-reset').addEventListener('click', function(){
     if (!confirm('入力内容をすべてクリアしますか？')) return;
     document.querySelectorAll('.sheet input[type="text"], .sheet input[type="tel"], .sheet input[type="email"], .sheet textarea').forEach(function(el){ el.value = ''; });
@@ -497,9 +493,7 @@
     return fmtDate(d);
   }
 
-  document.getElementById('btn-export').addEventListener('click', async function(){
-    var btn = this;
-    var originalLabel = btn.textContent;
+  async function syncSchedule(){
     var rows = [];
     document.querySelectorAll('.sheet').forEach(function(sheet, i){
       var name = sheet.querySelector('.customer-name').value.trim();
@@ -526,12 +520,7 @@
         done: false
       });
     });
-    if (rows.length === 0) {
-      alert('お名前か希望納期が入力されているシートがありません。');
-      return;
-    }
-    btn.disabled = true;
-    btn.textContent = '反映中…';
+    if (rows.length === 0) return;
     try {
       var res = await fetch(SYNC_API + '/schedule', {
         method: 'POST',
@@ -539,7 +528,6 @@
         body: JSON.stringify(rows)
       });
       if (!res.ok) throw new Error('sync failed');
-      alert('生産スケジュールに反映しました。');
     } catch (e) {
       console.error(e);
       var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
@@ -552,11 +540,8 @@
       a.remove();
       URL.revokeObjectURL(url);
       alert('生産スケジュールへの自動反映に失敗しました。代わりにファイルをダウンロードしたので、Claudeに伝えて反映してもらってください。');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = originalLabel;
     }
-  });
+  }
 
   document.getElementById('btn-save').addEventListener('click', async function(){
     var btn = this;
@@ -584,6 +569,7 @@
       }
       pdf.save('受注シート_' + todayISO().replace(/-/g, '') + '.pdf');
       await downloadArchive();
+      await syncSchedule();
     } catch (e) {
       console.error(e);
       alert('PDFの作成に失敗しました。もう一度お試しください。');
