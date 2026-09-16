@@ -529,7 +529,7 @@
       var margin = 8;
       var sheetEls = document.querySelectorAll('.sheet');
       for (var i = 0; i < sheetEls.length; i++) {
-        var canvas = await html2canvas(sheetEls[i], { scale: 2, backgroundColor: '#ffffff' });
+        var canvas = await html2canvas(sheetEls[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
         var imgData = canvas.toDataURL('image/jpeg', 0.92);
         var imgW = pageW - margin * 2;
         var imgH = imgW * canvas.height / canvas.width;
