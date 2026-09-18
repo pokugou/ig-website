@@ -467,7 +467,7 @@
     var records = [];
     document.querySelectorAll('.sheet').forEach(function (sheet) {
       var data = extractSheetData(sheet);
-      if (data['お名前'] || data['お客様名']) records.push(data);
+      if (Object.keys(data).length > 0) records.push(data);
     });
     if (records.length === 0) return;
     try {
