@@ -41,6 +41,7 @@
   .order-summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.9rem 1.1rem; cursor: pointer; }
   .order-summary:hover { background: #fafafa; }
   .order-summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
+  .order-summary .no { font-size: 0.72rem; font-weight: 700; color: var(--red); white-space: nowrap; flex-shrink: 0; }
   .order-summary .who { font-weight: 700; font-size: 0.95rem; flex: 1; }
   .order-summary .when { font-size: 0.75rem; color: var(--sub); white-space: nowrap; }
   .order-summary .printed-badge { font-size: 0.68rem; font-weight: 700; color: #1a7a3c; background: #e4f5e9; border: 1px solid #1a7a3c; padding: 0.15rem 0.5rem; white-space: nowrap; flex-shrink: 0; }
@@ -442,6 +443,12 @@
       arrow.className = 'arrow';
       arrow.textContent = '▶';
       summary.appendChild(pick);
+      if (record['No.']) {
+        var noTag = document.createElement('span');
+        noTag.className = 'no';
+        noTag.textContent = 'No.' + record['No.'];
+        summary.appendChild(noTag);
+      }
       summary.appendChild(who);
       if (record.printed) {
         var badge = document.createElement('span');
