@@ -320,7 +320,8 @@
 
   function noSortInfo(record) {
     var no = (record['No.'] || '').toString().trim();
-    var m = no.match(/\d+/);
+    var withoutFraction = no.replace(/\d+\s*\/\s*\d+/g, '');
+    var m = withoutFraction.match(/\d+/);
     return { hasNo: !!no, num: m ? parseInt(m[0], 10) : null, str: no };
   }
 
@@ -446,7 +447,8 @@
       if (record['No.']) {
         var noTag = document.createElement('span');
         noTag.className = 'no';
-        noTag.textContent = /\d/.test(record['No.']) ? 'No.' + record['No.'] : record['No.'];
+        var noWithoutFraction = record['No.'].replace(/\d+\s*\/\s*\d+/g, '');
+        noTag.textContent = /\d/.test(noWithoutFraction) ? 'No.' + record['No.'] : record['No.'];
         summary.appendChild(noTag);
       }
       summary.appendChild(who);
