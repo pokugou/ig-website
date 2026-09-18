@@ -446,7 +446,7 @@
       if (record['No.']) {
         var noTag = document.createElement('span');
         noTag.className = 'no';
-        noTag.textContent = 'No.' + record['No.'];
+        noTag.textContent = /\d/.test(record['No.']) ? 'No.' + record['No.'] : record['No.'];
         summary.appendChild(noTag);
       }
       summary.appendChild(who);
