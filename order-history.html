@@ -23,8 +23,10 @@
   header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
   header .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
 
-  .search-box { margin-bottom: 1rem; }
-  .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.75rem 1rem; }
+  .search-box { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+  .search-box select { border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0 0.6rem; flex: 0 0 auto; }
+  .search-box select:focus { outline: none; border-color: var(--red); }
+  .search-box input { width: 100%; flex: 1 1 auto; min-width: 0; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.75rem 1rem; }
   .search-box input:focus { outline: none; border-color: var(--red); }
 
   .status-line { font-size: 0.74rem; color: var(--sub); margin-bottom: 1.2rem; }
@@ -100,6 +102,11 @@
     </header>
 
     <div class="search-box">
+      <select id="f-sort">
+        <option value="none">並び順（通常）</option>
+        <option value="asc">No. 昇順</option>
+        <option value="desc">No. 降順</option>
+      </select>
       <input type="text" id="f-search" placeholder="顧客名などで検索（納期問い合わせの時に）">
     </div>
 
@@ -304,7 +311,23 @@
 
   var allRecords = [];
   var searchTerm = '';
+  var sortOrder = 'none';
   var selected = {};
+
+  function noSortInfo(record) {
+    var no = (record['No.'] || '').toString().trim();
+    var m = no.match(/\d+/);
+    return { hasNo: !!no, num: m ? parseInt(m[0], 10) : null, str: no };
+  }
+
+  function compareByNo(a, b) {
+    var av = noSortInfo(a), bv = noSortInfo(b);
+    if (!av.hasNo && !bv.hasNo) return 0;
+    if (!av.hasNo) return 1;
+    if (!bv.hasNo) return -1;
+    var cmp = (av.num !== null && bv.num !== null) ? (av.num - bv.num) : av.str.localeCompare(bv.str, 'ja');
+    return sortOrder === 'desc' ? -cmp : cmp;
+  }
 
   var SECTIONS = [
     { title: '基本情報', fields: ['No.', '受注日', '希望納期', '受付方法', '受付担当'] },
@@ -375,6 +398,7 @@
   function render() {
     var list = document.getElementById('list');
     var visible = allRecords.filter(matchesSearch);
+    if (sortOrder !== 'none') visible = visible.slice().sort(compareByNo);
     var statusText;
     if (allRecords.length === 0) {
       statusText = 'まだ記録がありません';
@@ -459,6 +483,11 @@
 
   document.getElementById('f-search').addEventListener('input', function (e) {
     searchTerm = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  document.getElementById('f-sort').addEventListener('change', function (e) {
+    sortOrder = e.target.value;
     render();
   });
 
