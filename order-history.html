@@ -43,15 +43,18 @@
   .order-summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
   .order-summary .who { font-weight: 700; font-size: 0.95rem; flex: 1; }
   .order-summary .when { font-size: 0.75rem; color: var(--sub); white-space: nowrap; }
+  .order-summary .printed-badge { font-size: 0.68rem; font-weight: 700; color: #1a7a3c; background: #e4f5e9; border: 1px solid #1a7a3c; padding: 0.15rem 0.5rem; white-space: nowrap; flex-shrink: 0; }
   .order-summary .arrow { font-size: 0.7rem; color: var(--sub); transition: transform 0.15s; flex-shrink: 0; }
   .order-card.open .arrow { transform: rotate(90deg); }
 
   .order-detail { display: none; border-top: 1px solid var(--line2); padding: 1rem 1.1rem 1.2rem; }
   .order-card.open .order-detail { display: block; }
 
-  .detail-actions { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+  .detail-actions { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
   .edit-btn { flex: 1; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.6rem 1rem; cursor: pointer; }
   .edit-btn:hover { background: var(--red); border-color: var(--red); }
+  .print-toggle-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink); background: #fff; border: 1px solid var(--line); padding: 0.6rem 1rem; cursor: pointer; white-space: nowrap; }
+  .print-toggle-btn:hover { border-color: var(--ink); }
   .delete-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--sub); background: #fff; border: 1px solid var(--line); padding: 0.6rem 1rem; cursor: pointer; white-space: nowrap; }
   .delete-btn:hover { color: #fff; background: var(--red); border-color: var(--red); }
 
@@ -358,7 +361,7 @@
       wrap.appendChild(sec);
     });
 
-    var rest = Object.keys(record).filter(function (k) { return !used[k] && k.indexOf('__') !== 0; });
+    var rest = Object.keys(record).filter(function (k) { return !used[k] && k.indexOf('__') !== 0 && k !== 'printed'; });
     if (rest.length > 0) {
       var sec = document.createElement('div');
       sec.className = 'detail-section';
@@ -390,7 +393,7 @@
   function matchesSearch(record) {
     if (!searchTerm) return true;
     return Object.keys(record).some(function (k) {
-      if (k.indexOf('__') === 0) return false;
+      if (k.indexOf('__') === 0 || k === 'printed') return false;
       return (record[k] || '').toString().toLowerCase().indexOf(searchTerm) !== -1;
     });
   }
@@ -440,6 +443,12 @@
       arrow.textContent = '▶';
       summary.appendChild(pick);
       summary.appendChild(who);
+      if (record.printed) {
+        var badge = document.createElement('span');
+        badge.className = 'printed-badge';
+        badge.textContent = '印刷済';
+        summary.appendChild(badge);
+      }
       summary.appendChild(when);
       summary.appendChild(arrow);
       summary.addEventListener('click', function () { card.classList.toggle('open'); });
@@ -457,6 +466,16 @@
         localStorage.setItem('order-sheet-reload', JSON.stringify(record));
         location.href = 'order-sheet.html?reload=1';
       });
+      var printToggleBtn = document.createElement('button');
+      printToggleBtn.type = 'button';
+      printToggleBtn.className = 'print-toggle-btn';
+      printToggleBtn.textContent = record.printed ? '印刷済みを解除' : '印刷済みにする';
+      printToggleBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        record.printed = !record.printed;
+        syncUpdatedArchive();
+        render();
+      });
       var deleteBtn = document.createElement('button');
       deleteBtn.type = 'button';
       deleteBtn.className = 'delete-btn';
@@ -471,6 +490,7 @@
         render();
       });
       actions.appendChild(editBtn);
+      actions.appendChild(printToggleBtn);
       actions.appendChild(deleteBtn);
       detail.appendChild(actions);
       detail.appendChild(buildDetail(record));
@@ -614,6 +634,11 @@
       }
       var d = new Date();
       pdf.save('受注シート一覧_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.pdf');
+      records.forEach(function (r) { r.printed = true; });
+      await syncUpdatedArchive();
+      selected = {};
+      updateSelectBar();
+      render();
     } catch (e) {
       console.error(e);
       alert('PDFの作成に失敗しました。もう一度お試しください。');
