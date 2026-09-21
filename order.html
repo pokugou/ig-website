@@ -1779,6 +1779,15 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
           doc.body.style.margin = '0';
           doc.body.style.padding = '0';
         }
+      }).then(function(canvas) {
+        // カードの実寸にクロップして黒い余白を除去
+        var cw = Math.min(orderCard.scrollWidth * 2, canvas.width);
+        var ch = Math.min(orderCard.scrollHeight * 2, canvas.height);
+        var crop = document.createElement('canvas');
+        crop.width = cw;
+        crop.height = ch;
+        crop.getContext('2d').drawImage(canvas, 0, 0, cw, ch, 0, 0, cw, ch);
+        return crop;
       })
     : Promise.resolve(null);
 
