@@ -1763,6 +1763,11 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
   buildOrderCard();
   var orderCard = document.getElementById('order-card');
 
+  // キャプチャ前にカードをleft:0に移動（left:-9999pxのままだとcanvasが巨大になり黒帯が出る）
+  orderCard.style.left = '0px';
+  var cardW = orderCard.offsetWidth;
+  var cardH = orderCard.offsetHeight;
+
   var capturePromise = window.html2canvas
     ? html2canvas(orderCard, {
         scale: 2,
@@ -1770,17 +1775,15 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
-        onclone: function(doc) {
-          // body内をカードだけにして背景の影響を完全に排除
-          var el = doc.getElementById('order-card');
-          doc.body.innerHTML = '';
-          el.style.position = 'static';
-          el.style.left = 'auto';
-          el.style.top = 'auto';
-          doc.body.appendChild(el);
-          doc.documentElement.style.cssText = 'background:#ffffff;';
-          doc.body.style.cssText = 'margin:0;padding:0;background:#ffffff;width:375px;overflow:visible;';
-        }
+        width: cardW,
+        height: cardH,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: cardW,
+        windowHeight: cardH
+      }).then(function(canvas) {
+        orderCard.style.left = '-9999px'; // 元に戻す
+        return canvas;
       })
     : Promise.resolve(null);
 
