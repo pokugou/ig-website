@@ -80,6 +80,9 @@
     .row { grid-template-columns: 100px 1fr; }
   }
 
+  .sheet-footer { margin-top: 1.8rem; padding-top: 1rem; border-top: 1px solid var(--line2); text-align: center; font-size: 0.78rem; color: var(--sub); line-height: 1.8; }
+  .sheet-footer .company { font-size: 0.9rem; font-weight: 700; color: var(--ink); letter-spacing: 0.04em; }
+
   @media print {
     body { background: #fff; padding: 0; }
     .toolbar, .toolbar-hint, .add-sheet-bar, .top-links { display: none; }
@@ -97,6 +100,38 @@
   .pdf-capture .row input, .pdf-capture .row select, .pdf-capture .row textarea,
   .pdf-capture .meta-item input, .pdf-capture .meta-item select,
   .pdf-capture .memo-box textarea, .pdf-capture .sheet-no input { background: transparent !important; }
+
+  @media print {
+    .sheet-head h1 { font-size: 2.2rem; }
+    .sheet-no { font-size: 1.1rem; margin-bottom: 0.8rem; }
+    .sheet-head .brand { font-size: 0.85rem; }
+    .meta-item label { font-size: 0.8rem; margin-bottom: 0.35rem; }
+    .meta-item input, .meta-item select { font-size: 1.05rem; padding: 0.35rem 0.1rem; }
+    .section-title { font-size: 0.9rem; padding: 0.4rem 0.9rem; margin-bottom: 0.8rem; }
+    .row { border: 1px solid var(--ink); border-top: none; padding: 0.55rem 0; grid-template-columns: 170px 1fr; }
+    .row:first-of-type { border-top: 1px solid var(--ink); }
+    .row label { font-size: 0.9rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
+    .row input, .row select, .row textarea { font-size: 1.05rem; padding: 0.15rem 0.8rem; }
+    .cols2 .row { grid-template-columns: 175px 1fr; }
+    .memo-box { border: 1px solid var(--ink); min-height: 5em; padding: 0.7rem 0.9rem; }
+    .memo-box textarea { font-size: 1.05rem; }
+    .hint { font-size: 0.72rem; }
+  }
+
+  .pdf-capture .sheet-head h1 { font-size: 2.2rem; }
+  .pdf-capture .sheet-no { font-size: 1.1rem; margin-bottom: 0.8rem; }
+  .pdf-capture .sheet-head .brand { font-size: 0.85rem; }
+  .pdf-capture .meta-item label { font-size: 0.8rem; margin-bottom: 0.35rem; }
+  .pdf-capture .meta-item input, .pdf-capture .meta-item select { font-size: 1.05rem; padding: 0.35rem 0.1rem; }
+  .pdf-capture .section-title { font-size: 0.9rem; padding: 0.4rem 0.9rem; margin-bottom: 0.8rem; }
+  .pdf-capture .row { border: 1px solid var(--ink); border-top: none; padding: 0.55rem 0; grid-template-columns: 170px 1fr; }
+  .pdf-capture .row:first-of-type { border-top: 1px solid var(--ink); }
+  .pdf-capture .row label { font-size: 0.9rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
+  .pdf-capture .row input, .pdf-capture .row select, .pdf-capture .row textarea { font-size: 1.05rem; padding: 0.15rem 0.8rem; }
+  .pdf-capture .cols2 .row { grid-template-columns: 175px 1fr; }
+  .pdf-capture .memo-box { border: 1px solid var(--ink); min-height: 5em; padding: 0.7rem 0.9rem; }
+  .pdf-capture .memo-box textarea { font-size: 1.05rem; }
+  .pdf-capture .hint { font-size: 0.72rem; }
 </style>
 </head>
 <body>
@@ -287,6 +322,12 @@
       <div class="memo-box"><textarea rows="2" placeholder="カラーコーディネートの希望、特記事項など"></textarea></div>
     </div>
 
+    <div class="sheet-footer">
+      <div class="company">IG Rod Planning</div>
+      <div>〒188-0004　東京都西東京市西原町5-3-30-301</div>
+      <div>TEL：090-1798-5613</div>
+    </div>
+
   </div>
   </div>
 
@@ -304,6 +345,39 @@
   function todayISO() {
     var d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function swapFieldsForCapture() {
+    var swaps = [];
+    document.querySelectorAll('.meta-item input, .meta-item select, .row input, .row select, .row textarea, .memo-box textarea, .sheet-no-input').forEach(function (el) {
+      var text;
+      if (el.tagName === 'SELECT') {
+        text = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+      } else if (el.type === 'date') {
+        var parts = el.value ? el.value.split('-') : null;
+        text = parts ? parts[0] + '/' + Number(parts[1]) + '/' + Number(parts[2]) : '';
+      } else {
+        text = el.value;
+      }
+      var isInline = el.classList.contains('sheet-no-input');
+      var cs = getComputedStyle(el);
+      var overlay = document.createElement('div');
+      overlay.textContent = text;
+      overlay.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';color:inherit;padding:' + cs.padding + ';'
+        + (isInline ? 'display:inline-block;white-space:nowrap;width:' + cs.width + ';' : 'line-height:1.4;white-space:pre-wrap;width:100%;');
+      var prevDisplay = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', overlay);
+      swaps.push({ el: el, overlay: overlay, prevDisplay: prevDisplay });
+    });
+    return swaps;
+  }
+
+  function restoreFieldsAfterCapture(swaps) {
+    swaps.forEach(function (s) {
+      s.overlay.remove();
+      s.el.style.display = s.prevDisplay;
+    });
   }
 
   function updateRemoveVisibility() {
@@ -549,6 +623,7 @@
     btn.disabled = true;
     btn.textContent = '作成中…';
     document.body.classList.add('pdf-capture');
+    var fieldSwaps = swapFieldsForCapture();
     try {
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var pageW = pdf.internal.pageSize.getWidth();
@@ -574,6 +649,7 @@
       console.error(e);
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
+      restoreFieldsAfterCapture(fieldSwaps);
       document.body.classList.remove('pdf-capture');
       btn.disabled = false;
       btn.textContent = originalLabel;
