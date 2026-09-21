@@ -1149,7 +1149,7 @@
 </div>
 
 <!-- ORDER SUMMARY CARD (html2canvas capture target) -->
-<div id="order-card" style="position:fixed;left:-9999px;top:0;width:375px;background:#0f0f0f;font-family:'Noto Sans JP',sans-serif;overflow:hidden;color:#f8f8f8;"></div>
+<div id="order-card" style="position:fixed;left:-9999px;top:0;width:375px;background:#ffffff;font-family:'Noto Sans JP',sans-serif;overflow:hidden;color:#111111;"></div>
 
 <!-- IMAGE PREVIEW OVERLAY -->
 <div id="img-preview-overlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.96);overflow-y:auto;-webkit-overflow-scrolling:touch;">
@@ -1772,7 +1772,7 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
   box.style.cssText    += ';zoom:1!important;width:375px!important;max-width:375px!important;';
 
   var capturePromise = window.html2canvas
-    ? html2canvas(box, { scale: 1.5, useCORS: true, allowTaint: true, backgroundColor: '#111111', logging: false })
+    ? html2canvas(box, { scale: 1.5, useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false })
     : Promise.resolve(null);
 
   capturePromise.then(function(canvas) {
@@ -1840,12 +1840,12 @@ function buildOrderCard() {
   // inline style shortcuts
   var s = {
     sec:   'margin-bottom:11px;',
-    stitle:'font-size:8.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#dd3300;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.07);',
+    stitle:'font-size:8.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#cc2200;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid rgba(0,0,0,0.1);',
     row:   'display:flex;align-items:center;gap:6px;padding:2.5px 0;',
-    lbl:   'font-size:10px;color:rgba(248,248,248,0.42);width:98px;flex-shrink:0;',
-    val:   'font-size:10px;color:#f8f8f8;font-weight:500;flex:1;line-height:1.4;',
-    sw:    'width:22px;height:22px;object-fit:cover;border-radius:2px;flex-shrink:0;border:1px solid rgba(255,255,255,0.15);',
-    swt:   'width:30px;height:19px;object-fit:cover;border-radius:2px;flex-shrink:0;border:1px solid rgba(255,255,255,0.15);'
+    lbl:   'font-size:10px;color:#666666;width:98px;flex-shrink:0;',
+    val:   'font-size:10px;color:#111111;font-weight:500;flex:1;line-height:1.4;',
+    sw:    'width:22px;height:22px;object-fit:cover;border-radius:2px;flex-shrink:0;border:1px solid rgba(0,0,0,0.15);',
+    swt:   'width:30px;height:19px;object-fit:cover;border-radius:2px;flex-shrink:0;border:1px solid rgba(0,0,0,0.15);'
   };
 
   function r(label, val, img, isThread) {
@@ -1858,14 +1858,14 @@ function buildOrderCard() {
 
   var html = ''
     // ── ヘッダー ──
-    + '<div style="background:#080808;padding:13px 16px 11px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);">'
+    + '<div style="background:#f5f5f5;padding:13px 16px 11px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,0.1);">'
       + '<img src="logo.png" style="height:26px;width:auto;display:block;">'
-      + '<span style="font:600 10px/1 \'DM Sans\',sans-serif;color:rgba(248,248,248,0.38);letter-spacing:2px;">'+dateStr+'</span>'
+      + '<span style="font:600 10px/1 \'DM Sans\',sans-serif;color:#888888;letter-spacing:2px;">'+dateStr+'</span>'
     + '</div>'
     // ── バナー ──
     + '<div style="background:#cc2200;text-align:center;padding:5px 0;font-size:8.5px;font-weight:700;letter-spacing:3px;color:#fff;">ORDER SUMMARY</div>'
     // ── ボディ ──
-    + '<div style="padding:12px 16px 8px;">'
+    + '<div style="padding:12px 16px 8px;background:#ffffff;">'
       // 基本情報
       + '<div style="'+s.sec+'">'
         + '<div style="'+s.stitle+'">お客様情報</div>'
@@ -1891,14 +1891,14 @@ function buildOrderCard() {
       + '</div>'
     + '</div>'
     // ── 税込合計 ──
-    + '<div style="background:#161616;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.08);">'
-      + '<span style="font-size:11px;font-weight:700;color:rgba(248,248,248,0.75);">税込合計</span>'
-      + '<span style="font:700 19px/1 \'DM Sans\',sans-serif;color:#f5d062;">'+totalText+'</span>'
+    + '<div style="background:#f5f5f5;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(0,0,0,0.1);">'
+      + '<span style="font-size:11px;font-weight:700;color:#333333;">税込合計</span>'
+      + '<span style="font:700 19px/1 \'DM Sans\',sans-serif;color:#cc2200;">'+totalText+'</span>'
     + '</div>'
     // ── フッター ──
-    + '<div style="background:#080808;padding:7px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);">'
-      + '<span style="font-size:8.5px;color:rgba(248,248,248,0.32);letter-spacing:0.5px;">IG Rod Planning</span>'
-      + '<span style="font-size:8.5px;color:rgba(248,248,248,0.32);">@igrod_pl</span>'
+    + '<div style="background:#f0f0f0;padding:7px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(0,0,0,0.08);">'
+      + '<span style="font-size:8.5px;color:#999999;letter-spacing:0.5px;">IG Rod Planning</span>'
+      + '<span style="font-size:8.5px;color:#999999;">@igrod_pl</span>'
     + '</div>';
 
   document.getElementById('order-card').innerHTML = html;
