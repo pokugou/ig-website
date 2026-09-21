@@ -172,6 +172,11 @@
       '</div>';
     var t = todayParts();
     card.querySelector('.f-date').value = t.iso;
+    card.querySelector('.f-date').addEventListener('change', function (e) {
+      var page = card.closest('.page');
+      if (!page) return;
+      page.querySelectorAll('.f-date').forEach(function (el) { el.value = e.target.value; });
+    });
     card.querySelector('.del-card-btn').addEventListener('click', function () {
       if (!confirm('このカードの内容をクリアしますか？')) return;
       card.querySelectorAll('input[type="text"], textarea').forEach(function (el) { el.value = ''; });
