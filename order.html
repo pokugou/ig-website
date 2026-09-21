@@ -365,6 +365,91 @@
       .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
       footer { padding: 3rem 1.5rem 2rem; }
     }
+
+    /* ========== フォームセクション白カード ========== */
+    .form-section {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.28);
+    }
+    .divider { display: none; } /* カード間の区切り線は不要 */
+
+    /* カード内テキスト */
+    .form-section .form-section-title { color: var(--red2); }
+    .form-section .field label { color: #111111; }
+    .form-section .field .req { color: var(--red2); background: rgba(204,34,0,0.1); }
+    .form-section .field-note { color: #666666; }
+
+    /* カード内フォーム要素 */
+    .form-section input[type="text"],
+    .form-section input[type="email"],
+    .form-section input[type="tel"],
+    .form-section select,
+    .form-section textarea {
+      background: #f4f4f4;
+      border: 1px solid rgba(0,0,0,0.14);
+      color: #111111;
+    }
+    .form-section input[type="text"]:focus,
+    .form-section input[type="email"]:focus,
+    .form-section input[type="tel"]:focus,
+    .form-section select:focus,
+    .form-section textarea:focus {
+      background: #ffffff;
+      border-color: var(--red);
+    }
+    .form-section input::placeholder,
+    .form-section textarea::placeholder { color: rgba(0,0,0,0.28); }
+    .form-section select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); }
+    .form-section select option { background: #ffffff; color: #111111; }
+
+    /* カード内連絡方法トグル */
+    .form-section .contact-method-toggle { border-color: rgba(0,0,0,0.15); }
+    .form-section .cm-method-btn { color: rgba(0,0,0,0.4); }
+    .form-section .cm-method-btn:first-child { border-color: rgba(0,0,0,0.12); }
+    .form-section .cm-method-btn.active { background: rgba(0,0,0,0.07); color: #111111; }
+    .form-section .cm-method-btn.active.line-btn { color: #06c755; }
+    .form-section .line-contact-note { color: #444444; }
+
+    /* カード内カラーモーダルトリガー */
+    .form-section .cm-trigger { background: #f4f4f4; border-color: rgba(0,0,0,0.14); color: #111111; }
+    .form-section .cm-trigger:hover { border-color: rgba(0,0,0,0.35); }
+    .form-section .cm-trigger-txt { color: rgba(0,0,0,0.35); }
+    .form-section .cm-trigger-txt.chosen { color: #111111; }
+
+    /* カード内スレッドピッカー */
+    .form-section .sp-wrap { background: #f0f0f0; border-color: rgba(0,0,0,0.1); }
+    .form-section .sp-cat-lbl { color: var(--red2); }
+    .form-section .sp-item .sp-name { color: rgba(0,0,0,0.45); }
+    .form-section .sp-item:hover { border-color: rgba(0,0,0,0.3); }
+    .form-section .sp-omakase-item { background: #e8e8e8; }
+    .form-section .sp-omakase-item:hover { border-color: rgba(0,0,0,0.25); }
+    .form-section .sp-omakase-name { color: #111111; }
+    .form-section .sp-omakase-sub { color: #666666; }
+    .form-section .sp-current-txt { color: #888888; }
+    .form-section .sp-current-txt.chosen { color: #111111; }
+
+    /* カード内郵便番号 */
+    .form-section .zip-mark { background: #ebebeb; border-color: rgba(0,0,0,0.12); color: #666666; }
+    .form-section .zip-hint { color: #888888; }
+
+    /* 料金ボックス（カード内） */
+    .form-section .price-box { background: #f4f4f4; border-color: rgba(0,0,0,0.1); }
+    .form-section .price-box-title { color: #888888; }
+    .form-section .price-row { color: #444444; border-color: rgba(0,0,0,0.1); }
+    .form-section .price-row .price-val { color: #111111; }
+    .form-section .price-row.total .price-label { color: #111111; }
+    .form-section .price-row.total .price-val { color: var(--red); }
+
+    /* 注意書き（カード内） */
+    .form-section .notice-box { background: rgba(204,34,0,0.04); border-color: rgba(204,34,0,0.22); color: #555555; }
+    .form-section .notice-box strong { color: #111111; }
+
+    @media (max-width: 768px) {
+      .form-section { padding: 1.25rem; border-radius: 8px; }
+    }
   </style>
 </head>
 <body>
