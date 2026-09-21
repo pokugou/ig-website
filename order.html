@@ -1759,30 +1759,15 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
   btn.disabled = true;
   btn.textContent = '生成中...';
 
-  // 確認画面をキャプチャしてそのままメールに添付する
-  var box     = document.querySelector('.confirm-box');
-  var lead    = box.querySelector('.confirm-lead');
-  var share   = box.querySelector('.confirm-share');
-  var actions = box.querySelector('.confirm-actions');
-
-  // ボタン類を一時非表示・zoom解除
-  lead.style.display    = 'none';
-  share.style.display   = 'none';
-  actions.style.display = 'none';
-  box.style.cssText    += ';zoom:1!important;width:375px!important;max-width:375px!important;';
+  // オーダーカード（白背景）を生成してメールに添付する
+  buildOrderCard();
+  var orderCard = document.getElementById('order-card');
 
   var capturePromise = window.html2canvas
-    ? html2canvas(box, { scale: 1.5, useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false })
+    ? html2canvas(orderCard, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false })
     : Promise.resolve(null);
 
   capturePromise.then(function(canvas) {
-    // 表示を元に戻す
-    lead.style.display    = '';
-    share.style.display   = '';
-    actions.style.display = '';
-    box.style.zoom      = '';
-    box.style.width     = '';
-    box.style.maxWidth  = '';
 
     if (canvas) {
       data.append('order_img', canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
