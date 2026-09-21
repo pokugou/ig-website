@@ -1771,23 +1771,16 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
         backgroundColor: '#ffffff',
         logging: false,
         onclone: function(doc) {
+          // body内をカードだけにして背景の影響を完全に排除
           var el = doc.getElementById('order-card');
-          el.style.position = 'relative';
-          el.style.left = '0';
-          el.style.top = '0';
-          doc.body.style.background = '#ffffff';
-          doc.body.style.margin = '0';
-          doc.body.style.padding = '0';
+          doc.body.innerHTML = '';
+          el.style.position = 'static';
+          el.style.left = 'auto';
+          el.style.top = 'auto';
+          doc.body.appendChild(el);
+          doc.documentElement.style.cssText = 'background:#ffffff;';
+          doc.body.style.cssText = 'margin:0;padding:0;background:#ffffff;width:375px;overflow:visible;';
         }
-      }).then(function(canvas) {
-        // カードの実寸にクロップして黒い余白を除去
-        var cw = Math.min(orderCard.scrollWidth * 2, canvas.width);
-        var ch = Math.min(orderCard.scrollHeight * 2, canvas.height);
-        var crop = document.createElement('canvas');
-        crop.width = cw;
-        crop.height = ch;
-        crop.getContext('2d').drawImage(canvas, 0, 0, cw, ch, 0, 0, cw, ch);
-        return crop;
       })
     : Promise.resolve(null);
 
