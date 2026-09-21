@@ -1764,7 +1764,17 @@ document.getElementById('confirm-btn-send').addEventListener('click', function()
   var orderCard = document.getElementById('order-card');
 
   var capturePromise = window.html2canvas
-    ? html2canvas(orderCard, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false })
+    ? html2canvas(orderCard, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: orderCard.scrollWidth,
+        height: orderCard.scrollHeight,
+        windowWidth: orderCard.scrollWidth,
+        windowHeight: orderCard.scrollHeight
+      })
     : Promise.resolve(null);
 
   capturePromise.then(function(canvas) {
