@@ -103,35 +103,39 @@
 
   @media print {
     .section { margin-bottom: 1rem; }
+    .sheet-head { padding-bottom: 0.4rem; margin-bottom: 0.7rem; }
     .sheet-head h1 { font-size: 2.35rem; }
-    .sheet-no { font-size: 1.2rem; margin-bottom: 0.6rem; }
+    .sheet-no { font-size: 1.2rem; margin-bottom: 0.3rem; }
     .sheet-head .brand { font-size: 0.85rem; }
-    .meta-item label { font-size: 0.87rem; margin-bottom: 0.3rem; }
-    .meta-item input, .meta-item select { font-size: 1.18rem; padding: 0.3rem 0.1rem; }
+    .meta-grid { margin-bottom: 0.7rem; }
+    .meta-item label { font-size: 0.87rem; margin-bottom: 0.15rem; }
+    .meta-item input, .meta-item select { font-size: 1.18rem; padding: 0.15rem 0.1rem; }
     .section-title { font-size: 1rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
     .row { border: 1px solid var(--ink); border-top: none; padding: 0.4rem 0; grid-template-columns: 170px 1fr; }
     .row:first-of-type { border-top: 1px solid var(--ink); }
     .row label { font-size: 1rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
     .row input, .row select, .row textarea { font-size: 1.18rem; padding: 0.1rem 0.8rem; }
     .cols2 .row { grid-template-columns: 175px 1fr; }
-    .memo-box { border: 1px solid var(--ink); min-height: 6.5em; padding: 0.6rem 0.9rem; }
+    .memo-box { border: 1px solid var(--ink); min-height: 12em; padding: 0.6rem 0.9rem; }
     .memo-box textarea { font-size: 1.18rem; }
     .hint { font-size: 0.72rem; }
   }
 
   .pdf-capture .section { margin-bottom: 1rem; }
+  .pdf-capture .sheet-head { padding-bottom: 0.4rem; margin-bottom: 0.7rem; }
   .pdf-capture .sheet-head h1 { font-size: 2.35rem; }
-  .pdf-capture .sheet-no { font-size: 1.2rem; margin-bottom: 0.6rem; }
+  .pdf-capture .sheet-no { font-size: 1.2rem; margin-bottom: 0.3rem; }
   .pdf-capture .sheet-head .brand { font-size: 0.85rem; }
-  .pdf-capture .meta-item label { font-size: 0.87rem; margin-bottom: 0.3rem; }
-  .pdf-capture .meta-item input, .pdf-capture .meta-item select { font-size: 1.18rem; padding: 0.3rem 0.1rem; }
+  .pdf-capture .meta-grid { margin-bottom: 0.7rem; }
+  .pdf-capture .meta-item label { font-size: 0.87rem; margin-bottom: 0.15rem; }
+  .pdf-capture .meta-item input, .pdf-capture .meta-item select { font-size: 1.18rem; padding: 0.15rem 0.1rem; }
   .pdf-capture .section-title { font-size: 1rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
   .pdf-capture .row { border: 1px solid var(--ink); border-top: none; padding: 0.4rem 0; grid-template-columns: 170px 1fr; }
   .pdf-capture .row:first-of-type { border-top: 1px solid var(--ink); }
   .pdf-capture .row label { font-size: 1rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
   .pdf-capture .row input, .pdf-capture .row select, .pdf-capture .row textarea { font-size: 1.18rem; padding: 0.1rem 0.8rem; }
   .pdf-capture .cols2 .row { grid-template-columns: 175px 1fr; }
-  .pdf-capture .memo-box { border: 1px solid var(--ink); min-height: 6.5em; padding: 0.6rem 0.9rem; }
+  .pdf-capture .memo-box { border: 1px solid var(--ink); min-height: 12em; padding: 0.6rem 0.9rem; }
   .pdf-capture .memo-box textarea { font-size: 1.18rem; }
   .pdf-capture .hint { font-size: 0.72rem; }
 </style>
@@ -212,6 +216,8 @@
 
     <div class="section">
       <div class="section-title">ベースモデル</div>
+      <div class="cols2">
+      <div>
       <div class="row">
         <label>モデル選択</label>
         <select class="model-select">
@@ -259,8 +265,12 @@
           <option value="入力">入力</option>
         </select>
       </div>
-      <div class="row model-custom-row" style="display:none"><label>モデル（入力）</label><input type="text" class="model-custom"></div>
+      </div>
+      <div>
       <div class="row"><label>本数</label><input type="number" class="qty" value="1" min="1" style="max-width:6em"></div>
+      </div>
+      </div>
+      <div class="row model-custom-row" style="display:none"><label>モデル（入力）</label><input type="text" class="model-custom"></div>
     </div>
 
     <div class="section">
