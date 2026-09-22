@@ -622,6 +622,9 @@
     var originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '作成中…';
+    // Open synchronously (still inside the click gesture) so mobile Safari doesn't
+    // block it once the async html2canvas work below pushes past the gesture window.
+    var previewWindow = window.open('', '_blank');
     document.body.classList.add('pdf-capture');
     var fieldSwaps = swapFieldsForCapture();
     try {
@@ -642,11 +645,17 @@
         if (i > 0) pdf.addPage();
         pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       }
-      pdf.save('受注シート_' + todayISO().replace(/-/g, '') + '.pdf');
+      var pdfName = '受注シート_' + todayISO().replace(/-/g, '') + '.pdf';
+      if (previewWindow) {
+        previewWindow.location.href = pdf.output('bloburl');
+      } else {
+        pdf.save(pdfName);
+      }
       await downloadArchive();
       await syncSchedule();
     } catch (e) {
       console.error(e);
+      if (previewWindow) previewWindow.close();
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
       restoreFieldsAfterCapture(fieldSwaps);
