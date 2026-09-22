@@ -87,7 +87,7 @@
     body { background: #fff; padding: 0; }
     .toolbar, .toolbar-hint, .add-sheet-bar, .top-links { display: none; }
     .sheets { max-width: 100%; gap: 0; }
-    .sheet { border: none; padding: 0.4cm 0.6cm; }
+    .sheet { border: none; padding: 0.3cm 0.5cm; }
     .sheet + .sheet { page-break-before: always; }
     .sheet-remove { display: none; }
     .row input, .row select, .row textarea, .meta-item input, .meta-item select, .memo-box textarea, .sheet-no input { background: transparent !important; }
@@ -96,41 +96,43 @@
   }
 
   .pdf-capture .sheet-remove { display: none; }
-  .pdf-capture .sheet { border: none; padding: 0.4cm 0.6cm; }
+  .pdf-capture .sheet { border: none; padding: 0.3cm 0.5cm; }
   .pdf-capture .row input, .pdf-capture .row select, .pdf-capture .row textarea,
   .pdf-capture .meta-item input, .pdf-capture .meta-item select,
   .pdf-capture .memo-box textarea, .pdf-capture .sheet-no input { background: transparent !important; }
 
   @media print {
-    .sheet-head h1 { font-size: 2.2rem; }
-    .sheet-no { font-size: 1.1rem; margin-bottom: 0.8rem; }
+    .section { margin-bottom: 1rem; }
+    .sheet-head h1 { font-size: 2.35rem; }
+    .sheet-no { font-size: 1.2rem; margin-bottom: 0.6rem; }
     .sheet-head .brand { font-size: 0.85rem; }
-    .meta-item label { font-size: 0.8rem; margin-bottom: 0.35rem; }
-    .meta-item input, .meta-item select { font-size: 1.05rem; padding: 0.35rem 0.1rem; }
-    .section-title { font-size: 0.9rem; padding: 0.4rem 0.9rem; margin-bottom: 0.8rem; }
-    .row { border: 1px solid var(--ink); border-top: none; padding: 0.55rem 0; grid-template-columns: 170px 1fr; }
+    .meta-item label { font-size: 0.87rem; margin-bottom: 0.3rem; }
+    .meta-item input, .meta-item select { font-size: 1.18rem; padding: 0.3rem 0.1rem; }
+    .section-title { font-size: 1rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
+    .row { border: 1px solid var(--ink); border-top: none; padding: 0.4rem 0; grid-template-columns: 170px 1fr; }
     .row:first-of-type { border-top: 1px solid var(--ink); }
-    .row label { font-size: 0.9rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
-    .row input, .row select, .row textarea { font-size: 1.05rem; padding: 0.15rem 0.8rem; }
+    .row label { font-size: 1rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
+    .row input, .row select, .row textarea { font-size: 1.18rem; padding: 0.1rem 0.8rem; }
     .cols2 .row { grid-template-columns: 175px 1fr; }
-    .memo-box { border: 1px solid var(--ink); min-height: 5em; padding: 0.7rem 0.9rem; }
-    .memo-box textarea { font-size: 1.05rem; }
+    .memo-box { border: 1px solid var(--ink); min-height: 6.5em; padding: 0.6rem 0.9rem; }
+    .memo-box textarea { font-size: 1.18rem; }
     .hint { font-size: 0.72rem; }
   }
 
-  .pdf-capture .sheet-head h1 { font-size: 2.2rem; }
-  .pdf-capture .sheet-no { font-size: 1.1rem; margin-bottom: 0.8rem; }
+  .pdf-capture .section { margin-bottom: 1rem; }
+  .pdf-capture .sheet-head h1 { font-size: 2.35rem; }
+  .pdf-capture .sheet-no { font-size: 1.2rem; margin-bottom: 0.6rem; }
   .pdf-capture .sheet-head .brand { font-size: 0.85rem; }
-  .pdf-capture .meta-item label { font-size: 0.8rem; margin-bottom: 0.35rem; }
-  .pdf-capture .meta-item input, .pdf-capture .meta-item select { font-size: 1.05rem; padding: 0.35rem 0.1rem; }
-  .pdf-capture .section-title { font-size: 0.9rem; padding: 0.4rem 0.9rem; margin-bottom: 0.8rem; }
-  .pdf-capture .row { border: 1px solid var(--ink); border-top: none; padding: 0.55rem 0; grid-template-columns: 170px 1fr; }
+  .pdf-capture .meta-item label { font-size: 0.87rem; margin-bottom: 0.3rem; }
+  .pdf-capture .meta-item input, .pdf-capture .meta-item select { font-size: 1.18rem; padding: 0.3rem 0.1rem; }
+  .pdf-capture .section-title { font-size: 1rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
+  .pdf-capture .row { border: 1px solid var(--ink); border-top: none; padding: 0.4rem 0; grid-template-columns: 170px 1fr; }
   .pdf-capture .row:first-of-type { border-top: 1px solid var(--ink); }
-  .pdf-capture .row label { font-size: 0.9rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
-  .pdf-capture .row input, .pdf-capture .row select, .pdf-capture .row textarea { font-size: 1.05rem; padding: 0.15rem 0.8rem; }
+  .pdf-capture .row label { font-size: 1rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
+  .pdf-capture .row input, .pdf-capture .row select, .pdf-capture .row textarea { font-size: 1.18rem; padding: 0.1rem 0.8rem; }
   .pdf-capture .cols2 .row { grid-template-columns: 175px 1fr; }
-  .pdf-capture .memo-box { border: 1px solid var(--ink); min-height: 5em; padding: 0.7rem 0.9rem; }
-  .pdf-capture .memo-box textarea { font-size: 1.05rem; }
+  .pdf-capture .memo-box { border: 1px solid var(--ink); min-height: 6.5em; padding: 0.6rem 0.9rem; }
+  .pdf-capture .memo-box textarea { font-size: 1.18rem; }
   .pdf-capture .hint { font-size: 0.72rem; }
 </style>
 </head>
@@ -193,7 +195,6 @@
       <div class="cols2">
         <div>
           <div class="row"><label>お名前</label><input type="text" class="customer-name"></div>
-          <div class="row"><label>電話番号</label><input type="tel"></div>
         </div>
         <div>
           <div class="row"><label>発送方法</label>
@@ -206,10 +207,6 @@
           </div>
           <div class="row shipping-custom-row" style="display:none"><label>発送方法（入力）</label><input type="text" class="shipping-custom"></div>
         </div>
-      </div>
-      <div class="row">
-        <label>送り先住所</label>
-        <textarea rows="2"></textarea>
       </div>
     </div>
 
@@ -268,9 +265,9 @@
 
     <div class="section">
       <div class="section-title">カラーカスタム</div>
+      <div class="row"><label>ブランクスカラー</label><input type="text" placeholder="番号・カラー名"></div>
       <div class="cols2">
         <div>
-          <div class="row"><label>ブランクスカラー</label><input type="text" placeholder="番号・カラー名"></div>
           <div class="row"><label>ティップカラー</label><input type="text" placeholder="番号・カラー名"></div>
           <div class="row"><label>リールシート</label><input type="text" placeholder="番号・カラー名（塗装時のみ）"></div>
         </div>
