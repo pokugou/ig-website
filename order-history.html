@@ -91,8 +91,11 @@
   .print-sheets .memo-box textarea { width: 100%; height: 100%; min-height: 3rem; border: none; font-family: inherit; font-size: 0.85rem; resize: vertical; background: transparent; }
   .print-sheets .hint { font-size: 0.68rem; color: var(--sub); margin-top: 0.2rem; }
 
-  @media (max-width: 560px) {
+  @media screen and (max-width: 560px) {
     .detail-row { grid-template-columns: 1fr; gap: 0.1rem; padding: 0.4rem 0; }
+    .order-summary { flex-wrap: wrap; }
+    .order-summary .who { flex: 1 1 100%; order: 1; }
+    .order-summary .printed-badge, .order-summary .when, .order-summary .arrow { order: 2; }
   }
 </style>
 </head>
