@@ -783,35 +783,61 @@ function initRodCanvas() {
 // ===== RENDER SVG =====
 function renderSVG() {
   if (!rodOrigData) return;
+  var W = rodCanvas.width, H = rodCanvas.height;
   var data = new Uint8ClampedArray(rodOrigData.data);
-  var W = rodCanvas.width;
-
-  // Multiply-blend: orig × color / 255  → preserves highlights and shadows.
-  // minT: min avg of ORIGINAL pixel to paint (default 238 = near-white only).
-  // maxT: also paint avg in (minT,maxT] range (for mechanism bodies).
-  // skipEdge: skip pixels adjacent to dark outlines (annotation line guard).
   var orig = rodOrigData.data;
-  function paintFill(rects, hex, minT, maxT, skipEdge) {
-    if (minT === undefined) minT = 238;
+  var visited = new Uint8Array(W * H);
+
+  // Flood-fill from seed points using BFS.
+  // Spreads through pixels where orig avg > threshold (dark outlines and gray
+  // background act as natural walls).  xMin/xMax clip columns for tip/blank split.
+  function flood(seeds, hex, threshold, xMin, xMax) {
+    if (threshold === undefined) threshold = 228;
+    if (xMin === undefined) xMin = 0;
+    if (xMax === undefined) xMax = W;
+    var cr=parseInt(hex.slice(1,3),16), cg=parseInt(hex.slice(3,5),16), cb=parseInt(hex.slice(5,7),16);
+    var q = [];
+    seeds.forEach(function(s) {
+      var idx = s[1]*W+s[0];
+      if (!visited[idx]) { visited[idx]=1; q.push(s[0], s[1]); }
+    });
+    for (var qi=0; qi<q.length; ) {
+      var x=q[qi++], y=q[qi++];
+      if (x<xMin || x>=xMax) continue;
+      var i=(y*W+x)*4;
+      var avg=(orig[i]+orig[i+1]+orig[i+2])/3;
+      if (avg <= threshold) continue;
+      data[i]  =Math.round(orig[i]  *cr/255);
+      data[i+1]=Math.round(orig[i+1]*cg/255);
+      data[i+2]=Math.round(orig[i+2]*cb/255);
+      var nx, ny, ni;
+      nx=x-1; ny=y;   ni=ny*W+nx; if(nx>=xMin&&nx<xMax&&!visited[ni]){visited[ni]=1;q.push(nx,ny);}
+      nx=x+1; ny=y;   ni=ny*W+nx; if(nx>=xMin&&nx<xMax&&!visited[ni]){visited[ni]=1;q.push(nx,ny);}
+      nx=x;   ny=y-1; ni=ny*W+nx; if(ny>=0&&ny<H&&!visited[ni]){visited[ni]=1;q.push(nx,ny);}
+      nx=x;   ny=y+1; ni=ny*W+nx; if(ny>=0&&ny<H&&!visited[ni]){visited[ni]=1;q.push(nx,ny);}
+    }
+  }
+
+  // Rect-scan fill (for narrow guide wraps and mechanism where flood would leak).
+  // Paints pixels with orig avg in (minT, maxT] or > 238 (dual-threshold).
+  function scanFill(rects, hex, minT, maxT, skipEdge) {
+    if (minT === undefined) minT = 228;
     var cr=parseInt(hex.slice(1,3),16), cg=parseInt(hex.slice(3,5),16), cb=parseInt(hex.slice(5,7),16);
     rects.forEach(function(r) {
       for (var y=r[1],ey=r[1]+r[3]; y<ey; y++) {
         for (var x=r[0],ex=r[0]+r[2]; x<ex; x++) {
           var i=(y*W+x)*4;
-          // Always use ORIGINAL pixel value for threshold and blending
-          var oa=orig[i], ob=orig[i+1], oc=orig[i+2];
+          var oa=orig[i],ob=orig[i+1],oc=orig[i+2];
           var avg=(oa+ob+oc)/3;
-          var paint = avg > minT;
-          if (maxT !== undefined) paint = (avg > minT && avg <= maxT) || avg > 238;
+          var paint = (maxT!==undefined) ? ((avg>minT&&avg<=maxT)||avg>238) : avg>minT;
           if (paint && skipEdge && avg < 238) {
             var dirs=[[-1,0],[1,0],[0,-1],[0,1]];
-            for (var d=0; d<dirs.length; d++) {
+            for (var d=0;d<dirs.length;d++){
               var ni=((y+dirs[d][1])*W+(x+dirs[d][0]))*4;
-              if ((orig[ni]+orig[ni+1]+orig[ni+2])/3 < 80) { paint=false; break; }
+              if ((orig[ni]+orig[ni+1]+orig[ni+2])/3 < 80){paint=false;break;}
             }
           }
           if (paint) {
-            // multiply blend: preserve rod texture (shadows/highlights)
             data[i]  =Math.round(oa*cr/255);
             data[i+1]=Math.round(ob*cg/255);
             data[i+2]=Math.round(oc*cb/255);
@@ -821,45 +847,47 @@ function renderSVG() {
     });
   }
 
-  // Image: rod-diagram.png (842×595)
-  // Top view rod body: y≈178-213. Bottom view: y≈278-355.
-
-  // 1. Blank: rod body
-  paintFill([
-    [30,  176, 790,  38],  // top view rod body (x=30-820)
-    [30,  304, 300,  11],  // bottom view rod body left (y=304-315, x=30-330)
-    [490, 303, 200,  16]   // bottom view rod body between reel seat and rear grip (y=303-319)
+  // ── 1. Blank: flood-fill entire rod body (top + bottom views) ────────────
+  // Seeds in the middle of clear rod sections, away from guide rings.
+  // Top view seeds: x = midpoints between guides
+  flood([
+    [340,189],[420,189],[540,189],[620,189],[720,189],[800,189],
+    [150,308],[250,308],[540,308],[620,308],[690,308]
   ], state.blank.hex);
 
-  // 2. Tip: top view tip section (tip to guide 4)
-  paintFill([[30, 176, 232, 38]], state.tip.hex);
+  // ── 2. Tip: same flood but clipped to x < 263 (tip section boundary) ────
+  // Re-flood from tip seeds, overrides blank in the tip zone.
+  visited.fill(0);
+  flood([
+    [50,189],[90,189],[130,189],[180,189],[230,189]
+  ], state.tip.hex, 228, 0, 263);
 
-  // 3. Tip thread wraps (first 4 guides from tip)
-  paintFill([
-    [30,  176,  42,  38],  // guide 1 (tip ring)
-    [97,  178,  26,  28],  // guide 2
-    [157, 179,  28,  26],  // guide 3
-    [224, 180,  28,  25]   // guide 4
+  // ── 3. Tip thread wraps (guides 1-4) — scanFill (small areas) ───────────
+  scanFill([
+    [30,  176, 42, 38],
+    [97,  178, 26, 28],
+    [157, 179, 28, 26],
+    [224, 180, 28, 25]
   ], state.tipthread.hex);
 
-  // 4. Main thread wraps (guides 5-9 in top view + 2 in bottom view)
-  paintFill([
-    [296, 181,  28,  22],  // guide 5
-    [365, 181,  30,  22],  // guide 6
-    [471, 179,  22,  24],  // guide 7
-    [645, 177,  26,  28],  // guide 8
-    [787, 175,  24,  30],  // guide 9
-    [60,  285,  40,  45],  // bottom view guide 1
-    [160, 285,  40,  45]   // bottom view guide 2
+  // ── 4. Main thread wraps (guides 5-9, bottom 2) — scanFill ──────────────
+  scanFill([
+    [296, 181, 28, 22],
+    [365, 181, 30, 22],
+    [471, 179, 22, 24],
+    [645, 177, 26, 28],
+    [787, 175, 24, 30],
+    [60,  285, 40, 45],
+    [160, 285, 40, 45]
   ], state.thread.hex);
 
-  // 5. Reel seat mechanism: paint body (avg 80-212) + white fills (238+), skip background (~226)
-  paintFill([
-    [358, 280,  82,  55],  // upper half (y=280-335): full width
-    [395, 335,  45,  40]   // lower half (y=335-375): right side only (avoid annotation arrow)
+  // ── 5. Reel seat mechanism ───────────────────────────────────────────────
+  scanFill([
+    [358, 280, 82, 55],
+    [395, 335, 45, 40]
   ], state.reelseat.hex, 80, 212, true);
 
-  rodCtx.putImageData(new ImageData(data, W, rodCanvas.height), 0, 0);
+  rodCtx.putImageData(new ImageData(data, W, H), 0, 0);
 }
 
 function darken(hex, factor) {
