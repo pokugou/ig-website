@@ -119,6 +119,9 @@
     .row label { font-size: 1rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
     .row input, .row select, .row textarea { font-size: 1.18rem; padding: 0.1rem 0.8rem; }
     .cols2 .row { grid-template-columns: 175px 1fr; }
+    .cols2-keep { grid-template-columns: 1fr auto; }
+    .cols2-keep > div:last-child .row { grid-template-columns: 70px auto; }
+    .cols2-keep > div:last-child input { width: 3em; }
     .memo-box { border: 1px solid var(--ink); min-height: 12em; padding: 0.6rem 0.9rem; }
     .memo-box textarea { font-size: 1.18rem; }
     .hint { font-size: 0.72rem; }
@@ -139,6 +142,9 @@
   .pdf-capture .row label { font-size: 1rem; border-right: 1px solid var(--ink); padding: 0 0.8rem; }
   .pdf-capture .row input, .pdf-capture .row select, .pdf-capture .row textarea { font-size: 1.18rem; padding: 0.1rem 0.8rem; }
   .pdf-capture .cols2 .row { grid-template-columns: 175px 1fr; }
+  .pdf-capture .cols2-keep { grid-template-columns: 1fr auto; }
+  .pdf-capture .cols2-keep > div:last-child .row { grid-template-columns: 70px auto; }
+  .pdf-capture .cols2-keep > div:last-child input { width: 3em; }
   .pdf-capture .memo-box { border: 1px solid var(--ink); min-height: 12em; padding: 0.6rem 0.9rem; }
   .pdf-capture .memo-box textarea { font-size: 1.18rem; }
   .pdf-capture .hint { font-size: 0.72rem; }
@@ -371,7 +377,7 @@
         text = el.value;
       }
       var isSheetNo = el.classList.contains('sheet-no-input');
-      var isMetaItem = !!el.closest('.meta-item');
+      var isMetaItem = !!el.closest('.meta-item') || el.classList.contains('qty');
       var isDueDate = el.classList.contains('due-date') && el.value;
       var cs = getComputedStyle(el);
       var overlay = document.createElement('div');
