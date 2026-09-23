@@ -34,6 +34,7 @@
   .select-bar { display: none; background: var(--paper); border: 1px solid var(--line); padding: 0.7rem 1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; }
   .select-bar.active { display: flex; }
   .select-bar span { font-size: 0.8rem; color: var(--sub); }
+  .select-bar-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
   .select-bar button { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.55rem 1.1rem; cursor: pointer; white-space: nowrap; }
   .select-bar button:hover { background: var(--red); border-color: var(--red); }
 
@@ -121,7 +122,10 @@
 
     <div class="select-bar" id="select-bar">
       <span id="select-count">0件選択中</span>
-      <button type="button" id="btn-pdf">選択した内容をまとめてPDF保存</button>
+      <div class="select-bar-actions">
+        <button type="button" id="btn-pdf">選択した内容をまとめてPDF保存</button>
+        <button type="button" id="btn-bulk-delete" class="delete-btn">選択した内容を削除</button>
+      </div>
     </div>
 
     <div id="list"></div>
@@ -612,6 +616,17 @@
 
     return sheet;
   }
+
+  document.getElementById('btn-bulk-delete').addEventListener('click', async function () {
+    var ids = Object.keys(selected);
+    if (ids.length === 0) return;
+    if (!confirm(ids.length + '件を本当に削除しますか？')) return;
+    allRecords = allRecords.filter(function (r) { return !selected[r.__id]; });
+    selected = {};
+    await syncUpdatedArchive();
+    updateSelectBar();
+    render();
+  });
 
   document.getElementById('btn-pdf').addEventListener('click', async function () {
     var ids = Object.keys(selected);
