@@ -110,8 +110,9 @@
     .sheet-no { font-size: 1.2rem; margin-bottom: 0.3rem; }
     .sheet-head .brand { font-size: 0.85rem; }
     .meta-grid { margin-bottom: 0.7rem; }
-    .meta-item label { font-size: 0.87rem; margin-bottom: 0.15rem; }
-    .meta-item input, .meta-item select { font-size: 1.18rem; padding: 0.15rem 0.1rem; }
+    .meta-item { display: flex; align-items: baseline; gap: 0.4rem; }
+    .meta-item label { font-size: 0.87rem; margin-bottom: 0; white-space: nowrap; }
+    .meta-item input, .meta-item select { font-size: 1.18rem; padding: 0.15rem 0.1rem; width: auto; flex: 1; min-width: 0; }
     .section-title { font-size: 1rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
     .row { border: 1px solid var(--ink); border-top: none; padding: 0.4rem 0; grid-template-columns: 170px 1fr; }
     .row:first-of-type { border-top: 1px solid var(--ink); }
@@ -129,8 +130,9 @@
   .pdf-capture .sheet-no { font-size: 1.2rem; margin-bottom: 0.3rem; }
   .pdf-capture .sheet-head .brand { font-size: 0.85rem; }
   .pdf-capture .meta-grid { margin-bottom: 0.7rem; }
-  .pdf-capture .meta-item label { font-size: 0.87rem; margin-bottom: 0.15rem; }
-  .pdf-capture .meta-item input, .pdf-capture .meta-item select { font-size: 1.18rem; padding: 0.15rem 0.1rem; }
+  .pdf-capture .meta-item { display: flex; align-items: baseline; gap: 0.4rem; }
+  .pdf-capture .meta-item label { font-size: 0.87rem; margin-bottom: 0; white-space: nowrap; }
+  .pdf-capture .meta-item input, .pdf-capture .meta-item select { font-size: 1.18rem; padding: 0.15rem 0.1rem; width: auto; flex: 1; min-width: 0; }
   .pdf-capture .section-title { font-size: 1rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
   .pdf-capture .row { border: 1px solid var(--ink); border-top: none; padding: 0.4rem 0; grid-template-columns: 170px 1fr; }
   .pdf-capture .row:first-of-type { border-top: 1px solid var(--ink); }
