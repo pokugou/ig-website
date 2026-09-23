@@ -109,10 +109,10 @@
     .sheet-head h1 { font-size: 2.35rem; }
     .sheet-no { font-size: 1.2rem; margin-bottom: 0.3rem; }
     .sheet-head .brand { font-size: 0.85rem; }
-    .meta-grid { margin-bottom: 0.7rem; }
-    .meta-item { display: flex; align-items: baseline; gap: 0.4rem; }
-    .meta-item label { font-size: 0.87rem; margin-bottom: 0; white-space: nowrap; }
-    .meta-item input, .meta-item select { font-size: 1.18rem; padding: 0.15rem 0.1rem; width: auto; flex: 1; min-width: 0; }
+    .meta-grid { display: block; margin-bottom: 0.7rem; }
+    .meta-item { display: inline-block; margin: 0 1.6rem 0.3rem 0; vertical-align: baseline; }
+    .meta-item label { display: inline; font-size: 0.87rem; margin-bottom: 0; margin-right: 0.4rem; white-space: nowrap; }
+    .meta-item input, .meta-item select { display: inline; font-size: 1.18rem; padding: 0.15rem 0.1rem; width: auto; }
     .section-title { font-size: 1rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
     .row { border: 1px solid var(--ink); border-top: none; padding: 0.4rem 0; grid-template-columns: 170px 1fr; }
     .row:first-of-type { border-top: 1px solid var(--ink); }
@@ -129,10 +129,10 @@
   .pdf-capture .sheet-head h1 { font-size: 2.35rem; }
   .pdf-capture .sheet-no { font-size: 1.2rem; margin-bottom: 0.3rem; }
   .pdf-capture .sheet-head .brand { font-size: 0.85rem; }
-  .pdf-capture .meta-grid { margin-bottom: 0.7rem; }
-  .pdf-capture .meta-item { display: flex; align-items: baseline; gap: 0.4rem; }
-  .pdf-capture .meta-item label { font-size: 0.87rem; margin-bottom: 0; white-space: nowrap; }
-  .pdf-capture .meta-item input, .pdf-capture .meta-item select { font-size: 1.18rem; padding: 0.15rem 0.1rem; width: auto; flex: 1; min-width: 0; }
+  .pdf-capture .meta-grid { display: block; margin-bottom: 0.7rem; }
+  .pdf-capture .meta-item { display: inline-block; margin: 0 1.6rem 0.3rem 0; vertical-align: baseline; }
+  .pdf-capture .meta-item label { display: inline; font-size: 0.87rem; margin-bottom: 0; margin-right: 0.4rem; white-space: nowrap; }
+  .pdf-capture .meta-item input, .pdf-capture .meta-item select { display: inline; font-size: 1.18rem; padding: 0.15rem 0.1rem; width: auto; }
   .pdf-capture .section-title { font-size: 1rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
   .pdf-capture .row { border: 1px solid var(--ink); border-top: none; padding: 0.4rem 0; grid-template-columns: 170px 1fr; }
   .pdf-capture .row:first-of-type { border-top: 1px solid var(--ink); }
@@ -370,12 +370,23 @@
       } else {
         text = el.value;
       }
-      var isInline = el.classList.contains('sheet-no-input');
+      var isSheetNo = el.classList.contains('sheet-no-input');
+      var isMetaItem = !!el.closest('.meta-item');
+      var isDueDate = el.classList.contains('due-date') && el.value;
       var cs = getComputedStyle(el);
       var overlay = document.createElement('div');
       overlay.textContent = text;
-      overlay.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';color:inherit;padding:' + cs.padding + ';'
-        + (isInline ? 'display:inline-block;white-space:nowrap;width:' + cs.width + ';' : 'line-height:1.4;white-space:pre-wrap;width:100%;');
+      var fontSize = isDueDate ? (parseFloat(cs.fontSize) * 3) + 'px' : cs.fontSize;
+      var fontWeight = isDueDate ? '900' : cs.fontWeight;
+      var layoutCss;
+      if (isSheetNo) {
+        layoutCss = 'display:inline-block;white-space:nowrap;width:' + cs.width + ';';
+      } else if (isMetaItem) {
+        layoutCss = 'display:inline-block;white-space:nowrap;width:auto;';
+      } else {
+        layoutCss = 'line-height:1.4;white-space:pre-wrap;width:100%;';
+      }
+      overlay.style.cssText = 'font-family:inherit;font-size:' + fontSize + ';font-weight:' + fontWeight + ';color:inherit;padding:' + cs.padding + ';' + layoutCss;
       var prevDisplay = el.style.display;
       el.style.display = 'none';
       el.insertAdjacentElement('afterend', overlay);
