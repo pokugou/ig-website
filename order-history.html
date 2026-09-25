@@ -69,28 +69,35 @@
 
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
 
-  .print-sheets { position: fixed; top: 0; left: -9999px; width: 800px; }
-  .print-sheets .sheet { background: var(--paper); border: 1px solid var(--line2); padding: 2.2rem 2.5rem 2.6rem; margin-bottom: 1.5rem; }
-  .print-sheets .sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1.4rem; }
-  .print-sheets .sheet-head h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.06em; }
-  .print-sheets .sheet-no { display: flex; align-items: baseline; gap: 0.3rem; font-size: 0.85rem; font-weight: 700; color: var(--red); margin-bottom: 0.6rem; }
+  .print-sheets { position: fixed; top: 0; left: -9999px; width: 1000px; }
+  .print-sheets .sheet { background: var(--paper); border: none; padding: 0.3cm 0.5cm; margin-bottom: 1.5rem; }
+  .print-sheets .sheet-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.4rem; margin-bottom: 0.7rem; }
+  .print-sheets .sheet-head h1 { font-size: 2.35rem; font-weight: 900; letter-spacing: 0.06em; }
+  .print-sheets .sheet-no { display: flex; align-items: baseline; gap: 0.3rem; font-size: 1.2rem; font-weight: 700; color: var(--red); margin-bottom: 0.3rem; }
   .print-sheets .sheet-no input { width: 16em; border: none; border-bottom: 1px solid var(--red); background: transparent; font-family: inherit; font-size: inherit; font-weight: inherit; color: inherit; padding: 0.05rem 0.2rem; }
   .print-sheets .sheet-head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
-  .print-sheets .sheet-head .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
-  .print-sheets .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 1.4rem; }
-  .print-sheets .meta-item label { display: block; font-size: 0.65rem; font-weight: 700; color: var(--sub); letter-spacing: 0.05em; margin-bottom: 0.25rem; }
-  .print-sheets .meta-item input, .print-sheets .meta-item select { width: 100%; border: none; border-bottom: 1px solid var(--line); font-family: inherit; font-size: 0.85rem; padding: 0.25rem 0.1rem; background: transparent; }
-  .print-sheets .section { margin-bottom: 1.3rem; }
-  .print-sheets .section-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; color: #fff; background: var(--ink); display: inline-block; padding: 0.25rem 0.7rem; margin-bottom: 0.7rem; }
-  .print-sheets .row { display: grid; grid-template-columns: 130px 1fr; align-items: baseline; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); }
-  .print-sheets .row label { font-size: 0.78rem; font-weight: 700; color: var(--sub); }
-  .print-sheets .row input, .print-sheets .row select, .print-sheets .row textarea { width: 100%; border: none; font-family: inherit; font-size: 0.85rem; padding: 0.15rem 0.1rem; background: transparent; }
+  .print-sheets .sheet-head .brand { font-size: 0.85rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
+  .print-sheets .meta-grid { display: block; margin-bottom: 0.7rem; }
+  .print-sheets .meta-item { display: inline-block; margin: 0 1.6rem 0.3rem 0; vertical-align: baseline; }
+  .print-sheets .meta-item label { display: inline; font-size: 0.87rem; font-weight: 700; color: var(--sub); letter-spacing: 0.05em; margin-bottom: 0; margin-right: 0.4rem; white-space: nowrap; }
+  .print-sheets .meta-item input, .print-sheets .meta-item select { display: inline; width: auto; border: none; font-family: inherit; font-size: 1.18rem; padding: 0.15rem 0.1rem; background: transparent; }
+  .print-sheets .section { margin-bottom: 1rem; }
+  .print-sheets .section-title { font-size: 1rem; font-weight: 700; letter-spacing: 0.12em; color: #fff; background: var(--ink); display: inline-block; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
+  .print-sheets .row { display: grid; grid-template-columns: 170px 1fr; align-items: baseline; gap: 0.6rem; padding: 0.4rem 0; border: 1px solid var(--ink); border-top: none; }
+  .print-sheets .row:first-of-type, .print-sheets .section-title + .row { border-top: 1px solid var(--ink); }
+  .print-sheets .row label { font-size: 1rem; font-weight: 700; color: var(--sub); border-right: 1px solid var(--ink); padding: 0 0.8rem; }
+  .print-sheets .row input, .print-sheets .row select, .print-sheets .row textarea { width: 100%; border: none; font-family: inherit; font-size: 1.18rem; padding: 0.1rem 0.8rem; background: transparent; }
   .print-sheets .row textarea { resize: vertical; min-height: 2.4em; line-height: 1.5; }
   .print-sheets .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
-  .print-sheets .cols2 .row { grid-template-columns: 132px 1fr; }
-  .print-sheets .memo-box { border: 1px solid var(--line2); min-height: 3.4em; padding: 0.5rem 0.6rem; }
-  .print-sheets .memo-box textarea { width: 100%; height: 100%; min-height: 3rem; border: none; font-family: inherit; font-size: 0.85rem; resize: vertical; background: transparent; }
-  .print-sheets .hint { font-size: 0.68rem; color: var(--sub); margin-top: 0.2rem; }
+  .print-sheets .cols2 .row { grid-template-columns: 175px 1fr; }
+  .print-sheets .cols2-keep { grid-template-columns: 1fr auto; }
+  .print-sheets .cols2-keep > div:last-child .row { grid-template-columns: 70px auto; }
+  .print-sheets .cols2-keep > div:last-child input { width: 3em; }
+  .print-sheets .memo-box { border: 1px solid var(--ink); min-height: 12em; padding: 0.6rem 0.9rem; }
+  .print-sheets .memo-box textarea { width: 100%; height: 100%; min-height: 3rem; border: none; font-family: inherit; font-size: 1.18rem; resize: vertical; background: transparent; }
+  .print-sheets .hint { font-size: 0.72rem; color: var(--sub); margin-top: 0.2rem; }
+  .print-sheets .sheet-footer { margin-top: 1.8rem; padding-top: 1rem; border-top: 1px solid var(--line2); text-align: center; font-size: 0.78rem; color: var(--sub); line-height: 1.8; }
+  .print-sheets .sheet-footer .company { font-size: 0.9rem; font-weight: 700; color: var(--ink); letter-spacing: 0.04em; }
 
   @media screen and (max-width: 560px) {
     .detail-row { grid-template-columns: 1fr; gap: 0.1rem; padding: 0.4rem 0; }
@@ -176,7 +183,6 @@
       <div class="cols2">
         <div>
           <div class="row"><label>お名前</label><input type="text" class="customer-name"></div>
-          <div class="row"><label>電話番号</label><input type="tel"></div>
         </div>
         <div>
           <div class="row"><label>発送方法</label>
@@ -190,14 +196,12 @@
           <div class="row shipping-custom-row" style="display:none"><label>発送方法（入力）</label><input type="text" class="shipping-custom"></div>
         </div>
       </div>
-      <div class="row">
-        <label>送り先住所</label>
-        <textarea rows="2"></textarea>
-      </div>
     </div>
 
     <div class="section">
       <div class="section-title">ベースモデル</div>
+      <div class="cols2 cols2-keep">
+      <div>
       <div class="row">
         <label>モデル選択</label>
         <select class="model-select">
@@ -245,16 +249,20 @@
           <option value="入力">入力</option>
         </select>
       </div>
-      <div class="row model-custom-row" style="display:none"><label>モデル（入力）</label><input type="text" class="model-custom"></div>
+      </div>
+      <div>
       <div class="row"><label>本数</label><input type="number" class="qty" value="1" min="1" style="max-width:6em"></div>
+      </div>
+      </div>
+      <div class="row model-custom-row" style="display:none"><label>モデル（入力）</label><input type="text" class="model-custom"></div>
     </div>
 
     <div class="section">
       <div class="section-title">カラーカスタム</div>
+      <div class="row"><label>ブランクスカラー</label><input type="text"></div>
+      <div class="row"><label>ティップカラー</label><input type="text"></div>
       <div class="cols2">
         <div>
-          <div class="row"><label>ブランクスカラー</label><input type="text"></div>
-          <div class="row"><label>ティップカラー</label><input type="text"></div>
           <div class="row"><label>リールシート</label><input type="text"></div>
         </div>
         <div>
@@ -303,6 +311,12 @@
     <div class="section">
       <div class="section-title">こだわり・備考</div>
       <div class="memo-box"><textarea rows="2"></textarea></div>
+    </div>
+
+    <div class="sheet-footer">
+      <div class="company">IG Rod Planning</div>
+      <div>〒188-0004　東京都西東京市西原町5-3-30-301</div>
+      <div>TEL：090-1798-5613</div>
     </div>
 
   </div>
@@ -591,6 +605,50 @@
     }
   }
 
+  function swapFieldsForCapture(root) {
+    var swaps = [];
+    root.querySelectorAll('.meta-item input, .meta-item select, .row input, .row select, .row textarea, .memo-box textarea, .sheet-no-input').forEach(function (el) {
+      var text;
+      if (el.tagName === 'SELECT') {
+        text = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+      } else if (el.type === 'date') {
+        var parts = el.value ? el.value.split('-') : null;
+        text = parts ? parts[0] + '/' + Number(parts[1]) + '/' + Number(parts[2]) : '';
+      } else {
+        text = el.value;
+      }
+      var isSheetNo = el.classList.contains('sheet-no-input');
+      var isMetaItem = !!el.closest('.meta-item') || el.classList.contains('qty');
+      var isDueDate = el.classList.contains('due-date') && el.value;
+      var cs = getComputedStyle(el);
+      var overlay = document.createElement('div');
+      overlay.textContent = text;
+      var fontSize = isDueDate ? (parseFloat(cs.fontSize) * 3) + 'px' : cs.fontSize;
+      var fontWeight = isDueDate ? '900' : cs.fontWeight;
+      var layoutCss;
+      if (isSheetNo) {
+        layoutCss = 'display:inline-block;white-space:nowrap;width:' + cs.width + ';';
+      } else if (isMetaItem) {
+        layoutCss = 'display:inline-block;white-space:nowrap;width:auto;';
+      } else {
+        layoutCss = 'line-height:1.4;white-space:pre-wrap;width:100%;';
+      }
+      overlay.style.cssText = 'font-family:inherit;font-size:' + fontSize + ';font-weight:' + fontWeight + ';color:inherit;padding:' + cs.padding + ';' + layoutCss;
+      var prevDisplay = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', overlay);
+      swaps.push({ el: el, overlay: overlay, prevDisplay: prevDisplay });
+    });
+    return swaps;
+  }
+
+  function restoreFieldsAfterCapture(swaps) {
+    swaps.forEach(function (s) {
+      s.overlay.remove();
+      s.el.style.display = s.prevDisplay;
+    });
+  }
+
   function buildPrintSheet(record) {
     var frag = document.getElementById('sheet-template').content.cloneNode(true);
     var sheet = frag.querySelector('.sheet');
@@ -637,9 +695,11 @@
     var originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '作成中…';
+    var previewWindow = window.open('', '_blank');
     var container = document.getElementById('print-sheets');
     container.innerHTML = '';
     records.forEach(function (r) { container.appendChild(buildPrintSheet(r)); });
+    var swaps = swapFieldsForCapture(container);
 
     try {
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
@@ -648,7 +708,7 @@
       var margin = 8;
       var sheetEls = container.querySelectorAll('.sheet');
       for (var i = 0; i < sheetEls.length; i++) {
-        var canvas = await html2canvas(sheetEls[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 900 });
+        var canvas = await html2canvas(sheetEls[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
         var imgData = canvas.toDataURL('image/jpeg', 0.92);
         var imgW = pageW - margin * 2;
         var imgH = imgW * canvas.height / canvas.width;
@@ -660,7 +720,12 @@
         pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       }
       var d = new Date();
-      pdf.save('受注シート一覧_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.pdf');
+      var pdfName = '受注シート一覧_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.pdf';
+      if (previewWindow) {
+        previewWindow.location.href = pdf.output('bloburl');
+      } else {
+        pdf.save(pdfName);
+      }
       records.forEach(function (r) { r.printed = true; });
       await syncUpdatedArchive();
       selected = {};
@@ -668,8 +733,10 @@
       render();
     } catch (e) {
       console.error(e);
+      if (previewWindow) previewWindow.close();
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
+      restoreFieldsAfterCapture(swaps);
       container.innerHTML = '';
       btn.disabled = false;
       btn.textContent = originalLabel;
