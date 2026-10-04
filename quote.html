@@ -347,13 +347,14 @@
     btn.disabled = true;
     btn.textContent = '作成中…';
     var previewWindow = window.open('', '_blank');
+    try { if (previewWindow) { previewWindow.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); previewWindow.document.close(); } } catch (e) {}
     var toolbar = document.querySelector('.toolbar');
     toolbar.style.visibility = 'hidden';
     document.body.classList.add('pdf-capture');
     var swaps = swapQuoteFields();
     try {
       var sheetEl = document.querySelector('.sheet');
-      var SCALE = 3;
+      var SCALE = 2;
       var sheetTop = sheetEl.getBoundingClientRect().top;
       var cuts = [];
       sheetEl.querySelectorAll('.top-grid, .spec-row, .section-title, .price-table tbody tr:not(:first-child), .total-rows, .footer').forEach(function (n) {
@@ -387,15 +388,15 @@
         y = end;
       }
       var customer = document.getElementById('f-customer').value.trim() || '見積';
-      await saveQuoteToHistory();
       if (previewWindow) {
         previewWindow.location.href = pdf.output('bloburl');
       } else {
         pdf.save('オーダーシート_' + customer + '.pdf');
       }
+      await saveQuoteToHistory();
     } catch (e) {
       console.error(e);
-      if (previewWindow) previewWindow.close();
+      try { if (previewWindow) previewWindow.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
       restoreQuoteFields(swaps);

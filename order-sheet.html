@@ -656,6 +656,7 @@
     // Open synchronously (still inside the click gesture) so mobile Safari doesn't
     // block it once the async html2canvas work below pushes past the gesture window.
     var previewWindow = window.open('', '_blank');
+    try { if (previewWindow) { previewWindow.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); previewWindow.document.close(); } } catch (e) {}
     document.body.classList.add('pdf-capture');
     var fieldSwaps = swapFieldsForCapture();
     try {
@@ -686,7 +687,7 @@
       await syncSchedule();
     } catch (e) {
       console.error(e);
-      if (previewWindow) previewWindow.close();
+      try { if (previewWindow) previewWindow.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
       restoreFieldsAfterCapture(fieldSwaps);
