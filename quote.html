@@ -83,6 +83,15 @@
     .price-table th.del-col, .price-table td.del-col { width: 28px; }
   }
 
+  .pdf-capture .sheet { width: 534px; max-width: 534px; margin: 0; border: none; padding: 1rem 1.2rem 1.2rem; }
+  .pdf-capture .sheet-head { padding-bottom: 0.6rem; margin-bottom: 0.9rem; }
+  .pdf-capture .top-grid { grid-template-columns: 1.2fr 0.8fr 1fr; gap: 0.6rem; margin-bottom: 0.9rem; }
+  .pdf-capture .spec-row { grid-template-columns: 1fr; gap: 0.15rem; }
+  .pdf-capture .section-title { margin: 1rem 0 0.5rem; }
+  .pdf-capture .add-row-btn, .pdf-capture .price-table th.del-col, .pdf-capture .price-table td:last-child { display: none; }
+  .pdf-capture .sheet-head .fill-date { white-space: nowrap; }
+  .pdf-capture .price-table th.amt-col { width: 110px; }
+
   @media print {
     body { background: #fff; padding: 0; }
     .toolbar { display: none; }
@@ -242,34 +251,92 @@
     recalc();
   });
 
+  function swapQuoteFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet input[type="text"], .sheet input[type="date"], .sheet select, .sheet textarea').forEach(function (el) {
+      var text;
+      if (el.tagName === 'SELECT') {
+        text = el.value ? el.options[el.selectedIndex].text : '';
+      } else if (el.type === 'date') {
+        var p = el.value ? el.value.split('-') : null;
+        text = p ? p[0] + '/' + Number(p[1]) + '/' + Number(p[2]) : '';
+      } else {
+        text = el.value;
+      }
+      var cs = getComputedStyle(el);
+      var o = document.createElement('div');
+      o.textContent = text;
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';text-align:' + cs.textAlign + ';color:inherit;padding:' + cs.padding + ';line-height:1.6;' + (el.id === 'f-fill-date' ? 'flex:0 0 auto;width:auto;white-space:nowrap;' : 'flex:1 1 auto;min-width:0;width:100%;white-space:pre-wrap;') + 'border-bottom:' + (el.closest('.field') ? '1px solid #999' : 'none') + ';';
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+
+  function restoreQuoteFields(swaps) {
+    swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+  }
+
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this;
     var originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '作成中…';
+    var previewWindow = window.open('', '_blank');
     var toolbar = document.querySelector('.toolbar');
     toolbar.style.visibility = 'hidden';
+    document.body.classList.add('pdf-capture');
+    var swaps = swapQuoteFields();
     try {
       var sheetEl = document.querySelector('.sheet');
-      var canvas = await html2canvas(sheetEl, { scale: 2, backgroundColor: '#ffffff', windowWidth: 900 });
-      var imgData = canvas.toDataURL('image/jpeg', 0.92);
+      var SCALE = 3;
+      var sheetTop = sheetEl.getBoundingClientRect().top;
+      var cuts = [];
+      sheetEl.querySelectorAll('.top-grid, .spec-row, .section-title, .price-table tbody tr:not(:first-child), .total-rows, .footer').forEach(function (n) {
+        cuts.push((n.getBoundingClientRect().top - sheetTop) * SCALE);
+      });
+      cuts.sort(function (a, b) { return a - b; });
+      var canvas = await html2canvas(sheetEl, { scale: SCALE, backgroundColor: '#ffffff', windowWidth: 900 });
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var pageW = pdf.internal.pageSize.getWidth();
       var pageH = pdf.internal.pageSize.getHeight();
       var margin = 8;
       var imgW = pageW - margin * 2;
-      var imgH = imgW * canvas.height / canvas.width;
-      if (imgH > pageH - margin * 2) {
-        imgH = pageH - margin * 2;
-        imgW = imgH * canvas.width / canvas.height;
+      var pxPerMm = canvas.width / imgW;
+      var pagePx = Math.floor((pageH - margin * 2) * pxPerMm);
+      var y = 0, first = true;
+      while (y < canvas.height - 2) {
+        var end = Math.min(y + pagePx, canvas.height);
+        if (end < canvas.height) {
+          var best = 0;
+          cuts.forEach(function (c) { if (c > y + pagePx * 0.4 && c <= end) best = c; });
+          if (best) end = Math.floor(best);
+        }
+        var h = end - y;
+        var slice = document.createElement('canvas');
+        slice.width = canvas.width;
+        slice.height = h;
+        slice.getContext('2d').drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+        if (!first) pdf.addPage();
+        pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, h / pxPerMm);
+        first = false;
+        y = end;
       }
-      pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       var customer = document.getElementById('f-customer').value.trim() || '見積';
-      pdf.save('オーダーシート_' + customer + '.pdf');
+      if (previewWindow) {
+        previewWindow.location.href = pdf.output('bloburl');
+      } else {
+        pdf.save('オーダーシート_' + customer + '.pdf');
+      }
     } catch (e) {
       console.error(e);
+      if (previewWindow) previewWindow.close();
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
+      restoreQuoteFields(swaps);
+      document.body.classList.remove('pdf-capture');
       toolbar.style.visibility = '';
       btn.disabled = false;
       btn.textContent = originalLabel;
