@@ -214,7 +214,7 @@
           <div class="row"><label>発送方法</label>
             <select class="shipping-select">
               <option value="">選択</option>
-              <option>西濃運輸（営業所止め・送料無料）</option>
+              <option>西濃運輸</option>
               <option>個人宅宛（着払い）</option>
               <option>その他</option>
             </select>
@@ -293,8 +293,8 @@
         </div>
         <div>
           <div class="row"><label>メインスレッド</label><input type="text"></div>
-          <div class="row"><label>ティップ部分スレッド</label><input type="text"></div>
           <div class="row"><label>ピンライン</label><input type="text"></div>
+          <div class="row"><label>ティップ部分スレッド</label><input type="text"></div>
         </div>
       </div>
       <p class="hint">※ カラー番号は color.html のカラーチャートに準拠</p>
@@ -320,7 +320,6 @@
               <option>左スパイラル</option>
             </select>
           </div>
-          <div class="row"><label>グリップ仕様</label><input type="text"></div>
         </div>
         <div>
           <div class="row"><label>ネーム仕様</label>
@@ -470,8 +469,12 @@
 
   function setFieldValue(field, value) {
     if (field.tagName === 'SELECT') {
-      var match = Array.from(field.options).find(function (o) {
+      var opts = Array.from(field.options);
+      var match = opts.find(function (o) {
         return o.value === value || o.textContent.trim() === value;
+      }) || opts.find(function (o) {
+        var t = o.textContent.trim();
+        return t && (value.indexOf(t) === 0 || t.indexOf(value) === 0);
       });
       if (match) field.value = match.value;
     } else if (field.type === 'date') {
