@@ -86,8 +86,11 @@
   }
 
   async function persist() {
-    var res = await fetch(SYNC_API + '/quotes', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(quotes.slice().reverse()) });
-    if (!res.ok) throw new Error('save failed');
+    var res = await fetch(SYNC_API + '/paint');
+    if (!res.ok) throw new Error('load failed');
+    var others = (await res.json()).filter(function (r) { return !r.__quote; });
+    var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(quotes.slice().reverse())) });
+    if (!put.ok) throw new Error('save failed');
   }
 
   function render() {
@@ -125,10 +128,10 @@
 
   document.getElementById('f-search').addEventListener('input', function (e) { term = e.target.value.trim().toLowerCase(); render(); });
 
-  fetch(SYNC_API + '/quotes?_=' + Date.now())
+  fetch(SYNC_API + '/paint?_=' + Date.now())
     .then(function (r) { if (!r.ok) throw new Error('not ready'); return r.json(); })
-    .then(function (data) { quotes = data.slice().reverse(); render(); })
-    .catch(function () { document.getElementById('status-line').textContent = '読み込めませんでした（保存先の設定が未完了の可能性があります）'; });
+    .then(function (data) { quotes = data.filter(function (r) { return r.__quote; }).reverse(); render(); })
+    .catch(function () { document.getElementById('status-line').textContent = '読み込めませんでした。通信状況を確認して再読み込みしてください'; });
 </script>
 </body>
 </html>

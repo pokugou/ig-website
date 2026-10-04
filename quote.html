@@ -273,13 +273,16 @@
 
   async function saveQuoteToHistory() {
     var q = collectQuote();
+    q.__quote = true;
     try {
-      var res = await fetch(SYNC_API + '/quotes');
+      var res = await fetch(SYNC_API + '/paint');
       if (!res.ok) throw new Error('load failed');
-      var list = await res.json();
-      var idx = list.findIndex(function (x) { return x.id === q.id; });
-      if (idx >= 0) list[idx] = q; else list.push(q);
-      var put = await fetch(SYNC_API + '/quotes', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(list) });
+      var all = await res.json();
+      var others = all.filter(function (r) { return !r.__quote; });
+      var quotes = all.filter(function (r) { return r.__quote; });
+      var idx = quotes.findIndex(function (x) { return x.id === q.id; });
+      if (idx >= 0) quotes[idx] = q; else quotes.push(q);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(quotes)) });
       if (!put.ok) throw new Error('save failed');
       currentQuoteId = q.id;
     } catch (e) {
