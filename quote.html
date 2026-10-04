@@ -85,11 +85,19 @@
     .price-table th.del-col, .price-table td.del-col { width: 28px; }
   }
 
-  .pdf-capture .sheet { width: 534px; max-width: 534px; margin: 0; border: none; padding: 1rem 1.2rem 1.2rem; }
-  .pdf-capture .sheet-head { padding-bottom: 0.6rem; margin-bottom: 0.9rem; }
-  .pdf-capture .top-grid { grid-template-columns: 1.2fr 0.8fr 1fr; gap: 0.6rem; margin-bottom: 0.9rem; }
-  .pdf-capture .spec-row { grid-template-columns: 1fr; gap: 0.15rem; }
-  .pdf-capture .section-title { margin: 1rem 0 0.5rem; }
+  .pdf-capture .sheet { width: 520px; max-width: none; margin: 0; border: none; padding: 0.7rem 0.9rem 0.8rem; }
+  .pdf-capture .sheet-head { padding-bottom: 0.4rem; margin-bottom: 0.6rem; }
+  .pdf-capture .sheet-head h1 { font-size: 1.4rem; }
+  .pdf-capture .top-grid { grid-template-columns: 1.2fr 0.8fr 1fr; gap: 0.5rem; margin-bottom: 0.6rem; }
+  .pdf-capture .spec-row { grid-template-columns: 10.5em 1fr; gap: 0.5rem; padding: 0.3rem 0; }
+  .pdf-capture .spec-row label { font-size: 0.78rem; }
+  .pdf-capture .spec-row .thread-stack { gap: 0.1rem; }
+  .pdf-capture .section-title { margin: 0.7rem 0 0.35rem; }
+  .pdf-capture .memo-box { padding: 0.35rem 0.5rem; min-height: 0; }
+  .pdf-capture .price-table td { padding: 0.1rem 0.3rem; }
+  .pdf-capture .total-row { padding: 0.15rem 0.3rem; }
+  .pdf-capture .total-row.grand { margin-top: 0.15rem; padding-top: 0.35rem; }
+  .pdf-capture .footer { margin-top: 0.8rem; padding-top: 0.5rem; line-height: 1.5; }
   .pdf-capture .add-row-btn, .pdf-capture .price-table th.del-col, .pdf-capture .price-table td:last-child { display: none; }
   .pdf-capture .sheet-head .fill-date { white-space: nowrap; }
   .pdf-capture .price-table th.amt-col { width: 110px; }
@@ -355,38 +363,25 @@
     try {
       var sheetEl = document.querySelector('.sheet');
       var SCALE = 2;
-      var sheetTop = sheetEl.getBoundingClientRect().top;
-      var cuts = [];
-      sheetEl.querySelectorAll('.top-grid, .spec-row, .section-title, .price-table tbody tr:not(:first-child), .total-rows, .footer').forEach(function (n) {
-        cuts.push((n.getBoundingClientRect().top - sheetTop) * SCALE);
-      });
-      cuts.sort(function (a, b) { return a - b; });
-      var canvas = await html2canvas(sheetEl, { scale: SCALE, backgroundColor: '#ffffff', windowWidth: 900 });
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var pageW = pdf.internal.pageSize.getWidth();
       var pageH = pdf.internal.pageSize.getHeight();
       var margin = 8;
-      var imgW = pageW - margin * 2;
-      var pxPerMm = canvas.width / imgW;
-      var pagePx = Math.floor((pageH - margin * 2) * pxPerMm);
-      var y = 0, first = true;
-      while (y < canvas.height - 2) {
-        var end = Math.min(y + pagePx, canvas.height);
-        if (end < canvas.height) {
-          var best = 0;
-          cuts.forEach(function (c) { if (c > y + pagePx * 0.4 && c <= end) best = c; });
-          if (best) end = Math.floor(best);
-        }
-        var h = end - y;
-        var slice = document.createElement('canvas');
-        slice.width = canvas.width;
-        slice.height = h;
-        slice.getContext('2d').drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
-        if (!first) pdf.addPage();
-        pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, h / pxPerMm);
-        first = false;
-        y = end;
+      var ratio = (pageH - margin * 2) / (pageW - margin * 2);
+      var fitW = 900;
+      for (var w = 420; w <= 900; w += 20) {
+        sheetEl.style.width = w + 'px';
+        if (sheetEl.offsetHeight <= w * ratio * 0.99) { fitW = w; break; }
       }
+      sheetEl.style.width = fitW + 'px';
+      var canvas = await html2canvas(sheetEl, { scale: SCALE, backgroundColor: '#ffffff', windowWidth: 1000 });
+      var imgW = pageW - margin * 2;
+      var imgH = imgW * canvas.height / canvas.width;
+      if (imgH > pageH - margin * 2) {
+        imgH = pageH - margin * 2;
+        imgW = imgH * canvas.width / canvas.height;
+      }
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       var customer = document.getElementById('f-customer').value.trim() || '見積';
       if (previewWindow) {
         previewWindow.location.href = pdf.output('bloburl');
@@ -399,6 +394,7 @@
       try { if (previewWindow) previewWindow.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
+      document.querySelector('.sheet').style.width = '';
       restoreQuoteFields(swaps);
       document.body.classList.remove('pdf-capture');
       toolbar.style.visibility = '';
