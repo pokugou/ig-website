@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>見積一覧 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #ccc; --line2: #e2e2e2; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 1.6rem 1.2rem 4rem; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .back-link { display: inline-block; margin-bottom: 0.6rem; font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .back-link:hover { color: var(--red); }
+  header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.6rem; }
+  header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
+  header .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); }
+  .search-box { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+  .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.75rem 1rem; }
+  .search-box input:focus { outline: none; border-color: var(--red); }
+  .status-line { font-size: 0.74rem; color: var(--sub); margin-bottom: 1.2rem; }
+  .card { background: var(--paper); border: 1px solid var(--line); margin-bottom: 0.8rem; }
+  .summary { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.1rem; cursor: pointer; flex-wrap: wrap; }
+  .summary:hover { background: #fafafa; }
+  .summary .who { font-weight: 700; font-size: 0.95rem; flex: 1 1 8rem; }
+  .summary .total { font-weight: 900; font-size: 0.95rem; white-space: nowrap; }
+  .summary .when { font-size: 0.75rem; color: var(--sub); white-space: nowrap; }
+  .summary .arrow { font-size: 0.7rem; color: var(--sub); transition: transform 0.15s; }
+  .card.open .arrow { transform: rotate(90deg); }
+  .detail { display: none; border-top: 1px solid var(--line2); padding: 1rem 1.1rem 1.2rem; }
+  .card.open .detail { display: block; }
+  .actions { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .edit-btn { flex: 1; font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.7rem 1rem; cursor: pointer; }
+  .edit-btn:hover { background: var(--red); border-color: var(--red); }
+  .delete-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--sub); background: #fff; border: 1px solid var(--line); padding: 0.7rem 1rem; cursor: pointer; white-space: nowrap; }
+  .delete-btn:hover { color: #fff; background: var(--red); border-color: var(--red); }
+  .row { display: grid; grid-template-columns: 140px 1fr; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); font-size: 0.86rem; }
+  .row .dl { font-weight: 700; color: var(--sub); }
+  .row .dv { white-space: pre-wrap; }
+  .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
+  @media screen and (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 0.1rem; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back-link" href="quote.html">← 戻る</a>
+    <header>
+      <h1>見積一覧</h1>
+      <div class="brand">IG Rod Planning ／ 社内共有用</div>
+    </header>
+    <div class="search-box"><input type="text" id="f-search" placeholder="お客様名などで検索"></div>
+    <p class="status-line" id="status-line">読み込み中…</p>
+    <div id="list"></div>
+  </div>
+
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var quotes = [];
+  var term = '';
+
+  var LABELS = [
+    ['fillDate', '記入日'], ['leadTime', '納期'], ['due', '希望納期'], ['model', 'ベースモデル'], ['type', 'タイプ'],
+    ['blank', 'ブランクス'], ['tip', 'ティップ'], ['grip', 'グリップ仕様'], ['seat', 'シート種類'],
+    ['threadUpper', 'スレッド 上巻'], ['threadLower', 'スレッド 下巻'], ['threadTip', 'スレッド ティップ部分'],
+    ['guide', 'ガイド仕様'], ['nameSpec', 'ネーム仕様'], ['notes', 'こだわり等']
+  ];
+
+  function totalOf(q) {
+    var sub = 0;
+    (q.items || []).forEach(function (it) { var v = parseFloat(String(it.amt || '0').replace(/[^0-9.-]/g, '')); sub += isNaN(v) ? 0 : v; });
+    return Math.round(sub + Math.round(sub * 0.1));
+  }
+
+  function matches(q) {
+    if (!term) return true;
+    var hay = [q.customer, q.model, q.blank, q.tip, q.notes].concat((q.items || []).map(function (i) { return i.name; })).join(' ').toLowerCase();
+    return hay.indexOf(term) !== -1;
+  }
+
+  function row(l, v) {
+    var r = document.createElement('div'); r.className = 'row';
+    var a = document.createElement('span'); a.className = 'dl'; a.textContent = l;
+    var b = document.createElement('span'); b.className = 'dv'; b.textContent = v;
+    r.appendChild(a); r.appendChild(b); return r;
+  }
+
+  async function persist() {
+    var res = await fetch(SYNC_API + '/quotes', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(quotes.slice().reverse()) });
+    if (!res.ok) throw new Error('save failed');
+  }
+
+  function render() {
+    var list = document.getElementById('list');
+    var visible = quotes.filter(matches);
+    document.getElementById('status-line').textContent = term ? visible.length + '件 / 全' + quotes.length + '件' : quotes.length + '件';
+    list.innerHTML = '';
+    if (!visible.length) { list.innerHTML = '<p class="empty">' + (term ? '一致する見積がありません' : 'まだ見積の記録がありません') + '</p>'; return; }
+    visible.forEach(function (q) {
+      var card = document.createElement('div'); card.className = 'card';
+      var s = document.createElement('div'); s.className = 'summary';
+      s.innerHTML = '<span class="who"></span><span class="total"></span><span class="when"></span><span class="arrow">▶</span>';
+      s.querySelector('.who').textContent = (q.customer ? q.customer + ' 様' : '(名前未記入)') + (q.model ? '　' + q.model : '');
+      s.querySelector('.total').textContent = '¥' + totalOf(q).toLocaleString('ja-JP');
+      s.querySelector('.when').textContent = q.fillDate || '';
+      s.addEventListener('click', function () { card.classList.toggle('open'); });
+
+      var d = document.createElement('div'); d.className = 'detail';
+      var acts = document.createElement('div'); acts.className = 'actions';
+      var edit = document.createElement('button'); edit.type = 'button'; edit.className = 'edit-btn'; edit.textContent = 'この内容を見積シートで編集する →';
+      edit.addEventListener('click', function () { localStorage.setItem('quote-reload', JSON.stringify(q)); location.href = 'quote.html'; });
+      var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この見積を削除';
+      del.addEventListener('click', async function () {
+        if (!confirm((q.customer || 'この見積') + 'を本当に削除しますか？')) return;
+        quotes = quotes.filter(function (x) { return x.id !== q.id; });
+        try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
+        render();
+      });
+      acts.appendChild(edit); acts.appendChild(del); d.appendChild(acts);
+      LABELS.forEach(function (p) { if (q[p[0]]) d.appendChild(row(p[1], q[p[0]])); });
+      (q.items || []).forEach(function (it) { d.appendChild(row(it.name || '項目', it.amt ? '¥' + (parseFloat(String(it.amt).replace(/[^0-9.-]/g, '')) || 0).toLocaleString('ja-JP') : '')); });
+      card.appendChild(s); card.appendChild(d); list.appendChild(card);
+    });
+  }
+
+  document.getElementById('f-search').addEventListener('input', function (e) { term = e.target.value.trim().toLowerCase(); render(); });
+
+  fetch(SYNC_API + '/quotes?_=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('not ready'); return r.json(); })
+    .then(function (data) { quotes = data.slice().reverse(); render(); })
+    .catch(function () { document.getElementById('status-line').textContent = '読み込めませんでした（保存先の設定が未完了の可能性があります）'; });
+</script>
+</body>
+</html>

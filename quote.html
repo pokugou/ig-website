@@ -17,6 +17,8 @@
   .toolbar { max-width: 760px; margin: 0 auto 1rem; display: flex; justify-content: flex-end; gap: 0.6rem; flex-wrap: wrap; }
   .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; letter-spacing: 0.03em; }
   .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar .history-link { display: inline-flex; align-items: center; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: #fff; margin-right: auto; }
+  .toolbar .history-link:hover { background: var(--red); border-color: var(--red); color: #fff; }
   .toolbar button.secondary { background: #fff; color: var(--ink); }
   .toolbar button.secondary:hover { background: #eee; border-color: var(--ink); color: var(--ink); }
 
@@ -105,6 +107,7 @@
 <body>
 
   <div class="toolbar">
+    <a class="history-link" href="quote-history.html">📋 見積一覧を見る →</a>
     <button type="button" class="secondary" id="btn-reset">クリア</button>
     <button type="button" class="secondary" id="btn-save">PDFとして保存</button>
     <button type="button" id="btn-print">印刷</button>
@@ -239,10 +242,66 @@
   addRow('ベース価格', '');
   recalc();
 
+
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var currentQuoteId = null;
+  var QUOTE_FIELDS = {
+    customer: 'f-customer', leadTime: 'f-lead-time', due: 'f-due-request', model: 'f-model', type: 'f-type',
+    blank: 'f-blank-color', tip: 'f-tip-color', grip: 'f-grip', seat: 'f-seat',
+    threadUpper: 'f-thread-upper', threadLower: 'f-thread-lower', threadTip: 'f-thread-tip',
+    guide: 'f-guide', nameSpec: 'f-name', notes: 'f-notes'
+  };
+
+  function collectQuote() {
+    var q = { id: currentQuoteId || ('q-' + Date.now()), savedAt: new Date().toISOString(), fillDate: document.getElementById('f-fill-date').value, items: [] };
+    Object.keys(QUOTE_FIELDS).forEach(function (k) { q[k] = document.getElementById(QUOTE_FIELDS[k]).value; });
+    rowsBody.querySelectorAll('tr').forEach(function (tr) {
+      var n = tr.querySelector('.item-name').value, a = tr.querySelector('.item-amt').value;
+      if (n || a) q.items.push({ name: n, amt: a });
+    });
+    return q;
+  }
+
+  function populateQuote(q) {
+    currentQuoteId = q.id || null;
+    if (q.fillDate) document.getElementById('f-fill-date').value = q.fillDate;
+    Object.keys(QUOTE_FIELDS).forEach(function (k) { document.getElementById(QUOTE_FIELDS[k]).value = q[k] || ''; });
+    rowsBody.innerHTML = '';
+    (q.items && q.items.length ? q.items : [{ name: 'ベース価格', amt: '' }]).forEach(function (it) { addRow(it.name, it.amt); });
+    recalc();
+  }
+
+  async function saveQuoteToHistory() {
+    var q = collectQuote();
+    try {
+      var res = await fetch(SYNC_API + '/quotes');
+      if (!res.ok) throw new Error('load failed');
+      var list = await res.json();
+      var idx = list.findIndex(function (x) { return x.id === q.id; });
+      if (idx >= 0) list[idx] = q; else list.push(q);
+      var put = await fetch(SYNC_API + '/quotes', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(list) });
+      if (!put.ok) throw new Error('save failed');
+      currentQuoteId = q.id;
+    } catch (e) {
+      console.error(e);
+      alert('PDFは作成しましたが、見積一覧への保存に失敗しました。');
+    }
+  }
+
+  (function loadQuoteIfRequested() {
+    try {
+      var raw = localStorage.getItem('quote-reload');
+      if (!raw) return;
+      localStorage.removeItem('quote-reload');
+      populateQuote(JSON.parse(raw));
+    } catch (e) { console.error(e); }
+  })();
+
   document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
 
   document.getElementById('btn-reset').addEventListener('click', function () {
     if (!confirm('入力内容をすべてクリアしますか？')) return;
+    currentQuoteId = null;
     document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function (el) { el.value = ''; });
     document.getElementById('f-lead-time').value = '60〜90日';
     document.getElementById('f-type').selectedIndex = 0;
@@ -325,6 +384,7 @@
         y = end;
       }
       var customer = document.getElementById('f-customer').value.trim() || '見積';
+      await saveQuoteToHistory();
       if (previewWindow) {
         previewWindow.location.href = pdf.output('bloburl');
       } else {
