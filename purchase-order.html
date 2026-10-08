@@ -18,7 +18,7 @@
   .toolbar button:hover { background: var(--red); border-color: var(--red); }
   .toolbar button.secondary { background: #fff; color: var(--ink); }
   .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
-  .sender-pick { max-width: 794px; margin: 0 auto 0.6rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; font-weight: 700; }
+  .sender-pick { max-width: 794px; margin: 0 auto 0.6rem; display: flex; flex-wrap: wrap; row-gap: 0.4rem; align-items: center; gap: 0.6rem; font-size: 0.82rem; font-weight: 700; }
   .sender-pick select { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.45rem 0.6rem; border: 1px solid var(--ink); background: #fff; }
   .pdf-capture .sender-pick { display: none; }
   @media print { .sender-pick { display: none; } .company ::placeholder { color: transparent; } }
@@ -102,6 +102,13 @@
       <option value="custom">自由入力</option>
       <option value="blank">空欄（何も載せない）</option>
     </select>
+    <label for="f-ship" style="margin-left:0.8rem">下の送り先</label>
+    <select id="f-ship">
+      <option value="">なし</option>
+      <option value="ig">株式会社IG</option>
+      <option value="tamesada">tamesada</option>
+      <option value="custom">自由入力</option>
+    </select>
   </div>
   <p class="hint">仕入先ごとの注文書です。品名・数量・備考を入力して「PDFとして保存」すると、A4の1枚で出力されます。</p>
 
@@ -154,6 +161,40 @@
     ig: { addr: DEF_ADDR, company: DEF_COMPANY, tel: DEF_TEL },
     tamesada: { addr: '〒750-0092\n山口県下関市彦島迫町4-11-6', company: 'tamesada', tel: 'TEL.090-5379-7835' }
   };
+  // 備考欄の「送り先」ブロック。備考のほかの文章は残し、このブロックだけ入れ替える
+  var SHIP_BLOCKS = {
+    ig: '送り先\n〒188-0004\n東京都西東京市西原町5-3-30パルシオⅡ301\n株式会社IG 石谷 豪\nTEL.090-1798-5613',
+    tamesada: '送り先\n〒750-0092\n山口県下関市彦島迫町4-11-6\ntamesada\nTEL.090-5379-7835',
+    custom: '送り先\n〒'
+  };
+  function currentShipBlock(note) {
+    var hit = '';
+    ['ig', 'tamesada'].forEach(function (k) { if (!hit && note.indexOf(SHIP_BLOCKS[k]) !== -1) hit = k; });
+    return hit;
+  }
+  function syncShipPick() {
+    var note = document.getElementById('f-note').value;
+    document.getElementById('f-ship').value = currentShipBlock(note) || (/(^|\n)送り先/.test(note) ? 'custom' : '');
+  }
+  // 備考の最後にある「送り先」段落（空行を含まないまとまり）を返す
+  function tailShipBlock(note) {
+    var m = note.replace(/\n+$/, '').match(/(^|\n)(送り先[^\n]*(?:\n(?!\n)[^\n]*)*)$/);
+    return m ? m[2] : '';
+  }
+  function setShip(kind) {
+    var el = document.getElementById('f-note');
+    var note = el.value.replace(/\n+$/, ''), tail = tailShipBlock(note);
+    if (tail) {
+      var known = tail === SHIP_BLOCKS.ig || tail === SHIP_BLOCKS.tamesada || tail === SHIP_BLOCKS.custom;
+      if (!known && !confirm('備考欄の今の送り先を置き換えますか？\n\n' + tail)) { syncShipPick(); return; }
+      note = note.slice(0, note.length - tail.length);
+    }
+    note = note.replace(/\n{3,}/g, '\n\n').replace(/^\n+|\n+$/g, '');
+    if (kind) note = (note ? note + '\n\n' : '') + SHIP_BLOCKS[kind];
+    el.value = note;
+    if (kind === 'custom') { el.focus(); el.setSelectionRange(note.length, note.length); }
+  }
+
   function senderNow() {
     return { addr: document.getElementById('f-addr').value, company: document.getElementById('f-company').value, tel: document.getElementById('f-tel').value };
   }
@@ -224,6 +265,7 @@
     rowsEl.innerHTML = '';
     (d.rows && d.rows.length ? d.rows : []).forEach(addRow);
     while (rowsEl.children.length < 15) addRow();
+    syncShipPick();
   }
 
   var draft = null;
@@ -252,6 +294,11 @@
     if (this.value === 'custom') document.getElementById('f-addr').focus();
     if (!DEMO) saveDraft();
   });
+  document.getElementById('f-ship').addEventListener('change', function () {
+    setShip(this.value);
+    if (!DEMO) saveDraft();
+  });
+  document.getElementById('f-note').addEventListener('input', syncShipPick);
   // 右上を直接書き換えたら、選択も「自由入力」などに合わせる
   ['f-addr', 'f-company', 'f-tel'].forEach(function (id) {
     document.getElementById(id).addEventListener('input', function () {
