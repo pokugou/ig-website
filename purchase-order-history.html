@@ -33,6 +33,8 @@
   .actions { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
   .edit-btn { flex: 1; font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.7rem 1rem; cursor: pointer; }
   .edit-btn:hover { background: var(--red); border-color: var(--red); }
+  .again-btn { background: var(--red); border-color: var(--red); }
+  .again-btn:hover { background: #a01a00; border-color: #a01a00; }
   .delete-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--sub); background: #fff; border: 1px solid var(--line); padding: 0.7rem 1rem; cursor: pointer; white-space: nowrap; }
   .delete-btn:hover { color: #fff; background: var(--red); border-color: var(--red); }
   .row { display: grid; grid-template-columns: 140px 1fr; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); font-size: 0.86rem; }
@@ -103,6 +105,13 @@
       var acts = document.createElement('div'); acts.className = 'actions';
       var edit = document.createElement('button'); edit.type = 'button'; edit.className = 'edit-btn'; edit.textContent = 'この内容を注文書で編集する →';
       edit.addEventListener('click', function () { localStorage.setItem('po-reload', JSON.stringify(o)); location.href = 'purchase-order.html'; });
+      var again = document.createElement('button'); again.type = 'button'; again.className = 'edit-btn again-btn'; again.textContent = '同じ内容で再注文（おかわり）→';
+      again.addEventListener('click', function () {
+        var c = JSON.parse(JSON.stringify(o));
+        delete c.id; delete c.date; delete c.__po;
+        (c.rows || []).forEach(function (r) { r.due = ''; });
+        localStorage.setItem('po-reload', JSON.stringify(c)); location.href = 'purchase-order.html';
+      });
       var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この注文書を削除';
       del.addEventListener('click', async function () {
         if (!confirm((o.to || 'この注文書') + 'を本当に削除しますか？')) return;
@@ -110,7 +119,7 @@
         try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
         render();
       });
-      acts.appendChild(edit); acts.appendChild(del); d.appendChild(acts);
+      acts.appendChild(again); acts.appendChild(edit); acts.appendChild(del); d.appendChild(acts);
       d.appendChild(row('作成日', fmtDate(o.date)));
       d.appendChild(row('作成者', o.author || ''));
       items.forEach(function (r, i) {
