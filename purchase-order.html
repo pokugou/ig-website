@@ -167,7 +167,7 @@
     return { to: document.getElementById('f-to').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, note: document.getElementById('f-note').value, rows: rows };
   }
 
-  function saveDraft() { try { localStorage.setItem(STORE_KEY, JSON.stringify(snapshot())); } catch (e) {} }
+  function saveDraft() { if (/[?&]demo=1/.test(location.search)) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(snapshot())); } catch (e) {} }
 
   function restore(d) {
     document.getElementById('f-to').value = d.to || '';
@@ -181,8 +181,22 @@
 
   var draft = null;
   try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+  var DEMO = /[?&]demo=1/.test(location.search);
+  if (DEMO) {
+    draft = {
+      to: '株式会社ファイブコア', author: '石谷 豪',
+      rows: [
+        { name: 'ブランクス CK-662UL', qty: '5', price: '12,000', jan: '123456', due: '10/20' },
+        { name: 'ブランクス CK-702L', qty: '3', price: '13,500', jan: '234567', due: '10/20' },
+        { name: 'リールシート 16mm', qty: '10', price: '2,800', jan: '345678', due: '10/25' },
+        { name: 'ガイドセット Fuji SiC', qty: '4', price: '5,400', jan: '456789', due: '10/25' },
+        { name: 'グリップ EVA 150mm', qty: '8', price: '900', jan: '567890', due: '10/31' }
+      ],
+      note: '送り先①\n〒188-0004 東京都西東京市西原町5-3-30パルシオⅡ301\nIG Rod Planning 石谷 豪\n\n送り先②\n〒000-0000 ○○県○○市○○1-2-3\n○○ 様　TEL.000-0000-0000'
+    };
+  }
   restore(draft || {});
-  document.addEventListener('input', saveDraft);
+  if (!DEMO) document.addEventListener('input', saveDraft);
 
   document.getElementById('btn-add').addEventListener('click', function () { addRow(); saveDraft(); });
   document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
