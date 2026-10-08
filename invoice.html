@@ -192,7 +192,7 @@
           <div class="co">株式会社IG<small>IG Rod Planning</small></div>
         </div>
         <div>〒188-0004</div>
-        <div>東京都西東京市西原町5丁目3-28 パルシオ西原Ⅱ301</div>
+        <div>東京都西東京市西原町5-3-30-301</div>
         <div>TEL 090-1798-5613</div>
         <div class="reg">登録番号 T4010401187852</div>
         <img class="seal" src="seal.png" alt="">
@@ -286,7 +286,7 @@
   function totals() {
     var sub = 0;
     rowsBody.querySelectorAll('tr').forEach(function (tr) { sub += num(tr.querySelector('.f-amt').value); });
-    var tax = Math.round(sub * TAX_RATE);
+    var tax = Math.ceil(Math.round(sub * TAX_RATE * 1e6) / 1e6);
     var carryOn = $('opt-carry').checked;
     var prev = carryOn ? num($('f-prev').value) : 0, paid = carryOn ? num($('f-paid').value) : 0;
     var carry = prev - paid;

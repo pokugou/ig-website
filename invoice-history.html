@@ -89,7 +89,7 @@
   function figures(inv) {
     var sub = 0;
     (inv.items || []).forEach(function (it) { sub += num(it.amt); });
-    var tax = Math.round(sub * 0.1);
+    var tax = Math.ceil(Math.round(sub * 0.1 * 1e6) / 1e6);
     var carry = inv.showCarry === false ? 0 : num(inv.prev) - num(inv.paid);
     return { sub: sub, tax: tax, carry: carry, total: carry + sub + tax };
   }
