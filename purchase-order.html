@@ -137,6 +137,7 @@
   var DEF_ADDR = '〒188-0004\n東京都西東京市西原町\n5-3-30パルシオⅡ301';
   var DEF_COMPANY = '株式会社IG';
   var DEF_TEL = 'TEL.09017985613';
+  var DEFAULT_DUE = '最短納期希望';
 
   function todayISO() {
     var d = new Date();
@@ -158,6 +159,12 @@
     tr.querySelector('.r-price').value = v.price || '';
     tr.querySelector('.r-jan').value = v.jan || '';
     tr.querySelector('.r-due').value = v.due || '';
+    // 品名を入れた行は、希望納期が空なら「最短納期希望」を自動で入れる（自分で消した行はそのまま）
+    var dueEl = tr.querySelector('.r-due');
+    dueEl.addEventListener('input', function () { dueEl.dataset.touched = '1'; });
+    tr.querySelector('.r-name').addEventListener('input', function () {
+      if (this.value.trim() && !dueEl.value && !dueEl.dataset.touched) dueEl.value = DEFAULT_DUE;
+    });
     rowsEl.appendChild(tr);
     renumber();
   }
