@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>注文書（発注書）| IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #999; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
+
+  .toolbar { max-width: 794px; margin: 0 auto 0.8rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .toolbar .back { margin-right: auto; font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .toolbar .back:hover { color: var(--red); }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
+  .hint { max-width: 794px; margin: 0 auto 1rem; font-size: 0.72rem; color: var(--sub); }
+
+  .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2.4rem 2.6rem 2.6rem; }
+  .sheet input, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; }
+  .sheet input:focus, .sheet textarea:focus { outline: none; background: #fff8e0; }
+
+  h1 { text-align: center; font-size: 1.7rem; font-weight: 900; letter-spacing: 0.3em; margin-bottom: 1.4rem; }
+  .to { display: flex; align-items: baseline; gap: 0.4rem; border-bottom: 2px solid var(--ink); width: 22rem; max-width: 100%; margin-bottom: 1.2rem; }
+  .to input { font-size: 1.25rem; font-weight: 700; }
+  .to span { font-size: 1.25rem; font-weight: 700; white-space: nowrap; }
+
+  .head { display: grid; grid-template-columns: 1fr 15rem; gap: 1.2rem; align-items: start; margin-bottom: 0.8rem; }
+  .meta { border-collapse: collapse; width: 100%; max-width: 26rem; }
+  .meta td { border: 1.5px solid var(--ink); padding: 0.15rem 0.5rem; font-size: 0.85rem; }
+  .meta td.k { text-align: center; width: 45%; }
+  .meta td input { text-align: center; font-weight: 700; font-size: 0.85rem; }
+  .greet { margin-top: 1.1rem; font-size: 0.82rem; line-height: 1.8; }
+  .company { font-size: 0.78rem; line-height: 1.7; }
+  .company .name { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.15rem; margin: 0.2rem 0; }
+  .company .name b { font-style: normal; font-weight: 900; font-family: 'Noto Sans JP', sans-serif; }
+  .company .tel { font-size: 0.95rem; }
+
+  table.items { width: 100%; border-collapse: collapse; margin-top: 0.4rem; }
+  table.items th, table.items td { border: 1.5px solid var(--ink); padding: 0; font-size: 0.85rem; }
+  table.items th { font-weight: 400; font-size: 0.72rem; padding: 0.15rem 0.2rem; }
+  table.items td.no { text-align: center; font-size: 0.75rem; width: 5.5%; }
+  table.items td.name { width: 38%; }
+  table.items td.qty { width: 12%; }
+  table.items td.price { width: 12%; }
+  table.items td.jan { width: 15%; }
+  table.items td.due { width: 17.5%; }
+  table.items td input { padding: 0.28rem 0.4rem; font-size: 0.95rem; }
+  table.items td.qty input { text-align: center; font-weight: 900; font-size: 1.05rem; }
+  table.items td.price input, table.items td.jan input, table.items td.due input { font-size: 0.8rem; text-align: center; }
+
+  table.note { width: 100%; border-collapse: collapse; margin-top: 0.7rem; }
+  table.note td { border: 2px solid var(--ink); vertical-align: middle; }
+  table.note td.k { width: 5.5%; text-align: center; font-size: 0.72rem; padding: 0.2rem; }
+  .note-box { min-height: 17rem; padding: 0.7rem 0.8rem; }
+  .note-box textarea { font-size: 1rem; line-height: 1.7; resize: vertical; min-height: 16rem; height: 100%; }
+
+  .add-row { max-width: 794px; margin: 0.6rem auto 0; }
+  .add-row button { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.55rem 1rem; width: 100%; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
+  .add-row button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+
+  @media screen and (max-width: 640px) {
+    .sheet { padding: 1.2rem 0.8rem 1.4rem; }
+    .head { grid-template-columns: 1fr; }
+    table.items td input { padding: 0.35rem 0.25rem; font-size: 0.85rem; }
+  }
+
+  .pdf-capture .sheet { width: 794px; max-width: none; border: none; }
+  .pdf-capture .head { grid-template-columns: 1fr 15rem; }
+  .pdf-capture .toolbar, .pdf-capture .add-row, .pdf-capture .hint { display: none; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .add-row, .hint { display: none; }
+    .sheet { width: 100%; border: none; padding: 0; }
+    @page { size: A4; margin: 1.2cm; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a class="back" href="tools.html">← ツール一覧</a>
+    <button type="button" class="secondary" id="btn-reset">クリア</button>
+    <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" id="btn-save">PDFとして保存</button>
+  </div>
+  <p class="hint">仕入先ごとの注文書です。品名・数量・備考を入力して「PDFとして保存」すると、A4の1枚で出力されます。</p>
+
+  <div class="sheet" id="sheet">
+    <h1>注文書</h1>
+    <div class="to"><input type="text" id="f-to" placeholder="発注先（例：株式会社ファイブコア）"><span>御中</span></div>
+
+    <div class="head">
+      <div>
+        <table class="meta">
+          <tr><td class="k">注文書作成日</td><td><input type="date" id="f-date"></td></tr>
+          <tr><td class="k">作成者</td><td><input type="text" id="f-author" value="石谷 豪"></td></tr>
+        </table>
+        <div class="greet">平素より格別の御高配誠にありがとうございます。<br>下記商品の御手配をお願い致します。</div>
+      </div>
+      <div class="company">
+        〒188-0004<br>東京都西東京市西原町<br>5-3-30パルシオⅡ301
+        <div class="name"><b>IG</b> Rod Planning</div>
+        <div class="tel">TEL.09017985613</div>
+      </div>
+    </div>
+
+    <table class="items">
+      <thead><tr><th>No.</th><th>品名</th><th>数量</th><th>単価</th><th>JAN下6桁</th><th>希望納期</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+
+    <table class="note">
+      <tr>
+        <td class="k">備考欄</td>
+        <td><div class="note-box"><textarea id="f-note" placeholder="送り先など"></textarea></div></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="add-row"><button type="button" id="btn-add">＋ 行を追加</button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  var rowsEl = document.getElementById('rows');
+  var STORE_KEY = 'purchase-order-draft';
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function addRow(v) {
+    v = v || {};
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="no"></td>' +
+      '<td class="name"><input type="text" class="r-name"></td>' +
+      '<td class="qty"><input type="text" class="r-qty" inputmode="numeric"></td>' +
+      '<td class="price"><input type="text" class="r-price"></td>' +
+      '<td class="jan"><input type="text" class="r-jan"></td>' +
+      '<td class="due"><input type="text" class="r-due"></td>';
+    tr.querySelector('.r-name').value = v.name || '';
+    tr.querySelector('.r-qty').value = v.qty || '';
+    tr.querySelector('.r-price').value = v.price || '';
+    tr.querySelector('.r-jan').value = v.jan || '';
+    tr.querySelector('.r-due').value = v.due || '';
+    rowsEl.appendChild(tr);
+    renumber();
+  }
+
+  function renumber() {
+    rowsEl.querySelectorAll('tr').forEach(function (tr, i) { tr.querySelector('.no').textContent = i + 1; });
+  }
+
+  function snapshot() {
+    var rows = [];
+    rowsEl.querySelectorAll('tr').forEach(function (tr) {
+      rows.push({ name: tr.querySelector('.r-name').value, qty: tr.querySelector('.r-qty').value, price: tr.querySelector('.r-price').value, jan: tr.querySelector('.r-jan').value, due: tr.querySelector('.r-due').value });
+    });
+    return { to: document.getElementById('f-to').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, note: document.getElementById('f-note').value, rows: rows };
+  }
+
+  function saveDraft() { try { localStorage.setItem(STORE_KEY, JSON.stringify(snapshot())); } catch (e) {} }
+
+  function restore(d) {
+    document.getElementById('f-to').value = d.to || '';
+    document.getElementById('f-date').value = d.date || todayISO();
+    document.getElementById('f-author').value = d.author || '石谷 豪';
+    document.getElementById('f-note').value = d.note || '';
+    rowsEl.innerHTML = '';
+    (d.rows && d.rows.length ? d.rows : []).forEach(addRow);
+    while (rowsEl.children.length < 15) addRow();
+  }
+
+  var draft = null;
+  try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+  restore(draft || {});
+  document.addEventListener('input', saveDraft);
+
+  document.getElementById('btn-add').addEventListener('click', function () { addRow(); saveDraft(); });
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+  document.getElementById('btn-reset').addEventListener('click', function () {
+    if (!confirm('入力内容をすべてクリアしますか？')) return;
+    restore({});
+    saveDraft();
+  });
+
+  function swapFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet input, .sheet textarea').forEach(function (el) {
+      var text = el.value;
+      if (el.type === 'date') { var p = el.value ? el.value.split('-') : null; text = p ? p[0] + '/' + Number(p[1]) + '/' + Number(p[2]) : ''; }
+      var cs = getComputedStyle(el);
+      var o = document.createElement('div');
+      o.textContent = text;
+      var inCell = !!el.closest('td');
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';text-align:' + cs.textAlign + ';color:inherit;padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.7' : '1.4') + ';white-space:pre-wrap;width:100%;min-height:' + (inCell && el.closest('.items') ? '1.9em' : '0') + ';';
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    document.body.classList.add('pdf-capture');
+    var swaps = swapFields();
+    try {
+      var sheet = document.getElementById('sheet');
+      var canvas = await html2canvas(sheet, { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
+      var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+      if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, imgH);
+      var to = document.getElementById('f-to').value.trim() || '注文書';
+      var d = document.getElementById('f-date').value.replace(/-/g, '');
+      var name = d + to.replace(/[\\/:*?"<>|]/g, '') + '_注文書.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+</script>
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (sessionStorage.getItem(k)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        if (t[0] !== t[1]) {
+          sessionStorage.setItem(k, '1');
+          fetch(p, { cache: 'reload' }).then(function () { location.reload(); });
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>
