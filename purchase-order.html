@@ -21,7 +21,7 @@
   .sender-pick { max-width: 794px; margin: 0 auto 0.6rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; font-weight: 700; }
   .sender-pick select { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.45rem 0.6rem; border: 1px solid var(--ink); background: #fff; }
   .pdf-capture .sender-pick { display: none; }
-  @media print { .sender-pick { display: none; } }
+  @media print { .sender-pick { display: none; } .company ::placeholder { color: transparent; } }
   .hint { max-width: 794px; margin: 0 auto 1rem; font-size: 0.72rem; color: var(--sub); }
 
   .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2.4rem 2.6rem 2.6rem; }
@@ -99,6 +99,8 @@
     <select id="f-sender">
       <option value="ig">株式会社IG（通常）</option>
       <option value="tamesada">tamesada（直送）</option>
+      <option value="custom">自由入力</option>
+      <option value="blank">空欄（何も載せない）</option>
     </select>
   </div>
   <p class="hint">仕入先ごとの注文書です。品名・数量・備考を入力して「PDFとして保存」すると、A4の1枚で出力されます。</p>
@@ -116,9 +118,9 @@
         <div class="greet">平素より格別の御高配誠にありがとうございます。<br>下記商品の御手配をお願い致します。</div>
       </div>
       <div class="company">
-        <textarea id="f-addr" rows="3"></textarea>
-        <input type="text" class="name" id="f-company">
-        <input type="text" class="tel" id="f-tel">
+        <textarea id="f-addr" rows="3" placeholder="〒・住所"></textarea>
+        <input type="text" class="name" id="f-company" placeholder="名前・会社名">
+        <input type="text" class="tel" id="f-tel" placeholder="TEL">
       </div>
     </div>
 
@@ -152,9 +154,17 @@
     ig: { addr: DEF_ADDR, company: DEF_COMPANY, tel: DEF_TEL },
     tamesada: { addr: '〒750-0092\n山口県下関市彦島迫町4-11-6', company: 'tamesada', tel: 'TEL.090-5379-7835' }
   };
+  function senderNow() {
+    return { addr: document.getElementById('f-addr').value, company: document.getElementById('f-company').value, tel: document.getElementById('f-tel').value };
+  }
   function syncSenderPick() {
-    var c = document.getElementById('f-company').value;
-    document.getElementById('f-sender').value = c === SENDERS.tamesada.company ? 'tamesada' : 'ig';
+    var n = senderNow(), pick = 'custom';
+    if (!n.addr.trim() && !n.company.trim() && !n.tel.trim()) pick = 'blank';
+    Object.keys(SENDERS).forEach(function (k) {
+      var v = SENDERS[k];
+      if (n.addr === v.addr && n.company === v.company && n.tel === v.tel) pick = k;
+    });
+    document.getElementById('f-sender').value = pick;
   }
   var DEFAULT_DUE = '最短納期希望';
 
@@ -235,11 +245,19 @@
   }
   restore(draft || {});
   document.getElementById('f-sender').addEventListener('change', function () {
-    var v = SENDERS[this.value];
+    var v = SENDERS[this.value] || { addr: '', company: '', tel: '' };
     document.getElementById('f-addr').value = v.addr;
     document.getElementById('f-company').value = v.company;
     document.getElementById('f-tel').value = v.tel;
+    if (this.value === 'custom') document.getElementById('f-addr').focus();
     if (!DEMO) saveDraft();
+  });
+  // 右上を直接書き換えたら、選択も「自由入力」などに合わせる
+  ['f-addr', 'f-company', 'f-tel'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () {
+      syncSenderPick();
+      if (document.getElementById('f-sender').value === 'blank') document.getElementById('f-sender').value = 'custom';
+    });
   });
   if (!DEMO) document.addEventListener('input', saveDraft);
 
