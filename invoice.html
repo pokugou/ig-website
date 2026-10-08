@@ -345,6 +345,39 @@
     return tr;
   }
 
+  // 明細の入力欄をキーボードで移動：↑↓（Enter）で上下の行、←→は文字の端で隣の欄へ。日本語変換中は何もしない
+  function enableArrowNav(tbody) {
+    tbody.addEventListener('keydown', function (e) {
+      if (e.isComposing || e.keyCode === 229 || e.altKey || e.ctrlKey || e.metaKey) return;
+      var el = e.target;
+      if (el.tagName !== 'INPUT') return;
+      var tr = el.closest('tr');
+      var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+      var cells = Array.prototype.slice.call(tr.querySelectorAll('input'));
+      var r = rows.indexOf(tr), c = cells.indexOf(el), target = null, atStart = false;
+      var noSel = el.selectionStart === el.selectionEnd;
+      if (e.key === 'ArrowUp' || (e.key === 'Enter' && e.shiftKey)) {
+        if (rows[r - 1]) target = rows[r - 1].querySelectorAll('input')[c];
+      } else if (e.key === 'ArrowDown' || e.key === 'Enter') {
+        if (rows[r + 1]) target = rows[r + 1].querySelectorAll('input')[c];
+      } else if (e.key === 'ArrowLeft' && noSel && el.selectionStart === 0) {
+        target = cells[c - 1] || (rows[r - 1] && Array.prototype.slice.call(rows[r - 1].querySelectorAll('input')).pop());
+      } else if (e.key === 'ArrowRight' && noSel && el.selectionEnd === el.value.length) {
+        target = cells[c + 1] || (rows[r + 1] && rows[r + 1].querySelector('input'));
+        atStart = true;
+      } else {
+        return;
+      }
+      if (e.key === 'Enter') e.preventDefault();
+      if (!target) return;
+      e.preventDefault();
+      target.focus();
+      var pos = atStart ? 0 : target.value.length;
+      try { target.setSelectionRange(pos, pos); } catch (err) {}
+    });
+  }
+  enableArrowNav(rowsBody);
+
   $('btn-add-row').addEventListener('click', function () { addRow().querySelector('.f-name').focus(); });
   ['f-prev', 'f-paid'].forEach(function (id) {
     $(id).addEventListener('input', recalc);
