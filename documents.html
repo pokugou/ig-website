@@ -43,12 +43,23 @@
     <div class="grid">
       <div class="doc">
         <span class="icon">🧾</span>
-        <h2>請求書・納品書</h2>
+        <h2>請求書</h2>
         <p>お客様向けの請求書。明細を入力してPDF保存すると一覧に残ります。</p>
         <div class="recent" id="recent-invoice">読み込み中…</div>
         <div class="btns">
           <a class="primary" href="invoice.html">新しく作る</a>
           <a class="secondary" href="invoice-history.html">保存一覧</a>
+        </div>
+      </div>
+
+      <div class="doc">
+        <span class="icon">🚚</span>
+        <h2>納品書</h2>
+        <p>商品と一緒にお渡しする納品書。保存した納品書からそのまま請求書も作れます。</p>
+        <div class="recent" id="recent-delivery">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="invoice.html?type=delivery">新しく作る</a>
+          <a class="secondary" href="invoice-history.html?type=delivery">保存一覧</a>
         </div>
       </div>
 
@@ -89,10 +100,11 @@
     .then(function (r) { if (!r.ok) throw new Error('load failed'); return r.json(); })
     .then(function (all) {
       showRecent('recent-invoice', all.filter(function (r) { return r.__invoice; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
+      showRecent('recent-delivery', all.filter(function (r) { return r.__delivery; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
       showRecent('recent-po', all.filter(function (r) { return r.__po; }), function (r) { return r.to || ''; });
     })
     .catch(function () {
-      ['recent-invoice', 'recent-po'].forEach(function (id) { document.getElementById(id).textContent = ''; });
+      ['recent-invoice', 'recent-delivery', 'recent-po'].forEach(function (id) { document.getElementById(id).textContent = ''; });
     });
 </script>
 

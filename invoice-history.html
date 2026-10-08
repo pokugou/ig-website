@@ -65,11 +65,11 @@
   <div class="wrap">
     <a class="back-link" href="documents.html">← 書類トップ</a>
     <header>
-      <h1>請求書一覧</h1>
-      <a class="new-btn" href="invoice.html">＋ 新しい請求書</a>
+      <h1 id="page-title">請求書一覧</h1>
+      <a class="new-btn" id="new-btn" href="invoice.html">＋ 新しい請求書</a>
     </header>
     <div class="filters">
-      <input type="text" id="f-search" placeholder="お客様名・品名・請求番号で検索">
+      <input type="text" id="f-search" placeholder="お客様名・品名・番号で検索">
       <select id="f-month"><option value="">すべての月</option></select>
     </div>
     <div class="stats"><span id="status-line">読み込み中…</span><span id="sum-line"></span></div>
@@ -79,6 +79,14 @@
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var invoices = [];
+  var KIND = new URLSearchParams(location.search).get('type') === 'delivery' ? 'delivery' : 'invoice';
+  var DOC = KIND === 'delivery'
+    ? { tag: '__delivery', title: '納品書', editor: 'invoice.html?type=delivery', reloadKey: 'delivery-reload', amountLabel: '合計金額' }
+    : { tag: '__invoice', title: '請求書', editor: 'invoice.html', reloadKey: 'invoice-reload', amountLabel: 'ご請求金額' };
+  document.title = DOC.title + '一覧 | IG Rod Planning';
+  document.getElementById('page-title').textContent = DOC.title + '一覧';
+  document.getElementById('new-btn').href = DOC.editor;
+  document.getElementById('new-btn').textContent = '＋ 新しい' + DOC.title;
   var term = '', month = '';
 
   function num(s) { var v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
@@ -104,14 +112,14 @@
   async function persist() {
     var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
     if (!res.ok) throw new Error('load failed');
-    var others = (await res.json()).filter(function (r) { return !r.__invoice; });
+    var others = (await res.json()).filter(function (r) { return !r[DOC.tag]; });
     var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(invoices.slice().reverse())) });
     if (!put.ok) throw new Error('save failed');
   }
 
   function openInEditor(inv) {
-    localStorage.setItem('invoice-reload', JSON.stringify(inv));
-    location.href = 'invoice.html';
+    localStorage.setItem(DOC.reloadKey, JSON.stringify(inv));
+    location.href = DOC.editor;
   }
 
   function buildMonths() {
@@ -136,9 +144,9 @@
     document.getElementById('status-line').textContent = (term || month) ? visible.length + '件 / 全' + invoices.length + '件' : invoices.length + '件';
     var sum = 0;
     visible.forEach(function (inv) { sum += figures(inv).total; });
-    document.getElementById('sum-line').innerHTML = visible.length ? '表示中の請求額合計 <b>' + yen(sum) + '</b>' : '';
+    document.getElementById('sum-line').innerHTML = visible.length ? '表示中の合計 <b>' + yen(sum) + '</b>' : '';
     list.innerHTML = '';
-    if (!visible.length) { list.innerHTML = '<p class="empty">' + (term || month ? '一致する請求書がありません' : 'まだ保存された請求書がありません') + '</p>'; return; }
+    if (!visible.length) { list.innerHTML = '<p class="empty">' + (term || month ? '一致する' + DOC.title + 'がありません' : 'まだ保存された' + DOC.title + 'がありません') + '</p>'; return; }
 
     visible.forEach(function (inv) {
       var f = figures(inv);
@@ -146,7 +154,6 @@
       var s = el('div', 'summary');
       var when = el('span', 'when', fmtDate(inv.date)); when.appendChild(el('small', null, inv.number || ''));
       var who = el('span', 'who', inv.customer ? inv.customer + ' ' + (inv.honor || '様') : '(名前未記入)');
-      who.appendChild(el('small', null, inv.title && inv.title !== '請求書' ? inv.title : ''));
       s.appendChild(when); s.appendChild(who); s.appendChild(el('span', 'total', yen(f.total))); s.appendChild(el('span', 'arrow', '▶'));
       s.addEventListener('click', function () { card.classList.toggle('open'); });
 
@@ -162,12 +169,23 @@
       });
       var del = el('button', 'delete-btn', '削除'); del.type = 'button';
       del.addEventListener('click', async function () {
-        if (!confirm((inv.customer || 'この請求書') + '（' + (inv.number || fmtDate(inv.date)) + '）を本当に削除しますか？')) return;
+        if (!confirm((inv.customer || 'この' + DOC.title) + '（' + (inv.number || fmtDate(inv.date)) + '）を本当に削除しますか？')) return;
         invoices = invoices.filter(function (x) { return x.id !== inv.id; });
         try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
         buildMonths(); render();
       });
-      acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(del);
+      acts.appendChild(edit); acts.appendChild(copy);
+      if (KIND === 'delivery') {
+        var toInv = el('button', 'copy-btn', 'この納品書から請求書を作る'); toInv.type = 'button';
+        toInv.addEventListener('click', function () {
+          var c = JSON.parse(JSON.stringify(inv));
+          delete c.id; delete c.__delivery; c.showCarry = true; c.number = ''; c.date = todayIso(); c.due = '';
+          localStorage.setItem('invoice-reload', JSON.stringify(c));
+          location.href = 'invoice.html';
+        });
+        acts.appendChild(toInv);
+      }
+      acts.appendChild(del);
       d.appendChild(acts);
 
       var meta = [];
@@ -193,7 +211,7 @@
       [['小計', f.sub], ['消費税', f.tax]].concat(f.carry ? [['繰越金額', f.carry]] : []).forEach(function (p) {
         var r = el('div'); r.appendChild(el('span', null, p[0])); r.appendChild(el('span', null, yen(p[1]))); sm.appendChild(r);
       });
-      var g = el('div', 'g'); g.appendChild(el('span', null, 'ご請求金額')); g.appendChild(el('span', null, yen(f.total))); sm.appendChild(g);
+      var g = el('div', 'g'); g.appendChild(el('span', null, DOC.amountLabel)); g.appendChild(el('span', null, yen(f.total))); sm.appendChild(g);
       d.appendChild(sm);
       if (inv.notes) d.appendChild(el('div', 'notes', inv.notes));
 
@@ -207,7 +225,7 @@
   fetch(SYNC_API + '/paint?_=' + Date.now())
     .then(function (r) { if (!r.ok) throw new Error('not ready'); return r.json(); })
     .then(function (data) {
-      invoices = data.filter(function (r) { return r.__invoice; });
+      invoices = data.filter(function (r) { return r[DOC.tag]; });
       invoices.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')) || String(b.number || '').localeCompare(String(a.number || '')); });
       buildMonths(); render();
     })

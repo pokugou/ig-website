@@ -146,7 +146,7 @@
   fetch(SYNC_API + '/paint?_=' + Date.now())
     .then(function (r) { if (!r.ok) throw new Error('not found'); return r.json(); })
     .then(function (data) {
-      allRecords = data.filter(function (r) { return !r.__quote && !r.__invoice && !r.__po; }).reverse();
+      allRecords = data.filter(function (r) { return !r.__quote && !r.__invoice && !r.__delivery && !r.__po; }).reverse();
       render();
     })
     .catch(function () {

@@ -32,7 +32,7 @@
 
   /* ---- 見出し ---- */
   .doc-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.6rem; margin-bottom: 1.4rem; gap: 1rem; }
-  .doc-title select { font-size: 1.9rem; font-weight: 900; letter-spacing: 0.25em; width: auto; cursor: pointer; padding-right: 0.2rem; -webkit-appearance: none; appearance: none; }
+  .doc-title h1 { font-size: 1.9rem; font-weight: 900; letter-spacing: 0.25em; line-height: 1.4; }
   .doc-title .en { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.35em; color: var(--sub); }
   .doc-meta { display: grid; grid-template-columns: auto 10.5rem; column-gap: 0.7rem; row-gap: 0.15rem; font-size: 0.8rem; align-items: baseline; }
   .doc-meta .k { color: var(--sub); font-weight: 700; text-align: right; }
@@ -75,6 +75,8 @@
   .carry th.hl { background: var(--ink); color: #fff; border-color: var(--ink); }
   .carry td.hl { border: 2px solid var(--ink); font-weight: 900; }
   .no-carry .carry { display: none; }
+  .is-delivery .carry, .is-delivery .bank, .is-delivery .amount .due, .is-delivery #opt-carry-label, .is-delivery #r-carry, .is-delivery .from .reg { display: none !important; }
+  .is-delivery .amount, .pdf-capture.is-delivery .amount { grid-template-columns: 1fr; }
 
   /* ---- 明細 ---- */
   .items-wrap { overflow-x: auto; }
@@ -139,7 +141,6 @@
     .toolbar, .options, .add-row-btn, .c-del { display: none !important; }
     .sheet { width: 100%; border: none; padding: 0; }
     .sheet input, .sheet select, .sheet textarea { background: transparent !important; }
-    .doc-title select { -webkit-appearance: none; }
     @page { size: A4; margin: 1.2cm; }
   }
 </style>
@@ -148,31 +149,27 @@
 
   <div class="toolbar">
     <a class="back" href="documents.html">← 書類トップ</a>
-    <a class="history-link" href="invoice-history.html">📋 請求書一覧を見る →</a>
+    <a class="history-link" id="history-link" href="invoice-history.html">📋 請求書一覧を見る →</a>
     <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
   <div class="options" id="options">
     <label><input type="checkbox" id="opt-seal" checked> 社印を表示</label>
-    <label><input type="checkbox" id="opt-carry" checked> 前回請求・入金欄を表示</label>
-    <span class="editing-badge">✎ 保存済みの請求書を編集中（保存すると上書きされます）</span>
+    <label id="opt-carry-label"><input type="checkbox" id="opt-carry" checked> 前回請求・入金欄を表示</label>
+    <span class="editing-badge" id="editing-badge">✎ 保存済みの請求書を編集中（保存すると上書きされます）</span>
   </div>
 
   <div class="sheet" id="sheet">
 
     <div class="doc-head">
       <div class="doc-title">
-        <select id="f-title">
-          <option>請求書</option>
-          <option>納品書 兼 請求書</option>
-          <option>納品書</option>
-        </select>
+        <h1 id="title-text">請求書</h1>
         <div class="en" id="title-en">INVOICE</div>
       </div>
       <div class="doc-meta">
         <span class="k">発行日</span><input type="date" id="f-date" data-fmt="wareki">
-        <span class="k">請求番号</span><input type="text" id="f-number" placeholder="自動">
+        <span class="k" id="number-label">請求番号</span><input type="text" id="f-number" placeholder="自動">
       </div>
     </div>
 
@@ -186,7 +183,7 @@
           <input type="text" id="f-customer" placeholder="お客様名・会社名">
           <select id="f-honor"><option>様</option><option>御中</option></select>
         </div>
-        <p class="greet">毎度ありがとうございます。下記の通りご請求申し上げます。</p>
+        <p class="greet" id="greet">毎度ありがとうございます。下記の通りご請求申し上げます。</p>
       </div>
 
       <div class="from">
@@ -204,7 +201,7 @@
 
     <div class="amount">
       <div class="main">
-        <span class="k">ご請求金額</span>
+        <span class="k" id="amount-label">ご請求金額</span>
         <span class="v"><span id="v-billed">¥0</span><small>（税込）</small></span>
       </div>
       <div class="due">
@@ -251,7 +248,7 @@
         <div class="r"><span class="k">小計（税抜）</span><span id="v-sub">¥0</span></div>
         <div class="r"><span class="k">消費税（10%）</span><span id="v-tax">¥0</span></div>
         <div class="r" id="r-carry"><span class="k">繰越金額</span><span id="v-carry2">¥0</span></div>
-        <div class="r grand"><span class="k">ご請求金額</span><span id="v-billed3">¥0</span></div>
+        <div class="r grand"><span class="k" id="grand-label">ご請求金額</span><span id="v-billed3">¥0</span></div>
         <div class="breakdown" id="v-breakdown">10%対象 ¥0　消費税 ¥0</div>
       </div>
     </div>
@@ -267,6 +264,12 @@
   var rowsBody = document.getElementById('item-rows');
   var currentId = null;
   var numberTouched = false;
+
+  /* 請求書／納品書の切り替え（?type=delivery で納品書） */
+  var KIND = new URLSearchParams(location.search).get('type') === 'delivery' ? 'delivery' : 'invoice';
+  var DOC = KIND === 'delivery'
+    ? { tag: '__delivery', idPrefix: 'dn-', title: '納品書', en: 'DELIVERY NOTE', numberLabel: '納品番号', amountLabel: '合計金額', greet: '毎度ありがとうございます。下記の通り納品いたしましたので、ご査収ください。', history: 'invoice-history.html?type=delivery', reloadKey: 'delivery-reload' }
+    : { tag: '__invoice', idPrefix: 'inv-', title: '請求書', en: 'INVOICE', numberLabel: '請求番号', amountLabel: 'ご請求金額', greet: '毎度ありがとうございます。下記の通りご請求申し上げます。', history: 'invoice-history.html', reloadKey: 'invoice-reload' };
 
   function $(id) { return document.getElementById(id); }
   function num(s) { var v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
@@ -357,8 +360,6 @@
   $('opt-seal').addEventListener('change', applyOptions);
   $('opt-carry').addEventListener('change', applyOptions);
 
-  var TITLE_EN = { '請求書': 'INVOICE', '納品書 兼 請求書': 'DELIVERY NOTE / INVOICE', '納品書': 'DELIVERY NOTE' };
-  $('f-title').addEventListener('change', function () { $('title-en').textContent = TITLE_EN[this.value] || ''; });
 
   /* ---------- 請求番号の自動採番 ---------- */
   var cachedInvoices = null;
@@ -366,7 +367,7 @@
     var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
     if (!res.ok) throw new Error('load failed');
     var all = await res.json();
-    cachedInvoices = all.filter(function (r) { return r.__invoice; });
+    cachedInvoices = all.filter(function (r) { return r[DOC.tag]; });
     return all;
   }
   function suggestNumber() {
@@ -385,17 +386,18 @@
   $('f-date').addEventListener('change', suggestNumber);
 
   /* ---------- 保存データ ---------- */
-  var FIELDS = { title: 'f-title', date: 'f-date', number: 'f-number', due: 'f-due', zip: 'f-zip', address: 'f-address', customer: 'f-customer', honor: 'f-honor', prev: 'f-prev', paid: 'f-paid', notes: 'f-notes' };
+  var FIELDS = { date: 'f-date', number: 'f-number', due: 'f-due', zip: 'f-zip', address: 'f-address', customer: 'f-customer', honor: 'f-honor', prev: 'f-prev', paid: 'f-paid', notes: 'f-notes' };
 
   function collect() {
     var t = totals();
-    var inv = { id: currentId || ('inv-' + Date.now()), __invoice: true, savedAt: new Date().toISOString(), seal: $('opt-seal').checked, showCarry: $('opt-carry').checked, items: [] };
+    var inv = { id: currentId || (DOC.idPrefix + Date.now()), kind: KIND, savedAt: new Date().toISOString(), seal: $('opt-seal').checked, showCarry: $('opt-carry').checked, items: [] };
     Object.keys(FIELDS).forEach(function (k) { inv[k] = $(FIELDS[k]).value; });
     rowsBody.querySelectorAll('tr').forEach(function (tr) {
       var it = {};
       ['date', 'name', 'qty', 'unit', 'amt', 'note'].forEach(function (k) { it[k] = tr.querySelector('.f-' + k).value; });
       if (it.name || it.qty || it.unit || it.amt || it.note) inv.items.push(it);
     });
+    inv[DOC.tag] = true;
     inv.subtotal = t.sub; inv.tax = t.tax; inv.total = t.billed;
     return inv;
   }
@@ -407,8 +409,7 @@
     $('f-prev').value = commas(inv.prev || '');
     $('f-paid').value = commas(inv.paid || '');
     $('opt-seal').checked = inv.seal !== false;
-    $('opt-carry').checked = inv.showCarry !== false;
-    $('f-title').dispatchEvent(new Event('change'));
+    $('opt-carry').checked = KIND !== 'delivery' && inv.showCarry !== false;
     rowsBody.innerHTML = '';
     (inv.items && inv.items.length ? inv.items : [{}]).forEach(addRow);
     document.body.classList.toggle('editing', !!currentId);
@@ -419,12 +420,11 @@
     currentId = null;
     numberTouched = false;
     document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function (el) { el.value = ''; });
-    $('f-title').selectedIndex = 0; $('f-title').dispatchEvent(new Event('change'));
     $('f-honor').selectedIndex = 0;
     $('f-date').value = todayIso();
     $('f-due').value = endOfNextMonth(todayIso());
     $('opt-seal').checked = true;
-    $('opt-carry').checked = true;
+    $('opt-carry').checked = KIND !== 'delivery';
     rowsBody.innerHTML = '';
     addRow();
     document.body.classList.remove('editing');
@@ -435,8 +435,8 @@
   async function saveToHistory() {
     var inv = collect();
     var all = await loadInvoices();
-    var others = all.filter(function (r) { return !r.__invoice; });
-    var list = all.filter(function (r) { return r.__invoice; });
+    var others = all.filter(function (r) { return !r[DOC.tag]; });
+    var list = all.filter(function (r) { return r[DOC.tag]; });
     var idx = list.findIndex(function (x) { return x.id === inv.id; });
     if (idx >= 0) list[idx] = inv; else list.push(inv);
     var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(list)) });
@@ -460,7 +460,7 @@
       var cs = getComputedStyle(el);
       var o = document.createElement('div');
       o.textContent = displayText(el);
-      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.65' : '1.5') + ';color:inherit;white-space:' + (el.tagName === 'TEXTAREA' ? 'pre-wrap' : el.closest('.items') ? 'normal' : 'nowrap') + ';overflow:hidden;' + (el.tagName === 'SELECT' && !el.closest('.doc-title') ? 'flex:0 0 auto;' : 'flex:1 1 auto;min-width:0;');
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.65' : '1.5') + ';color:inherit;white-space:' + (el.tagName === 'TEXTAREA' ? 'pre-wrap' : el.closest('.items') ? 'normal' : 'nowrap') + ';overflow:hidden;' + (el.tagName === 'SELECT' ? 'flex:0 0 auto;' : 'flex:1 1 auto;min-width:0;');
       var prev = el.style.display;
       el.style.display = 'none';
       el.insertAdjacentElement('afterend', o);
@@ -484,7 +484,7 @@
   function fileName() {
     var d = ($('f-date').value || todayIso()).replace(/-/g, '');
     var who = $('f-customer').value.trim();
-    var kind = $('f-title').value.replace(/\s/g, '');
+    var kind = DOC.title;
     return d + kind + (who ? who + $('f-honor').value : '') + '.pdf';
   }
 
@@ -523,22 +523,35 @@
       btn.textContent = originalLabel;
     }
     try { await saveToHistory(); }
-    catch (e) { console.error(e); alert('PDFは作成しましたが、請求書一覧への保存に失敗しました。通信状況を確認してもう一度「PDFとして保存」を押してください。'); }
+    catch (e) { console.error(e); alert('PDFは作成しましたが、' + DOC.title + '一覧への保存に失敗しました。通信状況を確認してもう一度「PDFとして保存」を押してください。'); }
   });
 
   $('btn-print').addEventListener('click', function () { window.print(); });
   $('btn-reset').addEventListener('click', function () {
-    if (!confirm('入力内容をクリアして新しい請求書を作りますか？\n（保存済みの請求書は一覧に残ります）')) return;
+    if (!confirm('入力内容をクリアして新しい' + DOC.title + 'を作りますか？\n（保存済みの' + DOC.title + 'は一覧に残ります）')) return;
     resetForm();
   });
 
   /* ---------- 起動 ---------- */
+  (function applyKind() {
+    document.body.classList.toggle('is-delivery', KIND === 'delivery');
+    document.title = DOC.title + ' | IG Rod Planning';
+    $('title-text').textContent = DOC.title;
+    $('title-en').textContent = DOC.en;
+    $('number-label').textContent = DOC.numberLabel;
+    $('greet').textContent = DOC.greet;
+    $('amount-label').textContent = DOC.amountLabel;
+    $('grand-label').textContent = DOC.amountLabel;
+    $('history-link').href = DOC.history;
+    $('history-link').textContent = '📋 ' + DOC.title + '一覧を見る →';
+    $('editing-badge').textContent = '✎ 保存済みの' + DOC.title + 'を編集中（保存すると上書きされます）';
+  })();
   resetForm();
   (function loadIfRequested() {
     try {
-      var raw = localStorage.getItem('invoice-reload');
+      var raw = localStorage.getItem(DOC.reloadKey);
       if (!raw) return;
-      localStorage.removeItem('invoice-reload');
+      localStorage.removeItem(DOC.reloadKey);
       var inv = JSON.parse(raw);
       populate(inv);
       if (!inv.id) {
