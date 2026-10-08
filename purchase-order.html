@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root { --ink: #111; --sub: #555; --line: #999; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  :root { --ink: #111; --sub: #555; --line: #999; --line2: #d6d6d6; --zebra: #f6f6f3; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
 
   .toolbar { max-width: 794px; margin: 0 auto 0.8rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
@@ -24,63 +24,82 @@
   @media print { .sender-pick { display: none; } .company ::placeholder { color: transparent; } }
   .hint { max-width: 794px; margin: 0 auto 1rem; font-size: 0.72rem; color: var(--sub); }
 
-  .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2.4rem 2.6rem 2.6rem; }
+  .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2.4rem 2.6rem 2.2rem; }
   .sheet input, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; }
   .sheet input:focus, .sheet textarea:focus { outline: none; background: #fff8e0; }
+  .sheet ::placeholder { color: #bbb; }
 
-  h1 { text-align: center; font-size: 1.7rem; font-weight: 900; letter-spacing: 0.3em; margin-bottom: 1.4rem; }
-  .to { display: flex; align-items: baseline; gap: 0.4rem; border-bottom: 2px solid var(--ink); width: 22rem; max-width: 100%; margin-bottom: 1.2rem; }
-  .to input { font-size: 1.25rem; font-weight: 700; }
-  .to span { font-size: 1.25rem; font-weight: 700; white-space: nowrap; }
+  /* 見出し */
+  .doc-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; border-bottom: 3px solid var(--ink); padding-bottom: 0.6rem; margin-bottom: 1.4rem; }
+  .doc-head h1 { font-size: 1.9rem; font-weight: 900; letter-spacing: 0.25em; line-height: 1.4; }
+  .doc-head .en { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.35em; color: var(--sub); }
+  .meta { display: grid; grid-template-columns: auto 9.5rem; column-gap: 0.7rem; row-gap: 0.15rem; font-size: 0.8rem; align-items: baseline; }
+  .meta .k { color: var(--sub); font-weight: 700; text-align: right; }
+  .meta input { text-align: right; font-weight: 700; font-size: 0.8rem; padding: 0.05rem 0.1rem; }
 
-  .head { display: grid; grid-template-columns: 1fr 15rem; gap: 1.2rem; align-items: start; margin-bottom: 0.8rem; }
-  .meta { border-collapse: collapse; width: 100%; max-width: 26rem; }
-  .meta td { border: 1.5px solid var(--ink); padding: 0.15rem 0.5rem; font-size: 0.85rem; }
-  .meta td.k { text-align: center; width: 45%; }
-  .meta td input { text-align: center; font-weight: 700; font-size: 0.85rem; }
-  .greet { margin-top: 1.1rem; font-size: 0.82rem; line-height: 1.8; }
-  .company { font-size: 0.78rem; line-height: 1.7; }
-  .company textarea { font-size: 0.78rem; line-height: 1.7; resize: none; overflow: hidden; display: block; }
-  .company input.name { font-size: 1.2rem; font-weight: 900; margin: 0.2rem 0; display: block; }
-  .company input.tel { font-size: 0.95rem; display: block; }
+  /* 発注先・差出人 */
+  .head { display: grid; grid-template-columns: 1fr 16.5rem; gap: 2rem; align-items: start; margin-bottom: 1.3rem; }
+  .to { display: flex; align-items: baseline; gap: 0.5rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.15rem; }
+  .to input { font-size: 1.35rem; font-weight: 900; padding: 0.1rem; }
+  .to span { font-size: 1.05rem; font-weight: 700; white-space: nowrap; }
+  .greet { margin-top: 0.8rem; font-size: 0.8rem; line-height: 1.8; }
+  .company { font-size: 0.76rem; line-height: 1.65; }
+  .company .brand { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+  .company .brand img { width: 42px; height: 42px; display: block; flex: 0 0 auto; }
+  .no-logo .company .brand img { display: none; }
+  .company textarea { font-size: 0.76rem; line-height: 1.65; resize: none; overflow: hidden; display: block; }
+  .company input.name { font-size: 1.1rem; font-weight: 900; letter-spacing: 0.03em; display: block; }
+  .company input.tel { font-size: 0.82rem; font-weight: 700; display: block; }
 
-  table.items { width: 100%; border-collapse: collapse; margin-top: 0.4rem; }
-  table.items th, table.items td { border: 1.5px solid var(--ink); padding: 0; font-size: 0.85rem; }
-  table.items th { font-weight: 400; font-size: 0.72rem; padding: 0.15rem 0.2rem; }
-  table.items td.no { text-align: center; font-size: 0.75rem; width: 5.5%; }
-  table.items td.name { width: 38%; }
-  table.items td.qty { width: 12%; }
-  table.items td.price { width: 12%; }
-  table.items td.jan { width: 15%; }
-  table.items td.due { width: 17.5%; }
-  table.items td input { padding: 0.28rem 0.4rem; font-size: 0.95rem; }
-  table.items td.qty input { text-align: center; font-weight: 900; font-size: 1.05rem; }
-  table.items td.price input, table.items td.jan input, table.items td.due input { font-size: 0.8rem; text-align: center; }
+  /* 明細 */
+  table.items { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.items th { background: var(--ink); color: #fff; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.35rem 0.2rem; }
+  table.items td { border-bottom: 1px solid var(--line2); padding: 0; font-size: 0.85rem; height: 2rem; }
+  table.items tbody tr:nth-child(even) td { background: var(--zebra); }
+  table.items td.no { text-align: center; font-size: 0.72rem; color: var(--sub); width: 2.6rem; }
+  table.items th:nth-child(1) { width: 2.6rem; }
+  table.items th:nth-child(3) { width: 5.6rem; }
+  table.items th:nth-child(4) { width: 5.6rem; }
+  table.items th:nth-child(5) { width: 6rem; }
+  table.items th:nth-child(6) { width: 7.4rem; }
+  table.items td input { padding: 0.3rem 0.45rem; font-size: 0.9rem; }
+  table.items td.qty input { text-align: center; font-weight: 900; font-size: 1rem; }
+  table.items td.price input { text-align: right; font-size: 0.8rem; }
+  table.items td.jan input, table.items td.due input { font-size: 0.78rem; text-align: center; }
 
-  table.note { width: 100%; border-collapse: collapse; margin-top: 0.7rem; }
-  table.note td { border: 2px solid var(--ink); vertical-align: middle; }
-  table.note td.k { width: 5.5%; text-align: center; font-size: 0.72rem; padding: 0.2rem; }
-  .note-box { min-height: 17rem; padding: 0.7rem 0.8rem; }
-  .note-box textarea { font-size: 1rem; line-height: 1.7; resize: vertical; min-height: 16rem; height: 100%; }
+  /* 備考 */
+  .note { margin-top: 1rem; border: 1px solid var(--line2); }
+  .note .k { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; color: var(--sub); padding: 0.45rem 0.8rem 0; }
+  .note-box { min-height: 14rem; padding: 0.3rem 0.8rem 0.7rem; }
+  .note-box textarea { font-size: 0.92rem; line-height: 1.7; resize: vertical; min-height: 13rem; height: 100%; }
 
   .add-row { max-width: 794px; margin: 0.6rem auto 0; }
   .add-row button { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.55rem 1rem; width: 100%; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
   .add-row button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
 
   @media screen and (max-width: 640px) {
-    .sheet { padding: 1.2rem 0.8rem 1.4rem; }
-    .head { grid-template-columns: 1fr; }
+    .sheet { padding: 1.3rem 0.9rem 1.5rem; }
+    .doc-head { flex-direction: column; align-items: stretch; }
+    .meta { grid-template-columns: auto 1fr; }
+    .head { grid-template-columns: 1fr; gap: 1.2rem; }
+    .items-wrap { overflow-x: auto; }
+    table.items { min-width: 600px; }
     table.items td input { padding: 0.35rem 0.25rem; font-size: 0.85rem; }
   }
 
   .pdf-capture .sheet { width: 794px; max-width: none; border: none; }
-  .pdf-capture .head { grid-template-columns: 1fr 15rem; }
+  .pdf-capture .doc-head { flex-direction: row; align-items: flex-end; }
+  .pdf-capture .meta { grid-template-columns: auto 9.5rem; }
+  .pdf-capture .head { grid-template-columns: 1fr 16.5rem; gap: 2rem; }
+  .pdf-capture .items-wrap { overflow: visible; }
   .pdf-capture .toolbar, .pdf-capture .add-row, .pdf-capture .hint { display: none; }
 
   @media print {
     body { background: #fff; padding: 0; }
     .toolbar, .add-row, .hint { display: none; }
     .sheet { width: 100%; border: none; padding: 0; }
+    table.items th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    table.items tbody tr:nth-child(even) td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     @page { size: A4; margin: 1.2cm; }
   }
 </style>
@@ -113,35 +132,40 @@
   <p class="hint">仕入先ごとの注文書です。品名・実質数量・備考を入力して「PDFとして保存」すると、A4の1枚で出力されます。</p>
 
   <div class="sheet" id="sheet">
-    <h1>注文書</h1>
-    <div class="to"><input type="text" id="f-to" placeholder="発注先（例：株式会社ファイブコア）"><span>御中</span></div>
+    <div class="doc-head">
+      <div>
+        <h1>注文書</h1>
+        <div class="en">PURCHASE ORDER</div>
+      </div>
+      <div class="meta">
+        <span class="k">作成日</span><input type="date" id="f-date">
+        <span class="k">作成者</span><input type="text" id="f-author" value="石谷 豪">
+      </div>
+    </div>
 
     <div class="head">
       <div>
-        <table class="meta">
-          <tr><td class="k">作成日</td><td><input type="date" id="f-date"></td></tr>
-          <tr><td class="k">作成者</td><td><input type="text" id="f-author" value="石谷 豪"></td></tr>
-        </table>
+        <div class="to"><input type="text" id="f-to" placeholder="発注先（例：株式会社ファイブコア）"><span>御中</span></div>
         <div class="greet">平素より格別の御高配誠にありがとうございます。<br>下記商品の御手配をお願い致します。</div>
       </div>
       <div class="company">
+        <div class="brand"><img src="logo.png" alt=""><input type="text" class="name" id="f-company" placeholder="名前・会社名"></div>
         <textarea id="f-addr" rows="3" placeholder="〒・住所"></textarea>
-        <input type="text" class="name" id="f-company" placeholder="名前・会社名">
         <input type="text" class="tel" id="f-tel" placeholder="TEL">
       </div>
     </div>
 
-    <table class="items">
-      <thead><tr><th>No.</th><th>品名</th><th>実質数量</th><th>単価</th><th>JAN下6桁</th><th>希望納期</th></tr></thead>
-      <tbody id="rows"></tbody>
-    </table>
+    <div class="items-wrap">
+      <table class="items">
+        <thead><tr><th>No.</th><th>品名</th><th>実質数量</th><th>単価</th><th>JAN下6桁</th><th>希望納期</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
 
-    <table class="note">
-      <tr>
-        <td class="k">備考欄</td>
-        <td><div class="note-box"><textarea id="f-note" placeholder="送り先など"></textarea></div></td>
-      </tr>
-    </table>
+    <div class="note">
+      <div class="k">備考</div>
+      <div class="note-box"><textarea id="f-note" placeholder="※在庫がないものは注残なしでお願いします など"></textarea></div>
+    </div>
   </div>
 
   <div class="add-row"><button type="button" id="btn-add">＋ 行を追加</button></div>
@@ -239,6 +263,12 @@
       if (n.addr === v.addr && n.company === v.company && n.tel === v.tel) pick = k;
     });
     document.getElementById('f-sender').value = pick;
+    document.body.classList.toggle('no-logo', pick !== 'ig');
+    fitAddr();
+  }
+  function fitAddr() {
+    var a = document.getElementById('f-addr');
+    a.rows = Math.max(1, a.value.split('\n').length);
   }
   var DEFAULT_DUE = '最短納期希望';
 
@@ -324,6 +354,8 @@
     document.getElementById('f-addr').value = v.addr;
     document.getElementById('f-company').value = v.company;
     document.getElementById('f-tel').value = v.tel;
+    document.body.classList.toggle('no-logo', this.value !== 'ig');
+    fitAddr();
     if (this.value === 'custom') document.getElementById('f-addr').focus();
     if (!DEMO) saveDraft();
   });
