@@ -348,7 +348,26 @@
       note: '送り先①\n〒188-0004 東京都西東京市西原町5-3-30パルシオⅡ301\n株式会社IG 石谷 豪\n\n送り先②\n〒000-0000 ○○県○○市○○1-2-3\n○○ 様　TEL.000-0000-0000'
     };
   }
+
+  // 1行の入力欄は、文字があふれる場合に折り返さず文字サイズを縮めて1行に収める
+  var fitCanvas = document.createElement('canvas').getContext('2d');
+  function fitOneLine(el) {
+    if (el.tagName !== 'INPUT' || el.type !== 'text' || !el.closest('.sheet')) return;
+    el.style.fontSize = '';
+    var cs = getComputedStyle(el);
+    var base = parseFloat(cs.fontSize);
+    var avail = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+    if (!el.value || avail <= 0) return;
+    fitCanvas.font = cs.fontWeight + ' ' + base + 'px ' + cs.fontFamily;
+    var w = fitCanvas.measureText(el.value).width + (parseFloat(cs.letterSpacing) || 0) * el.value.length;
+    if (w > avail) el.style.fontSize = Math.max(base * 0.4, Math.floor(base * avail / w * 10) / 10) + 'px';
+  }
+  function fitAll() { document.querySelectorAll('.sheet input[type="text"]').forEach(fitOneLine); }
+  document.addEventListener('input', function (e) { fitOneLine(e.target); });
+  window.addEventListener('resize', fitAll);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
   restore(draft || {});
+  fitAll();
   document.getElementById('f-sender').addEventListener('change', function () {
     var v = SENDERS[this.value] || { addr: '', company: '', tel: '' };
     document.getElementById('f-addr').value = v.addr;
@@ -356,6 +375,7 @@
     document.getElementById('f-tel').value = v.tel;
     document.body.classList.toggle('no-logo', this.value !== 'ig');
     fitAddr();
+    fitAll();
     if (this.value === 'custom') document.getElementById('f-addr').focus();
     if (!DEMO) saveDraft();
   });
@@ -379,6 +399,7 @@
     if (!confirm('入力内容をすべてクリアしますか？')) return;
     currentId = null;
     restore({});
+    fitAll();
     saveDraft();
   });
 
@@ -391,10 +412,14 @@
       var o = document.createElement('div');
       o.textContent = text;
       var inCell = !!el.closest('td');
-      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';text-align:' + cs.textAlign + ';color:inherit;padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.7' : '1.4') + ';white-space:pre-wrap;width:100%;min-height:' + (inCell && el.closest('.items') ? '1.9em' : '0') + ';';
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';text-align:' + cs.textAlign + ';color:inherit;padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.7' : '1.4') + ';white-space:' + (el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap') + ';overflow:hidden;width:100%;min-height:' + (inCell && el.closest('.items') ? '1.9em' : '0') + ';';
       var prev = el.style.display;
       el.style.display = 'none';
       el.insertAdjacentElement('afterend', o);
+      if (el.tagName === 'INPUT') {
+        var size = parseFloat(cs.fontSize), min = size * 0.4;
+        while (o.scrollWidth > o.clientWidth + 1 && size > min) { size -= 0.25; o.style.fontSize = size + 'px'; }
+      }
       swaps.push({ el: el, o: o, prev: prev });
     });
     return swaps;
