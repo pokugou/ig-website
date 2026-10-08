@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>書類作成 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #ccc; --line2: #e2e2e2; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 2rem 1.2rem 4rem; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header { border-bottom: 3px solid var(--ink); padding-bottom: 0.9rem; margin-bottom: 1.8rem; }
+  header h1 { font-size: 1.6rem; font-weight: 900; letter-spacing: 0.06em; }
+  header .brand { margin-top: 0.4rem; font-size: 0.75rem; font-weight: 700; color: var(--sub); letter-spacing: 0.04em; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .doc { background: var(--paper); border: 1px solid var(--line); padding: 1.4rem 1.3rem 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .doc .icon { font-size: 1.8rem; line-height: 1; }
+  .doc h2 { font-size: 1.1rem; font-weight: 900; letter-spacing: 0.02em; }
+  .doc p { font-size: 0.78rem; color: var(--sub); line-height: 1.6; }
+  .doc .recent { font-size: 0.74rem; color: var(--sub); border-top: 1px dotted var(--line2); padding-top: 0.5rem; margin-top: 0.2rem; min-height: 1.6rem; }
+  .doc .recent b { color: var(--ink); }
+  .doc .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: auto; padding-top: 0.6rem; }
+  .doc .btns a { text-align: center; font-size: 0.82rem; font-weight: 700; text-decoration: none; padding: 0.65rem 0.5rem; border: 1px solid var(--ink); }
+  .doc .btns a.primary { background: var(--ink); color: #fff; }
+  .doc .btns a.primary:hover { background: var(--red); border-color: var(--red); }
+  .doc .btns a.secondary { background: #fff; color: var(--ink); }
+  .doc .btns a.secondary:hover { background: #eee; }
+
+  footer { margin-top: 2rem; font-size: 0.72rem; color: var(--sub); text-align: center; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>書類作成</h1>
+      <div class="brand">株式会社IG ／ 社内共有用</div>
+    </header>
+
+    <div class="grid">
+      <div class="doc">
+        <span class="icon">🧾</span>
+        <h2>請求書・納品書</h2>
+        <p>お客様向けの請求書。明細を入力してPDF保存すると一覧に残ります。</p>
+        <div class="recent" id="recent-invoice">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="invoice.html">新しく作る</a>
+          <a class="secondary" href="invoice-history.html">保存一覧</a>
+        </div>
+      </div>
+
+      <div class="doc">
+        <span class="icon">📦</span>
+        <h2>注文書（発注書）</h2>
+        <p>仕入先への発注書。品名・数量を入力してPDF保存。おかわり注文もできます。</p>
+        <div class="recent" id="recent-po">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="purchase-order.html">新しく作る</a>
+          <a class="secondary" href="purchase-order-history.html">保存一覧</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>IG Rod Planning</footer>
+  </div>
+
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+
+  function fmtDate(s) {
+    var m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? m[1] + '/' + Number(m[2]) + '/' + Number(m[3]) : String(s || '');
+  }
+
+  function showRecent(id, list, who) {
+    var box = document.getElementById(id);
+    if (!list.length) { box.textContent = 'まだ保存された書類はありません'; return; }
+    list.sort(function (a, b) { return String(b.date || b.savedAt || '').localeCompare(String(a.date || a.savedAt || '')); });
+    var latest = list[0];
+    box.innerHTML = '保存 <b></b> 件　／　最新：<span></span>';
+    box.querySelector('b').textContent = list.length;
+    box.querySelector('span').textContent = fmtDate(latest.date) + ' ' + (who(latest) || '');
+  }
+
+  fetch(SYNC_API + '/paint?_=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('load failed'); return r.json(); })
+    .then(function (all) {
+      showRecent('recent-invoice', all.filter(function (r) { return r.__invoice; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
+      showRecent('recent-po', all.filter(function (r) { return r.__po; }), function (r) { return r.to || ''; });
+    })
+    .catch(function () {
+      ['recent-invoice', 'recent-po'].forEach(function (id) { document.getElementById(id).textContent = ''; });
+    });
+</script>
+
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (sessionStorage.getItem(k)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        if (t[0] !== t[1]) {
+          sessionStorage.setItem(k, '1');
+          fetch(p, { cache: 'reload' }).then(function () { location.reload(); });
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>

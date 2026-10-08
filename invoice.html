@@ -12,6 +12,8 @@
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
 
   .toolbar { max-width: 794px; margin: 0 auto 0.6rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .toolbar .back { font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .toolbar .back:hover { color: var(--red); }
   .toolbar .history-link { display: inline-flex; align-items: center; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: #fff; margin-right: auto; }
   .toolbar .history-link:hover { background: var(--red); border-color: var(--red); color: #fff; }
   .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
@@ -145,6 +147,7 @@
 <body>
 
   <div class="toolbar">
+    <a class="back" href="documents.html">← 書類トップ</a>
     <a class="history-link" href="invoice-history.html">📋 請求書一覧を見る →</a>
     <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
