@@ -36,8 +36,9 @@
   .meta td input { text-align: center; font-weight: 700; font-size: 0.85rem; }
   .greet { margin-top: 1.1rem; font-size: 0.82rem; line-height: 1.8; }
   .company { font-size: 0.78rem; line-height: 1.7; }
-  .company .name { font-size: 1.2rem; font-weight: 900; margin: 0.2rem 0; }
-  .company .tel { font-size: 0.95rem; }
+  .company textarea { font-size: 0.78rem; line-height: 1.7; resize: none; overflow: hidden; display: block; }
+  .company input.name { font-size: 1.2rem; font-weight: 900; margin: 0.2rem 0; display: block; }
+  .company input.tel { font-size: 0.95rem; display: block; }
 
   table.items { width: 100%; border-collapse: collapse; margin-top: 0.4rem; }
   table.items th, table.items td { border: 1.5px solid var(--ink); padding: 0; font-size: 0.85rem; }
@@ -104,9 +105,9 @@
         <div class="greet">平素より格別の御高配誠にありがとうございます。<br>下記商品の御手配をお願い致します。</div>
       </div>
       <div class="company">
-        〒188-0004<br>東京都西東京市西原町<br>5-3-30パルシオⅡ301
-        <div class="name">株式会社IG</div>
-        <div class="tel">TEL.09017985613</div>
+        <textarea id="f-addr" rows="3"></textarea>
+        <input type="text" class="name" id="f-company">
+        <input type="text" class="tel" id="f-tel">
       </div>
     </div>
 
@@ -132,6 +133,10 @@
   var STORE_KEY = 'purchase-order-draft';
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var currentId = null;
+
+  var DEF_ADDR = '〒188-0004\n東京都西東京市西原町\n5-3-30パルシオⅡ301';
+  var DEF_COMPANY = '株式会社IG';
+  var DEF_TEL = 'TEL.09017985613';
 
   function todayISO() {
     var d = new Date();
@@ -166,7 +171,7 @@
     rowsEl.querySelectorAll('tr').forEach(function (tr) {
       rows.push({ name: tr.querySelector('.r-name').value, qty: tr.querySelector('.r-qty').value, price: tr.querySelector('.r-price').value, jan: tr.querySelector('.r-jan').value, due: tr.querySelector('.r-due').value });
     });
-    return { id: currentId, to: document.getElementById('f-to').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, note: document.getElementById('f-note').value, rows: rows };
+    return { id: currentId, to: document.getElementById('f-to').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, addr: document.getElementById('f-addr').value, company: document.getElementById('f-company').value, tel: document.getElementById('f-tel').value, note: document.getElementById('f-note').value, rows: rows };
   }
 
   function saveDraft() { if (/[?&]demo=1/.test(location.search)) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(snapshot())); } catch (e) {} }
@@ -175,6 +180,9 @@
     document.getElementById('f-to').value = d.to || '';
     document.getElementById('f-date').value = d.date || todayISO();
     document.getElementById('f-author').value = d.author || '石谷 豪';
+    document.getElementById('f-addr').value = d.addr != null ? d.addr : DEF_ADDR;
+    document.getElementById('f-company').value = d.company != null ? d.company : DEF_COMPANY;
+    document.getElementById('f-tel').value = d.tel != null ? d.tel : DEF_TEL;
     document.getElementById('f-note').value = d.note || '';
     rowsEl.innerHTML = '';
     (d.rows && d.rows.length ? d.rows : []).forEach(addRow);
