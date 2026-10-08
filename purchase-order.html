@@ -99,7 +99,7 @@
     <div class="head">
       <div>
         <table class="meta">
-          <tr><td class="k">注文書作成日</td><td><input type="date" id="f-date"></td></tr>
+          <tr><td class="k">作成日</td><td><input type="date" id="f-date"></td></tr>
           <tr><td class="k">作成者</td><td><input type="text" id="f-author" value="石谷 豪"></td></tr>
         </table>
         <div class="greet">平素より格別の御高配誠にありがとうございます。<br>下記商品の御手配をお願い致します。</div>
@@ -191,7 +191,7 @@
 
   var draft = null;
   try { var rl = localStorage.getItem('po-reload'); if (rl) { localStorage.removeItem('po-reload'); draft = JSON.parse(rl); currentId = draft.id || null; } } catch (e) {}
-  if (!draft) { try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {} }
+  if (!draft) { try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (draft) draft.date = todayISO(); } catch (e) {} }
   var DEMO = /[?&]demo=1/.test(location.search);
   if (DEMO) {
     draft = {
