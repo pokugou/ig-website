@@ -84,6 +84,7 @@
 
   <div class="toolbar">
     <a class="back" href="tools.html">← ツール一覧</a>
+    <a class="back" style="margin-right:0;color:var(--ink);border:1px solid var(--ink);padding:0.6rem 1rem;background:#fff" href="purchase-order-history.html">保存一覧</a>
     <button type="button" class="secondary" id="btn-reset">クリア</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
     <button type="button" id="btn-save">PDFとして保存</button>
@@ -129,6 +130,8 @@
 <script>
   var rowsEl = document.getElementById('rows');
   var STORE_KEY = 'purchase-order-draft';
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var currentId = null;
 
   function todayISO() {
     var d = new Date();
@@ -163,7 +166,7 @@
     rowsEl.querySelectorAll('tr').forEach(function (tr) {
       rows.push({ name: tr.querySelector('.r-name').value, qty: tr.querySelector('.r-qty').value, price: tr.querySelector('.r-price').value, jan: tr.querySelector('.r-jan').value, due: tr.querySelector('.r-due').value });
     });
-    return { to: document.getElementById('f-to').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, note: document.getElementById('f-note').value, rows: rows };
+    return { id: currentId, to: document.getElementById('f-to').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, note: document.getElementById('f-note').value, rows: rows };
   }
 
   function saveDraft() { if (/[?&]demo=1/.test(location.search)) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(snapshot())); } catch (e) {} }
@@ -179,7 +182,8 @@
   }
 
   var draft = null;
-  try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+  try { var rl = localStorage.getItem('po-reload'); if (rl) { localStorage.removeItem('po-reload'); draft = JSON.parse(rl); currentId = draft.id || null; } } catch (e) {}
+  if (!draft) { try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {} }
   var DEMO = /[?&]demo=1/.test(location.search);
   if (DEMO) {
     draft = {
@@ -201,6 +205,7 @@
   document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
   document.getElementById('btn-reset').addEventListener('click', function () {
     if (!confirm('入力内容をすべてクリアしますか？')) return;
+    currentId = null;
     restore({});
     saveDraft();
   });
@@ -223,6 +228,27 @@
     return swaps;
   }
 
+  async function saveToHistory() {
+    var o = snapshot();
+    if (!currentId) currentId = 'po-' + Date.now();
+    o.id = currentId; o.__po = true;
+    try {
+      var res = await fetch(SYNC_API + '/paint');
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var others = all.filter(function (r) { return !r.__po; });
+      var list = all.filter(function (r) { return r.__po; });
+      var idx = list.findIndex(function (x) { return x.id === o.id; });
+      if (idx >= 0) list[idx] = o; else list.push(o);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(list)) });
+      if (!put.ok) throw new Error('save failed');
+      saveDraft();
+    } catch (e) {
+      console.error(e);
+      alert('PDFは作成しましたが、注文書一覧への保存に失敗しました。');
+    }
+  }
+
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
     btn.disabled = true; btn.textContent = '作成中…';
@@ -242,6 +268,7 @@
       var d = document.getElementById('f-date').value.replace(/-/g, '');
       var name = d + to.replace(/[\\/:*?"<>|]/g, '') + '_注文書.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (!DEMO) await saveToHistory();
     } catch (e) {
       console.error(e);
       try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
