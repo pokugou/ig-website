@@ -299,6 +299,25 @@
     return { sub: sub, tax: tax, carry: carry, billed: carry + sub + tax };
   }
 
+  // 1行の入力欄は、文字があふれる場合に折り返さず文字サイズを縮めて1行に収める
+  var fitCanvas = document.createElement('canvas').getContext('2d');
+  function fitOneLine(el) {
+    if (!el || el.tagName !== 'INPUT' || el.type !== 'text' || !el.closest('.sheet')) return;
+    el.style.fontSize = '';
+    var cs = getComputedStyle(el);
+    var base = parseFloat(cs.fontSize);
+    var avail = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+    if (!el.value || avail <= 0) return;
+    fitCanvas.font = cs.fontWeight + ' ' + base + 'px ' + cs.fontFamily;
+    var w = fitCanvas.measureText(el.value).width + (parseFloat(cs.letterSpacing) || 0) * el.value.length;
+    if (w > avail) el.style.fontSize = Math.max(base * 0.4, Math.floor(base * avail / w * 10) / 10) + 'px';
+  }
+  function fitAll() { document.querySelectorAll('.sheet input[type="text"]').forEach(fitOneLine); }
+  document.addEventListener('input', function (e) { fitOneLine(e.target); });
+  document.addEventListener('focusout', function (e) { fitOneLine(e.target); });
+  window.addEventListener('resize', fitAll);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+
   function recalc() {
     var t = totals();
     $('v-sub').textContent = yen(t.sub);
@@ -309,6 +328,7 @@
     $('v-carry2').textContent = yen(t.carry);
     $('r-carry').style.display = t.carry ? '' : 'none';
     ['v-billed', 'v-billed2', 'v-billed3'].forEach(function (id) { $(id).textContent = yen(t.billed); });
+    fitAll();
     $('v-breakdown').textContent = '10%対象 ' + yen(t.sub) + '　消費税 ' + yen(t.tax);
   }
 
@@ -330,6 +350,7 @@
     f('f-qty').value = it.qty || '';
     f('f-unit').value = commas(it.unit || '');
     f('f-amt').value = commas(it.amt || '');
+    f('f-note').value = it.note || '';
     function autoAmount() {
       if (String(f('f-qty').value).trim() !== '' && String(f('f-unit').value).trim() !== '') {
         f('f-amt').value = commas(num(f('f-qty').value) * num(f('f-unit').value));
@@ -493,10 +514,14 @@
       var cs = getComputedStyle(el);
       var o = document.createElement('div');
       o.textContent = displayText(el);
-      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.65' : '1.5') + ';color:inherit;white-space:' + (el.tagName === 'TEXTAREA' ? 'pre-wrap' : el.closest('.items') ? 'normal' : 'nowrap') + ';overflow:hidden;' + (el.tagName === 'SELECT' ? 'flex:0 0 auto;' : 'flex:1 1 auto;min-width:0;');
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.65' : '1.5') + ';color:inherit;white-space:' + (el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap') + ';overflow:hidden;' + (el.tagName === 'SELECT' ? 'flex:0 0 auto;' : 'flex:1 1 auto;min-width:0;');
       var prev = el.style.display;
       el.style.display = 'none';
       el.insertAdjacentElement('afterend', o);
+      if (el.tagName === 'INPUT') {
+        var size = parseFloat(cs.fontSize), min = size * 0.4;
+        while (o.scrollWidth > o.clientWidth + 1 && size > min) { size -= 0.25; o.style.fontSize = size + 'px'; }
+      }
       swaps.push({ el: el, o: o, prev: prev });
     });
     return swaps;
