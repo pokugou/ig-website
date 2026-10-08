@@ -18,6 +18,10 @@
   .toolbar button:hover { background: var(--red); border-color: var(--red); }
   .toolbar button.secondary { background: #fff; color: var(--ink); }
   .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
+  .sender-pick { max-width: 794px; margin: 0 auto 0.6rem; display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; font-weight: 700; }
+  .sender-pick select { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.45rem 0.6rem; border: 1px solid var(--ink); background: #fff; }
+  .pdf-capture .sender-pick { display: none; }
+  @media print { .sender-pick { display: none; } }
   .hint { max-width: 794px; margin: 0 auto 1rem; font-size: 0.72rem; color: var(--sub); }
 
   .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2.4rem 2.6rem 2.6rem; }
@@ -90,6 +94,13 @@
     <button type="button" class="secondary" id="btn-print">印刷</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
+  <div class="sender-pick">
+    <label for="f-sender">右上の差出人</label>
+    <select id="f-sender">
+      <option value="ig">株式会社IG（通常）</option>
+      <option value="tamesada">tamesada（直送）</option>
+    </select>
+  </div>
   <p class="hint">仕入先ごとの注文書です。品名・数量・備考を入力して「PDFとして保存」すると、A4の1枚で出力されます。</p>
 
   <div class="sheet" id="sheet">
@@ -137,6 +148,14 @@
   var DEF_ADDR = '〒188-0004\n東京都西東京市西原町\n5-3-30パルシオⅡ301';
   var DEF_COMPANY = '株式会社IG';
   var DEF_TEL = 'TEL.09017985613';
+  var SENDERS = {
+    ig: { addr: DEF_ADDR, company: DEF_COMPANY, tel: DEF_TEL },
+    tamesada: { addr: '〒750-0092\n山口県下関市彦島迫町4-11-6', company: 'tamesada', tel: 'TEL.090-5379-7835' }
+  };
+  function syncSenderPick() {
+    var c = document.getElementById('f-company').value;
+    document.getElementById('f-sender').value = c === SENDERS.tamesada.company ? 'tamesada' : 'ig';
+  }
   var DEFAULT_DUE = '最短納期希望';
 
   function todayISO() {
@@ -190,6 +209,7 @@
     document.getElementById('f-addr').value = d.addr != null ? d.addr : DEF_ADDR;
     document.getElementById('f-company').value = d.company != null ? d.company : DEF_COMPANY;
     document.getElementById('f-tel').value = d.tel != null ? d.tel : DEF_TEL;
+    syncSenderPick();
     document.getElementById('f-note').value = d.note || '';
     rowsEl.innerHTML = '';
     (d.rows && d.rows.length ? d.rows : []).forEach(addRow);
@@ -214,6 +234,13 @@
     };
   }
   restore(draft || {});
+  document.getElementById('f-sender').addEventListener('change', function () {
+    var v = SENDERS[this.value];
+    document.getElementById('f-addr').value = v.addr;
+    document.getElementById('f-company').value = v.company;
+    document.getElementById('f-tel').value = v.tel;
+    if (!DEMO) saveDraft();
+  });
   if (!DEMO) document.addEventListener('input', saveDraft);
 
   document.getElementById('btn-add').addEventListener('click', function () { addRow(); saveDraft(); });
