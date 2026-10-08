@@ -123,7 +123,7 @@
       d.appendChild(row('作成日', fmtDate(o.date)));
       d.appendChild(row('作成者', o.author || ''));
       items.forEach(function (r, i) {
-        var bits = [r.qty ? '数量 ' + r.qty : '', r.price ? '単価 ' + r.price : '', r.jan ? 'JAN ' + r.jan : '', r.due ? '納期 ' + r.due : ''].filter(Boolean).join('　');
+        var bits = [r.qty ? '実質数量 ' + r.qty : '', r.price ? '単価 ' + r.price : '', r.jan ? 'JAN ' + r.jan : '', r.due ? '納期 ' + r.due : ''].filter(Boolean).join('　');
         d.appendChild(row((i + 1) + '. ' + (r.name || ''), bits));
       });
       if (o.note) d.appendChild(row('備考欄', o.note));
