@@ -22,6 +22,9 @@
   .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
   .options { max-width: 794px; margin: 0 auto 0.9rem; display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.78rem; color: var(--sub); }
   .options label { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+  .client-pick { max-width: 794px; margin: 0 auto 0.6rem; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; font-size: 0.82rem; font-weight: 700; }
+  .client-pick select { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.45rem 0.6rem; border: 1px solid var(--ink); background: #fff; min-width: 14rem; max-width: 100%; }
+  .client-pick .note { font-size: 0.72rem; font-weight: 400; color: var(--sub); }
   .editing-badge { display: none; font-weight: 700; color: var(--red); }
   .editing .editing-badge { display: inline; }
 
@@ -131,7 +134,7 @@
   }
 
   /* PDF書き出し時 */
-  .pdf-capture .toolbar, .pdf-capture .options { visibility: hidden; }
+  .pdf-capture .toolbar, .pdf-capture .options, .pdf-capture .client-pick { visibility: hidden; }
   .pdf-capture .sheet { width: 794px; max-width: none; margin: 0; border: none; padding: 2.2rem 2.5rem 2rem; }
   .pdf-capture .add-row-btn, .pdf-capture .c-del { display: none; }
   .pdf-capture .items-wrap { overflow: visible; }
@@ -149,7 +152,7 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .options, .add-row-btn, .c-del { display: none !important; }
+    .toolbar, .options, .client-pick, .add-row-btn, .c-del { display: none !important; }
     .sheet { width: 100%; border: none; padding: 0; }
     .sheet input, .sheet select, .sheet textarea { background: transparent !important; }
     @page { size: A4; margin: 1.2cm; }
@@ -164,6 +167,11 @@
     <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
     <button type="button" id="btn-save">PDFとして保存</button>
+  </div>
+  <div class="client-pick">
+    <label for="f-client">取引先から入力</label>
+    <select id="f-client"><option value="">（保存済みの取引先を選ぶ）</option></select>
+    <span class="note" id="client-note">一度保存した宛先が選べます</span>
   </div>
   <div class="options" id="options">
     <label><input type="checkbox" id="opt-seal" checked> 社印を表示</label>
@@ -183,7 +191,7 @@
           <input type="text" id="f-address2" placeholder="建物名・部署など（任意）">
         </div>
         <div class="name">
-          <input type="text" id="f-customer" placeholder="お客様名・会社名">
+          <input type="text" id="f-customer" placeholder="お客様名・会社名" list="client-list" autocomplete="off"><datalist id="client-list"></datalist>
           <select id="f-honor"><option>御中</option><option>様</option></select>
         </div>
       </div>
@@ -460,8 +468,60 @@
     if (!res.ok) throw new Error('load failed');
     var all = await res.json();
     cachedInvoices = all.filter(function (r) { return r[DOC.tag]; });
+    buildClients(all);
     return all;
   }
+  /* ---------- 取引先（保存済みの請求書・納品書から作る） ---------- */
+  var clients = {};
+  var CLIENT_KEYS = ['zip', 'address', 'address2', 'honor', 'closeDay', 'payMonth', 'payDay'];
+  function buildClients(all) {
+    clients = {};
+    all.filter(function (r) { return (r.__invoice || r.__delivery) && r.customer && r.customer.trim(); })
+      .sort(function (a, b) { return String(a.savedAt || '').localeCompare(String(b.savedAt || '')); })
+      .forEach(function (r) {
+        var c = clients[r.customer.trim()] = clients[r.customer.trim()] || {};
+        CLIENT_KEYS.forEach(function (k) {
+          // 納品書には支払条件の意味がないので、請求書の条件を優先して残す
+          if (/^(closeDay|payMonth|payDay)$/.test(k) && !r.__invoice && c[k] != null) return;
+          if (r[k] != null) c[k] = r[k];
+        });
+      });
+    var names = Object.keys(clients).sort(function (a, b) { return a.localeCompare(b, 'ja'); });
+    var sel = $('f-client'), list = $('client-list');
+    sel.innerHTML = '<option value="">（保存済みの取引先を選ぶ）</option>';
+    list.innerHTML = '';
+    names.forEach(function (n) {
+      var o = document.createElement('option'); o.value = n; o.textContent = n + ' ' + (clients[n].honor || '');
+      sel.appendChild(o);
+      var d = document.createElement('option'); d.value = n; list.appendChild(d);
+    });
+    $('client-note').textContent = names.length ? names.length + '件の取引先' : '一度保存した宛先が選べます';
+  }
+  function applyClient(name) {
+    var c = clients[name];
+    if (!c) return;
+    $('f-customer').value = name;
+    var map = { zip: 'f-zip', address: 'f-address', address2: 'f-address2', honor: 'f-honor', closeDay: 'f-close', payMonth: 'f-paymonth', payDay: 'f-payday' };
+    var defaults = { address2: '', closeDay: '末', payMonth: '翌月', payDay: '末' };
+    Object.keys(map).forEach(function (k) {
+      if (c[k] != null && c[k] !== '') $(map[k]).value = c[k];
+      else if (k in defaults) $(map[k]).value = defaults[k];
+    });
+    lastAutoAddress = ''; lastZipLookup = String(c.zip || '').replace(/[^0-9]/g, '');
+    updateDue();
+    fitAll();
+  }
+  $('f-client').addEventListener('change', function () {
+    if (!this.value) return;
+    applyClient(this.value);
+    this.value = '';
+  });
+  // お客様名の候補（datalist）から選んだら、住所などもまとめて入れる
+  $('f-customer').addEventListener('input', function (e) {
+    var v = this.value.trim();
+    if (clients[v] && (e.inputType === 'insertReplacementText' || !e.inputType)) applyClient(v);
+  });
+
   function suggestNumber() {
     if (numberTouched || currentId) return;
     var base = ($('f-date').value || todayIso()).replace(/-/g, '');
