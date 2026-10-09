@@ -33,7 +33,6 @@
   /* ---- 見出し ---- */
   .doc-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.6rem; margin-bottom: 1.4rem; gap: 1rem; }
   .doc-title h1 { font-size: 1.9rem; font-weight: 900; letter-spacing: 0.25em; line-height: 1.4; }
-  .doc-title .en { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.35em; color: var(--sub); }
   .doc-meta { display: grid; grid-template-columns: auto 10.5rem; column-gap: 0.7rem; row-gap: 0.15rem; font-size: 0.8rem; align-items: baseline; }
   .doc-meta .k { color: var(--sub); font-weight: 700; text-align: right; }
   .doc-meta input { text-align: right; font-weight: 700; padding: 0.05rem 0.1rem; }
@@ -165,7 +164,6 @@
     <div class="doc-head">
       <div class="doc-title">
         <h1 id="title-text">請求書</h1>
-        <div class="en" id="title-en">INVOICE</div>
       </div>
       <div class="doc-meta">
         <span class="k">発行日</span><input type="date" id="f-date" data-fmt="wareki">
@@ -268,8 +266,8 @@
   /* 請求書／納品書の切り替え（?type=delivery で納品書） */
   var KIND = new URLSearchParams(location.search).get('type') === 'delivery' ? 'delivery' : 'invoice';
   var DOC = KIND === 'delivery'
-    ? { tag: '__delivery', idPrefix: 'dn-', title: '納品書', en: 'DELIVERY NOTE', numberLabel: '納品番号', amountLabel: '合計金額', greet: '毎度ありがとうございます。下記の通り納品いたしましたので、ご査収ください。', history: 'invoice-history.html?type=delivery', reloadKey: 'delivery-reload' }
-    : { tag: '__invoice', idPrefix: 'inv-', title: '請求書', en: 'INVOICE', numberLabel: '請求番号', amountLabel: 'ご請求金額', greet: '毎度ありがとうございます。下記の通りご請求申し上げます。', history: 'invoice-history.html', reloadKey: 'invoice-reload' };
+    ? { tag: '__delivery', idPrefix: 'dn-', title: '納品書', numberLabel: '納品番号', amountLabel: '合計金額', greet: '毎度ありがとうございます。下記の通り納品いたしましたので、ご査収ください。', history: 'invoice-history.html?type=delivery', reloadKey: 'delivery-reload' }
+    : { tag: '__invoice', idPrefix: 'inv-', title: '請求書', numberLabel: '請求番号', amountLabel: 'ご請求金額', greet: '毎度ありがとうございます。下記の通りご請求申し上げます。', history: 'invoice-history.html', reloadKey: 'invoice-reload' };
 
   function $(id) { return document.getElementById(id); }
   function num(s) { var v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
@@ -595,7 +593,6 @@
     document.body.classList.toggle('is-delivery', KIND === 'delivery');
     document.title = DOC.title + ' | IG Rod Planning';
     $('title-text').textContent = DOC.title;
-    $('title-en').textContent = DOC.en;
     $('number-label').textContent = DOC.numberLabel;
     $('greet').textContent = DOC.greet;
     $('amount-label').textContent = DOC.amountLabel;
