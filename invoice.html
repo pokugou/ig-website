@@ -63,6 +63,7 @@
   .seal { position: absolute; right: 0; top: -0.5rem; width: 83px; height: 83px; opacity: 0.85; pointer-events: none; }
   .no-seal .seal { display: none; }
   .no-reg .from .reg { display: none; }
+  .no-terms .terms { display: none; }
 
   /* ---- ご請求金額 ---- */
   .amount { display: grid; grid-template-columns: 1fr auto; margin: 1.3rem 0 0.9rem; border: 2px solid var(--ink); }
@@ -82,7 +83,7 @@
   .carry th.hl { background: var(--ink); color: #fff; border-color: var(--ink); }
   .carry td.hl { border: 2px solid var(--ink); font-weight: 900; }
   .no-carry .carry { display: none; }
-  .is-delivery .carry, .is-delivery .bank, .is-delivery .amount .due, .is-delivery #opt-carry-label, .is-delivery #r-carry { display: none !important; }
+  .is-delivery .carry, .is-delivery .bank, .is-delivery .amount .due, .is-delivery #opt-carry-label, .is-delivery #opt-terms-label, .is-delivery #r-carry { display: none !important; }
   .is-delivery .amount, .pdf-capture.is-delivery .amount { grid-template-columns: 1fr; }
 
   /* ---- 明細 ---- */
@@ -167,6 +168,7 @@
   <div class="options" id="options">
     <label><input type="checkbox" id="opt-seal" checked> 社印を表示</label>
     <label><input type="checkbox" id="opt-reg" checked> 登録番号を表示</label>
+    <label id="opt-terms-label"><input type="checkbox" id="opt-terms" checked> お支払条件を表示</label>
     <label id="opt-carry-label"><input type="checkbox" id="opt-carry" checked> 前回請求・入金欄を表示</label>
     <span class="editing-badge" id="editing-badge">✎ 保存済みの請求書を編集中（保存すると上書きされます）</span>
   </div>
@@ -441,11 +443,13 @@
   function applyOptions() {
     document.body.classList.toggle('no-seal', !$('opt-seal').checked);
     document.body.classList.toggle('no-reg', !$('opt-reg').checked);
+    document.body.classList.toggle('no-terms', !$('opt-terms').checked);
     document.body.classList.toggle('no-carry', !$('opt-carry').checked);
     recalc();
   }
   $('opt-seal').addEventListener('change', applyOptions);
   $('opt-reg').addEventListener('change', applyOptions);
+  $('opt-terms').addEventListener('change', applyOptions);
   $('opt-carry').addEventListener('change', applyOptions);
 
 
@@ -482,7 +486,7 @@
 
   function collect() {
     var t = totals();
-    var inv = { id: currentId || (DOC.idPrefix + Date.now()), kind: KIND, savedAt: new Date().toISOString(), seal: $('opt-seal').checked, showReg: $('opt-reg').checked, showCarry: $('opt-carry').checked, items: [] };
+    var inv = { id: currentId || (DOC.idPrefix + Date.now()), kind: KIND, savedAt: new Date().toISOString(), seal: $('opt-seal').checked, showReg: $('opt-reg').checked, showTerms: $('opt-terms').checked, showCarry: $('opt-carry').checked, items: [] };
     Object.keys(FIELDS).forEach(function (k) { inv[k] = $(FIELDS[k]).value; });
     rowsBody.querySelectorAll('tr').forEach(function (tr) {
       var it = {};
@@ -503,6 +507,7 @@
     $('f-paid').value = commas(inv.paid || '');
     $('opt-seal').checked = inv.seal !== false;
     $('opt-reg').checked = inv.showReg != null ? inv.showReg : KIND !== 'delivery';
+    $('opt-terms').checked = inv.showTerms !== false;
     $('opt-carry').checked = KIND !== 'delivery' && inv.showCarry !== false;
     rowsBody.innerHTML = '';
     (inv.items && inv.items.length ? inv.items : [{}]).forEach(addRow);
@@ -521,6 +526,7 @@
     updateDue();
     $('opt-seal').checked = true;
     $('opt-reg').checked = KIND !== 'delivery';
+    $('opt-terms').checked = true;
     $('opt-carry').checked = KIND !== 'delivery';
     rowsBody.innerHTML = '';
     addRow();
