@@ -182,7 +182,7 @@
         </div>
         <div class="name">
           <input type="text" id="f-customer" placeholder="お客様名・会社名">
-          <select id="f-honor"><option>様</option><option>御中</option></select>
+          <select id="f-honor"><option>御中</option><option>様</option></select>
         </div>
       </div>
       <div class="side">
@@ -514,7 +514,7 @@
     currentId = null;
     numberTouched = false;
     document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function (el) { el.value = ''; });
-    $('f-honor').selectedIndex = 0;
+    $('f-honor').value = '御中';
     $('f-date').value = todayIso();
     $('f-close').value = '末'; $('f-paymonth').value = '翌月'; $('f-payday').value = '末';
     dueTouched = false;
