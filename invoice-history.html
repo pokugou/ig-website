@@ -105,7 +105,7 @@
   function matches(inv) {
     if (month && String(inv.date || '').slice(0, 7) !== month) return false;
     if (!term) return true;
-    var hay = [inv.customer, inv.number, inv.address, inv.notes].concat((inv.items || []).map(function (i) { return i.name + ' ' + (i.note || ''); })).join(' ').toLowerCase();
+    var hay = [inv.customer, inv.number, inv.address, inv.address2, inv.notes].concat((inv.items || []).map(function (i) { return i.name + ' ' + (i.note || ''); })).join(' ').toLowerCase();
     return hay.indexOf(term) !== -1;
   }
 
@@ -189,7 +189,7 @@
       d.appendChild(acts);
 
       var meta = [];
-      if (inv.address) meta.push((inv.zip ? '〒' + inv.zip + ' ' : '') + inv.address);
+      if (inv.address) meta.push((inv.zip ? '〒' + inv.zip + ' ' : '') + inv.address + (inv.address2 ? ' ' + inv.address2 : ''));
       if (inv.due) meta.push('お支払期限 ' + fmtDate(inv.due));
       if (meta.length) d.appendChild(el('div', 'meta', meta.join('　／　')));
 
