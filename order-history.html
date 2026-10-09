@@ -49,10 +49,10 @@
   .order-summary .arrow { font-size: 0.7rem; color: var(--sub); transition: transform 0.15s; flex-shrink: 0; }
   .order-card.open .arrow { transform: rotate(90deg); }
 
-  .order-detail { display: none; border-top: 1px solid var(--line2); padding: 1rem 1.1rem 1.2rem; }
+  .order-detail { display: none; border-top: 1px solid var(--line2); padding: 0.6rem 1.1rem 0.7rem; }
   .order-card.open .order-detail { display: block; }
 
-  .detail-actions { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .detail-actions { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
   .edit-btn { flex: 1; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.6rem 1rem; cursor: pointer; }
   .edit-btn:hover { background: var(--red); border-color: var(--red); }
   .print-toggle-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink); background: #fff; border: 1px solid var(--line); padding: 0.6rem 1rem; cursor: pointer; white-space: nowrap; }
@@ -60,10 +60,10 @@
   .delete-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--sub); background: #fff; border: 1px solid var(--line); padding: 0.6rem 1rem; cursor: pointer; white-space: nowrap; }
   .delete-btn:hover { color: #fff; background: var(--red); border-color: var(--red); }
 
-  .detail-section { margin-bottom: 1.1rem; }
+  .detail-section { margin-bottom: 0.5rem; }
   .detail-section:last-child { margin-bottom: 0; }
-  .detail-section-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #fff; background: var(--ink); display: inline-block; padding: 0.2rem 0.6rem; margin-bottom: 0.5rem; }
-  .detail-row { display: grid; grid-template-columns: 140px 1fr; align-items: baseline; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); font-size: 0.84rem; }
+  .detail-section-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #fff; background: var(--ink); display: inline-block; padding: 0.2rem 0.6rem; margin-bottom: 0.2rem; }
+  .detail-row { display: grid; grid-template-columns: 140px 1fr; align-items: baseline; gap: 0.6rem; padding: 0; line-height: 1.4; border-bottom: 1px dotted var(--line2); font-size: 0.84rem; }
   .detail-row .dl { font-weight: 700; color: var(--sub); }
   .detail-row .dv { white-space: pre-wrap; }
 
@@ -100,7 +100,7 @@
   .print-sheets .sheet-footer .company { font-size: 0.9rem; font-weight: 700; color: var(--ink); letter-spacing: 0.04em; }
 
   @media screen and (max-width: 560px) {
-    .detail-row { grid-template-columns: 1fr; gap: 0.1rem; padding: 0.4rem 0; }
+    .detail-row { grid-template-columns: 9.5em 1fr; gap: 0.4rem; padding: 0; }
     .order-summary { flex-wrap: wrap; }
     .order-summary .who { flex: 1 1 100%; order: 1; }
     .order-summary .printed-badge, .order-summary .when, .order-summary .arrow { order: 2; }
