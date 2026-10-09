@@ -47,6 +47,11 @@
   .to .name input { font-size: 1.35rem; font-weight: 900; padding: 0.1rem 0.1rem; }
   .to .name select { width: auto; font-size: 1.05rem; font-weight: 700; cursor: pointer; }
   .greet { font-size: 0.8rem; }
+  .terms { display: inline-flex; align-items: baseline; gap: 0.1rem; border: 1px solid var(--line2); padding: 0.3rem 0.75rem; margin-bottom: 0.7rem; font-size: 0.86rem; font-weight: 700; white-space: nowrap; }
+  .terms .k { font-size: 0.68rem; color: var(--sub); letter-spacing: 0.1em; margin-right: 0.7rem; }
+  .sheet .terms input.day { width: 2.2em; text-align: center; font-weight: 900; padding: 0; }
+  .sheet .terms select { width: auto; font-weight: 700; margin-left: 0.5rem; padding: 0; cursor: pointer; -webkit-appearance: none; appearance: none; }
+  .is-delivery .terms { display: none; }
 
   .from { position: relative; font-size: 0.74rem; line-height: 1.65; }
   .from .brand { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.45rem; }
@@ -190,7 +195,15 @@
     </div>
 
     <div class="parties">
-      <p class="greet" id="greet">毎度ありがとうございます。下記の通りご請求申し上げます。</p>
+      <div>
+        <div class="terms" title="締め日・支払月・支払日は編集できます（「末」または数字）">
+          <span class="k">お支払条件</span>
+          <input type="text" class="day" id="f-close" value="末">日締め
+          <select id="f-paymonth"><option>当月</option><option selected>翌月</option><option>翌々月</option></select>
+          <input type="text" class="day" id="f-payday" value="末">日払い
+        </div>
+        <p class="greet" id="greet">毎度ありがとうございます。下記の通りご請求申し上げます。</p>
+      </div>
 
       <div class="from">
         <div class="brand">
@@ -288,11 +301,22 @@
     return '令和' + (r === 1 ? '元' : r) + '年' + Number(p[1]) + '月' + Number(p[2]) + '日';
   }
   function mdOf(iso) { if (!iso) return ''; var p = iso.split('-'); return Number(p[1]) + '/' + Number(p[2]); }
-  function endOfNextMonth(iso) {
-    var p = (iso || todayIso()).split('-');
-    var d = new Date(Number(p[0]), Number(p[1]) + 1, 0);
-    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  // お支払条件（○日締め／当月・翌月・翌々月／○日払い）から支払期限を出す。「末」は月末
+  function dueFromTerms(iso) {
+    var p = (iso || todayIso()).split('-'), y = Number(p[0]), m = Number(p[1]) - 1, d = Number(p[2]);
+    var close = String($('f-close').value).trim(), pay = String($('f-payday').value).trim();
+    var closeN = parseInt(close.replace(/[^0-9]/g, ''), 10);
+    if (!/末/.test(close) && closeN && d > closeN) m += 1;
+    m += { '当月': 0, '翌月': 1, '翌々月': 2 }[$('f-paymonth').value] || 0;
+    var last = new Date(y, m + 1, 0).getDate();
+    var payN = parseInt(pay.replace(/[^0-9]/g, ''), 10);
+    var day = (/末/.test(pay) || !payN) ? last : Math.min(payN, last);
+    var dt = new Date(y, m, day);
+    return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
   }
+  var dueTouched = false;
+  function updateDue() { if (!dueTouched) $('f-due').value = dueFromTerms($('f-date').value); }
+
 
   /* ---------- 計算 ---------- */
   function totals() {
@@ -444,9 +468,13 @@
   }
   $('f-number').addEventListener('input', function () { numberTouched = true; });
   $('f-date').addEventListener('change', suggestNumber);
+  $('f-date').addEventListener('change', updateDue);
+  $('f-due').addEventListener('input', function () { dueTouched = true; });
+  ['f-close', 'f-payday'].forEach(function (id) { $(id).addEventListener('input', updateDue); });
+  $('f-paymonth').addEventListener('change', updateDue);
 
   /* ---------- 保存データ ---------- */
-  var FIELDS = { date: 'f-date', number: 'f-number', due: 'f-due', zip: 'f-zip', address: 'f-address', address2: 'f-address2', customer: 'f-customer', honor: 'f-honor', prev: 'f-prev', paid: 'f-paid', notes: 'f-notes' };
+  var FIELDS = { date: 'f-date', number: 'f-number', due: 'f-due', zip: 'f-zip', address: 'f-address', address2: 'f-address2', closeDay: 'f-close', payMonth: 'f-paymonth', payDay: 'f-payday', customer: 'f-customer', honor: 'f-honor', prev: 'f-prev', paid: 'f-paid', notes: 'f-notes' };
 
   function collect() {
     var t = totals();
@@ -465,6 +493,7 @@
   function populate(inv) {
     currentId = inv.id || null;
     numberTouched = !!inv.number;
+    dueTouched = !!inv.due;
     Object.keys(FIELDS).forEach(function (k) { if (inv[k] != null) $(FIELDS[k]).value = inv[k]; });
     $('f-prev').value = commas(inv.prev || '');
     $('f-paid').value = commas(inv.paid || '');
@@ -482,7 +511,9 @@
     document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function (el) { el.value = ''; });
     $('f-honor').selectedIndex = 0;
     $('f-date').value = todayIso();
-    $('f-due').value = endOfNextMonth(todayIso());
+    $('f-close').value = '末'; $('f-paymonth').value = '翌月'; $('f-payday').value = '末';
+    dueTouched = false;
+    updateDue();
     $('opt-seal').checked = true;
     $('opt-carry').checked = KIND !== 'delivery';
     rowsBody.innerHTML = '';
@@ -621,7 +652,7 @@
       var inv = JSON.parse(raw);
       populate(inv);
       if (!inv.id) {
-        if (!inv.due) $('f-due').value = endOfNextMonth($('f-date').value);
+        if (!inv.due) { dueTouched = false; updateDue(); }
         suggestNumber();
       }
     } catch (e) { console.error(e); }
