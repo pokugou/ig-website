@@ -49,6 +49,14 @@
   .note { font-size: 0.72rem; color: var(--sub); margin-top: 0.5rem; }
 
 
+
+  .mode-bar { max-width: 794px; margin: 0 auto 0.8rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .mode-bar span { font-size: 0.75rem; font-weight: 700; color: var(--sub); }
+  .mode-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; padding: 0.5rem 1rem; border: 1px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; }
+  .mode-btn.on { background: var(--ink); color: #fff; }
+  body.mode-free .guide-part { display: none; }
+  body.mode-free .free { margin-top: 0; }
+  body.mode-free .sheet textarea { min-height: 30rem; }
   .free { margin-top: 1.4rem; }
   .free-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; background: var(--ink); color: #fff; padding: 0.35rem 0.8rem; }
   .sheet textarea { font-family: inherit; color: inherit; background: transparent; width: 100%; border: 1.5px solid var(--ink); border-top: none; padding: 0.7rem 0.8rem; font-size: 1rem; line-height: 1.7; min-height: 9rem; resize: vertical; display: block; }
@@ -78,12 +86,13 @@
     table.guides td.pos { width: 8.5rem; }
   }
 
+  .pdf-capture .mode-bar { display: none; }
   .pdf-capture .sheet { width: 794px; max-width: none; border: none; }
   .pdf-capture .toolbar, .pdf-capture .add-row, .pdf-capture .hint, .pdf-capture td.del, .pdf-capture th.del, .pdf-capture .img-ctl, .pdf-capture .img-add { display: none; }
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .add-row, .hint, td.del, th.del, .img-ctl, .img-add { display: none; }
+    .mode-bar, .toolbar, .add-row, .hint, td.del, th.del, .img-ctl, .img-add { display: none; }
     .sheet { width: 100%; border: none; padding: 0; }
     @page { size: A4; margin: 1.2cm; }
   }
@@ -97,7 +106,12 @@
     <button type="button" class="secondary" id="btn-print">印刷</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
-  <p class="hint">ガイドパターンごとに、穂先（トップガイド）からの位置を入力します。入力した内容はこの端末に自動保存されます。</p>
+  <div class="mode-bar">
+    <span>ページの種類</span>
+    <button type="button" class="mode-btn" data-mode="table">ガイド表＋フリー記入</button>
+    <button type="button" class="mode-btn" data-mode="free">フリー記入のみ</button>
+  </div>
+  <p class="hint guide-part">ガイドパターンごとに、穂先（トップガイド）からの位置を入力します。入力した内容はこの端末に自動保存されます。</p>
 
   <div class="sheet" id="sheet">
     <h1>ロッド仕様書</h1>
@@ -112,6 +126,7 @@
       </tr>
     </table>
 
+    <div class="guide-part">
     <table class="guides">
       <thead><tr><th>No.</th><th>ガイドパターン</th><th>ガイド位置（穂先から）</th><th class="del"></th></tr></thead>
       <tbody id="rows"></tbody>
@@ -123,6 +138,7 @@
       </tr></tbody>
     </table>
     <p class="note">位置はトップガイドを0mmとした、各ガイド位置までの距離（mm）です。</p>
+    </div>
 
     <div class="free">
       <div class="free-title">フリー記入</div>
@@ -135,7 +151,7 @@
     </div>
   </div>
 
-  <div class="add-row"><button type="button" id="btn-add">＋ 行を追加</button></div>
+  <div class="add-row guide-part"><button type="button" id="btn-add">＋ 行を追加</button></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -144,6 +160,7 @@
   var STORE_KEY = 'rod-dimensions-draft';
   var DEFAULT_ROWS = 10;
   var images = [];
+  var mode = 'table';
   var imgsEl = document.getElementById('imgs');
   var SIZES = ['s1', 's2', 's3'];
   var SIZE_LABEL = { s1: '小', s2: '中', s3: '大' };
@@ -180,9 +197,18 @@
     rowsEl.querySelectorAll('tr').forEach(function (tr) {
       rows.push({ name: tr.querySelector('.r-name').value, pos: tr.querySelector('.r-pos').value });
     });
-    return { free: document.getElementById('f-free').value, images: images, reel: document.getElementById('f-reel').value, reelPos: document.getElementById('f-reel-pos').value, model: document.getElementById('f-model').value, author: document.getElementById('f-author').value, rows: rows };
+    return { mode: mode, free: document.getElementById('f-free').value, images: images, reel: document.getElementById('f-reel').value, reelPos: document.getElementById('f-reel-pos').value, model: document.getElementById('f-model').value, author: document.getElementById('f-author').value, rows: rows };
   }
 
+
+  function setMode(m) {
+    mode = m === 'free' ? 'free' : 'table';
+    document.body.classList.toggle('mode-free', mode === 'free');
+    document.querySelectorAll('.mode-btn').forEach(function (b) { b.classList.toggle('on', b.dataset.mode === mode); });
+  }
+  document.querySelectorAll('.mode-btn').forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.dataset.mode); saveDraft(); });
+  });
 
   function renderImages() {
     imgsEl.innerHTML = '';
@@ -250,6 +276,7 @@
     document.getElementById('f-model').value = d.model || '';
     document.getElementById('f-date').value = todayISO();
     document.getElementById('f-author').value = d.author != null ? d.author : '石谷 豪';
+    setMode(d.mode || 'table');
     document.getElementById('f-free').value = d.free || '';
     images = (d.images || []).slice();
     renderImages();
@@ -269,7 +296,7 @@
   document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
   document.getElementById('btn-reset').addEventListener('click', function () {
     if (!confirm('入力内容をすべてクリアしますか？')) return;
-    restore({ author: document.getElementById('f-author').value });
+    restore({ author: document.getElementById('f-author').value, mode: mode });
     saveDraft();
   });
 
