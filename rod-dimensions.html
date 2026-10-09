@@ -48,6 +48,26 @@
   table.guides td.del button:hover { color: var(--red); }
   .note { font-size: 0.72rem; color: var(--sub); margin-top: 0.5rem; }
 
+
+  .free { margin-top: 1.4rem; }
+  .free-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; background: var(--ink); color: #fff; padding: 0.35rem 0.8rem; }
+  .sheet textarea { font-family: inherit; color: inherit; background: transparent; width: 100%; border: 1.5px solid var(--ink); border-top: none; padding: 0.7rem 0.8rem; font-size: 1rem; line-height: 1.7; min-height: 9rem; resize: vertical; display: block; }
+  .sheet textarea:focus { outline: none; background: #fff8e0; }
+  .imgs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.8rem; align-items: flex-start; }
+  .img-item { position: relative; border: 1px solid var(--line); background: #fff; }
+  .img-item img { display: block; width: 100%; height: auto; }
+  .img-item.s1 { width: calc(33.333% - 0.4rem); }
+  .img-item.s2 { width: calc(50% - 0.3rem); }
+  .img-item.s3 { width: 100%; }
+  .img-ctl { position: absolute; top: 4px; right: 4px; display: flex; gap: 4px; }
+  .img-ctl button { font-family: inherit; font-size: 0.72rem; font-weight: 700; border: 1px solid var(--ink); background: rgba(255,255,255,0.92); color: var(--ink); padding: 0.2rem 0.5rem; cursor: pointer; }
+  .img-ctl button:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .img-add { margin-top: 0.6rem; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+  .img-add label { font-size: 0.8rem; font-weight: 700; padding: 0.5rem 1rem; border: 1px dashed var(--line); color: var(--sub); cursor: pointer; background: #fff; }
+  .img-add label:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+  .img-add input { display: none; }
+  .img-add span { font-size: 0.7rem; color: var(--sub); }
+
   .add-row { max-width: 794px; margin: 0.6rem auto 0; }
   .add-row button { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.55rem 1rem; width: 100%; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
   .add-row button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
@@ -59,11 +79,11 @@
   }
 
   .pdf-capture .sheet { width: 794px; max-width: none; border: none; }
-  .pdf-capture .toolbar, .pdf-capture .add-row, .pdf-capture .hint, .pdf-capture td.del, .pdf-capture th.del { display: none; }
+  .pdf-capture .toolbar, .pdf-capture .add-row, .pdf-capture .hint, .pdf-capture td.del, .pdf-capture th.del, .pdf-capture .img-ctl, .pdf-capture .img-add { display: none; }
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .add-row, .hint, td.del, th.del { display: none; }
+    .toolbar, .add-row, .hint, td.del, th.del, .img-ctl, .img-add { display: none; }
     .sheet { width: 100%; border: none; padding: 0; }
     @page { size: A4; margin: 1.2cm; }
   }
@@ -103,6 +123,16 @@
       </tr></tbody>
     </table>
     <p class="note">位置はトップガイドを0mmとした、各ガイド位置までの距離（mm）です。</p>
+
+    <div class="free">
+      <div class="free-title">フリー記入</div>
+      <textarea id="f-free" placeholder="自由にメモを書けます（仕様の補足・注意事項など）"></textarea>
+      <div class="imgs" id="imgs"></div>
+      <div class="img-add">
+        <label>＋ 画像を追加<input type="file" id="f-img" accept="image/*" multiple></label>
+        <span>写真の貼り付け（ペースト）にも対応。画像の「大小」で大きさを切り替えられます。</span>
+      </div>
+    </div>
   </div>
 
   <div class="add-row"><button type="button" id="btn-add">＋ 行を追加</button></div>
@@ -113,6 +143,10 @@
   var rowsEl = document.getElementById('rows');
   var STORE_KEY = 'rod-dimensions-draft';
   var DEFAULT_ROWS = 10;
+  var images = [];
+  var imgsEl = document.getElementById('imgs');
+  var SIZES = ['s1', 's2', 's3'];
+  var SIZE_LABEL = { s1: '小', s2: '中', s3: '大' };
 
   function todayISO() {
     var d = new Date();
@@ -146,15 +180,79 @@
     rowsEl.querySelectorAll('tr').forEach(function (tr) {
       rows.push({ name: tr.querySelector('.r-name').value, pos: tr.querySelector('.r-pos').value });
     });
-    return { reel: document.getElementById('f-reel').value, reelPos: document.getElementById('f-reel-pos').value, model: document.getElementById('f-model').value, author: document.getElementById('f-author').value, rows: rows };
+    return { free: document.getElementById('f-free').value, images: images, reel: document.getElementById('f-reel').value, reelPos: document.getElementById('f-reel-pos').value, model: document.getElementById('f-model').value, author: document.getElementById('f-author').value, rows: rows };
   }
 
-  function saveDraft() { try { localStorage.setItem(STORE_KEY, JSON.stringify(snapshot())); } catch (e) {} }
+
+  function renderImages() {
+    imgsEl.innerHTML = '';
+    images.forEach(function (im, idx) {
+      var box = document.createElement('div');
+      box.className = 'img-item ' + (im.size || 's2');
+      var img = document.createElement('img');
+      img.src = im.src;
+      var ctl = document.createElement('div');
+      ctl.className = 'img-ctl';
+      var sz = document.createElement('button');
+      sz.type = 'button';
+      sz.textContent = '大小';
+      sz.addEventListener('click', function () {
+        var i = SIZES.indexOf(im.size || 's2');
+        im.size = SIZES[(i + 1) % SIZES.length];
+        renderImages(); saveDraft();
+      });
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.textContent = '×';
+      del.addEventListener('click', function () { images.splice(idx, 1); renderImages(); saveDraft(); });
+      ctl.appendChild(sz); ctl.appendChild(del);
+      box.appendChild(img); box.appendChild(ctl);
+      imgsEl.appendChild(box);
+    });
+  }
+
+  function addImageFile(file) {
+    if (!file || !/^image\//.test(file.type)) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        var MAX = 1400, w = im.width, h = im.height, k = Math.min(1, MAX / Math.max(w, h));
+        var c = document.createElement('canvas');
+        c.width = Math.round(w * k); c.height = Math.round(h * k);
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(im, 0, 0, c.width, c.height);
+        images.push({ src: c.toDataURL('image/jpeg', 0.85), size: 's2' });
+        renderImages(); saveDraft();
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('f-img').addEventListener('change', function (e) {
+    Array.prototype.forEach.call(e.target.files, addImageFile);
+    e.target.value = '';
+  });
+  document.addEventListener('paste', function (e) {
+    var items = (e.clipboardData && e.clipboardData.items) || [];
+    Array.prototype.forEach.call(items, function (it) { if (it.kind === 'file') addImageFile(it.getAsFile()); });
+  });
+
+  function saveDraft() {
+    var s = snapshot();
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); }
+    catch (e) { try { s.images = []; localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch (e2) {} }
+  }
 
   function restore(d) {
     document.getElementById('f-model').value = d.model || '';
     document.getElementById('f-date').value = todayISO();
     document.getElementById('f-author').value = d.author != null ? d.author : '石谷 豪';
+    document.getElementById('f-free').value = d.free || '';
+    images = (d.images || []).slice();
+    renderImages();
     document.getElementById('f-reel').value = d.reel || '';
     document.getElementById('f-reel-pos').value = d.reelPos || '';
     rowsEl.innerHTML = '';
@@ -177,13 +275,13 @@
 
   function swapFields() {
     var swaps = [];
-    document.querySelectorAll('.sheet input').forEach(function (el) {
+    document.querySelectorAll('.sheet input[type="text"], .sheet input[type="date"], .sheet textarea').forEach(function (el) {
       var text = el.value;
       if (el.type === 'date') { var p = el.value ? el.value.split('-') : null; text = p ? p[0] + '/' + Number(p[1]) + '/' + Number(p[2]) : ''; }
       var cs = getComputedStyle(el);
       var o = document.createElement('div');
       o.textContent = text || '\u00a0';
-      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:1.4;white-space:pre-wrap;width:100%;min-height:1.4em;';
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.7' : '1.4') + ';white-space:pre-wrap;width:100%;min-height:' + (el.tagName === 'TEXTAREA' ? cs.minHeight : '1.4em') + ';' + (el.tagName === 'TEXTAREA' ? 'border:1.5px solid #111;border-top:none;' : '');
       var prev = el.style.display;
       el.style.display = 'none';
       el.insertAdjacentElement('afterend', o);
