@@ -38,8 +38,8 @@
   .select-bar button { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.55rem 1.1rem; cursor: pointer; white-space: nowrap; }
   .select-bar button:hover { background: var(--red); border-color: var(--red); }
 
-  .order-card { background: var(--paper); border: 1px solid var(--line); margin-bottom: 0.8rem; }
-  .order-summary { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.9rem 1.1rem; cursor: pointer; }
+  .order-card { background: var(--paper); border: 1px solid var(--line); margin-bottom: 0.3rem; }
+  .order-summary { display: flex; justify-content: space-between; align-items: center; gap: 0.7rem; padding: 0.45rem 0.9rem; line-height: 1.35; cursor: pointer; }
   .order-summary:hover { background: #fafafa; }
   .order-summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
   .order-summary .no { font-size: 0.72rem; font-weight: 700; color: var(--red); white-space: nowrap; flex-shrink: 0; }
@@ -101,9 +101,10 @@
 
   @media screen and (max-width: 560px) {
     .detail-row { grid-template-columns: 9.5em 1fr; gap: 0.4rem; padding: 0; }
-    .order-summary { flex-wrap: wrap; }
-    .order-summary .who { flex: 1 1 100%; order: 1; }
-    .order-summary .printed-badge, .order-summary .when, .order-summary .arrow { order: 2; }
+    .order-summary { flex-wrap: wrap; gap: 0.1rem 0.6rem; padding: 0.4rem 0.8rem; }
+    .order-summary .no { flex: 1 1 auto; }
+    .order-summary .who { flex: 1 1 100%; order: 2; }
+    .order-summary .printed-badge, .order-summary .when, .order-summary .arrow { order: 1; }
   }
 </style>
 </head>
