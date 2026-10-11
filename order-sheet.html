@@ -365,9 +365,23 @@
 
   function swapFieldsForCapture() {
     var swaps = [];
+    var overrides = new Map();
+    var hiddenRows = [];
+    [['.model-select', '.model-custom-row', '入力'], ['.guide-select', '.guide-custom-row', '入力'], ['.shipping-select', '.shipping-custom-row', 'その他']].forEach(function (p) {
+      document.querySelectorAll('.sheet').forEach(function (scope) {
+        var sel = scope.querySelector(p[0]), row = scope.querySelector(p[1]);
+        if (!sel || !row || sel.value !== p[2]) return;
+        var inp = row.querySelector('input');
+        overrides.set(sel, inp ? inp.value : '');
+        hiddenRows.push({ el: row, overlay: document.createElement('span'), prevDisplay: row.style.display });
+        row.style.display = 'none';
+      });
+    });
     document.querySelectorAll('.meta-item input, .meta-item select, .row input, .row select, .row textarea, .memo-box textarea, .sheet-no-input').forEach(function (el) {
       var text;
-      if (el.tagName === 'SELECT') {
+      if (overrides.has(el)) {
+        text = overrides.get(el);
+      } else if (el.tagName === 'SELECT') {
         text = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
       } else if (el.type === 'date') {
         var parts = el.value ? el.value.split('-') : null;
@@ -397,7 +411,7 @@
       el.insertAdjacentElement('afterend', overlay);
       swaps.push({ el: el, overlay: overlay, prevDisplay: prevDisplay });
     });
-    return swaps;
+    return swaps.concat(hiddenRows);
   }
 
   function restoreFieldsAfterCapture(swaps) {
