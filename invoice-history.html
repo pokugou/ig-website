@@ -18,6 +18,13 @@
   header .new-btn { font-size: 0.85rem; font-weight: 700; color: #fff; background: var(--ink); text-decoration: none; padding: 0.55rem 1.1rem; }
   header .new-btn:hover { background: var(--red); }
   .filters { display: grid; grid-template-columns: 1fr 11rem; gap: 0.6rem; margin-bottom: 0.8rem; }
+  .filters.with-status { grid-template-columns: 1fr 9rem 11rem; }
+  .badge { display: inline-block; font-size: 0.66rem; font-weight: 700; padding: 0.05rem 0.45rem; margin-left: 0.5rem; border: 1px solid currentColor; vertical-align: 0.1em; }
+  .badge.unbilled { color: var(--red); }
+  .badge.billed { color: var(--sub); }
+  header .head-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  header .closing-btn { font-size: 0.85rem; font-weight: 700; color: var(--ink); background: #fff; border: 1px solid var(--ink); text-decoration: none; padding: 0.5rem 1rem; }
+  header .closing-btn:hover { background: #eee; }
   .filters input, .filters select { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.7rem 0.9rem; }
   .filters input:focus, .filters select:focus { outline: none; border-color: var(--red); }
   .stats { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; font-size: 0.78rem; color: var(--sub); margin-bottom: 1rem; }
@@ -53,6 +60,7 @@
   .notes { margin-top: 0.7rem; font-size: 0.8rem; white-space: pre-wrap; color: var(--sub); }
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
   @media screen and (max-width: 560px) {
+    .filters.with-status { grid-template-columns: 1fr; }
     .filters { grid-template-columns: 1fr; }
     .summary { grid-template-columns: 1fr auto; row-gap: 0.1rem; }
     .summary .when { grid-column: 1 / -1; }
@@ -66,10 +74,14 @@
     <a class="back-link" href="documents.html">← 書類トップ</a>
     <header>
       <h1 id="page-title">請求書一覧</h1>
-      <a class="new-btn" id="new-btn" href="invoice.html">＋ 新しい請求書</a>
+      <div class="head-links">
+        <a class="closing-btn" href="closing.html">締め請求 →</a>
+        <a class="new-btn" id="new-btn" href="invoice.html">＋ 新しい請求書</a>
+      </div>
     </header>
-    <div class="filters">
+    <div class="filters" id="filters">
       <input type="text" id="f-search" placeholder="お客様名・品名・番号で検索">
+      <select id="f-status" hidden><option value="">すべて</option><option value="unbilled">未請求</option><option value="billed">請求済み</option></select>
       <select id="f-month"><option value="">すべての月</option></select>
     </div>
     <div class="stats"><span id="status-line">読み込み中…</span><span id="sum-line"></span></div>
@@ -87,7 +99,7 @@
   document.getElementById('page-title').textContent = DOC.title + '一覧';
   document.getElementById('new-btn').href = DOC.editor;
   document.getElementById('new-btn').textContent = '＋ 新しい' + DOC.title;
-  var term = '', month = '';
+  var term = '', month = '', status = '';
 
   function num(s) { var v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
   function yen(n) { return (n < 0 ? '-¥' : '¥') + Math.abs(Math.round(n)).toLocaleString('ja-JP'); }
@@ -104,6 +116,8 @@
 
   function matches(inv) {
     if (month && String(inv.date || '').slice(0, 7) !== month) return false;
+    if (status === 'unbilled' && inv.billedBy) return false;
+    if (status === 'billed' && !inv.billedBy) return false;
     if (!term) return true;
     var hay = [inv.customer, inv.number, inv.address, inv.address2, inv.notes].concat((inv.items || []).map(function (i) { return i.name + ' ' + (i.note || ''); })).join(' ').toLowerCase();
     return hay.indexOf(term) !== -1;
@@ -113,6 +127,12 @@
     var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
     if (!res.ok) throw new Error('load failed');
     var others = (await res.json()).filter(function (r) { return !r[DOC.tag]; });
+    if (KIND === 'invoice') {
+      // 削除した請求書に含まれていた納品書は「未請求」に戻す
+      var alive = {};
+      invoices.forEach(function (x) { alive[x.id] = true; });
+      others.forEach(function (r) { if (r.__delivery && r.billedBy && !alive[r.billedBy]) { delete r.billedBy; delete r.billedNumber; } });
+    }
     var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(invoices.slice().reverse())) });
     if (!put.ok) throw new Error('save failed');
   }
@@ -154,6 +174,8 @@
       var s = el('div', 'summary');
       var when = el('span', 'when', fmtDate(inv.date)); when.appendChild(el('small', null, inv.number || ''));
       var who = el('span', 'who', inv.customer ? inv.customer + ' ' + (inv.honor || '様') : '(名前未記入)');
+      if (KIND === 'delivery') who.appendChild(el('span', 'badge ' + (inv.billedBy ? 'billed' : 'unbilled'), inv.billedBy ? '請求済み' + (inv.billedNumber ? ' ' + inv.billedNumber : '') : '未請求'));
+      if (KIND === 'invoice' && inv.fromDeliveries && inv.fromDeliveries.length) who.appendChild(el('small', null, '納品書' + inv.fromDeliveries.length + '件'));
       s.appendChild(when); s.appendChild(who); s.appendChild(el('span', 'total', yen(f.total))); s.appendChild(el('span', 'arrow', '▶'));
       s.addEventListener('click', function () { card.classList.toggle('open'); });
 
@@ -164,12 +186,15 @@
       var copy = el('button', 'copy-btn', '複製して新規作成'); copy.type = 'button';
       copy.addEventListener('click', function () {
         var c = JSON.parse(JSON.stringify(inv));
-        delete c.id; c.number = ''; c.date = todayIso(); c.due = '';
+        delete c.id; delete c.billedBy; delete c.billedNumber; delete c.fromDeliveries;
+        c.number = ''; c.date = todayIso(); c.due = '';
         openInEditor(c);
       });
       var del = el('button', 'delete-btn', '削除'); del.type = 'button';
       del.addEventListener('click', async function () {
-        if (!confirm((inv.customer || 'この' + DOC.title) + '（' + (inv.number || fmtDate(inv.date)) + '）を本当に削除しますか？')) return;
+        var extra = KIND === 'invoice' && inv.fromDeliveries && inv.fromDeliveries.length ? '\n（含まれていた納品書' + inv.fromDeliveries.length + '件は「未請求」に戻ります）'
+          : KIND === 'delivery' && inv.billedBy ? '\n（この納品書は請求書 ' + (inv.billedNumber || '') + ' に含まれています）' : '';
+        if (!confirm((inv.customer || 'この' + DOC.title) + '（' + (inv.number || fmtDate(inv.date)) + '）を本当に削除しますか？' + extra)) return;
         invoices = invoices.filter(function (x) { return x.id !== inv.id; });
         try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
         buildMonths(); render();
@@ -179,7 +204,9 @@
         var toInv = el('button', 'copy-btn', 'この納品書から請求書を作る'); toInv.type = 'button';
         toInv.addEventListener('click', function () {
           var c = JSON.parse(JSON.stringify(inv));
-          delete c.id; delete c.__delivery; c.showCarry = true; c.number = ''; c.date = todayIso(); c.due = '';
+          if (inv.billedBy && !confirm('この納品書はすでに請求書 ' + (inv.billedNumber || '') + ' で請求済みです。それでも請求書を作りますか？')) return;
+          delete c.id; delete c.__delivery; delete c.billedBy; delete c.billedNumber;
+          c.fromDeliveries = [inv.id]; c.showCarry = true; c.number = ''; c.date = todayIso(); c.due = '';
           localStorage.setItem('invoice-reload', JSON.stringify(c));
           location.href = 'invoice.html';
         });
@@ -220,6 +247,11 @@
   }
 
   document.getElementById('f-search').addEventListener('input', function (e) { term = e.target.value.trim().toLowerCase(); render(); });
+  if (KIND === 'delivery') {
+    document.getElementById('f-status').hidden = false;
+    document.getElementById('filters').classList.add('with-status');
+  }
+  document.getElementById('f-status').addEventListener('change', function (e) { status = e.target.value; render(); });
   document.getElementById('f-month').addEventListener('change', function (e) { month = e.target.value; render(); });
 
   fetch(SYNC_API + '/paint?_=' + Date.now())

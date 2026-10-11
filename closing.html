@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>締め請求 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #ccc; --line2: #e2e2e2; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; --zebra: #f6f6f3; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 1.6rem 1.2rem 4rem; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .back-link { display: inline-block; margin-bottom: 0.6rem; font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .back-link:hover { color: var(--red); }
+  header { border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1rem; }
+  header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
+  header p { margin-top: 0.3rem; font-size: 0.78rem; color: var(--sub); }
+
+  .controls { display: grid; grid-template-columns: 1fr 12rem; gap: 0.8rem; margin-bottom: 1rem; }
+  .controls label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--sub); margin-bottom: 0.25rem; }
+  .controls select, .controls input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.65rem 0.8rem; }
+  .controls select:focus, .controls input:focus { outline: none; border-color: var(--red); }
+
+  .panel { background: var(--paper); border: 1px solid var(--line); margin-bottom: 1rem; }
+  .panel h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line2); display: flex; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; }
+  .panel h2 .sub { font-weight: 400; color: var(--sub); }
+  .panel .empty { padding: 2rem 1rem; text-align: center; color: var(--sub); font-size: 0.85rem; }
+  table.dn { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  table.dn th { text-align: left; font-size: 0.68rem; color: var(--sub); font-weight: 700; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--line); }
+  table.dn td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--line2); vertical-align: top; }
+  table.dn tr:nth-child(even) td { background: var(--zebra); }
+  table.dn .n { text-align: right; white-space: nowrap; }
+  table.dn .ck { width: 2.4rem; text-align: center; }
+  table.dn .ck input { width: 1.1rem; height: 1.1rem; cursor: pointer; }
+  table.dn .items { font-size: 0.74rem; color: var(--sub); }
+  table.dn tr.later td { color: #aaa; }
+  table.dn a { color: inherit; }
+
+  .calc { display: grid; grid-template-columns: 1fr 20rem; gap: 1rem; align-items: start; }
+  .calc .carry { padding: 0.9rem 1rem; font-size: 0.82rem; }
+  .calc .carry .row { display: grid; grid-template-columns: 8rem 1fr; align-items: center; gap: 0.6rem; padding: 0.25rem 0; }
+  .calc .carry .row span { color: var(--sub); font-weight: 700; }
+  .calc .carry input { border: none; border-bottom: 1px solid var(--line); font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.2rem 0.1rem; text-align: right; width: 100%; background: transparent; }
+  .calc .carry input:focus { outline: none; border-bottom-color: var(--red); background: #fff8e0; }
+  .calc .carry .hint { font-size: 0.7rem; color: var(--sub); margin-top: 0.3rem; }
+  .totals { padding: 0.9rem 1rem; font-size: 0.86rem; }
+  .totals .r { display: flex; justify-content: space-between; padding: 0.2rem 0; }
+  .totals .r .k { color: var(--sub); }
+  .totals .r.grand { border-top: 2px solid var(--ink); margin-top: 0.3rem; padding-top: 0.5rem; font-weight: 900; font-size: 1.1rem; }
+  .totals .r.grand .k { color: var(--ink); }
+
+  .go { width: 100%; font-family: inherit; font-size: 1rem; font-weight: 900; letter-spacing: 0.05em; color: #fff; background: var(--ink); border: none; padding: 1rem; cursor: pointer; }
+  .go:hover { background: var(--red); }
+  .go:disabled { background: #999; cursor: default; }
+  .status-line { font-size: 0.74rem; color: var(--sub); margin-bottom: 0.8rem; }
+
+  @media screen and (max-width: 640px) {
+    .controls, .calc { grid-template-columns: 1fr; }
+    table.dn .hide-sm { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back-link" href="documents.html">← 書類トップ</a>
+    <header>
+      <h1>締め請求</h1>
+      <p>締め日までの未請求の納品書をまとめて、1枚の請求書を作ります。請求書を保存すると、使った納品書は「請求済み」になります。</p>
+    </header>
+
+    <p class="status-line" id="status-line">読み込み中…</p>
+
+    <div class="controls">
+      <div>
+        <label for="f-client">取引先</label>
+        <select id="f-client"><option value="">読み込み中…</option></select>
+      </div>
+      <div>
+        <label for="f-close">締め日</label>
+        <input type="date" id="f-close">
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2><span>今回請求する納品書</span><span class="sub" id="sel-count"></span></h2>
+      <div id="dn-list"><p class="empty">取引先を選んでください</p></div>
+    </div>
+
+    <div class="calc">
+      <div class="panel carry">
+        <div class="row"><span>前回御請求額</span><input type="text" id="f-prev" inputmode="numeric"></div>
+        <div class="row"><span>御入金額</span><input type="text" id="f-paid" inputmode="numeric" placeholder="0"></div>
+        <p class="hint" id="prev-hint"></p>
+      </div>
+      <div class="panel totals">
+        <div class="r"><span class="k">今回御買上額（税抜）</span><span id="v-sub">¥0</span></div>
+        <div class="r"><span class="k">消費税（10%）</span><span id="v-tax">¥0</span></div>
+        <div class="r"><span class="k">繰越金額</span><span id="v-carry">¥0</span></div>
+        <div class="r grand"><span class="k">今回御請求額</span><span id="v-total">¥0</span></div>
+      </div>
+    </div>
+
+    <button type="button" class="go" id="btn-go" disabled>この内容で請求書を作る →</button>
+  </div>
+
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var TAX_RATE = 0.1;
+  var deliveries = [], invoices = [];
+
+  function $(id) { return document.getElementById(id); }
+  function num(s) { var v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
+  function yen(n) { return (n < 0 ? '-¥' : '¥') + Math.abs(Math.round(n)).toLocaleString('ja-JP'); }
+  function commas(s) { if (String(s).trim() === '') return ''; return Math.round(num(s)).toLocaleString('ja-JP'); }
+  function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function md(isoStr) { if (!isoStr) return ''; var p = isoStr.split('-'); return Number(p[1]) + '/' + Number(p[2]); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function taxOf(sub) { return Math.ceil(Math.round(sub * TAX_RATE * 1e6) / 1e6); }
+  function subOf(r) {
+    if (r.subtotal != null) return num(r.subtotal);
+    var s = 0; (r.items || []).forEach(function (it) { s += num(it.amt); }); return s;
+  }
+  function invTotal(r) {
+    if (r.total != null) return num(r.total);
+    var s = subOf(r), carry = r.showCarry === false ? 0 : num(r.prev) - num(r.paid);
+    return carry + s + taxOf(s);
+  }
+  function byLatest(a, b) { return String(b.date || '').localeCompare(String(a.date || '')) || String(b.savedAt || '').localeCompare(String(a.savedAt || '')); }
+
+  // 取引先の最新の宛先と、請求書で使った支払条件
+  function clientInfo(name) {
+    var docs = deliveries.concat(invoices).filter(function (r) { return r.customer === name; }).sort(byLatest);
+    // 項目ごとに、値が入っている一番新しい書類から取る
+    function pick(k) { for (var i = 0; i < docs.length; i++) { if (docs[i][k]) return docs[i][k]; } return ''; }
+    var lastInv = invoices.filter(function (r) { return r.customer === name; }).sort(byLatest)[0];
+    return {
+      honor: pick('honor'), zip: pick('zip'), address: pick('address'), address2: (docs[0] || {}).address2 || '',
+      closeDay: lastInv && lastInv.closeDay || '末', payMonth: lastInv && lastInv.payMonth || '翌月', payDay: lastInv && lastInv.payDay || '末',
+      lastInvoice: lastInv
+    };
+  }
+
+  // 今日から見て直近の締め日（「末」なら前月末、今日が月末なら今日）
+  function recentClosing(closeDay) {
+    var t = new Date(); t.setHours(0, 0, 0, 0);
+    var n = parseInt(String(closeDay).replace(/[^0-9]/g, ''), 10);
+    if (/末/.test(closeDay) || !n) {
+      var endThis = new Date(t.getFullYear(), t.getMonth() + 1, 0);
+      return iso(t.getTime() === endThis.getTime() ? endThis : new Date(t.getFullYear(), t.getMonth(), 0));
+    }
+    var c = new Date(t.getFullYear(), t.getMonth(), Math.min(n, new Date(t.getFullYear(), t.getMonth() + 1, 0).getDate()));
+    if (t < c) c = new Date(t.getFullYear(), t.getMonth() - 1, Math.min(n, new Date(t.getFullYear(), t.getMonth(), 0).getDate()));
+    return iso(c);
+  }
+
+  function buildClientMenu() {
+    var counts = {};
+    deliveries.forEach(function (r) {
+      if (!r.customer) return;
+      counts[r.customer] = counts[r.customer] || { n: 0, sum: 0 };
+      if (!r.billedBy) { counts[r.customer].n++; counts[r.customer].sum += subOf(r); }
+    });
+    var names = Object.keys(counts).sort(function (a, b) { return (counts[b].n > 0) - (counts[a].n > 0) || a.localeCompare(b, 'ja'); });
+    var sel = $('f-client');
+    sel.innerHTML = '<option value="">（取引先を選ぶ）</option>';
+    names.forEach(function (n) {
+      var o = el('option', null, n + (counts[n].n ? '　未請求' + counts[n].n + '件 ' + yen(counts[n].sum) : '　（未請求なし）'));
+      o.value = n; sel.appendChild(o);
+    });
+    var unbilledClients = names.filter(function (n) { return counts[n].n; }).length;
+    $('status-line').textContent = deliveries.length ? '未請求の納品書がある取引先：' + unbilledClients + '件' : 'まだ保存された納品書がありません。先に納品書を作って保存してください。';
+    var want = new URLSearchParams(location.search).get('client');
+    if (want && counts[want]) { sel.value = want; onClient(); }
+  }
+
+  function onClient() {
+    var name = $('f-client').value;
+    if (!name) { $('dn-list').innerHTML = '<p class="empty">取引先を選んでください</p>'; recalc(); return; }
+    var info = clientInfo(name);
+    $('f-close').value = recentClosing(info.closeDay);
+    var li = info.lastInvoice;
+    $('f-prev').value = li ? commas(invTotal(li)) : '';
+    $('prev-hint').textContent = li ? '前回の請求書（' + (li.number || md(li.date)) + '・' + md(li.date) + '発行）の今回御請求額を入れています。入金があった分を「御入金額」に入れてください。' : 'この取引先の請求書はまだありません。';
+    renderList();
+  }
+
+  function renderList() {
+    var name = $('f-client').value, close = $('f-close').value;
+    var box = $('dn-list');
+    var list = deliveries.filter(function (r) { return r.customer === name && !r.billedBy; })
+      .sort(function (a, b) { return String(a.date || '').localeCompare(String(b.date || '')) || String(a.number || '').localeCompare(String(b.number || '')); });
+    if (!list.length) { box.innerHTML = '<p class="empty">未請求の納品書はありません</p>'; recalc(); return; }
+    var t = el('table', 'dn');
+    t.innerHTML = '<thead><tr><th class="ck"></th><th>納品日</th><th class="hide-sm">納品番号</th><th>内容</th><th class="n">金額（税抜）</th></tr></thead>';
+    var tb = el('tbody');
+    list.forEach(function (r) {
+      var later = close && String(r.date || '') > close;
+      var tr = el('tr', later ? 'later' : null);
+      var ck = el('td', 'ck'); var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !later; cb.dataset.id = r.id;
+      cb.addEventListener('change', recalc); ck.appendChild(cb); tr.appendChild(ck);
+      tr.appendChild(el('td', null, md(r.date) + (later ? '（締め日後）' : '')));
+      tr.appendChild(el('td', 'hide-sm', r.number || ''));
+      var what = el('td'); var names = (r.items || []).map(function (it) { return it.name + (it.qty ? ' ×' + it.qty : ''); }).filter(Boolean);
+      what.appendChild(el('div', 'items', names.join('、') || '（明細なし）')); tr.appendChild(what);
+      tr.appendChild(el('td', 'n', yen(subOf(r))));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); box.innerHTML = ''; box.appendChild(t);
+    recalc();
+  }
+
+  function selected() {
+    var ids = Array.prototype.map.call(document.querySelectorAll('#dn-list input[type="checkbox"]:checked'), function (c) { return c.dataset.id; });
+    return deliveries.filter(function (r) { return ids.indexOf(r.id) !== -1; })
+      .sort(function (a, b) { return String(a.date || '').localeCompare(String(b.date || '')) || String(a.number || '').localeCompare(String(b.number || '')); });
+  }
+
+  function recalc() {
+    var sel = selected(), sub = 0;
+    sel.forEach(function (r) { sub += subOf(r); });
+    var tax = taxOf(sub), carry = num($('f-prev').value) - num($('f-paid').value);
+    $('v-sub').textContent = yen(sub);
+    $('v-tax').textContent = yen(tax);
+    $('v-carry').textContent = yen(carry);
+    $('v-total').textContent = yen(carry + sub + tax);
+    $('sel-count').textContent = sel.length ? sel.length + '件を選択中' : '';
+    $('btn-go').disabled = !sel.length;
+  }
+
+  $('f-client').addEventListener('change', onClient);
+  $('f-close').addEventListener('change', renderList);
+  ['f-prev', 'f-paid'].forEach(function (id) {
+    $(id).addEventListener('input', recalc);
+    $(id).addEventListener('blur', function () { this.value = commas(this.value); });
+  });
+
+  $('btn-go').addEventListener('click', function () {
+    var name = $('f-client').value, sel = selected();
+    if (!name || !sel.length) return;
+    var info = clientInfo(name);
+    var inv = {
+      customer: name, honor: info.honor || '御中', zip: info.zip || '', address: info.address || '', address2: info.address2 || '',
+      closeDay: info.closeDay, payMonth: info.payMonth, payDay: info.payDay,
+      date: $('f-close').value, number: '', due: '',
+      prev: $('f-prev').value, paid: $('f-paid').value, showCarry: true,
+      notes: '',
+      items: sel.map(function (r) {
+        return { date: md(r.date), name: '納品分（納品番号' + (r.number || '-') + '）', qty: '', unit: '', amt: String(subOf(r)), note: '' };
+      }),
+      fromDeliveries: sel.map(function (r) { return r.id; })
+    };
+    localStorage.setItem('invoice-reload', JSON.stringify(inv));
+    location.href = 'invoice.html';
+  });
+
+  fetch(SYNC_API + '/paint?_=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('load failed'); return r.json(); })
+    .then(function (all) {
+      deliveries = all.filter(function (r) { return r.__delivery; });
+      invoices = all.filter(function (r) { return r.__invoice; });
+      buildClientMenu();
+    })
+    .catch(function () { $('status-line').textContent = '読み込めませんでした。通信状況を確認して再読み込みしてください'; });
+</script>
+
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (sessionStorage.getItem(k)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        if (t[0] !== t[1]) {
+          sessionStorage.setItem(k, '1');
+          fetch(p, { cache: 'reload' }).then(function () { location.reload(); });
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>

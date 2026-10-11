@@ -27,6 +27,7 @@
   .client-pick .note { font-size: 0.72rem; font-weight: 400; color: var(--sub); }
   .editing-badge { display: none; font-weight: 700; color: var(--red); }
   .editing .editing-badge { display: inline; }
+  .from-badge { font-weight: 700; color: var(--ink); }
 
   .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2.4rem 2.6rem 2.2rem; }
   .sheet input, .sheet select, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; font-size: inherit; }
@@ -178,6 +179,7 @@
     <label><input type="checkbox" id="opt-reg" checked> 登録番号を表示</label>
     <label id="opt-terms-label"><input type="checkbox" id="opt-terms" checked> お支払条件を表示</label>
     <label id="opt-carry-label"><input type="checkbox" id="opt-carry" checked> 前回請求・入金欄を表示</label>
+    <span class="from-badge" id="from-badge"></span>
     <span class="editing-badge" id="editing-badge">✎ 保存済みの請求書を編集中（保存すると上書きされます）</span>
   </div>
 
@@ -295,6 +297,7 @@
   var rowsBody = document.getElementById('item-rows');
   var currentId = null;
   var numberTouched = false;
+  var fromDeliveries = [];   // 締め請求で使った納品書のid（保存時に「請求済み」にする）
 
   /* 請求書／納品書の切り替え（?type=delivery で納品書） */
   var KIND = new URLSearchParams(location.search).get('type') === 'delivery' ? 'delivery' : 'invoice';
@@ -580,6 +583,7 @@
       if (it.name || it.qty || it.unit || it.amt || it.note) inv.items.push(it);
     });
     inv[DOC.tag] = true;
+    if (KIND === 'invoice' && fromDeliveries.length) inv.fromDeliveries = fromDeliveries.slice();
     inv.subtotal = t.sub; inv.tax = t.tax; inv.total = t.billed;
     return inv;
   }
@@ -587,6 +591,7 @@
   function populate(inv) {
     currentId = inv.id || null;
     numberTouched = !!inv.number;
+    setFromDeliveries(inv.fromDeliveries);
     dueTouched = !!inv.due;
     Object.keys(FIELDS).forEach(function (k) { if (inv[k] != null) $(FIELDS[k]).value = inv[k]; });
     $('f-prev').value = commas(inv.prev || '');
@@ -601,8 +606,14 @@
     applyOptions();
   }
 
+  function setFromDeliveries(ids) {
+    fromDeliveries = (ids || []).slice();
+    $('from-badge').textContent = fromDeliveries.length ? '📦 納品書' + fromDeliveries.length + '件から作成' : '';
+  }
+
   function resetForm() {
     currentId = null;
+    setFromDeliveries([]);
     numberTouched = false;
     document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function (el) { el.value = ''; });
     $('f-honor').value = '御中';
@@ -627,7 +638,18 @@
     var others = all.filter(function (r) { return !r[DOC.tag]; });
     var list = all.filter(function (r) { return r[DOC.tag]; });
     var idx = list.findIndex(function (x) { return x.id === inv.id; });
+    // 納品書を編集しても「請求済み」の印は消さない
+    if (idx >= 0 && list[idx].billedBy) { inv.billedBy = list[idx].billedBy; inv.billedNumber = list[idx].billedNumber; }
     if (idx >= 0) list[idx] = inv; else list.push(inv);
+    if (KIND === 'invoice') {
+      // この請求書に含めた納品書を「請求済み」に、外した納品書は「未請求」に戻す
+      others = others.map(function (r) {
+        if (!r.__delivery) return r;
+        if ((inv.fromDeliveries || []).indexOf(r.id) !== -1) { r.billedBy = inv.id; r.billedNumber = inv.number; }
+        else if (r.billedBy === inv.id) { delete r.billedBy; delete r.billedNumber; }
+        return r;
+      });
+    }
     var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(list)) });
     if (!put.ok) throw new Error('save failed');
     currentId = inv.id;
