@@ -518,13 +518,25 @@
     }
   }
 
+  var editTarget = null;
+  var editOriginal = null;
+  var editName = '';
+
+  function stableJson(o) {
+    return JSON.stringify(Object.keys(o).sort().map(function (k) { return [k, o[k]]; }));
+  }
+
   (function loadFromHistoryIfRequested() {
     var raw = localStorage.getItem('order-sheet-reload');
     if (!raw) return;
     localStorage.removeItem('order-sheet-reload');
     try {
       var data = JSON.parse(raw);
+      delete data.__id;
       populateSheetFromData(document.querySelector('.sheet'), data);
+      editTarget = document.querySelector('.sheet');
+      editOriginal = data;
+      editName = data['お名前'] || '';
     } catch (e) {
       console.error(e);
     }
@@ -584,21 +596,44 @@
 
   async function downloadArchive() {
     var records = [];
-    document.querySelectorAll('.sheet').forEach(function (sheet) {
+    var stamp = Date.now();
+    document.querySelectorAll('.sheet').forEach(function (sheet, i) {
       var data = extractSheetData(sheet);
-      if (Object.keys(data).length > 0) records.push(data);
+      if (Object.keys(data).length === 0) return;
+      var keep = sheet === editTarget && editOriginal && editOriginal._sid;
+      data._sid = keep ? editOriginal._sid : 'os-' + stamp + '-' + i;
+      sheet.dataset.sid = data._sid;
+      records.push({ sheet: sheet, data: data });
     });
     if (records.length === 0) return;
+    var plain = records.map(function (r) { return r.data; });
     try {
-      var res = await fetch(SYNC_API + '/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(records)
-      });
+      var editing = editOriginal && records.some(function (r) { return r.sheet === editTarget; });
+      var res;
+      if (editing) {
+        var all = await (await fetch(SYNC_API + '/orders?_=' + Date.now())).json();
+        var key = stableJson(editOriginal);
+        var idx = all.findIndex(function (r) { return stableJson(r) === key; });
+        if (idx < 0 && editOriginal._sid) idx = all.findIndex(function (r) { return r._sid === editOriginal._sid; });
+        if (idx < 0) {
+          var same = all.map(function (r, i) { return i; }).filter(function (i) {
+            var r = all[i];
+            return r['No.'] === editOriginal['No.'] && r['お名前'] === editOriginal['お名前'] && r['受注日'] === editOriginal['受注日'];
+          });
+          if (same.length === 1) idx = same[0];
+        }
+        records.forEach(function (r) {
+          if (r.sheet === editTarget && idx >= 0) all[idx] = r.data; else all.push(r.data);
+        });
+        res = await fetch(SYNC_API + '/orders', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      } else {
+        res = await fetch(SYNC_API + '/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(plain) });
+      }
       if (!res.ok) throw new Error('sync failed');
+      records.forEach(function (r) { if (r.sheet === editTarget) editOriginal = r.data; });
     } catch (e) {
       console.error(e);
-      downloadArchiveFile(records);
+      downloadArchiveFile(plain);
       alert('受注シート一覧への自動反映に失敗しました。代わりにファイルをダウンロードしたので、Claudeに伝えて反映してもらってください。');
     }
   }
@@ -629,7 +664,8 @@
         dueFmt = defaultDueFromOrderDate(orderDate);
       }
       rows.push({
-        id: 'os-' + Date.now() + '-' + i,
+        id: sheet.dataset.sid || 'os-' + Date.now() + '-' + i,
+        __editing: sheet === editTarget,
         date: dueFmt,
         customer: name,
         confirmed: '',
@@ -641,11 +677,34 @@
     });
     if (rows.length === 0) return;
     try {
-      var res = await fetch(SYNC_API + '/schedule', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(rows)
-      });
+      var res;
+      var edits = rows.filter(function (r) { return r.__editing; });
+      rows.forEach(function (r) { delete r.__editing; });
+      if (edits.length) {
+        var all = await (await fetch(SYNC_API + '/schedule?_=' + Date.now())).json();
+        rows.forEach(function (r) {
+          var isEdit = edits.some(function (e) { return e.id === r.id; });
+          var idx = isEdit ? all.findIndex(function (x) { return x.id === r.id; }) : -1;
+          if (isEdit && idx < 0 && editOriginal) {
+            var cand = all.map(function (x, i) { return i; }).filter(function (i) { return all[i].customer === editName; });
+            if (cand.length === 1) idx = cand[0];
+          }
+          if (idx >= 0) {
+            var old = all[idx];
+            all[idx] = Object.assign({}, old, { id: r.id, date: r.date, customer: r.customer, qty: r.qty, note: r.note });
+            editName = r.customer;
+          } else {
+            all.push(r);
+          }
+        });
+        res = await fetch(SYNC_API + '/schedule', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      } else {
+        res = await fetch(SYNC_API + '/schedule', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(rows)
+        });
+      }
       if (!res.ok) throw new Error('sync failed');
     } catch (e) {
       console.error(e);
