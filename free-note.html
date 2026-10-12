@@ -49,9 +49,12 @@
   table.tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
   table.tbl td { border: 1.5px solid var(--ink); padding: 0; vertical-align: top; }
   table.tbl td textarea { padding: 0.4rem 0.5rem; font-size: 0.95rem; line-height: 1.5; min-height: 2.4em; }
-  table.tbl.hdr tr:first-child td { background: #111; }
-  table.tbl.hdr tr:first-child td textarea { color: #fff; font-weight: 700; text-align: center; }
-  table.tbl.hdr tr:first-child td textarea:focus { background: #333; }
+  table.tbl.hdr tr.hrow td { background: #111; }
+  table.tbl.hdr tr.hrow td textarea { color: #fff; font-weight: 700; }
+  table.tbl.hdr tr.hrow td textarea:focus { background: #333; }
+  table.tbl tr.align-row td { border: none; padding: 0 0 0.2rem; }
+  table.tbl tr.align-row select { width: 100%; font-family: inherit; font-size: 0.68rem; color: var(--sub); border: 1px solid var(--line2); background: #fafafa; padding: 0.15rem 0.1rem; }
+  .al-btn.on { background: var(--ink) !important; color: #fff !important; border-color: var(--ink) !important; }
   .hdr-opt { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; }
 
   .b-image .img-wrap img { display: block; height: auto; max-width: 100%; border: 1px solid var(--line2); }
@@ -70,12 +73,12 @@
   }
 
   .pdf-capture .sheet { width: 794px; max-width: none; border: none; min-height: 0; }
-  .pdf-capture .toolbar, .pdf-capture .adds, .pdf-capture .hint, .pdf-capture .blk-bar { display: none; }
+  .pdf-capture .toolbar, .pdf-capture .adds, .pdf-capture .hint, .pdf-capture .blk-bar, .pdf-capture tr.align-row { display: none; }
   .pdf-capture .head-meta input { border-bottom: none; }
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .adds, .hint, .blk-bar { display: none; }
+    .toolbar, .adds, .hint, .blk-bar, tr.align-row { display: none; }
     .sheet { width: 100%; border: none; padding: 0; }
     .head-meta input { border-bottom: none; }
     .blk { break-inside: avoid; }
@@ -148,6 +151,15 @@
 
   function grow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
 
+  var AL = [['left', '左'], ['center', '中'], ['right', '右']];
+  function alignButtons(bar, b, key, applyFn) {
+    AL.forEach(function (a) {
+      var btn = barBtn(a[1], function () { b[key] = a[0]; renderBlocks(); saveDraft(); }, 'al-btn' + (b[key] === a[0] ? ' on' : ''));
+      btn.title = { left: '左寄せ', center: '中央寄せ', right: '右寄せ' }[a[0]];
+      bar.appendChild(btn);
+    });
+  }
+
   function barBtn(label, fn, cls) {
     var b = document.createElement('button');
     b.type = 'button'; b.textContent = label; if (cls) b.className = cls;
@@ -194,6 +206,7 @@
       kind.textContent = { heading: '見出し', text: '文章', table: '表', image: '画像' }[b.type];
       bar.appendChild(kind);
 
+      if (b.type === 'heading' || b.type === 'text') alignButtons(bar, b, 'ta');
       if (b.type === 'text') {
         bar.appendChild(barBtn('A−', function () { b.fs = Math.max(0, (b.fs == null ? 1 : b.fs) - 1); renderBlocks(); saveDraft(); }));
         bar.appendChild(barBtn('A＋', function () { b.fs = Math.min(3, (b.fs == null ? 1 : b.fs) + 1); renderBlocks(); saveDraft(); }));
@@ -207,7 +220,7 @@
         bar.appendChild(barBtn('＋行', function () { b.rows.push(b.rows[0].map(function () { return ''; })); renderBlocks(); saveDraft(); }));
         bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); renderBlocks(); saveDraft(); } }));
         bar.appendChild(barBtn('＋列', function () { b.rows.forEach(function (r) { r.push(''); }); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; renderBlocks(); saveDraft(); } }));
       }
       if (b.type === 'image') {
         bar.appendChild(barBtn('大きさ：' + SIZE_LABEL[b.size || 's2'], function () {
@@ -220,21 +233,37 @@
       wrap.appendChild(bar);
 
       if (b.type === 'heading') {
-        var hi = document.createElement('input'); hi.type = 'text'; hi.placeholder = '見出し'; hi.value = b.text || '';
+        var hi = document.createElement('input'); hi.type = 'text'; hi.placeholder = '見出し'; hi.value = b.text || ''; if (b.ta) hi.style.textAlign = b.ta;
         hi.addEventListener('input', function () { b.text = hi.value; saveDraft(); });
         wrap.appendChild(hi);
       } else if (b.type === 'text') {
         wrap.classList.add('fs' + (b.fs == null ? 1 : b.fs));
-        var ta = document.createElement('textarea'); ta.placeholder = '自由に書き込めます'; ta.value = b.text || '';
+        var ta = document.createElement('textarea'); ta.placeholder = '自由に書き込めます'; ta.value = b.text || ''; if (b.ta) ta.style.textAlign = b.ta;
         ta.addEventListener('input', function () { b.text = ta.value; grow(ta); saveDraft(); });
         wrap.appendChild(ta);
       } else if (b.type === 'table') {
         var tbl = document.createElement('table'); tbl.className = 'tbl' + (b.header ? ' hdr' : '');
+        if (!b.align) b.align = [];
+        var arow = document.createElement('tr'); arow.className = 'align-row';
+        b.rows[0].forEach(function (_, ci) {
+          var td = document.createElement('td');
+          var sel = document.createElement('select');
+          sel.title = 'この列の文字位置';
+          [['', '位置：標準'], ['left', '左寄せ'], ['center', '中央寄せ'], ['right', '右寄せ']].forEach(function (o) {
+            var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; sel.appendChild(op);
+          });
+          sel.value = b.align[ci] || '';
+          sel.addEventListener('change', function () { b.align[ci] = sel.value; renderBlocks(); saveDraft(); });
+          td.appendChild(sel); arow.appendChild(td);
+        });
+        tbl.appendChild(arow);
         b.rows.forEach(function (r, ri) {
           var tr = document.createElement('tr');
+          if (ri === 0) tr.className = 'hrow';
           r.forEach(function (cell, ci) {
             var td = document.createElement('td');
             var cta = document.createElement('textarea'); cta.rows = 1; cta.value = cell || '';
+            cta.style.textAlign = b.align[ci] || (b.header && ri === 0 ? 'center' : 'left');
             cta.addEventListener('input', function () { b.rows[ri][ci] = cta.value; grow(cta); saveDraft(); });
             cta.addEventListener('keydown', cellKey);
             td.appendChild(cta); tr.appendChild(td);
