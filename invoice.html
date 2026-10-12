@@ -306,7 +306,9 @@
     : { tag: '__invoice', idPrefix: 'inv-', title: '請求書', numberLabel: '請求番号', amountLabel: 'ご請求金額', greet: '毎度ありがとうございます。下記の通りご請求申し上げます。', history: 'invoice-history.html', reloadKey: 'invoice-reload' };
 
   function $(id) { return document.getElementById(id); }
-  function num(s) { var v = parseFloat(String(s == null ? '' : s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
+  // 全角の数字・記号（日本語入力オンのまま入力した場合）も半角にして読む
+  function toHalf(s) { return String(s == null ? '' : s).replace(/[０-９．，－]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[ー−‐]/g, '-'); }
+  function num(s) { var v = parseFloat(toHalf(s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
   function yen(n) { return (n < 0 ? '-¥' : '¥') + Math.abs(Math.round(n)).toLocaleString('ja-JP'); }
   function commas(s) { if (String(s).trim() === '') return ''; return Math.round(num(s)).toLocaleString('ja-JP'); }
   function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -406,6 +408,7 @@
     f('f-unit').addEventListener('input', autoAmount);
     f('f-amt').addEventListener('input', recalc);
     ['f-unit', 'f-amt'].forEach(function (c) { f(c).addEventListener('blur', function () { this.value = commas(this.value); }); });
+    f('f-qty').addEventListener('blur', function () { this.value = toHalf(this.value); });
     f('del-row-btn').addEventListener('click', function () { tr.remove(); recalc(); });
     rowsBody.appendChild(tr);
     return tr;
