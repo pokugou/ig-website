@@ -43,9 +43,10 @@
   table.guides td.pos input { text-align: right; font-weight: 900; font-size: 1.2rem; padding-right: 3rem; }
   table.guides td.pos { position: relative; }
   table.guides td.pos .unit { position: absolute; right: 0.7rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--sub); }
-  table.guides td.del { width: 2.2rem; border: none; text-align: center; background: transparent; }
+  table.guides td.del { width: 4.4rem; white-space: nowrap; border: none; text-align: center; background: transparent; }
   table.guides td.del button { border: none; background: none; color: var(--sub); font-size: 1rem; cursor: pointer; padding: 0.2rem 0.4rem; }
   table.guides td.del button:hover { color: var(--red); }
+  table.guides td.del button.ins { color: var(--ink); font-weight: 900; }
   .note { font-size: 0.72rem; color: var(--sub); margin-top: 0.5rem; }
 
 
@@ -76,7 +77,7 @@
   .img-add input { display: none; }
   .img-add span { font-size: 0.7rem; color: var(--sub); }
 
-  .add-row { max-width: 794px; margin: 0.6rem auto 0; }
+  .add-row { margin: 0.5rem 0 0; }
   .add-row button { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.55rem 1rem; width: 100%; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
   .add-row button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
 
@@ -138,6 +139,7 @@
         <td class="del"></td>
       </tr></tbody>
     </table>
+    <div class="add-row"><button type="button" id="btn-add">＋ 行を追加（一番下）</button></div>
     <p class="note">位置はトップガイドを0mmとした、各ガイド位置までの距離（mm）です。</p>
     </div>
 
@@ -152,7 +154,6 @@
     </div>
   </div>
 
-  <div class="add-row guide-part"><button type="button" id="btn-add">＋ 行を追加</button></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -173,21 +174,25 @@
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
 
-    function addRow(v) {
+    function addRow(v, afterTr) {
     v = v || {};
     var tr = document.createElement('tr');
     tr.innerHTML =
       '<td class="no"></td>' +
       '<td class="name"><input type="text" class="r-name" placeholder="例）SiC 4.5 ダブルフット"></td>' +
       '<td class="pos"><input type="text" class="r-pos" inputmode="decimal"><span class="unit">mm</span></td>' +
-      '<td class="del"><button type="button" title="この行を削除">×</button></td>';
+      '<td class="del"><button type="button" class="ins" title="この下に行を追加">＋</button><button type="button" class="rm" title="この行を削除">×</button></td>';
     tr.querySelector('.r-name').value = v.name || '';
     tr.querySelector('.r-pos').value = v.pos || '';
-    tr.querySelector('.del button').addEventListener('click', function () {
+    tr.querySelector('.rm').addEventListener('click', function () {
       if (rowsEl.children.length <= 1) return;
       tr.remove(); renumber(); saveDraft();
     });
-    rowsEl.appendChild(tr);
+    tr.querySelector('.ins').addEventListener('click', function () {
+      addRow({}, tr); saveDraft();
+      var next = tr.nextElementSibling; if (next) next.querySelector('.r-name').focus();
+    });
+    if (afterTr && afterTr.parentNode === rowsEl) rowsEl.insertBefore(tr, afterTr.nextSibling); else rowsEl.appendChild(tr);
     renumber();
   }
 
