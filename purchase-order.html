@@ -172,6 +172,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var rowsEl = document.getElementById('rows');
 
@@ -465,6 +466,7 @@
       var d = document.getElementById('f-date').value.replace(/-/g, '');
       var name = d + to.replace(/[\\/:*?"<>|]/g, '') + '_注文書.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
       if (!DEMO) await saveToHistory();
     } catch (e) {
       console.error(e);

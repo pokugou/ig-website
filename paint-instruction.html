@@ -112,6 +112,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var pagesEl = document.getElementById('pages');
@@ -394,6 +395,7 @@
       } else {
         pdf.save('塗装指示書_' + todayParts().iso.replace(/-/g, '') + '.pdf');
       }
+      if (window.showPdfDownload) showPdfDownload(pdf, '塗装指示書_' + todayParts().iso.replace(/-/g, '') + '.pdf');
       restoreFieldsAfterCapture(fieldSwaps); fieldSwaps = [];
       document.body.classList.remove('pdf-capture');
       btn.textContent = '一覧に保存中…';

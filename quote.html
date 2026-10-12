@@ -205,6 +205,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var rowsBody = document.getElementById('price-rows');
 
@@ -388,6 +389,7 @@
       } else {
         pdf.save('オーダーシート_' + customer + '.pdf');
       }
+      if (window.showPdfDownload) showPdfDownload(pdf, 'オーダーシート_' + customer + '.pdf');
       await saveQuoteToHistory();
     } catch (e) {
       console.error(e);

@@ -157,6 +157,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var rowsEl = document.getElementById('rows');
   var STORE_KEY = 'rod-dimensions-draft';
@@ -390,6 +391,7 @@
       var model = document.getElementById('f-model').value.trim().replace(/[\\/:*?"<>|]/g, '') || 'ロッド仕様書';
       var name = model + '_仕様書_' + todayISO().replace(/-/g, '') + '.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
       swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; }); swaps = [];
       document.body.classList.remove('pdf-capture');
       btn.textContent = '一覧に保存中…';

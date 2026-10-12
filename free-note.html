@@ -115,6 +115,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var STORE_KEY = 'free-note-draft';
@@ -416,6 +417,7 @@
       var title = document.getElementById('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || '自由記入';
       var name = title + '_' + todayISO().replace(/-/g, '') + '.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
       undo();
       btn.textContent = '一覧に保存中…';
       await saveToHistory();
