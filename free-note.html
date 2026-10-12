@@ -50,7 +50,7 @@
   table.tbl td { border: 1.5px solid var(--ink); padding: 0; vertical-align: top; }
   table.tbl td textarea { padding: 0.4rem 0.5rem; font-size: 0.95rem; line-height: 1.5; min-height: 2.4em; }
   table.tbl.hdr tr:first-child td { background: #111; }
-  table.tbl.hdr tr:first-child td textarea { color: #fff; font-weight: 700; }
+  table.tbl.hdr tr:first-child td textarea { color: #fff; font-weight: 700; text-align: center; }
   table.tbl.hdr tr:first-child td textarea:focus { background: #333; }
   .hdr-opt { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; }
 
@@ -155,6 +155,33 @@
     return b;
   }
 
+  // Arrow keys move between table cells when the caret is at the edge of the text.
+  function cellKey(e) {
+    var k = e.key;
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(k) === -1) return;
+    if (e.shiftKey || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return;
+    var ta = e.target, v = ta.value, s = ta.selectionStart, en = ta.selectionEnd;
+    if (s !== en) return;
+    var td = ta.closest('td'), tr = td.parentNode, tbl = tr.parentNode;
+    var ri = Array.prototype.indexOf.call(tbl.children, tr), ci = Array.prototype.indexOf.call(tr.children, td);
+    var singleLine = ta.scrollHeight <= parseFloat(getComputedStyle(ta).lineHeight) * 1.5 + 12 + 6;
+    var target = null, caret = null;
+    if (k === 'ArrowRight' && s === v.length) { target = tr.children[ci + 1]; caret = 0; }
+    else if (k === 'ArrowLeft' && s === 0) { target = tr.children[ci - 1]; caret = 'end'; }
+    else if (k === 'ArrowDown' && v.indexOf('\n', s) === -1 && (singleLine || s === v.length)) {
+      var nr = tbl.children[ri + 1]; target = nr && nr.children[ci]; caret = Math.min(s, 1e6);
+    } else if (k === 'ArrowUp' && v.lastIndexOf('\n', s - 1) === -1 && (singleLine || s === 0)) {
+      var pr = tbl.children[ri - 1]; target = pr && pr.children[ci]; caret = Math.min(s, 1e6);
+    }
+    if (!target) return;
+    var next = target.querySelector('textarea');
+    if (!next) return;
+    e.preventDefault();
+    next.focus();
+    var pos = caret === 'end' ? next.value.length : Math.min(caret, next.value.length);
+    next.setSelectionRange(pos, pos);
+  }
+
   function renderBlocks() {
     blocksEl.innerHTML = '';
     blocks.forEach(function (b, idx) {
@@ -209,6 +236,7 @@
             var td = document.createElement('td');
             var cta = document.createElement('textarea'); cta.rows = 1; cta.value = cell || '';
             cta.addEventListener('input', function () { b.rows[ri][ci] = cta.value; grow(cta); saveDraft(); });
+            cta.addEventListener('keydown', cellKey);
             td.appendChild(cta); tr.appendChild(td);
           });
           tbl.appendChild(tr);
