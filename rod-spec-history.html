@@ -42,6 +42,16 @@
   .row .dv { white-space: pre-wrap; }
   .thumbs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
   .thumbs img { width: 110px; height: auto; border: 1px solid var(--line); }
+  .select-bar { display: none; background: var(--paper); border: 1px solid var(--line); padding: 0.7rem 1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .select-bar.active { display: flex; }
+  .select-bar span { font-size: 0.8rem; color: var(--sub); }
+  .select-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .select-bar button { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.5rem 0.9rem; cursor: pointer; white-space: nowrap; }
+  .select-bar button:hover { background: var(--red); border-color: var(--red); }
+  .summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
+  .summary .printed-badge { font-size: 0.68rem; font-weight: 700; color: #1a7a3c; background: #e4f5e9; border: 1px solid #1a7a3c; padding: 0.15rem 0.5rem; white-space: nowrap; flex-shrink: 0; }
+  .print-toggle-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink); background: #fff; border: 1px solid var(--line); padding: 0.7rem 1rem; cursor: pointer; white-space: nowrap; }
+  .print-toggle-btn:hover { border-color: var(--ink); }
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
   @media screen and (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 0.1rem; } }
 </style>
@@ -55,6 +65,16 @@
     </header>
     <div class="search-box"><input type="text" id="f-search" placeholder="モデル名・メモなどで検索"></div>
     <p class="status-line" id="status-line">読み込み中…</p>
+    <div class="select-bar" id="select-bar">
+      <span id="select-count">0件選択中</span>
+      <div class="select-bar-actions">
+        <button type="button" id="btn-bulk-printed">印刷済みにする</button>
+        <button type="button" id="btn-bulk-unprinted">印刷済みを解除</button>
+        <button type="button" id="btn-bulk-delete">削除</button>
+        <button type="button" id="btn-bulk-clear">選択解除</button>
+      </div>
+    </div>
+
     <div id="list"></div>
   </div>
 
@@ -62,6 +82,7 @@
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var specs = [];
   var term = '';
+  var selected = {};
 
   function fmtDate(iso) {
     var p = iso ? iso.split('-') : null;
@@ -87,6 +108,29 @@
     if (!put.ok) throw new Error('save failed');
   }
 
+
+  function updateSelectBar() {
+    var count = Object.keys(selected).length;
+    document.getElementById('select-bar').classList.toggle('active', count > 0);
+    document.getElementById('select-count').textContent = count + '件選択中';
+  }
+  async function bulkSetPrinted(flag) {
+    specs.forEach(function (x) { if (selected[x.id]) x.printed = flag; });
+    try { await persist(); } catch (e) { alert('反映に失敗しました。'); }
+    render();
+  }
+  document.getElementById('btn-bulk-printed').addEventListener('click', function () { bulkSetPrinted(true); });
+  document.getElementById('btn-bulk-unprinted').addEventListener('click', function () { bulkSetPrinted(false); });
+  document.getElementById('btn-bulk-clear').addEventListener('click', function () { selected = {}; updateSelectBar(); render(); });
+  document.getElementById('btn-bulk-delete').addEventListener('click', async function () {
+    var n = Object.keys(selected).length;
+    if (!n || !confirm(n + '件を本当に削除しますか？')) return;
+    specs = specs.filter(function (x) { return !selected[x.id]; });
+    selected = {};
+    try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
+    updateSelectBar(); render();
+  });
+
   function render() {
     var list = document.getElementById('list');
     var visible = specs.filter(matches);
@@ -103,6 +147,14 @@
       s.querySelector('.total').textContent = isFree ? 'フリー記入' : 'ガイド表';
       s.querySelector('.when').textContent = fmtDate(o.date);
       s.addEventListener('click', function () { card.classList.toggle('open'); });
+      var pick = document.createElement('input'); pick.type = 'checkbox'; pick.className = 'pick'; pick.checked = !!selected[o.id];
+      pick.addEventListener('click', function (e) { e.stopPropagation(); });
+      pick.addEventListener('change', function () { if (pick.checked) selected[o.id] = true; else delete selected[o.id]; updateSelectBar(); });
+      s.insertBefore(pick, s.firstChild);
+      if (o.printed) {
+        var badge = document.createElement('span'); badge.className = 'printed-badge'; badge.textContent = '印刷済';
+        s.insertBefore(badge, s.querySelector('.when'));
+      }
 
       var d = document.createElement('div'); d.className = 'detail';
       var acts = document.createElement('div'); acts.className = 'actions';
@@ -113,6 +165,12 @@
         var c = JSON.parse(JSON.stringify(o)); c.__copy = true;
         localStorage.setItem('spec-reload', JSON.stringify(c)); location.href = 'rod-dimensions.html';
       });
+      var pt = document.createElement('button'); pt.type = 'button'; pt.className = 'print-toggle-btn'; pt.textContent = o.printed ? '印刷済みを解除' : '印刷済みにする';
+      pt.addEventListener('click', async function () {
+        o.printed = !o.printed;
+        try { await persist(); } catch (e) { alert('反映に失敗しました。'); o.printed = !o.printed; }
+        render();
+      });
       var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この仕様書を削除';
       del.addEventListener('click', async function () {
         if (!confirm((o.model || 'この仕様書') + 'を本当に削除しますか？')) return;
@@ -120,7 +178,7 @@
         try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
         render();
       });
-      acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(del); d.appendChild(acts);
+      acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(pt); acts.appendChild(del); d.appendChild(acts);
       d.appendChild(row('作成日', fmtDate(o.date)));
       d.appendChild(row('作成者', o.author || ''));
       if (!isFree) {
