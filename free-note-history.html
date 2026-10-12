@@ -190,7 +190,7 @@
         else if (b.type === 'table') {
           var rows = b.rows || [];
           d.appendChild(row('表 ' + rows.length + '×' + (rows[0] ? rows[0].length : 0), rows.map(function (r) { return r.join(' ｜ '); }).join('\n')));
-        } else if (b.type === 'image') { var i = document.createElement('img'); i.src = b.src; th.appendChild(i); }
+        } else if (b.type === 'image') { (b.imgs || (b.src ? [{ src: b.src }] : [])).forEach(function (m) { var i = document.createElement('img'); i.src = m.src; th.appendChild(i); }); }
       });
       if (th.children.length) d.appendChild(th);
       card.appendChild(s); card.appendChild(d); list.appendChild(card);

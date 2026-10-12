@@ -61,11 +61,16 @@
   .al-btn.on { background: var(--ink) !important; color: #fff !important; border-color: var(--ink) !important; }
   .hdr-opt { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; }
 
-  .b-image .img-wrap img { display: block; height: auto; max-width: 100%; border: 1px solid var(--line2); }
-  .b-image.s1 img { width: 33%; }
-  .b-image.s2 img { width: 60%; }
-  .b-image.s3 img { width: 100%; }
-
+  .img-area { position: relative; width: 100%; height: 200px; border: 1px dashed var(--line); background: #fafafa; overflow: hidden; touch-action: pan-y; }
+  .img-area .empty-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: var(--sub); pointer-events: none; }
+  .img-area .im { position: absolute; cursor: move; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .img-area .im img { display: block; width: 100%; height: auto; pointer-events: none; -webkit-user-drag: none; }
+  .img-area .im.sel { outline: 2px solid #2a6df4; }
+  .img-area .im .rz { display: none; position: absolute; right: -2px; bottom: -2px; width: 22px; height: 22px; background: #2a6df4; cursor: nwse-resize; touch-action: none; border-radius: 3px 0 0 0; }
+  .img-area .im .xx { display: none; position: absolute; top: -2px; right: -2px; width: 24px; height: 24px; background: #cc2200; color: #fff; text-align: center; line-height: 24px; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 0 0 0 3px; }
+  .img-area .im.sel .rz, .img-area .im.sel .xx { display: block; }
+  .area-grip { height: 12px; margin-top: 2px; background: #e6e6e6; cursor: ns-resize; touch-action: none; text-align: center; font-size: 0.6rem; line-height: 12px; color: var(--sub); user-select: none; -webkit-user-select: none; }
+  .area-grip:hover { background: #d4d4d4; }
   .adds { max-width: 794px; margin: 0.8rem auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
   .adds button { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.7rem 0.3rem; border: 1px dashed var(--line); background: #fff; color: var(--sub); cursor: pointer; }
   .adds button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
@@ -77,13 +82,17 @@
   }
 
   .pdf-capture .sheet { width: 794px; max-width: none; border: none; min-height: 0; }
-  .pdf-capture .toolbar, .pdf-capture .adds, .pdf-capture .hint, .pdf-capture .blk-bar, .pdf-capture tr.align-row, .pdf-capture td.rowsel { display: none; }
+  .pdf-capture .toolbar, .pdf-capture .adds, .pdf-capture .hint, .pdf-capture .blk-bar, .pdf-capture tr.align-row, .pdf-capture td.rowsel, .pdf-capture .area-grip, .pdf-capture .im .rz, .pdf-capture .im .xx, .pdf-capture .empty-hint { display: none !important; }
+  .pdf-capture .img-area { border: none; background: none; }
+  .pdf-capture .im.sel { outline: none; }
   .pdf-capture table.tbl td.sel { box-shadow: none; }
   .pdf-capture .head-meta input { border-bottom: none; }
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .adds, .hint, .blk-bar, tr.align-row, td.rowsel { display: none; }
+    .toolbar, .adds, .hint, .blk-bar, tr.align-row, td.rowsel, .area-grip, .im .rz, .im .xx, .empty-hint { display: none !important; }
+    .img-area { border: none; background: none; }
+    .im.sel { outline: none; }
     table.tbl td.sel { box-shadow: none; }
     .sheet { width: 100%; border: none; padding: 0; }
     .head-meta input { border-bottom: none; }
@@ -131,8 +140,9 @@
   var blocksEl = document.getElementById('blocks');
   var blocks = [];
   var currentId = null;
-  var SIZE_LABEL = { s1: '小', s2: '中', s3: '大' };
-  var SIZES = ['s1', 's2', 's3'];
+  var activeArea = null;   // image block that receives pasted pictures
+  var pendingArea = null;  // image block waiting for the file chooser
+  var selImg = null;       // { b, i } currently selected picture
 
   function todayISO() {
     var d = new Date();
@@ -149,10 +159,136 @@
     if (type === 'heading') blocks.push({ type: 'heading', text: '' });
     else if (type === 'text') blocks.push({ type: 'text', text: '', fs: 1 });
     else if (type === 'table') blocks.push(newTable(4, 3));
-    else if (type === 'image') { document.getElementById('f-img').click(); return; }
+    else if (type === 'image') { pendingArea = null; document.getElementById('f-img').click(); return; }
     renderBlocks(); saveDraft();
     var last = blocksEl.lastElementChild;
     if (last) last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ---- image areas: pictures can be dragged anywhere inside the frame and resized with the corner handle.
+  // x, w are fractions of the frame width; y and the frame height h are fractions of the frame width too,
+  // so the layout stays identical on a phone, a PC and in the PDF.
+  function normalizeBlocks(list) {
+    list.forEach(function (b) {
+      if (b.type === 'image' && !b.imgs) {
+        var w = { s1: 0.33, s2: 0.6, s3: 1 }[b.size] || 0.6;
+        b.imgs = b.src ? [{ src: b.src, x: 0, y: 0, w: w, ar: 0.75 }] : [];
+        b.h = 0.5;
+        delete b.src; delete b.size;
+      }
+    });
+    return list;
+  }
+
+  function imgNeed(b) {
+    var need = 0;
+    (b.imgs || []).forEach(function (im) { need = Math.max(need, im.y + im.w * (im.ar || 0.75)); });
+    return need;
+  }
+
+  function layoutAreas() {
+    document.querySelectorAll('.img-area').forEach(function (area) {
+      var b = blocks[+area.dataset.idx];
+      var W = area.clientWidth;
+      if (!b || !W) return;
+      var need = imgNeed(b);
+      b.h = Math.max(b.h || 0.4, need + 0.02, 0.15);
+      area.style.height = Math.round(b.h * W) + 'px';
+      Array.prototype.forEach.call(area.querySelectorAll('.im'), function (el) {
+        var im = b.imgs[+el.dataset.i];
+        el.style.left = (im.x * 100) + '%';
+        el.style.width = (im.w * 100) + '%';
+        el.style.top = Math.round(im.y * W) + 'px';
+      });
+    });
+  }
+  window.addEventListener('resize', layoutAreas);
+
+  function selectImg(b, i) {
+    selImg = b ? { b: b, i: i } : null;
+    document.querySelectorAll('.im.sel').forEach(function (e) { e.classList.remove('sel'); });
+    if (!b) return;
+    var idx = blocks.indexOf(b);
+    var area = blocksEl.children[idx] && blocksEl.children[idx].querySelector('.img-area');
+    var el = area && area.querySelector('.im[data-i="' + i + '"]');
+    if (el) el.classList.add('sel');
+    activeArea = b;
+  }
+
+  function dragTracker(e, onMove, onEnd) {
+    e.preventDefault();
+    var sx = e.clientX, sy = e.clientY, target = e.currentTarget;
+    try { target.setPointerCapture(e.pointerId); } catch (x) {}
+    function mv(ev) { onMove(ev.clientX - sx, ev.clientY - sy); }
+    function up() {
+      target.removeEventListener('pointermove', mv);
+      target.removeEventListener('pointerup', up);
+      target.removeEventListener('pointercancel', up);
+      if (onEnd) onEnd();
+    }
+    target.addEventListener('pointermove', mv);
+    target.addEventListener('pointerup', up);
+    target.addEventListener('pointercancel', up);
+  }
+
+  function buildArea(b, idx) {
+    var area = document.createElement('div');
+    area.className = 'img-area';
+    area.dataset.idx = idx;
+    if (!b.imgs.length) {
+      var hint = document.createElement('div'); hint.className = 'empty-hint'; hint.textContent = '「＋ この枠に画像を追加」で画像を入れます（貼り付けもOK）';
+      area.appendChild(hint);
+    }
+    area.addEventListener('pointerdown', function (e) { if (e.target === area) { selectImg(null); } });
+    b.imgs.forEach(function (im, i) {
+      var el = document.createElement('div'); el.className = 'im'; el.dataset.i = i;
+      var img = document.createElement('img'); img.src = im.src; el.appendChild(img);
+      img.addEventListener('load', function () {
+        var ar = img.naturalHeight / img.naturalWidth;
+        if (ar && Math.abs((im.ar || 0) - ar) > 0.001) { im.ar = ar; layoutAreas(); }
+      });
+      var rz = document.createElement('div'); rz.className = 'rz';
+      var xx = document.createElement('div'); xx.className = 'xx'; xx.textContent = '×';
+      el.appendChild(rz); el.appendChild(xx);
+      if (selImg && selImg.b === b && selImg.i === i) el.classList.add('sel');
+      xx.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+      xx.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!confirm('この画像を削除しますか？')) return;
+        b.imgs.splice(i, 1); selImg = null; renderBlocks(); saveDraft();
+      });
+      el.addEventListener('pointerdown', function (e) {
+        if (e.target === rz || e.target === xx) return;
+        selectImg(b, i);
+        var W = area.clientWidth, x0 = im.x, y0 = im.y;
+        dragTracker(e, function (dx, dy) {
+          im.x = Math.min(Math.max(0, x0 + dx / W), Math.max(0, 1 - im.w));
+          im.y = Math.max(0, y0 + dy / W);
+          layoutAreas();
+        }, saveDraft);
+      });
+      rz.addEventListener('pointerdown', function (e) {
+        e.stopPropagation();
+        selectImg(b, i);
+        var W = area.clientWidth, w0 = im.w;
+        dragTracker(e, function (dx) {
+          im.w = Math.min(Math.max(0.06, w0 + dx / W), 1 - im.x);
+          layoutAreas();
+        }, saveDraft);
+      });
+      area.appendChild(el);
+    });
+    return area;
+  }
+
+  function bindGrip(grip, b, wrap) {
+    grip.addEventListener('pointerdown', function (e) {
+      var area = wrap.querySelector('.img-area'), W = area.clientWidth, h0 = b.h || 0.4;
+      dragTracker(e, function (dx, dy) {
+        b.h = Math.max(imgNeed(b) + 0.02, 0.15, h0 + dy / W);
+        layoutAreas();
+      }, saveDraft);
+    });
   }
 
   function grow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
@@ -264,9 +400,7 @@
         bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
       }
       if (b.type === 'image') {
-        bar.appendChild(barBtn('大きさ：' + SIZE_LABEL[b.size || 's2'], function () {
-          b.size = SIZES[(SIZES.indexOf(b.size || 's2') + 1) % SIZES.length]; renderBlocks(); saveDraft();
-        }));
+        bar.appendChild(barBtn('＋ この枠に画像を追加', function () { pendingArea = b; document.getElementById('f-img').click(); }));
       }
       bar.appendChild(barBtn('↑', function () { if (idx > 0) { var t = blocks[idx - 1]; blocks[idx - 1] = b; blocks[idx] = t; renderBlocks(); saveDraft(); } }));
       bar.appendChild(barBtn('↓', function () { if (idx < blocks.length - 1) { var t = blocks[idx + 1]; blocks[idx + 1] = b; blocks[idx] = t; renderBlocks(); saveDraft(); } }));
@@ -325,15 +459,16 @@
         });
         wrap.appendChild(tbl);
       } else if (b.type === 'image') {
-        wrap.classList.add(b.size || 's2');
-        var w = document.createElement('div'); w.className = 'img-wrap';
-        var im = document.createElement('img'); im.src = b.src; w.appendChild(im);
-        wrap.appendChild(w);
+        wrap.appendChild(buildArea(b, idx));
+        var grip = document.createElement('div'); grip.className = 'area-grip'; grip.textContent = '⇕ ドラッグで枠の高さを変更';
+        bindGrip(grip, b, wrap);
+        wrap.appendChild(grip);
       }
       blocksEl.appendChild(wrap);
     });
     blocksEl.querySelectorAll('textarea').forEach(grow);
     paintSel();
+    layoutAreas();
   }
 
   function snapshot() {
@@ -355,12 +490,12 @@
     document.getElementById('f-title').value = d.title || '';
     document.getElementById('f-date').value = d.keepDate && d.date ? d.date : todayISO();
     document.getElementById('f-author').value = d.author != null ? d.author : '石谷 豪';
-    blocks = (d.blocks || []).map(function (b) { return JSON.parse(JSON.stringify(b)); });
+    blocks = normalizeBlocks((d.blocks || []).map(function (b) { return JSON.parse(JSON.stringify(b)); }));
     if (!blocks.length) blocks = [{ type: 'text', text: '', fs: 1 }];
     renderBlocks();
   }
 
-  function addImageFile(file) {
+  function addImageFile(file, target) {
     if (!file || !/^image\//.test(file.type)) return;
     var reader = new FileReader();
     reader.onload = function () {
@@ -372,7 +507,12 @@
         var ctx = c.getContext('2d');
         ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
         ctx.drawImage(im, 0, 0, c.width, c.height);
-        blocks.push({ type: 'image', src: c.toDataURL('image/jpeg', 0.85), size: 's2' });
+        var blk = target || (activeArea && blocks.indexOf(activeArea) >= 0 ? activeArea : null);
+        if (!blk) { blk = { type: 'image', h: 0.5, imgs: [] }; blocks.push(blk); }
+        var n = blk.imgs.length, w = blk.imgs.length ? 0.4 : 0.6;
+        blk.imgs.push({ src: c.toDataURL('image/jpeg', 0.85), x: Math.min(0.03 * n, 1 - w), y: 0.03 * n, w: w, ar: c.height / c.width });
+        activeArea = blk;
+        selImg = { b: blk, i: blk.imgs.length - 1 };
         renderBlocks(); saveDraft();
       };
       im.src = reader.result;
@@ -381,12 +521,13 @@
   }
 
   document.getElementById('f-img').addEventListener('change', function (e) {
-    Array.prototype.forEach.call(e.target.files, addImageFile);
+    var target = pendingArea; pendingArea = null;
+    Array.prototype.forEach.call(e.target.files, function (f) { addImageFile(f, target); });
     e.target.value = '';
   });
   document.addEventListener('paste', function (e) {
     var items = (e.clipboardData && e.clipboardData.items) || [];
-    Array.prototype.forEach.call(items, function (it) { if (it.kind === 'file') addImageFile(it.getAsFile()); });
+    Array.prototype.forEach.call(items, function (it) { if (it.kind === 'file') addImageFile(it.getAsFile(), null); });
   });
   document.querySelectorAll('[data-add]').forEach(function (b) {
     b.addEventListener('click', function () { addBlock(b.dataset.add); });
@@ -455,7 +596,9 @@
     if (!currentId) currentId = 'note-' + Date.now();
     rec.id = currentId; rec.__note = true; rec.savedAt = new Date().toISOString();
     for (var i = 0; i < rec.blocks.length; i++) {
-      if (rec.blocks[i].type === 'image') rec.blocks[i].src = await shrinkImage(rec.blocks[i].src, 900, 0.65);
+      if (rec.blocks[i].type === 'image') {
+        for (var j = 0; j < rec.blocks[i].imgs.length; j++) rec.blocks[i].imgs[j].src = await shrinkImage(rec.blocks[i].imgs[j].src, 900, 0.65);
+      }
     }
     try {
       var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
@@ -499,6 +642,8 @@
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
     sel = null; paintSel();
     document.body.classList.add('pdf-capture');
+    selectImg(null);
+    layoutAreas();
     var swaps = swapFields();
     var restored = false;
     function undo() {
