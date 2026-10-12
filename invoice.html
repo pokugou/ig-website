@@ -749,11 +749,26 @@
     return fillers;
   }
 
+  // ファイル名：発行日の数字＋宛名＋様（例：20261012アマノ釣具様.pdf）。納品書は日付の後に「納品書」を入れる
   function fileName() {
     var d = ($('f-date').value || todayIso()).replace(/-/g, '');
-    var who = $('f-customer').value.trim();
-    var kind = DOC.title;
-    return d + kind + (who ? who + $('f-honor').value : '') + '.pdf';
+    var who = $('f-customer').value.trim().replace(/[\\/:*?"<>|]/g, '');
+    var kind = KIND === 'delivery' ? '納品書' : '';
+    return d + kind + (who ? who + '様' : (kind || '請求書')) + '.pdf';
+  }
+
+  // PDFを新しいタブに表示し、上に「この名前で保存」ボタンを付ける（ブラウザの保存だと名前が付かないため）
+  function showPdfWithSave(win, pdf) {
+    var name = fileName(), url = pdf.output('bloburl');
+    var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    win.document.open();
+    win.document.write('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(name) + '</title>' +
+      '<style>html,body{margin:0;height:100%;font-family:sans-serif}.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;background:#111;color:#fff}' +
+      '.bar a{background:#fff;color:#111;font-weight:700;text-decoration:none;padding:8px 16px;font-size:15px}.bar span{font-size:13px;opacity:.85}' +
+      'iframe{display:block;width:100%;height:calc(100% - 58px);border:0}</style>' +
+      '<div class="bar"><a id="dl" href="' + url + '" download="' + esc(name) + '">⬇ この名前で保存</a><span>' + esc(name) + '</span></div>' +
+      '<iframe src="' + url + '#view=FitH" title="PDF"></iframe>');
+    win.document.close();
   }
 
   $('btn-save').addEventListener('click', async function () {
@@ -776,7 +791,7 @@
       if (imgH > pageH) { imgH = pageH; imgW = imgH * canvas.width / canvas.height; }
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', (pageW - imgW) / 2, 0, imgW, imgH);
       pdf.setProperties({ title: fileName().replace(/\.pdf$/, '') });
-      if (previewWindow) previewWindow.location.href = pdf.output('bloburl');
+      if (previewWindow) showPdfWithSave(previewWindow, pdf);
       else pdf.save(fileName());
     } catch (e) {
       console.error(e);
