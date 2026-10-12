@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>自由記入ページ | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #999; --line2: #ddd; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
+
+  .toolbar { max-width: 794px; margin: 0 auto 0.8rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .toolbar .back { margin-right: auto; font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .toolbar .back:hover { color: var(--red); }
+  .toolbar .hist { margin-right: 0; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; border: 1px solid var(--ink); padding: 0.6rem 1rem; background: #fff; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
+  .hint { max-width: 794px; margin: 0 auto 1rem; font-size: 0.72rem; color: var(--sub); }
+
+  .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2rem 2.4rem 2.4rem; min-height: 20rem; }
+  .sheet input, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; }
+  .sheet input:focus, .sheet textarea:focus { outline: none; background: #fff8e0; }
+  .sheet textarea { resize: none; overflow: hidden; display: block; }
+
+  .head-title { font-size: 1.6rem; font-weight: 900; text-align: center; border-bottom: 3px solid var(--ink); padding: 0 0 0.5rem; }
+  .head-meta { display: flex; justify-content: flex-end; gap: 1.2rem; margin: 0.4rem 0 0.4rem; font-size: 0.8rem; color: var(--sub); }
+  .head-meta label { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .head-meta input { width: auto; border-bottom: 1px solid var(--line2); font-size: 0.85rem; padding: 0.1rem 0.2rem; }
+  .head-meta input.author { width: 8rem; }
+
+  .blk { margin-top: 0.9rem; position: relative; }
+  .blk-bar { display: flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; color: var(--sub); margin-bottom: 0.2rem; flex-wrap: wrap; }
+  .blk-bar .kind { font-weight: 700; letter-spacing: 0.08em; background: #eee; padding: 0.1rem 0.5rem; margin-right: auto; }
+  .blk-bar button { font-family: inherit; font-size: 0.72rem; font-weight: 700; border: 1px solid var(--line); background: #fff; color: var(--ink); padding: 0.2rem 0.55rem; cursor: pointer; }
+  .blk-bar button:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .blk-bar button.danger:hover { background: var(--red); border-color: var(--red); }
+
+  .b-heading input { font-size: 1.25rem; font-weight: 900; padding: 0.3rem 0.1rem; border-bottom: 2px solid var(--ink); }
+  .b-text textarea { line-height: 1.7; padding: 0.3rem 0.1rem; min-height: 3.4em; }
+  .fs0 textarea { font-size: 0.85rem; }
+  .fs1 textarea { font-size: 1rem; }
+  .fs2 textarea { font-size: 1.25rem; }
+  .fs3 textarea { font-size: 1.6rem; }
+
+  table.tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.tbl td { border: 1.5px solid var(--ink); padding: 0; vertical-align: top; }
+  table.tbl td textarea { padding: 0.4rem 0.5rem; font-size: 0.95rem; line-height: 1.5; min-height: 2.4em; }
+  table.tbl.hdr tr:first-child td { background: #111; }
+  table.tbl.hdr tr:first-child td textarea { color: #fff; font-weight: 700; }
+  table.tbl.hdr tr:first-child td textarea:focus { background: #333; }
+  .hdr-opt { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; }
+
+  .b-image .img-wrap img { display: block; height: auto; max-width: 100%; border: 1px solid var(--line2); }
+  .b-image.s1 img { width: 33%; }
+  .b-image.s2 img { width: 60%; }
+  .b-image.s3 img { width: 100%; }
+
+  .adds { max-width: 794px; margin: 0.8rem auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+  .adds button { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.7rem 0.3rem; border: 1px dashed var(--line); background: #fff; color: var(--sub); cursor: pointer; }
+  .adds button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+  #f-img { display: none; }
+
+  @media screen and (max-width: 640px) {
+    .sheet { padding: 1.2rem 0.8rem 1.6rem; }
+    .adds { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .pdf-capture .sheet { width: 794px; max-width: none; border: none; min-height: 0; }
+  .pdf-capture .toolbar, .pdf-capture .adds, .pdf-capture .hint, .pdf-capture .blk-bar { display: none; }
+  .pdf-capture .head-meta input { border-bottom: none; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .adds, .hint, .blk-bar { display: none; }
+    .sheet { width: 100%; border: none; padding: 0; }
+    .head-meta input { border-bottom: none; }
+    .blk { break-inside: avoid; }
+    @page { size: A4; margin: 1.2cm; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a class="back" href="tools.html">← ツール一覧</a>
+    <a class="hist" href="free-note-history.html">保存一覧</a>
+    <button type="button" class="secondary" id="btn-reset">クリア</button>
+    <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" id="btn-save">PDFとして保存</button>
+  </div>
+  <p class="hint">下のボタンで「見出し・文章・表・画像」を好きな順に追加できます。各ブロックの↑↓で順番を入れ替え、×で削除。PDFは内容が長い場合、自動で複数ページになります。</p>
+
+  <div class="sheet" id="sheet">
+    <div class="blk head" id="head">
+      <input type="text" class="head-title" id="f-title" placeholder="タイトル（例：打ち合わせメモ）">
+      <div class="head-meta">
+        <label>日付<input type="date" id="f-date"></label>
+        <label>作成者<input type="text" class="author" id="f-author" value="石谷 豪"></label>
+      </div>
+    </div>
+    <div id="blocks"></div>
+  </div>
+
+  <div class="adds">
+    <button type="button" data-add="heading">＋ 見出し</button>
+    <button type="button" data-add="text">＋ 文章</button>
+    <button type="button" data-add="table">＋ 表</button>
+    <button type="button" data-add="image">＋ 画像</button>
+  </div>
+  <input type="file" id="f-img" accept="image/*" multiple>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var STORE_KEY = 'free-note-draft';
+  var blocksEl = document.getElementById('blocks');
+  var blocks = [];
+  var currentId = null;
+  var SIZE_LABEL = { s1: '小', s2: '中', s3: '大' };
+  var SIZES = ['s1', 's2', 's3'];
+
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function newTable(r, c) {
+    var rows = [];
+    for (var i = 0; i < r; i++) { var row = []; for (var j = 0; j < c; j++) row.push(''); rows.push(row); }
+    return { type: 'table', header: true, rows: rows };
+  }
+
+  function addBlock(type) {
+    if (type === 'heading') blocks.push({ type: 'heading', text: '' });
+    else if (type === 'text') blocks.push({ type: 'text', text: '', fs: 1 });
+    else if (type === 'table') blocks.push(newTable(4, 3));
+    else if (type === 'image') { document.getElementById('f-img').click(); return; }
+    renderBlocks(); saveDraft();
+    var last = blocksEl.lastElementChild;
+    if (last) last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function grow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+
+  function barBtn(label, fn, cls) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = label; if (cls) b.className = cls;
+    b.addEventListener('click', fn);
+    return b;
+  }
+
+  function renderBlocks() {
+    blocksEl.innerHTML = '';
+    blocks.forEach(function (b, idx) {
+      var wrap = document.createElement('div');
+      wrap.className = 'blk b-' + b.type;
+      var bar = document.createElement('div');
+      bar.className = 'blk-bar';
+      var kind = document.createElement('span');
+      kind.className = 'kind';
+      kind.textContent = { heading: '見出し', text: '文章', table: '表', image: '画像' }[b.type];
+      bar.appendChild(kind);
+
+      if (b.type === 'text') {
+        bar.appendChild(barBtn('A−', function () { b.fs = Math.max(0, (b.fs == null ? 1 : b.fs) - 1); renderBlocks(); saveDraft(); }));
+        bar.appendChild(barBtn('A＋', function () { b.fs = Math.min(3, (b.fs == null ? 1 : b.fs) + 1); renderBlocks(); saveDraft(); }));
+      }
+      if (b.type === 'table') {
+        var lab = document.createElement('label'); lab.className = 'hdr-opt';
+        var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!b.header; cb.style.width = 'auto';
+        cb.addEventListener('change', function () { b.header = cb.checked; renderBlocks(); saveDraft(); });
+        lab.appendChild(cb); lab.appendChild(document.createTextNode('1行目を見出し'));
+        bar.appendChild(lab);
+        bar.appendChild(barBtn('＋行', function () { b.rows.push(b.rows[0].map(function () { return ''; })); renderBlocks(); saveDraft(); }));
+        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('＋列', function () { b.rows.forEach(function (r) { r.push(''); }); renderBlocks(); saveDraft(); }));
+        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); renderBlocks(); saveDraft(); } }));
+      }
+      if (b.type === 'image') {
+        bar.appendChild(barBtn('大きさ：' + SIZE_LABEL[b.size || 's2'], function () {
+          b.size = SIZES[(SIZES.indexOf(b.size || 's2') + 1) % SIZES.length]; renderBlocks(); saveDraft();
+        }));
+      }
+      bar.appendChild(barBtn('↑', function () { if (idx > 0) { var t = blocks[idx - 1]; blocks[idx - 1] = b; blocks[idx] = t; renderBlocks(); saveDraft(); } }));
+      bar.appendChild(barBtn('↓', function () { if (idx < blocks.length - 1) { var t = blocks[idx + 1]; blocks[idx + 1] = b; blocks[idx] = t; renderBlocks(); saveDraft(); } }));
+      bar.appendChild(barBtn('×', function () { if (confirm('このブロックを削除しますか？')) { blocks.splice(idx, 1); renderBlocks(); saveDraft(); } }, 'danger'));
+      wrap.appendChild(bar);
+
+      if (b.type === 'heading') {
+        var hi = document.createElement('input'); hi.type = 'text'; hi.placeholder = '見出し'; hi.value = b.text || '';
+        hi.addEventListener('input', function () { b.text = hi.value; saveDraft(); });
+        wrap.appendChild(hi);
+      } else if (b.type === 'text') {
+        wrap.classList.add('fs' + (b.fs == null ? 1 : b.fs));
+        var ta = document.createElement('textarea'); ta.placeholder = '自由に書き込めます'; ta.value = b.text || '';
+        ta.addEventListener('input', function () { b.text = ta.value; grow(ta); saveDraft(); });
+        wrap.appendChild(ta);
+      } else if (b.type === 'table') {
+        var tbl = document.createElement('table'); tbl.className = 'tbl' + (b.header ? ' hdr' : '');
+        b.rows.forEach(function (r, ri) {
+          var tr = document.createElement('tr');
+          r.forEach(function (cell, ci) {
+            var td = document.createElement('td');
+            var cta = document.createElement('textarea'); cta.rows = 1; cta.value = cell || '';
+            cta.addEventListener('input', function () { b.rows[ri][ci] = cta.value; grow(cta); saveDraft(); });
+            td.appendChild(cta); tr.appendChild(td);
+          });
+          tbl.appendChild(tr);
+        });
+        wrap.appendChild(tbl);
+      } else if (b.type === 'image') {
+        wrap.classList.add(b.size || 's2');
+        var w = document.createElement('div'); w.className = 'img-wrap';
+        var im = document.createElement('img'); im.src = b.src; w.appendChild(im);
+        wrap.appendChild(w);
+      }
+      blocksEl.appendChild(wrap);
+    });
+    blocksEl.querySelectorAll('textarea').forEach(grow);
+  }
+
+  function snapshot() {
+    return { id: currentId, title: document.getElementById('f-title').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, blocks: blocks };
+  }
+
+  function saveDraft() {
+    var s = snapshot();
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); }
+    catch (e) {
+      try {
+        s.blocks = s.blocks.filter(function (b) { return b.type !== 'image'; });
+        localStorage.setItem(STORE_KEY, JSON.stringify(s));
+      } catch (e2) {}
+    }
+  }
+
+  function restore(d) {
+    document.getElementById('f-title').value = d.title || '';
+    document.getElementById('f-date').value = d.keepDate && d.date ? d.date : todayISO();
+    document.getElementById('f-author').value = d.author != null ? d.author : '石谷 豪';
+    blocks = (d.blocks || []).map(function (b) { return JSON.parse(JSON.stringify(b)); });
+    if (!blocks.length) blocks = [{ type: 'text', text: '', fs: 1 }];
+    renderBlocks();
+  }
+
+  function addImageFile(file) {
+    if (!file || !/^image\//.test(file.type)) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        var MAX = 1400, k = Math.min(1, MAX / Math.max(im.width, im.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(im, 0, 0, c.width, c.height);
+        blocks.push({ type: 'image', src: c.toDataURL('image/jpeg', 0.85), size: 's2' });
+        renderBlocks(); saveDraft();
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('f-img').addEventListener('change', function (e) {
+    Array.prototype.forEach.call(e.target.files, addImageFile);
+    e.target.value = '';
+  });
+  document.addEventListener('paste', function (e) {
+    var items = (e.clipboardData && e.clipboardData.items) || [];
+    Array.prototype.forEach.call(items, function (it) { if (it.kind === 'file') addImageFile(it.getAsFile()); });
+  });
+  document.querySelectorAll('[data-add]').forEach(function (b) {
+    b.addEventListener('click', function () { addBlock(b.dataset.add); });
+  });
+  ['f-title', 'f-date', 'f-author'].forEach(function (id) { document.getElementById(id).addEventListener('input', saveDraft); });
+
+  var draft = null;
+  try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+  try {
+    var rl = localStorage.getItem('note-reload');
+    if (rl) {
+      localStorage.removeItem('note-reload');
+      var rd = JSON.parse(rl);
+      if (rd.__copy) { delete rd.id; } else { rd.keepDate = true; currentId = rd.id || null; }
+      draft = rd;
+    }
+  } catch (e) {}
+  restore(draft || {});
+
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+  document.getElementById('btn-reset').addEventListener('click', function () {
+    if (!confirm('入力内容をすべてクリアしますか？')) return;
+    currentId = null;
+    restore({ author: document.getElementById('f-author').value });
+    saveDraft();
+  });
+
+  // ---- PDF ----
+  function swapFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet input[type="text"], .sheet input[type="date"], .sheet textarea').forEach(function (el) {
+      var text = el.value;
+      if (el.type === 'date') { var p = el.value ? el.value.split('-') : null; text = p ? p[0] + '/' + Number(p[1]) + '/' + Number(p[2]) : ''; }
+      var cs = getComputedStyle(el);
+      var o = document.createElement('div');
+      o.textContent = text || ' ';
+      var inline = !!el.closest('.head-meta');
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + cs.lineHeight + ';white-space:pre-wrap;word-break:break-word;' + (inline ? 'display:inline-block;width:auto;' : 'width:100%;') + 'min-height:' + (el.tagName === 'TEXTAREA' ? cs.minHeight : '0') + ';';
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+
+  function shrinkImage(src, max, q) {
+    return new Promise(function (resolve) {
+      var im = new Image();
+      im.onload = function () {
+        var k = Math.min(1, max / Math.max(im.width, im.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(im, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', q));
+      };
+      im.onerror = function () { resolve(src); };
+      im.src = src;
+    });
+  }
+
+  async function saveToHistory() {
+    var rec = JSON.parse(JSON.stringify(snapshot()));
+    if (!currentId) currentId = 'note-' + Date.now();
+    rec.id = currentId; rec.__note = true; rec.savedAt = new Date().toISOString();
+    for (var i = 0; i < rec.blocks.length; i++) {
+      if (rec.blocks[i].type === 'image') rec.blocks[i].src = await shrinkImage(rec.blocks[i].src, 900, 0.65);
+    }
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var others = all.filter(function (r) { return !r.__note; });
+      var list = all.filter(function (r) { return r.__note; });
+      var idx = list.findIndex(function (x) { return x.id === rec.id; });
+      if (idx >= 0) list[idx] = rec; else list.push(rec);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(list)) });
+      if (!put.ok) throw new Error('save failed');
+    } catch (e) {
+      console.error(e);
+      alert('PDFは作成しましたが、一覧への保存に失敗しました。');
+    }
+  }
+
+  // Page breaks fall between blocks; a block taller than one page is cut at the page height.
+  function computePages(sheet, pageHpx) {
+    var top0 = sheet.getBoundingClientRect().top;
+    var units = [];
+    var head = document.getElementById('head');
+    [head].concat(Array.prototype.slice.call(blocksEl.children)).forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      units.push({ top: r.top - top0, bottom: r.bottom - top0 });
+    });
+    var total = sheet.getBoundingClientRect().height;
+    var pages = [], start = 0;
+    units.forEach(function (u, i) {
+      if (i > 0 && u.bottom - start > pageHpx && u.top > start + 1) { pages.push([start, u.top]); start = u.top; }
+      while (u.bottom - start > pageHpx) { pages.push([start, start + pageHpx]); start += pageHpx; }
+    });
+    pages.push([start, total]);
+    return pages;
+  }
+
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    document.body.classList.add('pdf-capture');
+    var swaps = swapFields();
+    var restored = false;
+    function undo() {
+      if (restored) return; restored = true;
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+    }
+    try {
+      var sheet = document.getElementById('sheet');
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
+      var W = sheet.offsetWidth;
+      var pageHpx = W * (pageH - margin * 2) / (pageW - margin * 2);
+      var pages = computePages(sheet, pageHpx);
+      var scale = sheet.offsetHeight > 3500 ? 1.5 : 2;
+      var canvas = await html2canvas(sheet, { scale: scale, backgroundColor: '#ffffff', windowWidth: 1000 });
+      var imgW = pageW - margin * 2;
+      pages.forEach(function (pg, i) {
+        var sy = Math.round(pg[0] * scale), sh = Math.max(1, Math.min(canvas.height - sy, Math.round((pg[1] - pg[0]) * scale)));
+        var c = document.createElement('canvas');
+        c.width = canvas.width; c.height = sh;
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(canvas, 0, sy, canvas.width, sh, 0, 0, canvas.width, sh);
+        if (i > 0) pdf.addPage();
+        pdf.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, imgW * sh / canvas.width);
+      });
+      var title = document.getElementById('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || '自由記入';
+      var name = title + '_' + todayISO().replace(/-/g, '') + '.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      undo();
+      btn.textContent = '一覧に保存中…';
+      await saveToHistory();
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      undo();
+      renderBlocks();
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+</script>
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (sessionStorage.getItem(k)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        if (t[0] !== t[1]) {
+          sessionStorage.setItem(k, '1');
+          fetch(p, { cache: 'reload' }).then(function () { location.reload(); });
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>
