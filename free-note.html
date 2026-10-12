@@ -54,6 +54,10 @@
   table.tbl.hdr tr.hrow td textarea:focus { background: #333; }
   table.tbl tr.align-row td { border: none; padding: 0 0 0.2rem; }
   table.tbl tr.align-row select { width: 100%; font-family: inherit; font-size: 0.68rem; color: var(--sub); border: 1px solid var(--line2); background: #fafafa; padding: 0.15rem 0.1rem; }
+  table.tbl td.rowsel { width: 1.9rem; border: none; background: transparent; text-align: center; vertical-align: middle; font-size: 0.68rem; color: var(--sub); cursor: pointer; user-select: none; -webkit-user-select: none; }
+  table.tbl td.rowsel:hover { color: var(--ink); background: #eee; }
+  table.tbl tr.align-row td.rowsel { cursor: default; background: transparent; }
+  table.tbl td.sel { box-shadow: inset 0 0 0 3px #2a6df4; }
   .al-btn.on { background: var(--ink) !important; color: #fff !important; border-color: var(--ink) !important; }
   .hdr-opt { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; }
 
@@ -73,12 +77,14 @@
   }
 
   .pdf-capture .sheet { width: 794px; max-width: none; border: none; min-height: 0; }
-  .pdf-capture .toolbar, .pdf-capture .adds, .pdf-capture .hint, .pdf-capture .blk-bar, .pdf-capture tr.align-row { display: none; }
+  .pdf-capture .toolbar, .pdf-capture .adds, .pdf-capture .hint, .pdf-capture .blk-bar, .pdf-capture tr.align-row, .pdf-capture td.rowsel { display: none; }
+  .pdf-capture table.tbl td.sel { box-shadow: none; }
   .pdf-capture .head-meta input { border-bottom: none; }
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .adds, .hint, .blk-bar, tr.align-row { display: none; }
+    .toolbar, .adds, .hint, .blk-bar, tr.align-row, td.rowsel { display: none; }
+    table.tbl td.sel { box-shadow: none; }
     .sheet { width: 100%; border: none; padding: 0; }
     .head-meta input { border-bottom: none; }
     .blk { break-inside: avoid; }
@@ -151,6 +157,36 @@
 
   function grow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
 
+  var sel = null; // { b, r1, c1, r2, c2, ar, ac } selected cell range of a table block
+  function cellAlign(b, ri, ci) {
+    var v = b.cal && b.cal[ri + ',' + ci];
+    return v || (b.align && b.align[ci]) || (b.header && ri === 0 ? 'center' : 'left');
+  }
+  function paintSel() {
+    document.querySelectorAll('td.sel').forEach(function (td) { td.classList.remove('sel'); });
+    if (!sel) return;
+    var idx = blocks.indexOf(sel.b);
+    if (idx < 0) { sel = null; return; }
+    var tbl = blocksEl.children[idx].querySelector('table.tbl');
+    if (!tbl) return;
+    var r1 = Math.min(sel.r1, sel.r2), r2 = Math.max(sel.r1, sel.r2), c1 = Math.min(sel.c1, sel.c2), c2 = Math.max(sel.c1, sel.c2);
+    tbl.querySelectorAll('td[data-r]').forEach(function (td) {
+      var r = +td.dataset.r, c = +td.dataset.c;
+      if (r >= r1 && r <= r2 && c >= c1 && c <= c2) td.classList.add('sel');
+    });
+  }
+  function setSel(b, r1, c1, r2, c2, keepAnchor) {
+    sel = { b: b, r1: keepAnchor && sel && sel.b === b ? sel.r1 : r1, c1: keepAnchor && sel && sel.b === b ? sel.c1 : c1, r2: r2, c2: c2 };
+    paintSel();
+  }
+  function applyAlign(b, val) {
+    if (!b.cal) b.cal = {};
+    var nr = b.rows.length, nc = b.rows[0].length;
+    var r1 = 0, r2 = nr - 1, c1 = 0, c2 = nc - 1;
+    if (sel && sel.b === b) { r1 = Math.min(sel.r1, sel.r2); r2 = Math.max(sel.r1, sel.r2); c1 = Math.min(sel.c1, sel.c2); c2 = Math.max(sel.c1, sel.c2); }
+    for (var r = r1; r <= r2; r++) for (var c = c1; c <= c2; c++) b.cal[r + ',' + c] = val;
+    renderBlocks(); saveDraft();
+  }
   var AL = [['left', '左'], ['center', '中'], ['right', '右']];
   function alignButtons(bar, b, key, applyFn) {
     AL.forEach(function (a) {
@@ -217,10 +253,15 @@
         cb.addEventListener('change', function () { b.header = cb.checked; renderBlocks(); saveDraft(); });
         lab.appendChild(cb); lab.appendChild(document.createTextNode('1行目を見出し'));
         bar.appendChild(lab);
+        AL.forEach(function (a) {
+          var ab = barBtn(a[1], function () { applyAlign(b, a[0]); }, 'al-btn');
+          ab.title = '選択したマス・行を' + { left: '左寄せ', center: '中央寄せ', right: '右寄せ' }[a[0]] + '（選択なしなら表全体）';
+          bar.appendChild(ab);
+        });
         bar.appendChild(barBtn('＋行', function () { b.rows.push(b.rows[0].map(function () { return ''; })); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
         bar.appendChild(barBtn('＋列', function () { b.rows.forEach(function (r) { r.push(''); }); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
       }
       if (b.type === 'image') {
         bar.appendChild(barBtn('大きさ：' + SIZE_LABEL[b.size || 's2'], function () {
@@ -245,27 +286,39 @@
         var tbl = document.createElement('table'); tbl.className = 'tbl' + (b.header ? ' hdr' : '');
         if (!b.align) b.align = [];
         var arow = document.createElement('tr'); arow.className = 'align-row';
+        var gap = document.createElement('td'); gap.className = 'rowsel'; arow.appendChild(gap);
         b.rows[0].forEach(function (_, ci) {
           var td = document.createElement('td');
-          var sel = document.createElement('select');
-          sel.title = 'この列の文字位置';
+          var sl = document.createElement('select');
+          sl.title = 'この列の文字位置（列全体）';
           [['', '位置：標準'], ['left', '左寄せ'], ['center', '中央寄せ'], ['right', '右寄せ']].forEach(function (o) {
-            var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; sel.appendChild(op);
+            var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; sl.appendChild(op);
           });
-          sel.value = b.align[ci] || '';
-          sel.addEventListener('change', function () { b.align[ci] = sel.value; renderBlocks(); saveDraft(); });
-          td.appendChild(sel); arow.appendChild(td);
+          sl.value = b.align[ci] || '';
+          sl.addEventListener('change', function () {
+            b.align[ci] = sl.value;
+            if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] === ci) delete b.cal[k]; });
+            renderBlocks(); saveDraft();
+          });
+          td.appendChild(sl); arow.appendChild(td);
         });
         tbl.appendChild(arow);
         b.rows.forEach(function (r, ri) {
           var tr = document.createElement('tr');
           if (ri === 0) tr.className = 'hrow';
+          var rs = document.createElement('td'); rs.className = 'rowsel'; rs.textContent = ri + 1; rs.title = 'クリックで行を選択';
+          rs.addEventListener('click', function () { if (document.activeElement) document.activeElement.blur(); setSel(b, ri, 0, ri, r.length - 1); });
+          tr.appendChild(rs);
           r.forEach(function (cell, ci) {
-            var td = document.createElement('td');
+            var td = document.createElement('td'); td.dataset.r = ri; td.dataset.c = ci;
             var cta = document.createElement('textarea'); cta.rows = 1; cta.value = cell || '';
-            cta.style.textAlign = b.align[ci] || (b.header && ri === 0 ? 'center' : 'left');
+            cta.style.textAlign = cellAlign(b, ri, ci);
             cta.addEventListener('input', function () { b.rows[ri][ci] = cta.value; grow(cta); saveDraft(); });
             cta.addEventListener('keydown', cellKey);
+            cta.addEventListener('focus', function () { setSel(b, ri, ci, ri, ci); });
+            cta.addEventListener('mousedown', function (e) {
+              if (e.shiftKey && sel && sel.b === b) { e.preventDefault(); setSel(b, ri, ci, ri, ci, true); sel.r2 = ri; sel.c2 = ci; paintSel(); }
+            });
             td.appendChild(cta); tr.appendChild(td);
           });
           tbl.appendChild(tr);
@@ -280,6 +333,7 @@
       blocksEl.appendChild(wrap);
     });
     blocksEl.querySelectorAll('textarea').forEach(grow);
+    paintSel();
   }
 
   function snapshot() {
@@ -443,6 +497,7 @@
     btn.disabled = true; btn.textContent = '作成中…';
     var win = window.open('', '_blank');
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    sel = null; paintSel();
     document.body.classList.add('pdf-capture');
     var swaps = swapFields();
     var restored = false;
