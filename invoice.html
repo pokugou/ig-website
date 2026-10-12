@@ -520,7 +520,7 @@
     var map = { zip: 'f-zip', address: 'f-address', address2: 'f-address2', honor: 'f-honor', closeDay: 'f-close', payMonth: 'f-paymonth', payDay: 'f-payday' };
     var defaults = { address2: '', closeDay: '末', payMonth: '翌月', payDay: '末' };
     Object.keys(map).forEach(function (k) {
-      if (c[k] != null && c[k] !== '') $(map[k]).value = c[k];
+      if (c[k] != null && c[k] !== '') $(map[k]).value = k === 'zip' ? String(c[k]).replace(/^\s*〒\s*/, '') : c[k];
       else if (k in defaults) $(map[k]).value = defaults[k];
     });
     lastAutoAddress = ''; lastZipLookup = String(c.zip || '').replace(/[^0-9]/g, '');
@@ -534,7 +534,8 @@
   });
   // お客様名の予測候補：名前と住所を並べて表示し、選ぶと宛先をまとめて入れる
   var suggestItems = [], suggestActive = -1;
-  function clientAddr(c) { return (c.zip ? '〒' + c.zip + ' ' : '') + (c.address || '') + (c.address2 ? ' ' + c.address2 : ''); }
+  function cleanZip(z) { return String(z || '').replace(/^\s*〒\s*/, ''); }
+  function clientAddr(c) { return (cleanZip(c.zip) ? '〒' + cleanZip(c.zip) + ' ' : '') + (c.address || '') + (c.address2 ? ' ' + c.address2 : ''); }
   function showSuggest() {
     var q = $('f-customer').value.trim().toLowerCase();
     var box = $('suggest');
@@ -599,6 +600,8 @@
   /* ---------- 郵便番号から住所を自動入力（zipcloud） ---------- */
   var lastAutoAddress = '';
   var lastZipLookup = '';
+  // 〒は欄の外に印字済みなので、入力された〒は消す
+  $('f-zip').addEventListener('blur', function () { this.value = this.value.replace(/^\s*〒\s*/, ''); });
   $('f-zip').addEventListener('input', function () {
     var digits = this.value.replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[^0-9]/g, '');
     if (digits.length !== 7 || digits === lastZipLookup) return;
