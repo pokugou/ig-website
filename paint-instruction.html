@@ -228,43 +228,80 @@
     return data;
   }
 
-  document.getElementById('btn-archive').addEventListener('click', async function () {
-    var btn = this;
-    var originalLabel = btn.textContent;
+  function collectArchiveRecords() {
     var records = [];
     document.querySelectorAll('.card').forEach(function (card) {
       var data = extractCardData(card);
-      if (data['お客様名']) records.push(data);
+      var touched = false;
+      card.querySelectorAll('.card-table .ct-label').forEach(function (label) {
+        var valueEl = label.nextElementSibling;
+        var field = valueEl ? valueEl.querySelector('input, textarea') : null;
+        if (field && field.value.trim() && field.value !== field.defaultValue) touched = true;
+      });
+      if (touched) records.push(data);
     });
+    return records;
+  }
+
+  function stableJson(o) {
+    return JSON.stringify(Object.keys(o).sort().map(function (k) { return [k, o[k]]; }));
+  }
+
+  function downloadArchiveFallback(records) {
+    var blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var t = todayParts();
+    var now = new Date();
+    var stamp = t.iso.replace(/-/g, '') + '-' + String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+    a.href = url;
+    a.download = 'paint-archive-' + stamp + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Saves the cards to the shared list, skipping any card already saved with identical content
+  // so pressing both アーカイブに保存 and PDFとして保存 does not create duplicates.
+  async function archiveRecords(records) {
+    if (records.length === 0) return false;
+    try {
+      var fresh = records;
+      try {
+        var res0 = await fetch(SYNC_API + '/paint?_=' + Date.now());
+        if (res0.ok) {
+          var existing = (await res0.json()).map(stableJson);
+          fresh = records.filter(function (r) { return existing.indexOf(stableJson(r)) === -1; });
+        }
+      } catch (e0) { fresh = records; }
+      if (fresh.length === 0) return true;
+      var res = await fetch(SYNC_API + '/paint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fresh)
+      });
+      if (!res.ok) throw new Error('sync failed');
+      return true;
+    } catch (e) {
+      console.error(e);
+      downloadArchiveFallback(records);
+      alert('塗装指示書一覧への自動反映に失敗しました。代わりにファイルをダウンロードしたので、Claudeに伝えて反映してもらってください。');
+      return false;
+    }
+  }
+
+  document.getElementById('btn-archive').addEventListener('click', async function () {
+    var btn = this;
+    var originalLabel = btn.textContent;
+    var records = collectArchiveRecords();
     if (records.length === 0) {
-      alert('お客様名が入力されているカードがありません。');
+      alert('入力されているカードがありません。');
       return;
     }
     btn.disabled = true;
     btn.textContent = '保存中…';
-    try {
-      var res = await fetch(SYNC_API + '/paint', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(records)
-      });
-      if (!res.ok) throw new Error('sync failed');
-    } catch (e) {
-      console.error(e);
-      var blob = new Blob([JSON.stringify(records, null, 2)], { type: 'application/json' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      var t = todayParts();
-      var now = new Date();
-      var stamp = t.iso.replace(/-/g, '') + '-' + String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
-      a.href = url;
-      a.download = 'paint-archive-' + stamp + '.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      alert('塗装指示書一覧への自動反映に失敗しました。代わりにファイルをダウンロードしたので、Claudeに伝えて反映してもらってください。');
-    } finally {
+    try { await archiveRecords(records); } finally {
       btn.disabled = false;
       btn.textContent = originalLabel;
     }
@@ -332,6 +369,10 @@
     var originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '作成中…';
+    // Open the tab synchronously (inside the click) so mobile browsers don't block it later.
+    var previewWindow = window.open('', '_blank');
+    try { if (previewWindow) { previewWindow.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); previewWindow.document.close(); } } catch (e) {}
+    var records = collectArchiveRecords();
     document.body.classList.add('pdf-capture');
     var fieldSwaps = swapFieldsForCapture();
     try {
@@ -348,9 +389,18 @@
         if (i > 0) pdf.addPage();
         pdf.addImage(imgData, 'JPEG', margin, margin, imgW, imgH);
       }
-      pdf.save('塗装指示書_' + todayParts().iso.replace(/-/g, '') + '.pdf');
+      if (previewWindow) {
+        previewWindow.location.href = pdf.output('bloburl');
+      } else {
+        pdf.save('塗装指示書_' + todayParts().iso.replace(/-/g, '') + '.pdf');
+      }
+      restoreFieldsAfterCapture(fieldSwaps); fieldSwaps = [];
+      document.body.classList.remove('pdf-capture');
+      btn.textContent = '一覧に保存中…';
+      await archiveRecords(records);
     } catch (e) {
       console.error(e);
+      try { if (previewWindow) previewWindow.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
       restoreFieldsAfterCapture(fieldSwaps);
