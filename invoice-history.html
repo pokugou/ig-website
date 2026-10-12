@@ -219,7 +219,6 @@
 
       var meta = [];
       if (inv.address) meta.push((inv.zip ? '〒' + inv.zip + ' ' : '') + inv.address + (inv.address2 ? ' ' + inv.address2 : ''));
-      if (inv.due) meta.push('お支払期限 ' + fmtDate(inv.due));
       if (meta.length) d.appendChild(el('div', 'meta', meta.join('　／　')));
 
       var t = el('table', 'lines');
