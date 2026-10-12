@@ -118,7 +118,7 @@
   function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function md(isoStr) { if (!isoStr) return ''; var p = isoStr.split('-'); return Number(p[1]) + '/' + Number(p[2]); }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function taxOf(sub) { return Math.ceil(Math.round(sub * TAX_RATE * 1e6) / 1e6); }
+  function taxOf(sub) { return Math.round(Math.round(sub * TAX_RATE * 1e6) / 1e6); }
   function subOf(r) {
     if (r.subtotal != null) return num(r.subtotal);
     var s = 0; (r.items || []).forEach(function (it) { s += num(it.amt); }); return s;

@@ -340,7 +340,7 @@
   function totals() {
     var sub = 0;
     rowsBody.querySelectorAll('tr').forEach(function (tr) { sub += num(tr.querySelector('.f-amt').value); });
-    var tax = Math.ceil(Math.round(sub * TAX_RATE * 1e6) / 1e6);
+    var tax = Math.round(Math.round(sub * TAX_RATE * 1e6) / 1e6);
     var carryOn = $('opt-carry').checked;
     var prev = carryOn ? num($('f-prev').value) : 0, paid = carryOn ? num($('f-paid').value) : 0;
     var carry = prev - paid;

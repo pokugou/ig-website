@@ -111,7 +111,7 @@
   function figures(inv) {
     var sub = 0;
     (inv.items || []).forEach(function (it) { sub += num(it.amt); });
-    var tax = Math.ceil(Math.round(sub * 0.1 * 1e6) / 1e6);
+    var tax = Math.round(Math.round(sub * 0.1 * 1e6) / 1e6);
     var carry = inv.showCarry === false ? 0 : num(inv.prev) - num(inv.paid);
     return { sub: sub, tax: tax, carry: carry, total: carry + sub + tax };
   }
@@ -125,18 +125,20 @@
     return hay.indexOf(term) !== -1;
   }
 
-  async function persist() {
+  // 削除は「今の最新データ」を読み直して、その1件だけを取り除く。
+  // （画面を開いた時点の一覧で上書きすると、その後に別のタブで保存した書類が消えてしまうため）
+  async function deleteRecord(id) {
     var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
     if (!res.ok) throw new Error('load failed');
-    var others = (await res.json()).filter(function (r) { return !r[DOC.tag]; });
+    var all = (await res.json()).filter(function (r) { return !(r[DOC.tag] && r.id === id); });
     if (KIND === 'invoice') {
       // 削除した請求書に含まれていた納品書は「未請求」に戻す
-      var alive = {};
-      invoices.forEach(function (x) { alive[x.id] = true; });
-      others.forEach(function (r) { if (r.__delivery && r.billedBy && !alive[r.billedBy]) { delete r.billedBy; delete r.billedNumber; } });
+      all.forEach(function (r) { if (r.__delivery && r.billedBy === id) { delete r.billedBy; delete r.billedNumber; } });
     }
-    var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(invoices.slice().reverse())) });
+    var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
     if (!put.ok) throw new Error('save failed');
+    invoices = all.filter(function (r) { return r[DOC.tag]; });
+    invoices.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')) || String(b.number || '').localeCompare(String(a.number || '')); });
   }
 
   function openInEditor(inv) {
@@ -197,8 +199,7 @@
         var extra = KIND === 'invoice' && inv.fromDeliveries && inv.fromDeliveries.length ? '\n（含まれていた納品書' + inv.fromDeliveries.length + '件は「未請求」に戻ります）'
           : KIND === 'delivery' && inv.billedBy ? '\n（この納品書は請求書 ' + (inv.billedNumber || '') + ' に含まれています）' : '';
         if (!confirm((inv.customer || 'この' + DOC.title) + '（' + (inv.number || fmtDate(inv.date)) + '）を本当に削除しますか？' + extra)) return;
-        invoices = invoices.filter(function (x) { return x.id !== inv.id; });
-        try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
+        try { await deleteRecord(inv.id); } catch (e) { alert('削除の反映に失敗しました。通信状況を確認してもう一度お試しください。'); }
         buildMonths(); render();
       });
       acts.appendChild(edit); acts.appendChild(copy);
