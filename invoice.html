@@ -49,6 +49,17 @@
   .to .zip { display: flex; align-items: baseline; gap: 0.15rem; width: 9rem; }
   .to .name { display: flex; align-items: baseline; gap: 0.5rem; border-bottom: 2px solid var(--ink); margin-top: 0.5rem; padding-bottom: 0.15rem; }
   .to .name input { font-size: 1.35rem; font-weight: 900; padding: 0.1rem 0.1rem; }
+  .to .name { position: relative; }
+  .suggest { position: absolute; left: 0; right: 0; top: calc(100% + 2px); z-index: 30; background: #fff; border: 1px solid var(--ink); box-shadow: 0 6px 18px rgba(0,0,0,0.15); max-height: 18rem; overflow-y: auto; }
+  .suggest[hidden] { display: none; }
+  .suggest .opt { padding: 0.5rem 0.75rem; cursor: pointer; border-bottom: 1px solid var(--line2); line-height: 1.45; }
+  .suggest .opt:last-child { border-bottom: none; }
+  .suggest .opt.active, .suggest .opt:hover { background: #fff3d6; }
+  .suggest .opt b { font-size: 0.95rem; font-weight: 900; }
+  .suggest .opt b small { font-size: 0.75rem; font-weight: 700; margin-left: 0.3rem; color: var(--sub); }
+  .suggest .opt span { display: block; font-size: 0.74rem; color: var(--sub); }
+  .suggest .head { padding: 0.35rem 0.75rem; font-size: 0.68rem; font-weight: 700; color: var(--sub); background: var(--zebra); }
+  .pdf-capture .suggest { display: none !important; }
   .to .name select { width: auto; font-size: 1.05rem; font-weight: 700; cursor: pointer; }
   .greet { font-size: 0.8rem; }
   .terms { display: inline-flex; align-items: baseline; gap: 0.1rem; border: 1px solid var(--line2); padding: 0.3rem 0.75rem; margin-bottom: 0.7rem; font-size: 0.86rem; font-weight: 700; white-space: nowrap; }
@@ -193,7 +204,7 @@
           <input type="text" id="f-address2" placeholder="建物名・部署など（任意）">
         </div>
         <div class="name">
-          <input type="text" id="f-customer" placeholder="お客様名・会社名" list="client-list" autocomplete="off"><datalist id="client-list"></datalist>
+          <input type="text" id="f-customer" placeholder="お客様名・会社名" autocomplete="off"><div class="suggest" id="suggest" hidden></div>
           <select id="f-honor"><option>御中</option><option>様</option></select>
         </div>
       </div>
@@ -491,15 +502,14 @@
           if (/^(closeDay|payMonth|payDay)$/.test(k) && !r.__invoice && c[k] != null) return;
           if (r[k] != null) c[k] = r[k];
         });
+        c.lastAt = r.savedAt || '';
       });
     var names = Object.keys(clients).sort(function (a, b) { return a.localeCompare(b, 'ja'); });
-    var sel = $('f-client'), list = $('client-list');
+    var sel = $('f-client');
     sel.innerHTML = '<option value="">（保存済みの取引先を選ぶ）</option>';
-    list.innerHTML = '';
     names.forEach(function (n) {
       var o = document.createElement('option'); o.value = n; o.textContent = n + ' ' + (clients[n].honor || '');
       sel.appendChild(o);
-      var d = document.createElement('option'); d.value = n; list.appendChild(d);
     });
     $('client-note').textContent = names.length ? names.length + '件の取引先' : '一度保存した宛先が選べます';
   }
@@ -522,10 +532,54 @@
     applyClient(this.value);
     this.value = '';
   });
-  // お客様名の候補（datalist）から選んだら、住所などもまとめて入れる
-  $('f-customer').addEventListener('input', function (e) {
-    var v = this.value.trim();
-    if (clients[v] && (e.inputType === 'insertReplacementText' || !e.inputType)) applyClient(v);
+  // お客様名の予測候補：名前と住所を並べて表示し、選ぶと宛先をまとめて入れる
+  var suggestItems = [], suggestActive = -1;
+  function clientAddr(c) { return (c.zip ? '〒' + c.zip + ' ' : '') + (c.address || '') + (c.address2 ? ' ' + c.address2 : ''); }
+  function showSuggest() {
+    var q = $('f-customer').value.trim().toLowerCase();
+    var box = $('suggest');
+    suggestItems = Object.keys(clients).filter(function (n) {
+      if (!q) return true;
+      return n.toLowerCase().indexOf(q) !== -1 || clientAddr(clients[n]).toLowerCase().indexOf(q) !== -1;
+    }).sort(function (a, b) { return String(clients[b].lastAt || '').localeCompare(String(clients[a].lastAt || '')); }).slice(0, 10);
+    // 入力が候補の名前と完全に同じで1件だけなら、もう出さない
+    if (!suggestItems.length || (suggestItems.length === 1 && suggestItems[0] === $('f-customer').value.trim() && clients[suggestItems[0]].address === $('f-address').value)) { hideSuggest(); return; }
+    suggestActive = -1;
+    box.innerHTML = '<div class="head">' + (q ? '保存済みの取引先' : '最近の取引先') + '（選ぶと住所も入ります）</div>';
+    suggestItems.forEach(function (n, i) {
+      var c = clients[n], d = document.createElement('div');
+      d.className = 'opt';
+      var b = document.createElement('b'); b.textContent = n;
+      var h = document.createElement('small'); h.textContent = c.honor || ''; b.appendChild(h);
+      var sp = document.createElement('span'); sp.textContent = clientAddr(c) || '（住所なし）';
+      d.appendChild(b); d.appendChild(sp);
+      d.addEventListener('mousedown', function (e) { e.preventDefault(); pickSuggest(i); });
+      box.appendChild(d);
+    });
+    box.hidden = false;
+  }
+  function hideSuggest() { $('suggest').hidden = true; suggestActive = -1; }
+  function pickSuggest(i) {
+    if (!suggestItems[i]) return;
+    applyClient(suggestItems[i]);
+    hideSuggest();
+  }
+  function moveSuggest(d) {
+    var opts = $('suggest').querySelectorAll('.opt');
+    if (!opts.length) return;
+    suggestActive = (suggestActive + d + opts.length) % opts.length;
+    opts.forEach(function (o, i) { o.classList.toggle('active', i === suggestActive); });
+    opts[suggestActive].scrollIntoView({ block: 'nearest' });
+  }
+  $('f-customer').addEventListener('input', showSuggest);
+  $('f-customer').addEventListener('focus', showSuggest);
+  $('f-customer').addEventListener('blur', function () { setTimeout(hideSuggest, 120); });
+  $('f-customer').addEventListener('keydown', function (e) {
+    if ($('suggest').hidden || e.isComposing || e.keyCode === 229) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); moveSuggest(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); moveSuggest(-1); }
+    else if (e.key === 'Enter' && suggestActive >= 0) { e.preventDefault(); pickSuggest(suggestActive); }
+    else if (e.key === 'Escape') hideSuggest();
   });
 
   function suggestNumber() {
