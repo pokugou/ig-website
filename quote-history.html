@@ -85,12 +85,14 @@
     r.appendChild(a); r.appendChild(b); return r;
   }
 
-  async function persist() {
-    var res = await fetch(SYNC_API + '/paint');
+  // 削除は最新データを読み直して、その1件だけを取り除く（開いた時点の一覧で上書きすると、後から別のタブで保存した分が消えるため）
+  async function deleteRecord(id) {
+    var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
     if (!res.ok) throw new Error('load failed');
-    var others = (await res.json()).filter(function (r) { return !r.__quote; });
-    var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(quotes.slice().reverse())) });
+    var all = (await res.json()).filter(function (r) { return !(r.__quote && r.id === id); });
+    var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
     if (!put.ok) throw new Error('save failed');
+    quotes = all.filter(function (r) { return r.__quote; }).reverse();
   }
 
   function render() {
@@ -115,8 +117,7 @@
       var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この見積を削除';
       del.addEventListener('click', async function () {
         if (!confirm((q.customer || 'この見積') + 'を本当に削除しますか？')) return;
-        quotes = quotes.filter(function (x) { return x.id !== q.id; });
-        try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
+        try { await deleteRecord(q.id); } catch (e) { alert('削除の反映に失敗しました。通信状況を確認してもう一度お試しください。'); }
         render();
       });
       acts.appendChild(edit); acts.appendChild(del); d.appendChild(acts);
