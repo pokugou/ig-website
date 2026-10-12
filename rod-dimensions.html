@@ -102,6 +102,7 @@
 
   <div class="toolbar">
     <a class="back" href="tools.html">← ツール一覧</a>
+    <a class="back" style="margin-right:0;color:var(--ink);border:1px solid var(--ink);padding:0.6rem 1rem;background:#fff" href="rod-spec-history.html">保存一覧</a>
     <button type="button" class="secondary" id="btn-reset">クリア</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
     <button type="button" id="btn-save">PDFとして保存</button>
@@ -160,6 +161,8 @@
   var STORE_KEY = 'rod-dimensions-draft';
   var DEFAULT_ROWS = 10;
   var images = [];
+  var currentId = null;
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var mode = 'table';
   var imgsEl = document.getElementById('imgs');
   var SIZES = ['s1', 's2', 's3'];
@@ -197,7 +200,7 @@
     rowsEl.querySelectorAll('tr').forEach(function (tr) {
       rows.push({ name: tr.querySelector('.r-name').value, pos: tr.querySelector('.r-pos').value });
     });
-    return { mode: mode, free: document.getElementById('f-free').value, images: images, reel: document.getElementById('f-reel').value, reelPos: document.getElementById('f-reel-pos').value, model: document.getElementById('f-model').value, author: document.getElementById('f-author').value, rows: rows };
+    return { id: currentId, date: document.getElementById('f-date').value, mode: mode, free: document.getElementById('f-free').value, images: images, reel: document.getElementById('f-reel').value, reelPos: document.getElementById('f-reel-pos').value, model: document.getElementById('f-model').value, author: document.getElementById('f-author').value, rows: rows };
   }
 
 
@@ -274,7 +277,7 @@
 
   function restore(d) {
     document.getElementById('f-model').value = d.model || '';
-    document.getElementById('f-date').value = todayISO();
+    document.getElementById('f-date').value = d.keepDate && d.date ? d.date : todayISO();
     document.getElementById('f-author').value = d.author != null ? d.author : '石谷 豪';
     setMode(d.mode || 'table');
     document.getElementById('f-free').value = d.free || '';
@@ -289,6 +292,15 @@
 
   var draft = null;
   try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+  try {
+    var rl = localStorage.getItem('spec-reload');
+    if (rl) {
+      localStorage.removeItem('spec-reload');
+      var rd = JSON.parse(rl);
+      if (rd.__copy) { delete rd.id; } else { rd.keepDate = true; currentId = rd.id || null; }
+      draft = rd;
+    }
+  } catch (e) {}
   restore(draft || {});
   document.addEventListener('input', saveDraft);
 
@@ -296,6 +308,7 @@
   document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
   document.getElementById('btn-reset').addEventListener('click', function () {
     if (!confirm('入力内容をすべてクリアしますか？')) return;
+    currentId = null;
     restore({ author: document.getElementById('f-author').value, mode: mode });
     saveDraft();
   });
@@ -317,6 +330,44 @@
     return swaps;
   }
 
+  function shrinkImage(src, max, q) {
+    return new Promise(function (resolve) {
+      var im = new Image();
+      im.onload = function () {
+        var k = Math.min(1, max / Math.max(im.width, im.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(im, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', q));
+      };
+      im.onerror = function () { resolve(src); };
+      im.src = src;
+    });
+  }
+
+  async function saveToHistory() {
+    var rec = snapshot();
+    if (!currentId) currentId = 'spec-' + Date.now();
+    rec.id = currentId; rec.__spec = true; rec.savedAt = new Date().toISOString();
+    rec.images = await Promise.all(rec.images.map(async function (im) { return { src: await shrinkImage(im.src, 800, 0.6), size: im.size }; }));
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var others = all.filter(function (r) { return !r.__spec; });
+      var list = all.filter(function (r) { return r.__spec; });
+      var idx = list.findIndex(function (x) { return x.id === rec.id; });
+      if (idx >= 0) list[idx] = rec; else list.push(rec);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(list)) });
+      if (!put.ok) throw new Error('save failed');
+    } catch (e) {
+      console.error(e);
+      alert('PDFは作成しましたが、仕様書一覧への保存に失敗しました。');
+    }
+  }
+
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
     btn.disabled = true; btn.textContent = '作成中…';
@@ -334,6 +385,10 @@
       var model = document.getElementById('f-model').value.trim().replace(/[\\/:*?"<>|]/g, '') || 'ロッド仕様書';
       var name = model + '_仕様書_' + todayISO().replace(/-/g, '') + '.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; }); swaps = [];
+      document.body.classList.remove('pdf-capture');
+      btn.textContent = '一覧に保存中…';
+      await saveToHistory();
     } catch (e) {
       console.error(e);
       try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
