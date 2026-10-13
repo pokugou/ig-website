@@ -100,12 +100,23 @@
     r.appendChild(a); r.appendChild(b); return r;
   }
 
-  async function persist() {
-    var res = await fetch(SYNC_API + '/paint');
+  // Re-reads the latest data and changes only the chosen records, so anything saved from another
+  // tab or device after this page was opened is never overwritten.
+  async function mutate(ids, op, flag) {
+    var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
     if (!res.ok) throw new Error('load failed');
-    var others = (await res.json()).filter(function (r) { return !r.__spec; });
-    var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(specs.slice().reverse())) });
+    var all = await res.json();
+    var out = [];
+    all.forEach(function (r) {
+      if (r.__spec && ids.indexOf(r.id) !== -1) {
+        if (op === 'delete') return;
+        r = Object.assign({}, r, { printed: flag });
+      }
+      out.push(r);
+    });
+    var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(out) });
     if (!put.ok) throw new Error('save failed');
+    specs = out.filter(function (r) { return r.__spec; }).reverse();
   }
 
 
@@ -115,8 +126,7 @@
     document.getElementById('select-count').textContent = count + '件選択中';
   }
   async function bulkSetPrinted(flag) {
-    specs.forEach(function (x) { if (selected[x.id]) x.printed = flag; });
-    try { await persist(); } catch (e) { alert('反映に失敗しました。'); }
+    try { await mutate(Object.keys(selected), 'printed', flag); } catch (e) { alert('反映に失敗しました。'); }
     render();
   }
   document.getElementById('btn-bulk-printed').addEventListener('click', function () { bulkSetPrinted(true); });
@@ -125,9 +135,9 @@
   document.getElementById('btn-bulk-delete').addEventListener('click', async function () {
     var n = Object.keys(selected).length;
     if (!n || !confirm(n + '件を本当に削除しますか？')) return;
-    specs = specs.filter(function (x) { return !selected[x.id]; });
+    var ids = Object.keys(selected);
     selected = {};
-    try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
+    try { await mutate(ids, 'delete'); } catch (e) { alert('削除の反映に失敗しました。'); }
     updateSelectBar(); render();
   });
 
@@ -167,15 +177,13 @@
       });
       var pt = document.createElement('button'); pt.type = 'button'; pt.className = 'print-toggle-btn'; pt.textContent = o.printed ? '印刷済みを解除' : '印刷済みにする';
       pt.addEventListener('click', async function () {
-        o.printed = !o.printed;
-        try { await persist(); } catch (e) { alert('反映に失敗しました。'); o.printed = !o.printed; }
+        try { await mutate([o.id], 'printed', !o.printed); } catch (e) { alert('反映に失敗しました。'); }
         render();
       });
       var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この仕様書を削除';
       del.addEventListener('click', async function () {
         if (!confirm((o.model || 'この仕様書') + 'を本当に削除しますか？')) return;
-        specs = specs.filter(function (x) { return x.id !== o.id; });
-        try { await persist(); } catch (e) { alert('削除の反映に失敗しました。'); }
+        try { await mutate([o.id], 'delete'); } catch (e) { alert('削除の反映に失敗しました。'); }
         render();
       });
       acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(pt); acts.appendChild(del); d.appendChild(acts);
