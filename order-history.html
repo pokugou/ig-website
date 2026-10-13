@@ -497,6 +497,16 @@
         localStorage.setItem('order-sheet-reload', JSON.stringify(record));
         location.href = 'order-sheet.html?reload=1';
       });
+      var copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'print-toggle-btn';
+      copyBtn.textContent = 'コピーして新しく作る';
+      copyBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var c = JSON.parse(JSON.stringify(record)); c.__copy = true;
+        localStorage.setItem('order-sheet-reload', JSON.stringify(c));
+        location.href = 'order-sheet.html?reload=1';
+      });
       var printToggleBtn = document.createElement('button');
       printToggleBtn.type = 'button';
       printToggleBtn.className = 'print-toggle-btn';
@@ -521,6 +531,7 @@
         render();
       });
       actions.appendChild(editBtn);
+      actions.appendChild(copyBtn);
       actions.appendChild(printToggleBtn);
       actions.appendChild(deleteBtn);
       detail.appendChild(actions);

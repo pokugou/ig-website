@@ -272,8 +272,8 @@
   }
 
   function populateQuote(q) {
-    currentQuoteId = q.id || null;
-    if (q.fillDate) document.getElementById('f-fill-date').value = q.fillDate;
+    currentQuoteId = q.__copy ? null : (q.id || null);
+    if (q.fillDate && !q.__copy) document.getElementById('f-fill-date').value = q.fillDate;
     Object.keys(QUOTE_FIELDS).forEach(function (k) { document.getElementById(QUOTE_FIELDS[k]).value = q[k] || ''; });
     rowsBody.innerHTML = '';
     (q.items && q.items.length ? q.items : [{ name: 'ベース価格', amt: '' }]).forEach(function (it) { addRow(it.name, it.amt); });
@@ -350,24 +350,16 @@
     swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
   }
 
-  document.getElementById('btn-save').addEventListener('click', async function () {
-    var btn = this;
-    var originalLabel = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = '作成中…';
-    var previewWindow = window.open('', '_blank');
-    try { if (previewWindow) { previewWindow.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); previewWindow.document.close(); } } catch (e) {}
+  // Renders the quote sheet to one canvas sized to fit exactly one A4 page. Also used by the
+  // saved-quotes list (inside a hidden frame) to make a combined PDF of several quotes.
+  async function captureQuoteCanvas() {
     var toolbar = document.querySelector('.toolbar');
     toolbar.style.visibility = 'hidden';
     document.body.classList.add('pdf-capture');
     var swaps = swapQuoteFields();
+    var sheetEl = document.querySelector('.sheet');
     try {
-      var sheetEl = document.querySelector('.sheet');
-      var SCALE = 2;
-      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
-      var pageW = pdf.internal.pageSize.getWidth();
-      var pageH = pdf.internal.pageSize.getHeight();
-      var margin = 8;
+      var pageW = 210, pageH = 297, margin = 8;
       var ratio = (pageH - margin * 2) / (pageW - margin * 2);
       var fitW = 900;
       for (var w = 420; w <= 900; w += 20) {
@@ -375,7 +367,29 @@
         if (sheetEl.offsetHeight <= w * ratio * 0.99) { fitW = w; break; }
       }
       sheetEl.style.width = fitW + 'px';
-      var canvas = await html2canvas(sheetEl, { scale: SCALE, backgroundColor: '#ffffff', windowWidth: 1000 });
+      return await html2canvas(sheetEl, { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
+    } finally {
+      sheetEl.style.width = '';
+      restoreQuoteFields(swaps);
+      document.body.classList.remove('pdf-capture');
+      toolbar.style.visibility = '';
+    }
+  }
+  window.captureQuoteCanvas = captureQuoteCanvas;
+
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this;
+    var originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '作成中…';
+    var previewWindow = window.open('', '_blank');
+    try { if (previewWindow) { previewWindow.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); previewWindow.document.close(); } } catch (e) {}
+    try {
+      var canvas = await captureQuoteCanvas();
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth();
+      var pageH = pdf.internal.pageSize.getHeight();
+      var margin = 8;
       var imgW = pageW - margin * 2;
       var imgH = imgW * canvas.height / canvas.width;
       if (imgH > pageH - margin * 2) {
@@ -396,10 +410,6 @@
       try { if (previewWindow) previewWindow.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
-      document.querySelector('.sheet').style.width = '';
-      restoreQuoteFields(swaps);
-      document.body.classList.remove('pdf-capture');
-      toolbar.style.visibility = '';
       btn.disabled = false;
       btn.textContent = originalLabel;
     }
@@ -410,7 +420,7 @@
   (function () {
     try {
       var p = location.pathname + location.search, k = 'fresh:' + p;
-      if (sessionStorage.getItem(k)) return;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
       Promise.all([
         fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
         fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })

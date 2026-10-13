@@ -38,6 +38,16 @@
   .row { display: grid; grid-template-columns: 140px 1fr; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); font-size: 0.86rem; }
   .row .dl { font-weight: 700; color: var(--sub); }
   .row .dv { white-space: pre-wrap; }
+  .select-bar { display: none; background: var(--paper); border: 1px solid var(--line); padding: 0.7rem 1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .select-bar.active { display: flex; }
+  .select-bar span { font-size: 0.8rem; color: var(--sub); }
+  .select-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .select-bar button { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.55rem 1rem; cursor: pointer; white-space: nowrap; }
+  .select-bar button:hover { background: var(--red); border-color: var(--red); }
+  .select-bar button:disabled { opacity: 0.6; cursor: default; }
+  .again-btn { background: var(--red); border-color: var(--red); }
+  .again-btn:hover { background: #a01a00; border-color: #a01a00; }
+  .summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
   @media screen and (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 0.1rem; } }
 </style>
@@ -51,13 +61,24 @@
     </header>
     <div class="search-box"><input type="text" id="f-search" placeholder="お客様名などで検索"></div>
     <p class="status-line" id="status-line">読み込み中…</p>
+    <div class="select-bar" id="select-bar">
+      <span id="select-count">0件選択中</span>
+      <div class="select-bar-actions">
+        <button type="button" id="btn-pdf">選択した見積をまとめてPDF保存</button>
+        <button type="button" id="btn-bulk-clear">選択解除</button>
+      </div>
+    </div>
+
     <div id="list"></div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var quotes = [];
   var term = '';
+  var selected = {};
 
   var LABELS = [
     ['fillDate', '記入日'], ['leadTime', '納期'], ['due', '希望納期'], ['model', 'ベースモデル'], ['type', 'タイプ'],
@@ -95,6 +116,75 @@
     quotes = all.filter(function (r) { return r.__quote; }).reverse();
   }
 
+  function updateSelectBar() {
+    var n = Object.keys(selected).length;
+    document.getElementById('select-bar').classList.toggle('active', n > 0);
+    document.getElementById('select-count').textContent = n + '件選択中';
+  }
+  document.getElementById('btn-bulk-clear').addEventListener('click', function () { selected = {}; updateSelectBar(); render(); });
+
+  // Renders one quote with the real quote sheet (hidden frame) so the PDF looks exactly like the one saved from the sheet.
+  function renderQuote(q) {
+    return new Promise(function (resolve, reject) {
+      localStorage.setItem('quote-reload', JSON.stringify(q));
+      var f = document.createElement('iframe');
+      f.style.cssText = 'position:fixed;left:-10000px;top:0;width:1000px;height:1400px;border:0';
+      f.src = 'quote.html?embed=1';
+      function done(fn, v) { try { f.remove(); } catch (e) {} fn(v); }
+      f.onload = function () {
+        var w = f.contentWindow, tries = 0;
+        (function wait() {
+          if (w.captureQuoteCanvas) {
+            (w.document.fonts ? w.document.fonts.ready : Promise.resolve())
+              .then(function () { return w.captureQuoteCanvas(); })
+              .then(function (c) {
+                var out = document.createElement('canvas');
+                out.width = c.width; out.height = c.height;
+                out.getContext('2d').drawImage(c, 0, 0);
+                done(resolve, out);
+              })
+              .catch(function (e) { done(reject, e); });
+          } else if (++tries < 100) { setTimeout(wait, 100); }
+          else { done(reject, new Error('見積シートの読み込みがタイムアウトしました')); }
+        })();
+      };
+      document.body.appendChild(f);
+    });
+  }
+
+  document.getElementById('btn-pdf').addEventListener('click', async function () {
+    var records = quotes.filter(function (q) { return selected[q.id]; });
+    if (!records.length) return;
+    var btn = this, label = btn.textContent;
+    btn.disabled = true;
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…件数が多いと時間がかかります</p>'); win.document.close(); } } catch (e) {}
+    try {
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
+      for (var i = 0; i < records.length; i++) {
+        btn.textContent = '作成中 ' + (i + 1) + '/' + records.length;
+        var canvas = await renderQuote(records[i]);
+        var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+        if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+        if (i > 0) pdf.addPage();
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      }
+      var d = new Date();
+      var stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+      var name = records.length === 1 ? 'オーダーシート_' + (records[0].customer || '見積') + '.pdf' : 'オーダーシート_' + records.length + '件_' + stamp + '.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。もう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      localStorage.removeItem('quote-reload');
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+
   function render() {
     var list = document.getElementById('list');
     var visible = quotes.filter(matches);
@@ -109,18 +199,27 @@
       s.querySelector('.total').textContent = '¥' + totalOf(q).toLocaleString('ja-JP');
       s.querySelector('.when').textContent = q.fillDate || '';
       s.addEventListener('click', function () { card.classList.toggle('open'); });
+      var pick = document.createElement('input'); pick.type = 'checkbox'; pick.className = 'pick'; pick.checked = !!selected[q.id];
+      pick.addEventListener('click', function (e) { e.stopPropagation(); });
+      pick.addEventListener('change', function () { if (pick.checked) selected[q.id] = true; else delete selected[q.id]; updateSelectBar(); });
+      s.insertBefore(pick, s.firstChild);
 
       var d = document.createElement('div'); d.className = 'detail';
       var acts = document.createElement('div'); acts.className = 'actions';
       var edit = document.createElement('button'); edit.type = 'button'; edit.className = 'edit-btn'; edit.textContent = 'この内容を見積シートで編集する →';
       edit.addEventListener('click', function () { localStorage.setItem('quote-reload', JSON.stringify(q)); location.href = 'quote.html'; });
+      var copy = document.createElement('button'); copy.type = 'button'; copy.className = 'edit-btn again-btn'; copy.textContent = 'コピーして新しく作る →';
+      copy.addEventListener('click', function () {
+        var c = JSON.parse(JSON.stringify(q)); c.__copy = true;
+        localStorage.setItem('quote-reload', JSON.stringify(c)); location.href = 'quote.html';
+      });
       var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この見積を削除';
       del.addEventListener('click', async function () {
         if (!confirm((q.customer || 'この見積') + 'を本当に削除しますか？')) return;
         try { await deleteRecord(q.id); } catch (e) { alert('削除の反映に失敗しました。通信状況を確認してもう一度お試しください。'); }
         render();
       });
-      acts.appendChild(edit); acts.appendChild(del); d.appendChild(acts);
+      acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(del); d.appendChild(acts);
       LABELS.forEach(function (p) { if (q[p[0]]) d.appendChild(row(p[1], q[p[0]])); });
       (q.items || []).forEach(function (it) { d.appendChild(row(it.name || '項目', it.amt ? '¥' + (parseFloat(String(it.amt).replace(/[^0-9.-]/g, '')) || 0).toLocaleString('ja-JP') : '')); });
       card.appendChild(s); card.appendChild(d); list.appendChild(card);

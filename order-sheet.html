@@ -534,10 +534,15 @@
     try {
       var data = JSON.parse(raw);
       delete data.__id;
-      populateSheetFromData(document.querySelector('.sheet'), data);
-      editTarget = document.querySelector('.sheet');
-      editOriginal = data;
-      editName = data['お名前'] || '';
+      if (data.__copy) {
+        delete data.__copy; delete data._sid; delete data['No.']; delete data['受注日']; delete data.printed;
+        populateSheetFromData(document.querySelector('.sheet'), data);
+      } else {
+        populateSheetFromData(document.querySelector('.sheet'), data);
+        editTarget = document.querySelector('.sheet');
+        editOriginal = data;
+        editName = data['お名前'] || '';
+      }
     } catch (e) {
       console.error(e);
     }
