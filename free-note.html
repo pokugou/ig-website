@@ -49,9 +49,10 @@
   table.tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
   table.tbl td { border: 1.5px solid var(--ink); padding: 0; vertical-align: top; }
   table.tbl td textarea { padding: 0.4rem 0.5rem; font-size: 0.95rem; line-height: 1.5; min-height: 2.4em; }
-  table.tbl.hdr tr.hrow td { background: #111; }
-  table.tbl.hdr tr.hrow td textarea { color: #fff; font-weight: 700; }
-  table.tbl.hdr tr.hrow td textarea:focus { background: #333; }
+  table.tbl td.k { background: #111; }
+  table.tbl td.k textarea { color: #fff; }
+  table.tbl td.k textarea:focus { background: #333; }
+  table.tbl td.kb textarea { font-weight: 700; }
   table.tbl tr.align-row td { border: none; padding: 0 0 0.2rem; }
   table.tbl tr.align-row select { width: 100%; font-family: inherit; font-size: 0.68rem; color: var(--sub); border: 1px solid var(--line2); background: #fafafa; padding: 0.15rem 0.1rem; }
   table.tbl td.rowsel { width: 1.9rem; border: none; background: transparent; text-align: center; vertical-align: middle; font-size: 0.68rem; color: var(--sub); cursor: pointer; user-select: none; -webkit-user-select: none; }
@@ -315,6 +316,18 @@
     sel = { b: b, r1: keepAnchor && sel && sel.b === b ? sel.r1 : r1, c1: keepAnchor && sel && sel.b === b ? sel.c1 : c1, r2: r2, c2: c2 };
     paintSel();
   }
+  function isBlack(b, ri, ci) {
+    var v = b.fill && b.fill[ri + ',' + ci];
+    return v ? v === 'black' : !!(b.header && ri === 0);
+  }
+  function applyFill(b, val) {
+    if (!b.fill) b.fill = {};
+    var nr = b.rows.length, nc = b.rows[0].length;
+    var r1 = 0, r2 = nr - 1, c1 = 0, c2 = nc - 1;
+    if (sel && sel.b === b) { r1 = Math.min(sel.r1, sel.r2); r2 = Math.max(sel.r1, sel.r2); c1 = Math.min(sel.c1, sel.c2); c2 = Math.max(sel.c1, sel.c2); }
+    for (var r = r1; r <= r2; r++) for (var c = c1; c <= c2; c++) b.fill[r + ',' + c] = val;
+    renderBlocks(); saveDraft();
+  }
   function applyAlign(b, val) {
     if (!b.cal) b.cal = {};
     var nr = b.rows.length, nc = b.rows[0].length;
@@ -394,10 +407,15 @@
           ab.title = '選択したマス・行を' + { left: '左寄せ', center: '中央寄せ', right: '右寄せ' }[a[0]] + '（選択なしなら表全体）';
           bar.appendChild(ab);
         });
+        [['black', '黒背景', '選択したマス・行を白文字の黒背景にする（選択なしなら表全体）'], ['none', '背景なし', '選択したマス・行の黒背景を外す（選択なしなら表全体）']].forEach(function (f) {
+          var fb = barBtn(f[1], function () { applyFill(b, f[0]); }, 'al-btn');
+          fb.title = f[2];
+          bar.appendChild(fb);
+        });
         bar.appendChild(barBtn('＋行', function () { b.rows.push(b.rows[0].map(function () { return ''; })); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.fill[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
         bar.appendChild(barBtn('＋列', function () { b.rows.forEach(function (r) { r.push(''); }); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.fill[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
       }
       if (b.type === 'image') {
         bar.appendChild(barBtn('＋ この枠に画像を追加', function () { pendingArea = b; document.getElementById('f-img').click(); }));
@@ -445,6 +463,7 @@
           tr.appendChild(rs);
           r.forEach(function (cell, ci) {
             var td = document.createElement('td'); td.dataset.r = ri; td.dataset.c = ci;
+            if (isBlack(b, ri, ci)) { td.className = 'k' + (b.header && ri === 0 ? ' kb' : ''); }
             var cta = document.createElement('textarea'); cta.rows = 1; cta.value = cell || '';
             cta.style.textAlign = cellAlign(b, ri, ci);
             cta.addEventListener('input', function () { b.rows[ri][ci] = cta.value; grow(cta); saveDraft(); });
