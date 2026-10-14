@@ -77,10 +77,11 @@
     input[type="tel"],
     select,
     textarea {
-      width: 100%; background: var(--dark2); border: 1px solid var(--border2); color: var(--white);
+      width: 100%; background-color: #181818; background-image: none; border: 1px solid var(--border2); color: var(--white);
       font-family: inherit; font-size: 0.88rem; padding: 0.75rem 1rem; outline: none;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s, background-color 0.2s;
       -webkit-appearance: none; appearance: none; border-radius: 0;
+      -webkit-tap-highlight-color: transparent;
     }
     input[type="text"]:focus,
     input[type="email"]:focus,
