@@ -12,6 +12,28 @@ $name    = trim($_POST['name']    ?? '');
 $email   = trim($_POST['email']   ?? '');
 $subject = trim($_POST['subject'] ?? '');
 $message = trim($_POST['message'] ?? '');
+$honeypot = trim($_POST['website'] ?? '');
+
+// ハニーポット：Botが埋めたら黙って成功を返す
+if ($honeypot !== '') {
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
+// ランダム文字列チェック：名前またはメッセージがASCII英数字のみ（スパムBot判定）
+function looks_like_random($str) {
+    return strlen($str) > 0 && preg_match('/^[a-zA-Z0-9]+$/', $str);
+}
+if (looks_like_random($name) || looks_like_random($message)) {
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
+// 最低文字数チェック
+if (mb_strlen($message) < 5) {
+    echo json_encode(['ok' => false, 'error' => 'message_too_short']);
+    exit;
+}
 
 function send_utf8_mail($to, $subject, $body, $from, $reply_to = '') {
     $encoded_subject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
