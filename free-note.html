@@ -32,6 +32,9 @@
   .head-meta input { width: auto; border-bottom: 1px solid var(--line2); font-size: 0.85rem; padding: 0.1rem 0.2rem; }
   .head-meta input.author { width: 8rem; }
 
+  .head-meta .optchk { font-size: 0.7rem; }
+  .head-meta .optchk input { width: auto; }
+  body.no-author .au { opacity: 0.35; }
   .blk { margin-top: 0.9rem; position: relative; }
   .blk-bar { display: flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; color: var(--sub); margin-bottom: 0.2rem; flex-wrap: wrap; }
   .blk-bar .kind { font-weight: 700; letter-spacing: 0.08em; background: #eee; padding: 0.1rem 0.5rem; margin-right: auto; }
@@ -88,6 +91,7 @@
   .pdf-capture .im.sel { outline: none; }
   .pdf-capture table.tbl td.sel { box-shadow: none; }
   .pdf-capture .head-meta input { border-bottom: none; }
+  .pdf-capture .optchk, .pdf-capture.no-author .au { display: none; }
 
   @media print {
     body { background: #fff; padding: 0; }
@@ -97,6 +101,7 @@
     table.tbl td.sel { box-shadow: none; }
     .sheet { width: 100%; border: none; padding: 0; }
     .head-meta input { border-bottom: none; }
+    .optchk, body.no-author .au { display: none; }
     .blk { break-inside: avoid; }
     @page { size: A4; margin: 1.2cm; }
   }
@@ -118,7 +123,8 @@
       <input type="text" class="head-title" id="f-title" placeholder="タイトル（例：打ち合わせメモ）">
       <div class="head-meta">
         <label>日付<input type="date" id="f-date"></label>
-        <label>作成者<input type="text" class="author" id="f-author" value="石谷 豪"></label>
+        <label class="au">作成者<input type="text" class="author" id="f-author" value="石谷 豪"></label>
+        <label class="optchk"><input type="checkbox" id="opt-author" checked>PDFに作成者を載せる</label>
       </div>
     </div>
     <div id="blocks"></div>
@@ -491,7 +497,7 @@
   }
 
   function snapshot() {
-    return { id: currentId, title: document.getElementById('f-title').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, blocks: blocks };
+    return { id: currentId, title: document.getElementById('f-title').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, showAuthor: document.getElementById('opt-author').checked, blocks: blocks };
   }
 
   function saveDraft() {
@@ -509,6 +515,8 @@
     document.getElementById('f-title').value = d.title || '';
     document.getElementById('f-date').value = d.keepDate && d.date ? d.date : todayISO();
     document.getElementById('f-author').value = d.author != null ? d.author : '石谷 豪';
+    document.getElementById('opt-author').checked = d.showAuthor !== false;
+    document.body.classList.toggle('no-author', d.showAuthor === false);
     blocks = normalizeBlocks((d.blocks || []).map(function (b) { return JSON.parse(JSON.stringify(b)); }));
     if (!blocks.length) blocks = [{ type: 'text', text: '', fs: 1 }];
     renderBlocks();
@@ -551,6 +559,7 @@
   document.querySelectorAll('[data-add]').forEach(function (b) {
     b.addEventListener('click', function () { addBlock(b.dataset.add); });
   });
+  document.getElementById('opt-author').addEventListener('change', function () { document.body.classList.toggle('no-author', !this.checked); saveDraft(); });
   ['f-title', 'f-date', 'f-author'].forEach(function (id) { document.getElementById(id).addEventListener('input', saveDraft); });
 
   var draft = null;
