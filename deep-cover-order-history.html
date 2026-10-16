@@ -48,11 +48,19 @@
   .select-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .select-bar button { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.5rem 0.9rem; cursor: pointer; white-space: nowrap; }
   .select-bar button:hover { background: var(--red); border-color: var(--red); }
+  .summary .shop { font-size: 0.78rem; font-weight: 700; color: #1a5fb4; background: #e8f0fb; border: 1px solid #1a5fb4; padding: 0.1rem 0.55rem; white-space: nowrap; }
   .summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
   .summary .printed-badge { font-size: 0.68rem; font-weight: 700; color: #1a7a3c; background: #e4f5e9; border: 1px solid #1a7a3c; padding: 0.15rem 0.5rem; white-space: nowrap; flex-shrink: 0; }
   .print-toggle-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink); background: #fff; border: 1px solid var(--line); padding: 0.7rem 1rem; cursor: pointer; white-space: nowrap; }
   .print-toggle-btn:hover { border-color: var(--ink); }
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
+  @media screen and (max-width: 720px) {
+    .summary { gap: 0.15rem 0.6rem; }
+    .summary .shop { order: 1; margin-right: auto; }
+    .summary .total, .summary .when, .summary .arrow, .summary .printed-badge { order: 1; }
+    .summary .total { margin-left: auto; }
+    .summary .who { order: 2; flex: 1 1 100%; }
+  }
   @media screen and (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 0.1rem; } }
 </style>
 </head>
@@ -151,7 +159,9 @@
       
       var card = document.createElement('div'); card.className = 'card';
       var s = document.createElement('div'); s.className = 'summary';
-      s.innerHTML = '<span class="who"></span><span class="total"></span><span class="when"></span><span class="arrow">▶</span>';
+      s.innerHTML = '<span class="who"></span><span class="shop"></span><span class="total"></span><span class="when"></span><span class="arrow">▶</span>';
+      s.querySelector('.shop').textContent = o.shop ? '取扱店：' + o.shop : '';
+      if (!o.shop) s.querySelector('.shop').style.display = 'none';
       s.querySelector('.who').textContent = (o.customer ? o.customer + ' 様' : '(お客様名未記入)') + (o.model ? '　' + o.model : '');
       s.querySelector('.total').textContent = '¥' + (o.total || 0).toLocaleString('ja-JP');
       s.querySelector('.when').textContent = fmtDate(o.date);

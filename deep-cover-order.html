@@ -23,6 +23,13 @@
   .editing-badge { display: none; max-width: 794px; margin: 0 auto 0.6rem; font-size: 0.76rem; font-weight: 700; color: var(--red); }
   .editing .editing-badge { display: block; }
 
+  .sheets { display: flex; flex-direction: column; gap: 1.5rem; }
+  .sheet-bar { display: flex; justify-content: flex-end; min-height: 0; }
+  .sheet-remove { font-family: inherit; font-size: 0.68rem; color: var(--sub); background: none; border: 1px solid #ddd; padding: 0.2rem 0.55rem; cursor: pointer; }
+  .sheet-remove:hover { color: var(--red); border-color: var(--red); }
+  .add-sheet-bar { max-width: 794px; margin: 1rem auto 0; }
+  .add-sheet-bar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.7rem 1.6rem; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; width: 100%; }
+  .add-sheet-bar button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
   .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 1.6rem 2.2rem 1.6rem; }
   .sheet input, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; font-size: inherit; }
   .sheet input:focus, .sheet textarea:focus { outline: none; background: #fff8e0; }
@@ -80,14 +87,18 @@
     .lame .opt { grid-template-columns: 2.4rem 1fr; }
   }
 
-  .pdf-capture .toolbar, .pdf-capture .editing-badge { visibility: hidden; }
+  .pdf-capture .toolbar, .pdf-capture .editing-badge, .pdf-capture .add-sheet-bar { visibility: hidden; }
+  .pdf-capture .sheet-bar { display: none; }
+  .pdf-capture .sheets { gap: 0; }
   .pdf-capture .sheet { width: 794px; max-width: none; margin: 0; border: none; padding: 1.6rem 2.2rem 1.4rem; }
   .pdf-capture .lame .opt { grid-template-columns: 4rem 1fr; }
   .pdf-capture table.t td.lb { font-size: 0.86rem; padding: 0 0.35rem; }
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .editing-badge { display: none !important; }
+    .toolbar, .editing-badge, .add-sheet-bar, .sheet-bar { display: none !important; }
+    .sheets { gap: 0; }
+    .sheet + .sheet { page-break-before: always; }
     .sheet { width: 100%; border: none; padding: 0; }
     @page { size: A4; margin: 1cm; }
   }
@@ -98,86 +109,92 @@
   <div class="toolbar">
     <a class="back" href="tools.html">← ツール一覧</a>
     <a class="hist" href="deep-cover-order-history.html">📋 保存一覧</a>
+    <button type="button" class="secondary" id="btn-add-sheet">＋ シートを追加</button>
     <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
-  <div class="editing-badge">✎ 保存済みのオーダーシートを編集中（PDFを保存すると上書きされます）</div>
+  <div class="editing-badge" id="editing-badge">✎ 保存済みのオーダーシートを編集中（PDFを保存すると上書きされます）</div>
 
-  <div class="sheet" id="sheet">
+  <div class="sheets" id="sheets"></div>
+  <div class="add-sheet-bar"><button type="button" id="btn-add-bottom">＋ 次のシートを追加</button></div>
+
+  <template id="sheet-tpl">
+  <div class="sheet">
+    <div class="sheet-bar"><button type="button" class="sheet-remove">このシートを削除</button></div>
     <h1>ORDER SHEET</h1>
-    <div class="dateline">記入日： <input type="date" id="f-date"></div>
+    <div class="dateline">記入日： <input type="date" class="f-date"></div>
 
     <table class="t main">
       <colgroup><col style="width:19%"><col style="width:31%"><col style="width:19%"><col style="width:31%"></colgroup>
       <tr>
         <td class="lb">お客様名</td>
-        <td><div class="namecell"><input type="text" id="f-customer"><span class="sama">様</span></div></td>
-        <td class="lb"><input type="text" id="f-free-label" placeholder="（任意の項目名）" style="font-weight:500;font-size:0.86rem"></td>
-        <td><input type="text" id="f-free-value"></td>
+        <td><div class="namecell"><input type="text" class="f-customer"><span class="sama">様</span></div></td>
+        <td class="lb"><input type="text" class="f-free-label" placeholder="（任意の項目名）" style="font-weight:500;font-size:0.86rem"></td>
+        <td><input type="text" class="f-free-value"></td>
       </tr>
       <tr>
         <td class="lb">取扱店等</td>
-        <td><input type="text" id="f-shop" style="text-align:center"></td>
+        <td><input type="text" class="f-shop" style="text-align:center"></td>
         <td class="lb" style="text-align:center;white-space:normal;line-height:1.25">完成予定日<br>当社記入欄</td>
-        <td><input type="text" id="f-due"></td>
+        <td><input type="text" class="f-due"></td>
       </tr>
       <tr>
         <td class="lb">ベースモデル</td>
-        <td colspan="3"><input type="text" id="f-model"></td>
+        <td colspan="3"><input type="text" class="f-model"></td>
       </tr>
       <tr>
         <td class="lb">バットタイプ</td>
-        <td><input type="text" id="f-butt"></td>
+        <td><input type="text" class="f-butt"></td>
         <td class="lb">ガイドカラー</td>
-        <td><input type="text" id="f-guidecolor"></td>
+        <td><input type="text" class="f-guidecolor"></td>
       </tr>
       <tr>
         <td class="lb"><span class="nb">1</span>本体色</td>
-        <td><input type="text" id="f-body"></td>
+        <td><input type="text" class="f-body"></td>
         <td class="lb">ラメペイント</td>
         <td class="lame">
-          <div class="opt"><span>有</span><b id="lame-yes"></b></div>
-          <div class="opt"><span>無</span><b id="lame-no"></b></div>
+          <div class="opt"><span>有</span><b class="lame-yes"></b></div>
+          <div class="opt"><span>無</span><b class="lame-no"></b></div>
         </td>
       </tr>
       <tr>
         <td class="lb"><span class="nb">2</span>ガイド下</td>
-        <td><input type="text" id="f-g2"></td>
+        <td><input type="text" class="f-g2"></td>
         <td class="lb"><span class="nb">3</span><small>ガイド下センター</small></td>
-        <td><input type="text" id="f-g3"></td>
+        <td><input type="text" class="f-g3"></td>
       </tr>
       <tr>
         <td class="lb"><span class="nb">4</span><small>ピンライン外側</small></td>
-        <td><input type="text" id="f-g4"></td>
+        <td><input type="text" class="f-g4"></td>
         <td class="lb"><span class="nb">5</span><small>ピンライン内側</small></td>
-        <td><input type="text" id="f-g5"></td>
+        <td><input type="text" class="f-g5"></td>
       </tr>
       <tr>
         <td class="lb"><span class="nb">6</span>ガイド巻</td>
-        <td><input type="text" id="f-g6"></td>
+        <td><input type="text" class="f-g6"></td>
         <td class="lb"><span class="nb">7</span><small>ガイド巻内側</small></td>
-        <td><input type="text" id="f-g7"></td>
+        <td><input type="text" class="f-g7"></td>
       </tr>
     </table>
 
     <p class="guide">太枠内を御入力下さい。<br>その他御希望等御座いましたら下記へご記入下さい。</p>
-    <div class="memo"><textarea id="f-memo"></textarea></div>
+    <div class="memo"><textarea class="f-memo"></textarea></div>
 
     <table class="t p" style="margin-top:0">
       <colgroup><col style="width:2.2rem"><col><col style="width:36%"></colgroup>
-      <tr><td class="sec" colspan="2">ベース価格</td><td class="pr"><input type="text" id="f-base" class="money" inputmode="numeric"></td></tr>
+      <tr><td class="sec" colspan="2">ベース価格</td><td class="pr"><input type="text" class="f-base money" inputmode="numeric"></td></tr>
       <tr><td class="sec" colspan="3">オプション</td></tr>
       <tr><td class="num">①</td><td class="name"><input type="text" class="o-name"></td><td class="pr"><input type="text" class="o-price money" inputmode="numeric"></td></tr>
       <tr><td class="num">②</td><td class="name"><input type="text" class="o-name"></td><td class="pr"><input type="text" class="o-price money" inputmode="numeric"></td></tr>
       <tr><td class="num">③</td><td class="name"><input type="text" class="o-name"></td><td class="pr"><input type="text" class="o-price money" inputmode="numeric"></td></tr>
       <tr><td class="num">④</td><td class="name"><input type="text" class="o-name"></td><td class="pr"><input type="text" class="o-price money" inputmode="numeric"></td></tr>
       <tr><td class="num">⑤</td><td class="name"><input type="text" class="o-name"></td><td class="pr"><input type="text" class="o-price money" inputmode="numeric"></td></tr>
-      <tr><td class="ttl" colspan="2">本体価格</td><td class="val big" id="v-body">¥0</td></tr>
+      <tr><td class="ttl" colspan="2">本体価格</td><td class="val big v-body">¥0</td></tr>
     </table>
     <table class="t p" style="margin-top:0;border-top:none">
       <colgroup><col style="width:19%"><col style="width:31%"><col style="width:19%"><col style="width:31%"></colgroup>
-      <tr><td class="ttl">消費税額</td><td class="val" id="v-tax">¥0</td><td class="ttl">合計金額</td><td class="val big" id="v-total">¥0</td></tr>
+      <tr><td class="ttl">消費税額</td><td class="val v-tax">¥0</td><td class="ttl">合計金額</td><td class="val big v-total">¥0</td></tr>
     </table>
 
     <div class="notes">
@@ -194,111 +211,151 @@
       ＊内容に変更が御座いましたらお早めに御連絡頂きますようお願い致します。
     </div>
   </div>
+  </template>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="pdf-download.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
-  var STORE_KEY = 'deep-cover-order-draft';
+  var STORE_KEY = 'deep-cover-order-draft2';
   var TAG = '__dcorder';
   var TAX_RATE = 0.1;
-  var currentId = null;
-  var lame = ''; // '' | 'yes' | 'no'
+  var sheetsEl = document.getElementById('sheets');
+  var tpl = document.getElementById('sheet-tpl');
 
-  function $(id) { return document.getElementById(id); }
   function toHalf(s) { return String(s == null ? '' : s).replace(/[０-９．，－]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[ー−‐]/g, '-'); }
   function num(s) { var v = parseFloat(toHalf(s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
   function yen(n) { return (n < 0 ? '-¥' : '¥') + Math.abs(Math.round(n)).toLocaleString('ja-JP'); }
   function money(s) { return String(s).trim() === '' ? '' : yen(num(s)); }
   function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function jpDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '年 ' + Number(p[1]) + '月 ' + Number(p[2]) + '日'; }
+  function sheets() { return Array.prototype.slice.call(sheetsEl.querySelectorAll('.sheet')); }
+  function q(el, sel) { return el.querySelector(sel); }
 
-  var TEXT_FIELDS = { customer: 'f-customer', freeLabel: 'f-free-label', freeValue: 'f-free-value', shop: 'f-shop', due: 'f-due', model: 'f-model', butt: 'f-butt', guideColor: 'f-guidecolor', body: 'f-body', g2: 'f-g2', g3: 'f-g3', g4: 'f-g4', g5: 'f-g5', g6: 'f-g6', g7: 'f-g7', memo: 'f-memo', base: 'f-base', date: 'f-date' };
-  var optNames = document.querySelectorAll('.o-name'), optPrices = document.querySelectorAll('.o-price');
+  var TEXT_FIELDS = { customer: '.f-customer', freeLabel: '.f-free-label', freeValue: '.f-free-value', shop: '.f-shop', due: '.f-due', model: '.f-model', butt: '.f-butt', guideColor: '.f-guidecolor', body: '.f-body', g2: '.f-g2', g3: '.f-g3', g4: '.f-g4', g5: '.f-g5', g6: '.f-g6', g7: '.f-g7', memo: '.f-memo', base: '.f-base', date: '.f-date' };
 
-  function totals() {
-    var body = num($('f-base').value);
-    optPrices.forEach(function (e) { body += num(e.value); });
+  function totals(el) {
+    var body = num(q(el, '.f-base').value);
+    el.querySelectorAll('.o-price').forEach(function (e) { body += num(e.value); });
     var tax = Math.round(Math.round(body * TAX_RATE * 1e6) / 1e6);
     return { body: body, tax: tax, total: body + tax };
   }
-  function recalc() {
-    var t = totals();
-    $('v-body').textContent = yen(t.body);
-    $('v-tax').textContent = yen(t.tax);
-    $('v-total').textContent = yen(t.total);
+  function recalc(el) {
+    var t = totals(el);
+    q(el, '.v-body').textContent = yen(t.body);
+    q(el, '.v-tax').textContent = yen(t.tax);
+    q(el, '.v-total').textContent = yen(t.total);
   }
-  function paintLame() {
-    $('lame-yes').textContent = lame === 'yes' ? '○' : '';
-    $('lame-no').textContent = lame === 'no' ? '○' : '';
+  function paintLame(el) {
+    q(el, '.lame-yes').textContent = el.dataset.lame === 'yes' ? '○' : '';
+    q(el, '.lame-no').textContent = el.dataset.lame === 'no' ? '○' : '';
   }
-  $('lame-yes').addEventListener('click', function () { lame = lame === 'yes' ? '' : 'yes'; paintLame(); saveDraft(); });
-  $('lame-no').addEventListener('click', function () { lame = lame === 'no' ? '' : 'no'; paintLame(); saveDraft(); });
 
-  document.querySelectorAll('.money').forEach(function (e) {
-    e.addEventListener('input', recalc);
-    e.addEventListener('blur', function () { this.value = money(this.value); recalc(); });
-  });
+  function collect(el) {
+    var rec = { id: el.dataset.rid || null, savedAt: new Date().toISOString(), lame: el.dataset.lame || '', opts: [] };
+    Object.keys(TEXT_FIELDS).forEach(function (k) { rec[k] = q(el, TEXT_FIELDS[k]).value; });
+    var names = el.querySelectorAll('.o-name'), prices = el.querySelectorAll('.o-price');
+    names.forEach(function (e, i) { rec.opts.push({ name: e.value, price: prices[i].value }); });
+    var t = totals(el);
+    rec.bodyPrice = t.body; rec.tax = t.tax; rec.total = t.total;
+    rec[TAG] = true;
+    return rec;
+  }
+  function hasContent(rec) {
+    return Object.keys(TEXT_FIELDS).some(function (k) { return k !== 'date' && String(rec[k] || '').trim() !== ''; }) || rec.lame || rec.opts.some(function (o) { return o.name || o.price; });
+  }
 
-  function collect() {
-    var q = { id: currentId || ('dc-' + Date.now()), savedAt: new Date().toISOString(), lame: lame, opts: [] };
-    Object.keys(TEXT_FIELDS).forEach(function (k) { q[k] = $(TEXT_FIELDS[k]).value; });
-    optNames.forEach(function (e, i) { q.opts.push({ name: e.value, price: optPrices[i].value }); });
-    var t = totals();
-    q.bodyPrice = t.body; q.tax = t.tax; q.total = t.total;
-    q[TAG] = true;
-    return q;
+  function saveDraft() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ sheets: sheets().map(collect) })); } catch (e) {}
   }
-  function populate(q, isCopy) {
-    currentId = isCopy ? null : (q.id || null);
-    Object.keys(TEXT_FIELDS).forEach(function (k) { if (q[k] != null) $(TEXT_FIELDS[k]).value = q[k]; });
-    (q.opts || []).forEach(function (o, i) { if (optNames[i]) { optNames[i].value = o.name || ''; optPrices[i].value = o.price || ''; } });
-    lame = q.lame || '';
-    document.body.classList.toggle('editing', !!currentId);
-    paintLame(); recalc();
+
+  function updateControls() {
+    var list = sheets();
+    list.forEach(function (el) { q(el, '.sheet-remove').style.display = list.length > 1 ? '' : 'none'; });
+    var editing = list.some(function (el) { return el.dataset.rid; });
+    document.body.classList.toggle('editing', editing);
   }
-  function saveDraft() { try { var d = collect(); d.id = currentId; localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch (e) {} }
+
+  function populate(el, data, isCopy) {
+    el.dataset.rid = isCopy ? '' : (data.id || '');
+    Object.keys(TEXT_FIELDS).forEach(function (k) { if (data[k] != null) q(el, TEXT_FIELDS[k]).value = data[k]; });
+    var names = el.querySelectorAll('.o-name'), prices = el.querySelectorAll('.o-price');
+    (data.opts || []).forEach(function (o, i) { if (names[i]) { names[i].value = o.name || ''; prices[i].value = o.price || ''; } });
+    el.dataset.lame = data.lame || '';
+    paintLame(el); recalc(el);
+  }
+
+  function addSheet(data, isCopy) {
+    var el = tpl.content.firstElementChild.cloneNode(true);
+    sheetsEl.appendChild(el);
+    q(el, '.f-date').value = todayIso();
+    el.dataset.lame = '';
+    el.querySelectorAll('.money').forEach(function (e) {
+      e.addEventListener('input', function () { recalc(el); });
+      e.addEventListener('blur', function () { this.value = money(this.value); recalc(el); });
+    });
+    q(el, '.lame-yes').addEventListener('click', function () { el.dataset.lame = el.dataset.lame === 'yes' ? '' : 'yes'; paintLame(el); saveDraft(); });
+    q(el, '.lame-no').addEventListener('click', function () { el.dataset.lame = el.dataset.lame === 'no' ? '' : 'no'; paintLame(el); saveDraft(); });
+    q(el, '.sheet-remove').addEventListener('click', function () {
+      if (sheets().length <= 1) return;
+      if (!confirm('このシートを削除しますか？（保存一覧の記録は消えません）')) return;
+      el.remove(); updateControls(); saveDraft();
+    });
+    if (data) populate(el, data, isCopy);
+    paintLame(el); recalc(el);
+    updateControls();
+    return el;
+  }
+
   document.addEventListener('input', saveDraft);
+  document.getElementById('btn-add-sheet').addEventListener('click', function () { var el = addSheet(); saveDraft(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  document.getElementById('btn-add-bottom').addEventListener('click', function () { var el = addSheet(); saveDraft(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 
-  function resetForm() {
-    currentId = null; lame = '';
-    Object.keys(TEXT_FIELDS).forEach(function (k) { $(TEXT_FIELDS[k]).value = ''; });
-    optNames.forEach(function (e, i) { e.value = ''; optPrices[i].value = ''; });
-    $('f-date').value = todayIso();
-    document.body.classList.remove('editing');
-    paintLame(); recalc();
-  }
+  document.getElementById('btn-reset').addEventListener('click', function () {
+    if (!confirm('入力内容をすべてクリアしますか？（シートは1枚に戻ります）')) return;
+    sheetsEl.innerHTML = ''; addSheet(); saveDraft();
+  });
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
 
   (function init() {
-    var data = null, isCopy = false;
+    var one = null, isCopy = false, draft = null;
     try {
       var raw = localStorage.getItem('dcorder-reload');
-      if (raw) { localStorage.removeItem('dcorder-reload'); data = JSON.parse(raw); isCopy = !!data.__copy; }
+      if (raw) { localStorage.removeItem('dcorder-reload'); one = JSON.parse(raw); isCopy = !!one.__copy; }
     } catch (e) {}
-    if (!data) { try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (data) data.date = todayIso(); } catch (e) {} }
-    if (data) { if (isCopy) { delete data.id; data.date = todayIso(); data.due = ''; } populate(data, isCopy); }
-    else resetForm();
-    if (!$('f-date').value) $('f-date').value = todayIso();
-    recalc();
+    if (one) {
+      if (isCopy) { delete one.id; one.date = todayIso(); one.due = ''; }
+      addSheet(one, isCopy);
+      return;
+    }
+    try { draft = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+    if (draft && draft.sheets && draft.sheets.length) {
+      draft.sheets.forEach(function (d) { d.date = todayIso(); addSheet(d, false); });
+    } else {
+      // carry over a draft saved by the earlier single-sheet version
+      try { var old = JSON.parse(localStorage.getItem('deep-cover-order-draft') || 'null'); if (old) { old.date = todayIso(); addSheet(old, false); return; } } catch (e) {}
+      addSheet();
+    }
   })();
 
-  $('btn-reset').addEventListener('click', function () { if (!confirm('入力内容をすべてクリアしますか？')) return; resetForm(); saveDraft(); });
-  $('btn-print').addEventListener('click', function () { window.print(); });
-
   async function saveToHistory() {
-    var q = collect();
+    var targets = sheets().map(function (el) { return { el: el, rec: collect(el) }; }).filter(function (x) { return hasContent(x.rec); });
+    if (!targets.length) return;
     try {
       var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
       if (!res.ok) throw new Error('load failed');
       var all = await res.json();
-      var idx = all.findIndex(function (r) { return r[TAG] && r.id === q.id; });
-      if (idx >= 0) all[idx] = q; else all.push(q);
+      var stamp = Date.now();
+      targets.forEach(function (x, i) {
+        x.rec.id = x.el.dataset.rid || ('dc-' + stamp + '-' + i);
+        var idx = all.findIndex(function (r) { return r[TAG] && r.id === x.rec.id; });
+        if (idx >= 0) all[idx] = x.rec; else all.push(x.rec);
+      });
       var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
       if (!put.ok) throw new Error('save failed');
-      currentId = q.id;
-      document.body.classList.add('editing');
-      saveDraft();
+      targets.forEach(function (x) { x.el.dataset.rid = x.rec.id; });
+      updateControls(); saveDraft();
     } catch (e) {
       console.error(e);
       alert('PDFは作成しましたが、保存一覧への保存に失敗しました。');
@@ -324,7 +381,7 @@
     return swaps;
   }
 
-  $('btn-save').addEventListener('click', async function () {
+  document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
     btn.disabled = true; btn.textContent = '作成中…';
     var win = window.open('', '_blank');
@@ -334,14 +391,18 @@
     var undone = false;
     function undo() { if (undone) return; undone = true; swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; }); document.body.classList.remove('pdf-capture'); }
     try {
-      var canvas = await html2canvas($('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 6;
-      var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
-      if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
-      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
-      var cust = $('f-customer').value.trim().replace(/[\\/:*?"<>|]/g, '') || 'オーダーシート';
-      var name = 'ディープカバー_' + cust + '_' + $('f-date').value.replace(/-/g, '') + '.pdf';
+      var els = sheets();
+      for (var i = 0; i < els.length; i++) {
+        var canvas = await html2canvas(els[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
+        var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+        if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+        if (i > 0) pdf.addPage();
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      }
+      var first = q(els[0], '.f-customer').value.trim().replace(/[\\/:*?"<>|]/g, '') || 'オーダーシート';
+      var name = 'ディープカバー_' + (els.length > 1 ? first + '他' + els.length + '枚' : first) + '_' + q(els[0], '.f-date').value.replace(/-/g, '') + '.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       undo();
