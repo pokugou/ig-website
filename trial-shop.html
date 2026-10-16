@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZGVJT9WSZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9ZGVJT9WSZ');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>商品一覧（カード表示のお試し）| IG Rod Planning</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="IG Rod Planningの商品ラインナップ。STRIX EDGE・GT-LJ・GT-J・GT-SLJ・OFF SHOREなどカスタムロッドシリーズをご覧いただけます。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010; --white:#f8f8f8;
+      --gray:#d0d0d0; --gray2:#999999;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+      --gold:#c8a84b;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--black); color: var(--white); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(8,8,8,0.96); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--border); }
+    .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul > li { position: relative; }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(248,248,248,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; }
+    .has-drop:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .dropdown-genre { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red); padding: 0.65rem 1.1rem 0.2rem; pointer-events: none; border-top: 1px solid var(--border); }
+    .dropdown-genre:first-child { border-top: none; padding-top: 0.45rem; }
+    .dropdown .has-subdrop { position: relative; }
+    .dropdown .has-subdrop > a { display: flex; justify-content: space-between; align-items: center; }
+    .dropdown .has-subdrop > a::after { content: '›'; font-size: 1.1rem; opacity: 0.45; margin-left: 1rem; line-height: 1; }
+    .subdropdown { display: none; position: absolute; left: 100%; top: -1px; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 500; }
+    .dropdown .has-subdrop:hover > .subdropdown { display: block; }
+    .subdropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .subdropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
+    .dropdown li.sub a { padding-left: 1.9rem; font-size: 0.73rem; color: rgba(248,248,248,0.38); }
+    .dropdown li.sub a::before { content: '└ '; font-size: 0.6rem; opacity: 0.5; }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .nav-contact:hover { background: var(--red2) !important; }
+    .nav-social { display: flex; align-items: center; gap: 1.2rem; margin-left: 1.25rem; border-left: 1px solid var(--border2); padding-left: 1.25rem; }
+    .nav-social a { display: flex; transition: opacity 0.2s; opacity: 0.75; }
+    .nav-social a:hover { opacity: 1; }
+    .nav-genre { font-size: 0.58rem; color: #ff2244; letter-spacing: 0.04em; margin-left: 0.4rem; opacity: 1; font-weight: 600; text-shadow: 0 0 8px rgba(255,30,60,0.7), 0 0 16px rgba(255,30,60,0.35); }
+
+    /* PAGE HEADER */
+    .page-header { padding: 10rem 3rem 5rem; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+    .page-header-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(204,34,0,0.12) 0%, transparent 60%), var(--black); }
+    .page-header-line { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 70% 100% at 50% 0%, black 20%, transparent 100%); }
+    .page-header-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 1rem; }
+    .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
+    .page-title { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1rem; }
+    .page-sub { font-size: 1rem; color: rgba(248,248,248,0.45); font-weight: 300; letter-spacing: 0.06em; }
+
+    /* MAIN */
+    .main-wrap { max-width: 1200px; margin: 0 auto; padding: 6rem 3rem; }
+
+    /* GENRE SECTIONS */
+    .genre-section { margin-bottom: 4rem; }
+    .genre-heading { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--border2); }
+    .genre-heading-name { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.02em; }
+    .genre-heading-en { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); font-family: 'DM Sans',sans-serif; }
+
+    /* PRODUCT LIST */
+    .product-list { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .product-row { display: flex; align-items: center; gap: 1.5rem; padding: 1.1rem 1.5rem; text-decoration: none; color: inherit; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .product-row:last-child { border-bottom: none; }
+    .product-row:hover { background: rgba(255,255,255,0.03); }
+    .product-row-img { width: 120px; height: 68px; flex-shrink: 0; overflow: hidden; background: var(--dark2); }
+    .product-row-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .product-row:hover .product-row-img img { transform: scale(1.04); }
+    .product-row-deco { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .product-row-body { flex: 1; min-width: 0; }
+    .product-row-tag { font-size: 0.67rem; font-weight: 700; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; font-family: 'DM Sans',sans-serif; margin-bottom: 0.2rem; }
+    .product-row-name { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.01em; margin-bottom: 0.2rem; }
+    .product-row-desc { font-size: 0.79rem; color: var(--gray2); line-height: 1.5; }
+    .product-row-arrow { color: var(--red2); font-size: 1.1rem; flex-shrink: 0; transition: transform 0.2s; font-family: 'DM Sans',sans-serif; font-weight: 700; padding-left: 0.5rem; }
+    .product-row:hover .product-row-arrow { transform: translateX(4px); }
+
+    /* STRIX FEATURE */
+    .strix-feature { background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 3rem; margin-bottom: 4rem; }
+    .strix-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .strix-img { width: 100%; display: block; aspect-ratio: 4/3; object-fit: cover; }
+    .new-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; color: var(--white); background: var(--red); padding: 0.35rem 0.9rem; margin-bottom: 1rem; }
+    .strix-catch { font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 900; line-height: 1.4; margin: 1rem 0; letter-spacing: -0.02em; }
+    .em { color: var(--red2); }
+    .strix-detail { font-size: 0.88rem; color: var(--gray); line-height: 1.9; margin-bottom: 2rem; }
+    .strix-specs-row { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-bottom: 2rem; }
+    .strix-spec-label { font-size: 0.62rem; color: var(--gray2); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.2rem; }
+    .strix-spec-val { font-size: 0.9rem; font-weight: 700; }
+
+    /* CTA */
+    .cta-strip { background: var(--dark); border: 1px solid var(--border); padding: 3rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .cta-strip-text h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .cta-strip-text p { font-size: 0.87rem; color: var(--gray); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 2rem; border-radius: 4px; font-size: 0.88rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; letter-spacing: 0.06em; text-transform: uppercase; font-family: inherit; white-space: nowrap; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 0 30px rgba(204,34,0,0.25); }
+    .btn-red:hover { background: var(--red2); box-shadow: 0 0 50px rgba(204,34,0,0.45); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border2); color: rgba(248,248,248,0.6); }
+    .btn-ghost:hover { border-color: rgba(248,248,248,0.3); color: var(--white); }
+
+    /* FOOTER */
+    footer { background: var(--black); border-top: 1px solid var(--border); padding: 4rem 3rem 2.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
+    .footer-brand p { font-size: 0.85rem; color: var(--gray); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.5rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--gray2); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--gray2); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--gray); }
+
+
+    /* HAMBURGER */
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: transform 0.28s, opacity 0.28s; transform-origin: center; }
+    .hamburger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 1024px) {
+      .strix-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+      .main-wrap { padding: 5rem 2rem; }
+      .page-header { padding: 8rem 2rem 4rem; }
+      .strix-feature { padding: 4rem 2rem; }
+      .cta-strip { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+
+      nav ul { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(8,8,8,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 0.5rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--border); }
+      nav ul.is-open { display: flex; }
+      nav ul > li { display: block !important; width: 100%; border-bottom: 1px solid var(--border); }
+      nav ul > li > a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; }
+      .has-drop:hover .dropdown { display: none; }
+      .has-drop.is-open .dropdown { display: block; }
+      .dropdown { position: static; border: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.03); min-width: unset; }
+      .dropdown li a { padding: 0.75rem 2rem; }
+      .dropdown .has-subdrop:hover > .subdropdown { display: none; }
+      .dropdown .has-subdrop.is-open > .subdropdown { display: block; }
+      .subdropdown { position: static; border: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.02); min-width: unset; }
+      .subdropdown li a { padding: 0.65rem 3rem; }
+      .dropdown .has-subdrop > a::after { transition: transform 0.25s; display: inline-block; }
+      .dropdown .has-subdrop.is-open > a::after { transform: rotate(90deg); }
+      .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
+      .product-row-img { width: 80px; height: 46px; }
+      .product-row-name { font-size: 0.98rem; }
+      .product-row-desc { display: none; }
+      .genre-heading-name { font-size: 1.3rem; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      footer { padding: 3rem 1.5rem 2rem; }
+      .page-header { padding: 7rem 1.5rem 3rem; }
+      .main-wrap { padding: 4rem 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .product-row { gap: 0.85rem; padding: 0.9rem 1rem; }
+    }
+
+    /* ---- カード表示（お試し） ---- */
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+    .pcard { display: flex; flex-direction: column; background: var(--dark); border: 1px solid var(--border2); overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+    .pcard:hover { border-color: rgba(204,34,0,0.55); transform: translateY(-3px); }
+    .pcard-img { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--dark2); }
+    .pcard-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s; }
+    .pcard:hover .pcard-img img { transform: scale(1.05); }
+    .pcard-noimg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 1.6rem; letter-spacing: -0.02em; color: rgba(248,248,248,0.35); background: radial-gradient(ellipse at 30% 30%, #2a0a06 0%, #111 70%); }
+    .pcard-badge { position: absolute; left: 0.7rem; top: 0.7rem; background: var(--red); color: #fff; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; padding: 0.25rem 0.65rem; font-family: 'DM Sans', sans-serif; }
+    .pcard-body { display: flex; flex-direction: column; gap: 0.35rem; padding: 1.2rem 1.3rem 1.4rem; flex: 1; }
+    .pcard-tag { font-size: 0.66rem; font-weight: 700; color: var(--gold); letter-spacing: 0.1em; }
+    .pcard-name { font-size: 1.25rem; font-weight: 900; letter-spacing: -0.01em; }
+    .pcard-desc { font-size: 0.8rem; color: var(--gray2); line-height: 1.7; flex: 1; }
+    .pcard-price { font-size: 0.78rem; color: var(--gray); margin-top: 0.4rem; }
+    .pcard-btn { margin-top: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1rem; background: var(--red); color: #fff; text-decoration: none; font-size: 0.84rem; font-weight: 700; border-radius: 3px; transition: background 0.2s; }
+    .pcard-btn:hover { background: var(--red2); }
+    @media (max-width: 960px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .card-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:44px; width:auto; display:block;" />
+  </a>
+    <div class="nav-social">
+    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig-nav-grad" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig-nav-grad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="https://www.tiktok.com/@ig2025123?_r=1&amp;_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#f8f8f8"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+    <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+  </div>
+  <ul>
+    <li class="has-drop">
+      <a href="products.html">商品一覧</a>
+      <ul class="dropdown">
+        <li class="has-subdrop">
+          <a href="products.html">オフショア</a>
+          <ul class="subdropdown">
+            <li><a href="strixedge.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
+            <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+            <li><a href="gtlj.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
+            <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
+            <li><a href="gts.html">GTS <span class="nav-genre">スロージギング</span></a></li>
+            <li><a href="gtr.html">GTR <span class="nav-genre">タイラバ</span></a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop">
+          <a href="products.html">ショア</a>
+          <ul class="subdropdown">
+            <li><a href="vskue.html">VS九絵</a></li>
+            <li><a href="gtx.html">GTX <span class="nav-genre">ロックショア</span></a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop">
+          <a href="products.html">船竿</a>
+          <ul class="subdropdown">
+            <li><a href="ika.html">イカ竿</a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop">
+          <a href="products.html">底物</a>
+          <ul class="subdropdown">
+            <li><a href="ishidai.html">VS石鯛</a></li>
+            <li><a href="vskue.html">VS九絵</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li class="has-drop">
+      <a href="order.html">オーダーはこちらから</a>
+      <ul class="dropdown">
+        <li><a href="order.html">オーダーシートはこちらから</a></li>
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+        <li><a href="simulator.html">カラーシミュレーター</a></li>
+      </ul>
+    </li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-bg"></div>
+  <div class="page-header-line"></div>
+  <div class="page-header-content">
+    <div class="eyebrow">Products</div>
+    <h1 class="page-title">商品一覧</h1>
+    <p class="page-sub">IG Rod Planning のロッドラインナップ</p>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="genre-section">
+    <div class="genre-heading"><span class="genre-heading-name">新商品（お試し）</span><span class="genre-heading-en">NEW</span></div>
+    <div class="card-grid">
+      <article class="pcard">
+        <a class="pcard-img" href="trial-red.html"><img src="trial-red/studio-1.webp" alt="RED EDITION" loading="lazy" /><span class="pcard-badge">NEW</span></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">レッドカラーのロッド</div>
+          <h3 class="pcard-name">RED EDITION</h3>
+          <p class="pcard-desc">黒に映える、深紅のブランクス。写真・動画と購入方法は詳細ページで。</p>
+          <div class="pcard-price">税込価格：（ここに価格を入れます）</div>
+          <a class="pcard-btn" href="trial-red.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="genre-section">
+    <div class="genre-heading"><span class="genre-heading-name">オフショア</span><span class="genre-heading-en">OFFSHORE</span></div>
+    <div class="card-grid">
+      <article class="pcard">
+        <a class="pcard-img" href="strixedge.html"><img src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" /></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">イカメタル・オモリグ</div>
+          <h3 class="pcard-name">STRIX EDGE</h3>
+          <p class="pcard-desc">チタントップ搭載の高感度ロッド。微細なアタリを手元に伝える。</p>
+          <a class="pcard-btn" href="strixedge.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+      <article class="pcard">
+        <a class="pcard-img" href="gtslj.html"><img src="gtslj-banner.png" alt="GTSLJ" loading="lazy" /></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">SLJ・タイラバ・タイジギング</div>
+          <h3 class="pcard-name">GTSLJ</h3>
+          <p class="pcard-desc">SLJからタイラバ・タイジギングまで対応する超万能ライトオフショアロッド。</p>
+          <a class="pcard-btn" href="gtslj.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+      <article class="pcard">
+        <a class="pcard-img" href="gtlj.html"><img src="gtlj-banner.png" alt="GTLJ" loading="lazy" /></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">ライトジギング</div>
+          <h3 class="pcard-name">GTLJ</h3>
+          <p class="pcard-desc">青物からマダイまで広く対応。扱いやすい万能ライトジギングロッド。</p>
+          <a class="pcard-btn" href="gtlj.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+      <article class="pcard">
+        <a class="pcard-img" href="gtj.html"><img src="gtj-banner.png" alt="GT J" loading="lazy" /></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">ジギング</div>
+          <h3 class="pcard-name">GT J</h3>
+          <p class="pcard-desc">ジギング専用設計。パワーと操作性を高いレベルで両立したモデル。</p>
+          <a class="pcard-btn" href="gtj.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+      <article class="pcard">
+        <a class="pcard-img" href="gts.html"><img src="gts-banner.png" alt="GTS" loading="lazy" /></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">スロージギング</div>
+          <h3 class="pcard-name">GTS</h3>
+          <p class="pcard-desc">スロージギング専用。深場の大型魚を攻略するロングロッド。</p>
+          <a class="pcard-btn" href="gts.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+      <article class="pcard">
+        <a class="pcard-img" href="gtr.html"><img src="gtr-banner.png" alt="GTR" loading="lazy" /></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">タイラバ</div>
+          <h3 class="pcard-name">GTR</h3>
+          <p class="pcard-desc">タイラバ専用。繊細なアタリを捉える柔軟ティップ設計。</p>
+          <a class="pcard-btn" href="gtr.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="genre-section">
+    <div class="genre-heading"><span class="genre-heading-name">ショア</span><span class="genre-heading-en">SHORE</span></div>
+    <div class="card-grid">
+      <article class="pcard">
+        <a class="pcard-img" href="gtx.html"><span class="pcard-noimg"></span></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">ロックショア</div>
+          <h3 class="pcard-name">GTX</h3>
+          <p class="pcard-desc">ショアキャスティング専用。大型青物を狙うパワーロッド。</p>
+          <a class="pcard-btn" href="gtx.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="genre-section">
+    <div class="genre-heading"><span class="genre-heading-name">船竿</span><span class="genre-heading-en">BOAT</span></div>
+    <div class="card-grid">
+      <article class="pcard">
+        <a class="pcard-img" href="ika.html"><span class="pcard-noimg"></span></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">イカメタル・ティップラン</div>
+          <h3 class="pcard-name">イカ竿</h3>
+          <p class="pcard-desc">イカメタル・ティップラン対応の高感度船竿。</p>
+          <a class="pcard-btn" href="ika.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="genre-section">
+    <div class="genre-heading"><span class="genre-heading-name">底物</span><span class="genre-heading-en">BOTTOM</span></div>
+    <div class="card-grid">
+      <article class="pcard">
+        <a class="pcard-img" href="ishidai.html"><img src="ishidai-banner.png" alt="VS石鯛" loading="lazy" /></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">石鯛・石垣鯛</div>
+          <h3 class="pcard-name">VS石鯛</h3>
+          <p class="pcard-desc">磯の王者・石鯛専用。力強いパワーで根魚を制するロッド。</p>
+          <a class="pcard-btn" href="ishidai.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+      <article class="pcard">
+        <a class="pcard-img" href="vskue.html"><img src="vskue-banner.png" alt="VS九絵" loading="lazy" /></a>
+        <div class="pcard-body">
+          <div class="pcard-tag">九絵・底物</div>
+          <h3 class="pcard-name">VS九絵</h3>
+          <p class="pcard-desc">クエ狙いの底物専用。圧倒的なパワーで大型根魚を浮かせる。</p>
+          <a class="pcard-btn" href="vskue.html">詳細と購入方法を見る →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="IG Rod Planning" style="height:40px; width:auto; display:block;" />
+        </a>
+        <p>自分色のオリジナル釣竿を作ってみませんか。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げるロッドビルダーです。</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="strixedge.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
+          <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+          <li><a href="gtlj.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
+          <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
+          <li><a href="gts.html">GTS <span class="nav-genre">スロージギング</span></a></li>
+          <li><a href="gtx.html">GTX <span class="nav-genre">ロックショア</span></a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html">オリジナルロッド制作</a></li>
+          <li><a href="services.html">リメイク</a></li>
+          <li><a href="services.html">カラーカスタム</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></li>
+                              <li style="padding-top:0.25rem;">
+            <div style="display:flex;gap:1rem;align-items:center;">
+              <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram" style="display:flex;transition:opacity 0.2s;opacity:0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><defs><radialGradient id="ig-footer-grad" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig-footer-grad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+              <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook" style="display:flex;transition:opacity 0.2s;opacity:0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+              <a href="https://www.tiktok.com/@ig2025123?_r=1&amp;_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok" style="display:flex;transition:opacity 0.2s;opacity:0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#f8f8f8"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+              <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube" style="display:flex;transition:opacity 0.2s;opacity:0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var ham = document.getElementById('hamburger');
+  var ul  = document.querySelector('nav ul');
+  if (!ham) return;
+  ham.addEventListener('click', function(){
+    ham.classList.toggle('is-active');
+    ul.classList.toggle('is-open');
+  });
+  // Dropdown toggle on mobile
+  document.querySelectorAll('.has-drop > a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        a.parentElement.classList.toggle('is-open');
+      }
+    });
+  });
+  // Close menu when a leaf link is tapped
+  document.querySelectorAll('.subdropdown a, nav ul > li:not(.has-drop) > a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var href = a.getAttribute('href');
+      ham.classList.remove('is-active');
+      ul.classList.remove('is-open');
+      document.querySelectorAll('.has-drop').forEach(function(d){ d.classList.remove('is-open'); });
+      document.querySelectorAll('.dropdown .has-subdrop').forEach(function(d){ d.classList.remove('is-open'); });
+      if (href && href !== '#') {
+        e.preventDefault();
+        window.location.href = href;
+      }
+    });
+  });
+  document.querySelectorAll('.dropdown .has-subdrop > a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        var li = a.parentElement;
+        var wasOpen = li.classList.contains('is-open');
+        document.querySelectorAll('.dropdown .has-subdrop').forEach(function(el){ el.classList.remove('is-open'); });
+        if (!wasOpen) li.classList.add('is-open');
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
