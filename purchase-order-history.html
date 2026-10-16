@@ -40,6 +40,14 @@
   .row { display: grid; grid-template-columns: 140px 1fr; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); font-size: 0.86rem; }
   .row .dl { font-weight: 700; color: var(--sub); }
   .row .dv { white-space: pre-wrap; }
+  .select-bar { display: none; background: var(--paper); border: 1px solid var(--line); padding: 0.7rem 1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .select-bar.active { display: flex; }
+  .select-bar span { font-size: 0.8rem; color: var(--sub); }
+  .select-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .select-bar button { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.55rem 1rem; cursor: pointer; white-space: nowrap; }
+  .select-bar button:hover { background: var(--red); border-color: var(--red); }
+  .select-bar button:disabled { opacity: 0.6; cursor: default; }
+  .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
   @media screen and (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 0.1rem; } }
 </style>
@@ -53,13 +61,25 @@
     </header>
     <div class="search-box"><input type="text" id="f-search" placeholder="発注先・品名などで検索"></div>
     <p class="status-line" id="status-line">読み込み中…</p>
+    <div class="select-bar" id="select-bar">
+      <span id="select-count">0件選択中</span>
+      <div class="select-bar-actions">
+        <button type="button" id="btn-pdf">選択したものをまとめてPDF保存</button>
+        <button type="button" id="btn-bulk-clear">選択解除</button>
+      </div>
+    </div>
+
     <div id="list"></div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script src="bulk-pdf.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var orders = [];
   var term = '';
+  var selected = {};
 
   function fmtDate(iso) {
     var p = iso ? iso.split('-') : null;
@@ -87,6 +107,22 @@
     orders = all.filter(function (r) { return r.__po; }).reverse();
   }
 
+  function updateSelectBar() {
+    var n = Object.keys(selected).length;
+    document.getElementById('select-bar').classList.toggle('active', n > 0);
+    document.getElementById('select-count').textContent = n + '件選択中';
+  }
+  document.getElementById('btn-bulk-clear').addEventListener('click', function () { selected = {}; updateSelectBar(); render(); });
+
+  document.getElementById('btn-pdf').addEventListener('click', function () {
+    BulkPdf.run({
+      btn: this, storageKey: 'po-reload',
+      items: orders.filter(function (o) { return selected[o.id]; }),
+      renderOne: function (o) { return BulkPdf.viaFrame('purchase-order.html?embed=1', 'po-reload', JSON.stringify(o), function (w) { return w.captureForBulk(); }); },
+      name: function (items) { return items.length === 1 ? (items[0].to || '注文書') + '_注文書.pdf' : '注文書_' + items.length + '件_' + bulkStamp() + '.pdf'; }
+    });
+  });
+
   function render() {
     var list = document.getElementById('list');
     var visible = orders.filter(matches);
@@ -102,6 +138,10 @@
       s.querySelector('.total').textContent = items.length + '品目';
       s.querySelector('.when').textContent = fmtDate(o.date);
       s.addEventListener('click', function () { card.classList.toggle('open'); });
+      var pick = document.createElement('input'); pick.type = 'checkbox'; pick.className = 'pick'; pick.checked = !!selected[o.id];
+      pick.addEventListener('click', function (e) { e.stopPropagation(); });
+      pick.addEventListener('change', function () { if (pick.checked) selected[o.id] = true; else delete selected[o.id]; updateSelectBar(); });
+      s.insertBefore(pick, s.firstChild);
 
       var d = document.createElement('div'); d.className = 'detail';
       var acts = document.createElement('div'); acts.className = 'actions';

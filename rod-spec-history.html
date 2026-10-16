@@ -47,6 +47,7 @@
   .select-bar span { font-size: 0.8rem; color: var(--sub); }
   .select-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .select-bar button { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.5rem 0.9rem; cursor: pointer; white-space: nowrap; }
+  .select-bar button:disabled { opacity: 0.6; cursor: default; }
   .select-bar button:hover { background: var(--red); border-color: var(--red); }
   .summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
   .summary .printed-badge { font-size: 0.68rem; font-weight: 700; color: #1a7a3c; background: #e4f5e9; border: 1px solid #1a7a3c; padding: 0.15rem 0.5rem; white-space: nowrap; flex-shrink: 0; }
@@ -68,6 +69,7 @@
     <div class="select-bar" id="select-bar">
       <span id="select-count">0件選択中</span>
       <div class="select-bar-actions">
+        <button type="button" id="btn-pdf">選択したものをまとめてPDF保存</button>
         <button type="button" id="btn-bulk-printed">印刷済みにする</button>
         <button type="button" id="btn-bulk-unprinted">印刷済みを解除</button>
         <button type="button" id="btn-bulk-delete">削除</button>
@@ -78,6 +80,9 @@
     <div id="list"></div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script src="bulk-pdf.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var specs = [];
@@ -139,6 +144,15 @@
     selected = {};
     try { await mutate(ids, 'delete'); } catch (e) { alert('削除の反映に失敗しました。'); }
     updateSelectBar(); render();
+  });
+
+  document.getElementById('btn-pdf').addEventListener('click', function () {
+    BulkPdf.run({
+      btn: this, storageKey: 'spec-reload',
+      items: specs.filter(function (o) { return selected[o.id]; }),
+      renderOne: function (o) { return BulkPdf.viaFrame('rod-dimensions.html?embed=1', 'spec-reload', JSON.stringify(o), function (w) { return w.captureForBulk(); }); },
+      name: function (items) { return items.length === 1 ? (items[0].model || 'ロッド仕様書') + '_仕様書.pdf' : 'ロッド仕様書_' + items.length + '件_' + bulkStamp() + '.pdf'; }
+    });
   });
 
   function render() {

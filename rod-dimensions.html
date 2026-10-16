@@ -374,6 +374,18 @@
     }
   }
 
+  // Used by the saved list to build a combined PDF (draws this page for the loaded record).
+  window.captureForBulk = async function () {
+    document.body.classList.add('pdf-capture');
+    var sw = swapFields();
+    try {
+      return await html2canvas(document.getElementById('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
+    } finally {
+      sw.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+    }
+  };
+
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
     btn.disabled = true; btn.textContent = '作成中…';
@@ -411,7 +423,7 @@
   (function () {
     try {
       var p = location.pathname + location.search, k = 'fresh:' + p;
-      if (sessionStorage.getItem(k)) return;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
       Promise.all([
         fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
         fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })

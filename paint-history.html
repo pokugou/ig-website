@@ -43,6 +43,14 @@
   .detail-grid dt { color: var(--sub); font-weight: 700; }
   .detail-grid dd { white-space: pre-wrap; }
 
+  .select-bar { display: none; background: var(--paper); border: 1px solid var(--line); padding: 0.7rem 1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .select-bar.active { display: flex; }
+  .select-bar span { font-size: 0.8rem; color: var(--sub); }
+  .select-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .select-bar button { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.55rem 1rem; cursor: pointer; white-space: nowrap; }
+  .select-bar button:hover { background: var(--red); border-color: var(--red); }
+  .select-bar button:disabled { opacity: 0.6; cursor: default; }
+  .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
 
   @media (max-width: 560px) {
@@ -66,13 +74,25 @@
 
     <p class="status-line" id="status-line">読み込み中…</p>
 
+    <div class="select-bar" id="select-bar">
+      <span id="select-count">0件選択中</span>
+      <div class="select-bar-actions">
+        <button type="button" id="btn-pdf">選択したものをまとめてPDF保存</button>
+        <button type="button" id="btn-bulk-clear">選択解除</button>
+      </div>
+    </div>
+
     <div id="list"></div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script src="bulk-pdf.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var allRecords = [];
   var searchTerm = '';
+  var selected = {};
 
   function matchesSearch(record) {
     if (!searchTerm) return true;
@@ -80,6 +100,22 @@
       return (record[k] || '').toString().toLowerCase().indexOf(searchTerm) !== -1;
     });
   }
+
+  function updateSelectBar() {
+    var n = Object.keys(selected).length;
+    document.getElementById('select-bar').classList.toggle('active', n > 0);
+    document.getElementById('select-count').textContent = n + '件選択中';
+  }
+  document.getElementById('btn-bulk-clear').addEventListener('click', function () { selected = {}; updateSelectBar(); render(); });
+
+  document.getElementById('btn-pdf').addEventListener('click', function () {
+    BulkPdf.run({
+      btn: this,
+      items: allRecords.filter(function (r, i) { return selected[i]; }),
+      renderAll: function (items) { return BulkPdf.viaFrame('paint-instruction.html?embed=1', null, '', function (w) { return w.renderPaintPages(items); }); },
+      name: function (items) { return items.length === 1 ? '塗装指示書_' + (items[0]['お客様名'] || '') + '.pdf' : '塗装指示書_' + items.length + '件_' + bulkStamp() + '.pdf'; }
+    });
+  });
 
   function render() {
     var list = document.getElementById('list');
@@ -99,6 +135,7 @@
     }
     list.innerHTML = '';
     visible.forEach(function (record) {
+      var rid = allRecords.indexOf(record);
       var card = document.createElement('div');
       card.className = 'order-card';
 
@@ -113,6 +150,10 @@
       var arrow = document.createElement('span');
       arrow.className = 'arrow';
       arrow.textContent = '▶';
+      var pick = document.createElement('input'); pick.type = 'checkbox'; pick.className = 'pick'; pick.checked = !!selected[rid];
+      pick.addEventListener('click', function (e) { e.stopPropagation(); });
+      pick.addEventListener('change', function () { if (pick.checked) selected[rid] = true; else delete selected[rid]; updateSelectBar(); });
+      summary.appendChild(pick);
       summary.appendChild(who);
       summary.appendChild(when);
       summary.appendChild(arrow);

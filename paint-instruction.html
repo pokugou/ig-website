@@ -365,6 +365,32 @@
     }
   });
 
+  // Used by the saved list: lays the given records out 4 per page and returns one canvas per page.
+  window.__bulkReady = true;
+  window.renderPaintPages = async function (records) {
+    var KEY = { 'お客様名': '.f-customer', 'カラー': '.f-color', '希望納期': '.f-due', '塗り残し': '.f-margin', '表面': '.f-surface', 'ブランクス': '.f-blank', '合計本数': '.f-qty', '備考欄': '.f-notes' };
+    pagesEl.innerHTML = '';
+    for (var p = 0; p < Math.max(1, Math.ceil(records.length / 4)); p++) addPage();
+    var cards = pagesEl.querySelectorAll('.card');
+    cards.forEach(function (card, i) {
+      var r = records[i];
+      Object.keys(KEY).forEach(function (k) { card.querySelector(KEY[k]).value = r && r[k] != null ? r[k] : ''; });
+      var dEl = card.querySelector('.f-date');
+      if (r && r['記入日']) { var s = r['記入日'].split('/'); dEl.value = s[0] + '-' + String(s[1]).padStart(2, '0') + '-' + String(s[2]).padStart(2, '0'); }
+      else dEl.value = '';
+    });
+    document.body.classList.add('pdf-capture');
+    var swaps = swapFieldsForCapture();
+    try {
+      var out = [], pageEls = pagesEl.querySelectorAll('.page');
+      for (var i = 0; i < pageEls.length; i++) out.push(await html2canvas(pageEls[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 }));
+      return out;
+    } finally {
+      restoreFieldsAfterCapture(swaps);
+      document.body.classList.remove('pdf-capture');
+    }
+  };
+
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this;
     var originalLabel = btn.textContent;
@@ -417,7 +443,7 @@
   (function () {
     try {
       var p = location.pathname + location.search, k = 'fresh:' + p;
-      if (sessionStorage.getItem(k)) return;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
       Promise.all([
         fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
         fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
