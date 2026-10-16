@@ -733,47 +733,57 @@
     return pages;
   }
 
-  document.getElementById('btn-save').addEventListener('click', async function () {
-    var btn = this, label = btn.textContent;
-    btn.disabled = true; btn.textContent = '作成中…';
-    var win = window.open('', '_blank');
-    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+  // Renders the whole note and returns one canvas per A4 page (page breaks fall between blocks).
+  // Also used by the saved list (inside a hidden frame) to build a combined PDF.
+  async function renderPageCanvases() {
     sel = null; paintSel();
     document.body.classList.add('pdf-capture');
     selectImg(null);
     layoutAreas();
     var swaps = swapFields();
-    var restored = false;
-    function undo() {
-      if (restored) return; restored = true;
-      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
-      document.body.classList.remove('pdf-capture');
-    }
     try {
       var sheet = document.getElementById('sheet');
-      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
-      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
+      var pageW = 210, pageH = 297, margin = 8;
       var W = sheet.offsetWidth;
       var pageHpx = W * (pageH - margin * 2) / (pageW - margin * 2);
       var pages = computePages(sheet, pageHpx);
       var scale = sheet.offsetHeight > 3500 ? 1.5 : 2;
       var canvas = await html2canvas(sheet, { scale: scale, backgroundColor: '#ffffff', windowWidth: 1000 });
-      var imgW = pageW - margin * 2;
-      pages.forEach(function (pg, i) {
+      return pages.map(function (pg) {
         var sy = Math.round(pg[0] * scale), sh = Math.max(1, Math.min(canvas.height - sy, Math.round((pg[1] - pg[0]) * scale)));
         var c = document.createElement('canvas');
         c.width = canvas.width; c.height = sh;
         var ctx = c.getContext('2d');
         ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
         ctx.drawImage(canvas, 0, sy, canvas.width, sh, 0, 0, canvas.width, sh);
+        return c;
+      });
+    } finally {
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+      renderBlocks();
+    }
+  }
+  window.renderPageCanvases = renderPageCanvases;
+
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    try {
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth(), margin = 8;
+      var imgW = pageW - margin * 2;
+      var canvases = await renderPageCanvases();
+      canvases.forEach(function (c, i) {
         if (i > 0) pdf.addPage();
-        pdf.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, imgW * sh / canvas.width);
+        pdf.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, imgW * c.height / c.width);
       });
       var title = document.getElementById('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || '自由記入';
       var name = title + '_' + todayISO().replace(/-/g, '') + '.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
-      undo();
       btn.textContent = '一覧に保存中…';
       await saveToHistory();
     } catch (e) {
@@ -781,8 +791,6 @@
       try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
-      undo();
-      renderBlocks();
       btn.disabled = false; btn.textContent = label;
     }
   });
@@ -791,7 +799,7 @@
   (function () {
     try {
       var p = location.pathname + location.search, k = 'fresh:' + p;
-      if (sessionStorage.getItem(k)) return;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
       Promise.all([
         fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
         fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
