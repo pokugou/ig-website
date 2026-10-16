@@ -2188,5 +2188,20 @@ document.getElementById('btn-save-success').addEventListener('click', function()
   });
 })();
 </script>
+
+<script>
+  // 商品ページの「詳細と購入方法を見る」から ?model=GTS5103 のように開いたとき、モデルを選んだ状態にする
+  (function () {
+    try {
+      var m = new URLSearchParams(location.search).get('model');
+      var sel = document.getElementById('sel-model');
+      if (!m || !sel) return;
+      sel.value = m;
+      if (sel.value !== m) return;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      setTimeout(function () { sel.scrollIntoView({ block: 'center' }); }, 300);
+    } catch (e) {}
+  })();
+</script>
 </body>
 </html>

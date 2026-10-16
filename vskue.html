@@ -186,6 +186,33 @@
       .specs-inner { padding: 0.5rem 1.5rem 1.5rem; }
       .cta-section { padding: 3rem 1.5rem; }
     }
+
+    /* ORDER（オーダーしやすい案内） */
+    .od-section { background: var(--dark); border-top: 1px solid var(--border); padding: 5rem 3rem; }
+    .od-inner { max-width: 1200px; margin: 0 auto; }
+    .od-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 2rem 0 2.2rem; }
+    .od-step { background: var(--dark2); padding: 1.1rem 1.2rem; }
+    .od-step b { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.16em; color: var(--red2); margin-bottom: 0.3rem; }
+    .od-step span { font-size: 0.82rem; color: var(--gray); line-height: 1.6; }
+    .od-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .od-card { display: flex; flex-direction: column; gap: 0.3rem; background: var(--dark2); border: 1px solid var(--border2); padding: 1.1rem 1.25rem 1.25rem; transition: border-color 0.2s, transform 0.2s; }
+    .od-card:hover { border-color: rgba(204,34,0,0.55); transform: translateY(-2px); }
+    .od-kind { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; color: var(--gold); }
+    .od-name { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em; }
+    .od-price { font-size: 0.8rem; color: var(--gray); }
+    .od-price b { font-size: 1.05rem; color: var(--white); font-family: 'DM Sans', sans-serif; }
+    .od-btn { margin-top: 0.7rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.75rem 0.8rem; background: var(--red); color: #fff; text-decoration: none; font-size: 0.82rem; font-weight: 700; border-radius: 3px; transition: background 0.2s; }
+    .od-btn:hover { background: var(--red2); }
+    .od-note { margin-top: 1.4rem; font-size: 0.75rem; color: var(--gray2); line-height: 1.8; }
+    .od-one { max-width: 520px; }
+    .order-fab { position: fixed; right: 1.1rem; bottom: 1.1rem; z-index: 250; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.85rem 1.3rem; background: var(--red); color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 800; border-radius: 40px; box-shadow: 0 6px 24px rgba(0,0,0,0.5), 0 0 30px rgba(204,34,0,0.35); transition: transform 0.2s, background 0.2s; }
+    .order-fab:hover { background: var(--red2); transform: translateY(-2px); }
+    @media (max-width: 860px) {
+      .od-section { padding: 3.5rem 1.5rem; }
+      .od-steps { grid-template-columns: repeat(2, 1fr); }
+      .od-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) { .od-grid { grid-template-columns: 1fr; } .order-fab { right: 0.8rem; bottom: 0.8rem; padding: 0.8rem 1.1rem; } }
   </style>
 </head>
 <body>
@@ -387,6 +414,39 @@
     </div>
   </div>
 </div>
+
+<!-- ORDER -->
+<section class="od-section" id="order">
+  <div class="od-inner">
+    <div class="section-label">Order</div>
+    <h2 class="section-title">VS九絵 をオーダーする</h2>
+    <p class="section-desc">仕様や納期など、まずはお気軽にご相談ください。オーダーシートからお申し込みいただけます。</p>
+    <div class="od-steps">
+      <div class="od-step"><b>STEP 1</b><span>モデルを選ぶ</span></div>
+      <div class="od-step"><b>STEP 2</b><span>ブランクスやガイドなどのカラー・仕様を選ぶ</span></div>
+      <div class="od-step"><b>STEP 3</b><span>オーダーシートを送信（担当者からご連絡します）</span></div>
+      <div class="od-step"><b>STEP 4</b><span>お支払い確認後、60〜70日前後でお届け</span></div>
+    </div>
+    <div class="od-grid od-one">
+      <div class="od-card">
+        <div class="od-kind">ORDER</div>
+        <div class="od-name">VS九絵</div>
+        <div class="od-price">仕様・価格はお気軽にご相談ください。</div>
+        <a class="od-btn" href="order.html">詳細と購入方法を見る →</a>
+      </div>
+    </div>
+    <p class="od-note">※ 価格は税抜のベース価格です。ブランクス・ガイド・グリップなどのカスタムで変わります。合計金額はオーダーシートで確認できます。</p>
+  </div>
+</section>
+
+<a class="order-fab" href="#order">オーダー・購入方法 →</a>
+<script>
+  (function () {
+    var fab = document.querySelector('.order-fab'), sec = document.getElementById('order');
+    if (!fab || !sec || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (e) { fab.style.opacity = e[0].isIntersecting ? '0' : '1'; fab.style.pointerEvents = e[0].isIntersecting ? 'none' : ''; }, { threshold: 0.05, rootMargin: "0px 0px -35% 0px" }).observe(sec);
+  })();
+</script>
 
 <!-- CTA -->
 <div class="cta-section" style="padding-top:2rem;">
