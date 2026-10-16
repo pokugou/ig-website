@@ -28,6 +28,8 @@
 
   .head-title { font-size: 1.6rem; font-weight: 900; text-align: center; border-bottom: 3px solid var(--ink); padding: 0 0 0.5rem; }
   .head-meta { display: flex; justify-content: flex-end; gap: 1.2rem; margin: 0.4rem 0 0.4rem; font-size: 0.8rem; color: var(--sub); }
+  .head-meta { flex-wrap: wrap; row-gap: 0.2rem; }
+  .head-meta label { white-space: nowrap; }
   .head-meta label { display: inline-flex; align-items: center; gap: 0.3rem; }
   .head-meta input { width: auto; border-bottom: 1px solid var(--line2); font-size: 0.85rem; padding: 0.1rem 0.2rem; }
   .head-meta input.author { width: 8rem; }
@@ -357,6 +359,31 @@
     for (var r2 = g.r1; r2 <= g.r2; r2++) for (var c2 = g.c1; c2 <= g.c2; c2++) b.bld[r2 + ',' + c2] = v;
     renderBlocks(); saveDraft();
   }
+  // 割り込み挿入：行（axis 'r'）か列（axis 'c'）を index の位置に入れ、そこから後ろのマス設定を1つずらす
+  function insertAt(b, axis, index) {
+    var ncols = b.rows[0].length;
+    if (axis === 'r') b.rows.splice(index, 0, new Array(ncols).fill(''));
+    else { b.rows.forEach(function (r) { r.splice(index, 0, ''); }); if (b.align) b.align.splice(index, 0, ''); }
+    ['cal', 'fill', 'col', 'bld'].forEach(function (m) {
+      if (!b[m]) return;
+      var out = {};
+      Object.keys(b[m]).forEach(function (k) {
+        var p = k.split(','), r = +p[0], c = +p[1];
+        if (axis === 'r' && r >= index) r += 1;
+        if (axis === 'c' && c >= index) c += 1;
+        out[r + ',' + c] = b[m][k];
+      });
+      b[m] = out;
+    });
+    if (axis === 'r') setSel(b, index, 0, index, b.rows[0].length - 1);
+    else setSel(b, 0, index, b.rows.length - 1, index);
+    renderBlocks(); saveDraft();
+  }
+  function insertNeedsSel(b) {
+    if (sel && sel.b === b) return selRange(b);
+    alert('先に、挿入したい位置のマス（または行番号）をクリックしてください。');
+    return null;
+  }
   function applyAlign(b, val) {
     if (!b.cal) b.cal = {};
     var nr = b.rows.length, nc = b.rows[0].length;
@@ -450,6 +477,14 @@
         cl.appendChild(ci_);
         bar.appendChild(cl);
         bar.appendChild(barBtn('色を標準に', function () { applyColor(b, ''); }, 'al-btn'));
+        [['＋上行', '選んだ行の上に行を挿入', function (g) { return ['r', g.r1]; }],
+         ['＋下行', '選んだ行の下に行を挿入', function (g) { return ['r', g.r2 + 1]; }],
+         ['＋左列', '選んだ列の左に列を挿入', function (g) { return ['c', g.c1]; }],
+         ['＋右列', '選んだ列の右に列を挿入', function (g) { return ['c', g.c2 + 1]; }]].forEach(function (d) {
+          var ib = barBtn(d[0], function () { var g = insertNeedsSel(b); if (!g) return; var p = d[2](g); insertAt(b, p[0], p[1]); }, 'al-btn');
+          ib.title = d[1] + '（マスや行番号を選んでから）';
+          bar.appendChild(ib);
+        });
         bar.appendChild(barBtn('＋行', function () { b.rows.push(b.rows[0].map(function () { return ''; })); renderBlocks(); saveDraft(); }));
         bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.fill[k]; }); ['col', 'bld'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
         bar.appendChild(barBtn('＋列', function () { b.rows.forEach(function (r) { r.push(''); }); renderBlocks(); saveDraft(); }));
