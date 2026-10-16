@@ -114,7 +114,7 @@
   <div class="toolbar">
     <a class="back" href="tools.html">← ツール一覧</a>
     <a class="hist" href="free-note-history.html">保存一覧</a>
-    <button type="button" class="secondary" id="btn-reset">クリア</button>
+    <button type="button" class="secondary" id="btn-reset">新規</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
@@ -647,7 +647,7 @@
 
   document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
   document.getElementById('btn-reset').addEventListener('click', function () {
-    if (!confirm('入力内容をすべてクリアしますか？')) return;
+    if (!confirm('新しいページを始めますか？今の入力内容は消えます（保存一覧の記録は消えません）。')) return;
     currentId = null;
     restore({ author: document.getElementById('f-author').value });
     saveDraft();
