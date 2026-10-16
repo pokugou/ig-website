@@ -381,6 +381,21 @@
     return swaps;
   }
 
+  // Renders every sheet to a canvas (used by the saved list inside a hidden frame to build a combined PDF).
+  async function captureSheetCanvases() {
+    document.body.classList.add('pdf-capture');
+    var swaps = swapFields();
+    try {
+      var out = [], els = sheets();
+      for (var i = 0; i < els.length; i++) out.push(await html2canvas(els[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 }));
+      return out;
+    } finally {
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+    }
+  }
+  window.captureSheetCanvases = captureSheetCanvases;
+
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
     btn.disabled = true; btn.textContent = '作成中…';
@@ -422,7 +437,7 @@
   (function () {
     try {
       var p = location.pathname + location.search, k = 'fresh:' + p;
-      if (sessionStorage.getItem(k)) return;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
       Promise.all([
         fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
         fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })

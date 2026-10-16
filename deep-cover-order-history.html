@@ -47,6 +47,7 @@
   .select-bar span { font-size: 0.8rem; color: var(--sub); }
   .select-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .select-bar button { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.5rem 0.9rem; cursor: pointer; white-space: nowrap; }
+  .select-bar button:disabled { opacity: 0.6; cursor: default; }
   .select-bar button:hover { background: var(--red); border-color: var(--red); }
   .summary .shop { font-size: 0.78rem; font-weight: 700; color: #1a5fb4; background: #e8f0fb; border: 1px solid #1a5fb4; padding: 0.1rem 0.55rem; white-space: nowrap; }
   .summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
@@ -76,6 +77,7 @@
     <div class="select-bar" id="select-bar">
       <span id="select-count">0件選択中</span>
       <div class="select-bar-actions">
+        <button type="button" id="btn-pdf">選択したものをまとめてPDF保存</button>
         <button type="button" id="btn-bulk-printed">印刷済みにする</button>
         <button type="button" id="btn-bulk-unprinted">印刷済みを解除</button>
         <button type="button" id="btn-bulk-delete">削除</button>
@@ -86,6 +88,8 @@
     <div id="list"></div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var orders = [];
@@ -147,6 +151,68 @@
     selected = {};
     try { await mutate(ids, 'delete'); } catch (e) { alert('削除の反映に失敗しました。'); }
     updateSelectBar(); render();
+  });
+
+  // Renders one order with the real order sheet (hidden frame) so the PDF looks exactly like the one saved from the sheet.
+  function renderOrder(o) {
+    return new Promise(function (resolve, reject) {
+      localStorage.setItem('dcorder-reload', JSON.stringify(o));
+      var f = document.createElement('iframe');
+      f.style.cssText = 'position:fixed;left:-10000px;top:0;width:1000px;height:1500px;border:0';
+      f.src = 'deep-cover-order.html?embed=1';
+      function done(fn, v) { try { f.remove(); } catch (e) {} fn(v); }
+      f.onload = function () {
+        var w = f.contentWindow, tries = 0;
+        (function wait() {
+          if (w.captureSheetCanvases) {
+            (w.document.fonts ? w.document.fonts.ready : Promise.resolve())
+              .then(function () { return w.captureSheetCanvases(); })
+              .then(function (cs) {
+                var c = cs[0], out = document.createElement('canvas');
+                out.width = c.width; out.height = c.height;
+                out.getContext('2d').drawImage(c, 0, 0);
+                done(resolve, out);
+              })
+              .catch(function (e) { done(reject, e); });
+          } else if (++tries < 100) { setTimeout(wait, 100); }
+          else { done(reject, new Error('オーダーシートの読み込みがタイムアウトしました')); }
+        })();
+      };
+      document.body.appendChild(f);
+    });
+  }
+
+  document.getElementById('btn-pdf').addEventListener('click', async function () {
+    var records = orders.filter(function (o) { return selected[o.id]; });
+    if (!records.length) return;
+    var btn = this, label = btn.textContent;
+    btn.disabled = true;
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…件数が多いと時間がかかります</p>'); win.document.close(); } } catch (e) {}
+    try {
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 6;
+      for (var i = 0; i < records.length; i++) {
+        btn.textContent = '作成中 ' + (i + 1) + '/' + records.length;
+        var canvas = await renderOrder(records[i]);
+        var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+        if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+        if (i > 0) pdf.addPage();
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      }
+      var d = new Date();
+      var stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+      var name = records.length === 1 ? 'ディープカバー_' + (records[0].customer || 'オーダーシート') + '.pdf' : 'ディープカバー_' + records.length + '件_' + stamp + '.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。もう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      localStorage.removeItem('dcorder-reload');
+      btn.disabled = false; btn.textContent = label;
+    }
   });
 
   function render() {
