@@ -334,6 +334,29 @@
     for (var r = r1; r <= r2; r++) for (var c = c1; c <= c2; c++) b.fill[r + ',' + c] = val;
     renderBlocks(); saveDraft();
   }
+  function selRange(b) {
+    var r1 = 0, r2 = b.rows.length - 1, c1 = 0, c2 = b.rows[0].length - 1;
+    if (sel && sel.b === b) { r1 = Math.min(sel.r1, sel.r2); r2 = Math.max(sel.r1, sel.r2); c1 = Math.min(sel.c1, sel.c2); c2 = Math.max(sel.c1, sel.c2); }
+    return { r1: r1, r2: r2, c1: c1, c2: c2 };
+  }
+  function isBold(b, ri, ci) {
+    var v = b.bld && b.bld[ri + ',' + ci];
+    return v === undefined ? !!(b.header && ri === 0) : !!v;
+  }
+  function applyColor(b, val) {
+    if (!b.col) b.col = {};
+    var g = selRange(b);
+    for (var r = g.r1; r <= g.r2; r++) for (var c = g.c1; c <= g.c2; c++) { if (val) b.col[r + ',' + c] = val; else delete b.col[r + ',' + c]; }
+    renderBlocks(); saveDraft();
+  }
+  function applyBold(b, val) { // val: true / false, or 'toggle'
+    if (!b.bld) b.bld = {};
+    var g = selRange(b), all = true;
+    for (var r = g.r1; r <= g.r2; r++) for (var c = g.c1; c <= g.c2; c++) if (!isBold(b, r, c)) all = false;
+    var v = val === 'toggle' ? !all : val;
+    for (var r2 = g.r1; r2 <= g.r2; r2++) for (var c2 = g.c1; c2 <= g.c2; c2++) b.bld[r2 + ',' + c2] = v;
+    renderBlocks(); saveDraft();
+  }
   function applyAlign(b, val) {
     if (!b.cal) b.cal = {};
     var nr = b.rows.length, nc = b.rows[0].length;
@@ -418,10 +441,19 @@
           fb.title = f[2];
           bar.appendChild(fb);
         });
+        var tb = barBtn('太字', function () { applyBold(b, 'toggle'); }, 'al-btn'); tb.style.fontWeight = '900'; tb.title = '選択したマス・行の太字を切り替え（選択なしなら表全体）';
+        bar.appendChild(tb);
+        var cl = document.createElement('label'); cl.className = 'hdr-opt'; cl.title = '選択したマス・行の文字色（選択なしなら表全体）';
+        cl.appendChild(document.createTextNode('文字色'));
+        var ci_ = document.createElement('input'); ci_.type = 'color'; ci_.value = '#cc2200'; ci_.style.cssText = 'width:2rem;height:1.5rem;padding:0;border:1px solid #999;background:#fff;cursor:pointer';
+        ci_.addEventListener('change', function () { applyColor(b, ci_.value); });
+        cl.appendChild(ci_);
+        bar.appendChild(cl);
+        bar.appendChild(barBtn('色を標準に', function () { applyColor(b, ''); }, 'al-btn'));
         bar.appendChild(barBtn('＋行', function () { b.rows.push(b.rows[0].map(function () { return ''; })); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.fill[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.fill[k]; }); ['col', 'bld'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
         bar.appendChild(barBtn('＋列', function () { b.rows.forEach(function (r) { r.push(''); }); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.fill[k]; }); sel = null; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.fill[k]; }); ['col', 'bld'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
       }
       if (b.type === 'image') {
         bar.appendChild(barBtn('＋ この枠に画像を追加', function () { pendingArea = b; document.getElementById('f-img').click(); }));
@@ -469,9 +501,12 @@
           tr.appendChild(rs);
           r.forEach(function (cell, ci) {
             var td = document.createElement('td'); td.dataset.r = ri; td.dataset.c = ci;
-            if (isBlack(b, ri, ci)) { td.className = 'k' + (b.header && ri === 0 ? ' kb' : ''); }
+            if (isBlack(b, ri, ci)) { td.className = 'k'; }
             var cta = document.createElement('textarea'); cta.rows = 1; cta.value = cell || '';
             cta.style.textAlign = cellAlign(b, ri, ci);
+            var colv = b.col && b.col[ri + ',' + ci];
+            if (colv) cta.style.color = colv;
+            cta.style.fontWeight = isBold(b, ri, ci) ? '700' : '400';
             cta.addEventListener('input', function () { b.rows[ri][ci] = cta.value; grow(cta); saveDraft(); });
             cta.addEventListener('keydown', cellKey);
             cta.addEventListener('focus', function () { setSel(b, ri, ci, ri, ci); });
