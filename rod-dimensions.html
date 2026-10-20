@@ -106,6 +106,7 @@
     <a class="back" style="margin-right:0;color:var(--ink);border:1px solid var(--ink);padding:0.6rem 1rem;background:#fff" href="rod-spec-history.html">保存一覧</a>
     <button type="button" class="secondary" id="btn-reset">クリア</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
   <div class="mode-bar">
@@ -353,7 +354,7 @@
     });
   }
 
-  async function saveToHistory() {
+  async function saveToHistory(saveOnly) {
     var rec = snapshot();
     if (!currentId) currentId = 'spec-' + Date.now();
     rec.id = currentId; rec.__spec = true; rec.savedAt = new Date().toISOString();
@@ -368,9 +369,11 @@
       if (idx >= 0) list[idx] = rec; else list.push(rec);
       var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(list)) });
       if (!put.ok) throw new Error('save failed');
+      return true;
     } catch (e) {
       console.error(e);
-      alert('PDFは作成しましたが、仕様書一覧への保存に失敗しました。');
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '仕様書一覧への保存に失敗しました。');
+      return false;
     }
   }
 
@@ -385,6 +388,8 @@
       document.body.classList.remove('pdf-capture');
     }
   };
+
+  wireSaveOnly(document.getElementById('btn-save-only'), function () { return saveToHistory(true); });
 
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;

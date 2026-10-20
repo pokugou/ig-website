@@ -130,6 +130,7 @@
     <a class="history-link" href="quotation-history.html">📋 見積書一覧を見る →</a>
     <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
   <div class="options" id="options">
@@ -470,7 +471,7 @@
   });
   $('btn-print').addEventListener('click', function () { window.print(); });
 
-  async function saveToHistory() {
+  async function saveToHistory(saveOnly) {
     var q = collect();
     try {
       var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
@@ -483,9 +484,11 @@
       currentId = q.id; cachedAll = all;
       document.body.classList.add('editing');
       saveDraft();
+      return true;
     } catch (e) {
       console.error(e);
-      alert('PDFは作成しましたが、見積書一覧への保存に失敗しました。');
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '見積書一覧への保存に失敗しました。');
+      return false;
     }
   }
 
@@ -521,6 +524,8 @@
       document.body.classList.remove('pdf-capture');
     }
   };
+
+  wireSaveOnly(document.getElementById('btn-save-only'), function () { return saveToHistory(true); });
 
   $('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;

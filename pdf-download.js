@@ -30,4 +30,17 @@
       document.body.appendChild(bar);
     } catch (e) { console.error(e); }
   };
+
+  // 「保存のみ」ボタン（PDFは作らず、一覧にだけ保存する）。fn は成功で true を返す関数
+  window.wireSaveOnly = function (btn, fn) {
+    if (!btn) return;
+    btn.addEventListener('click', async function () {
+      var label = btn.textContent;
+      btn.disabled = true; btn.textContent = '保存中…';
+      var ok = false;
+      try { ok = await fn(); } catch (e) { console.error(e); }
+      btn.textContent = ok ? '保存しました ✓' : label;
+      setTimeout(function () { btn.textContent = label; btn.disabled = false; }, ok ? 1800 : 0);
+    });
+  };
 })();

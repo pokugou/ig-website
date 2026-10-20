@@ -112,6 +112,7 @@
     <button type="button" class="secondary" id="btn-add-sheet">＋ シートを追加</button>
     <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
   <div class="editing-badge" id="editing-badge">✎ 保存済みのオーダーシートを編集中（PDFを保存すると上書きされます）</div>
@@ -339,9 +340,9 @@
     }
   })();
 
-  async function saveToHistory() {
+  async function saveToHistory(saveOnly) {
     var targets = sheets().map(function (el) { return { el: el, rec: collect(el) }; }).filter(function (x) { return hasContent(x.rec); });
-    if (!targets.length) return;
+    if (!targets.length) { if (saveOnly) alert('保存する内容がありません。'); return false; }
     try {
       var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
       if (!res.ok) throw new Error('load failed');
@@ -356,9 +357,11 @@
       if (!put.ok) throw new Error('save failed');
       targets.forEach(function (x) { x.el.dataset.rid = x.rec.id; });
       updateControls(); saveDraft();
+      return true;
     } catch (e) {
       console.error(e);
-      alert('PDFは作成しましたが、保存一覧への保存に失敗しました。');
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '保存一覧への保存に失敗しました。');
+      return false;
     }
   }
 
@@ -395,6 +398,8 @@
     }
   }
   window.captureSheetCanvases = captureSheetCanvases;
+
+  wireSaveOnly(document.getElementById('btn-save-only'), function () { return saveToHistory(true); });
 
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;

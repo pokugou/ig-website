@@ -117,6 +117,7 @@
   <div class="toolbar">
     <a class="history-link" href="quote-history.html">📋 見積一覧を見る →</a>
     <button type="button" class="secondary" id="btn-reset">クリア</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
     <button type="button" class="secondary" id="btn-save">PDFとして保存</button>
     <button type="button" id="btn-print">印刷</button>
   </div>
@@ -280,7 +281,7 @@
     recalc();
   }
 
-  async function saveQuoteToHistory() {
+  async function saveQuoteToHistory(saveOnly) {
     var q = collectQuote();
     q.__quote = true;
     try {
@@ -294,9 +295,11 @@
       var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(quotes)) });
       if (!put.ok) throw new Error('save failed');
       currentQuoteId = q.id;
+      return true;
     } catch (e) {
       console.error(e);
-      alert('PDFは作成しましたが、見積一覧への保存に失敗しました。');
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '見積一覧への保存に失敗しました。');
+      return false;
     }
   }
 
@@ -376,6 +379,8 @@
     }
   }
   window.captureQuoteCanvas = captureQuoteCanvas;
+
+  wireSaveOnly(document.getElementById('btn-save-only'), function () { return saveQuoteToHistory(true); });
 
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this;

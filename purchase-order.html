@@ -120,6 +120,7 @@
     <a class="back" style="margin-right:0;color:var(--ink);border:1px solid var(--ink);padding:0.6rem 1rem;background:#fff" href="purchase-order-history.html">保存一覧</a>
     <button type="button" class="secondary" id="btn-reset">クリア</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
   <div class="sender-pick">
@@ -463,7 +464,7 @@
     return swaps;
   }
 
-  async function saveToHistory() {
+  async function saveToHistory(saveOnly) {
     var o = snapshot();
     if (!currentId) currentId = 'po-' + Date.now();
     o.id = currentId; o.__po = true;
@@ -478,9 +479,11 @@
       var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(list)) });
       if (!put.ok) throw new Error('save failed');
       saveDraft();
+      return true;
     } catch (e) {
       console.error(e);
-      alert('PDFは作成しましたが、注文書一覧への保存に失敗しました。');
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '注文書一覧への保存に失敗しました。');
+      return false;
     }
   }
 
@@ -495,6 +498,8 @@
       document.body.classList.remove('pdf-capture');
     }
   };
+
+  wireSaveOnly(document.getElementById('btn-save-only'), function () { if (DEMO) { alert('デモ表示では保存されません。'); return false; } return saveToHistory(true); });
 
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;

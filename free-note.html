@@ -116,6 +116,7 @@
     <a class="hist" href="free-note-history.html">保存一覧</a>
     <button type="button" class="secondary" id="btn-reset">新規</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
   <p class="hint">下のボタンで「見出し・文章・表・画像」を好きな順に追加できます。各ブロックの↑↓で順番を入れ替え、×で削除。PDFは内容が長い場合、自動で複数ページになります。</p>
@@ -689,7 +690,7 @@
     });
   }
 
-  async function saveToHistory() {
+  async function saveToHistory(saveOnly) {
     var rec = JSON.parse(JSON.stringify(snapshot()));
     if (!currentId) currentId = 'note-' + Date.now();
     rec.id = currentId; rec.__note = true; rec.savedAt = new Date().toISOString();
@@ -708,9 +709,11 @@
       if (idx >= 0) list[idx] = rec; else list.push(rec);
       var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(others.concat(list)) });
       if (!put.ok) throw new Error('save failed');
+      return true;
     } catch (e) {
       console.error(e);
-      alert('PDFは作成しましたが、一覧への保存に失敗しました。');
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '一覧への保存に失敗しました。');
+      return false;
     }
   }
 
@@ -765,6 +768,8 @@
     }
   }
   window.renderPageCanvases = renderPageCanvases;
+
+  wireSaveOnly(document.getElementById('btn-save-only'), function () { return saveToHistory(true); });
 
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
