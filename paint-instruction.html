@@ -104,6 +104,7 @@
   </div>
   <p class="toolbar-hint">1ページに4枚。印刷後は点線代わりのマス目に沿って4つに切り分けてください。「塗装状況をスケジュールに反映」「アーカイブに保存」でダウンロードしたファイルは、Claudeに伝えればそれぞれ生産スケジュール・過去の塗装指示一覧に反映されます。</p>
 
+  <div id="paint-editing" style="display:none;max-width:1100px;margin:0 auto 0.6rem;font-size:0.76rem;font-weight:700;color:#cc2200;">✎ 一覧から開いた塗装指示書を編集中（保存すると元の記録が上書きされます）</div>
   <div class="pages" id="pages"></div>
 
   <div class="add-page-bar">
@@ -188,6 +189,15 @@
     return card;
   }
 
+  var savedMap = new Map(); // card -> record last saved from it / opened from the list
+  var FIELD_BY_LABEL = { 'お客様名': '.f-customer', 'カラー': '.f-color', '希望納期': '.f-due', '塗り残し': '.f-margin', '表面': '.f-surface', 'ブランクス': '.f-blank', '合計本数': '.f-qty', '備考欄': '.f-notes' };
+  function fillCard(card, r) {
+    Object.keys(FIELD_BY_LABEL).forEach(function (k) { card.querySelector(FIELD_BY_LABEL[k]).value = r && r[k] != null ? r[k] : ''; });
+    var dEl = card.querySelector('.f-date');
+    if (r && r['記入日']) { var s = r['記入日'].split('/'); dEl.value = s[0] + '-' + String(s[1]).padStart(2, '0') + '-' + String(s[2]).padStart(2, '0'); }
+    else dEl.value = '';
+  }
+
   function addPage() {
     var page = document.createElement('div');
     page.className = 'page';
@@ -203,6 +213,24 @@
   }
 
   addPage();
+
+  // 一覧から「編集」で開いたとき：その1件を最初のカードに入れる（保存すると元の記録を上書き。コピーなら新規）
+  (function loadFromList() {
+    try {
+      var raw = localStorage.getItem('paint-reload');
+      if (!raw) return;
+      localStorage.removeItem('paint-reload');
+      var data = JSON.parse(raw), isCopy = !!data.__copy;
+      delete data.__copy;
+      var card = pagesEl.querySelector('.card');
+      if (isCopy) { delete data['記入日']; }
+      fillCard(card, data);
+      if (isCopy) card.querySelector('.f-date').value = todayParts().iso;
+      else savedMap.set(card, data);
+      var badge = document.getElementById('paint-editing');
+      if (badge && !isCopy) badge.style.display = 'block';
+    } catch (e) { console.error(e); }
+  })();
 
   document.getElementById('btn-add-page').addEventListener('click', function () {
     var page = addPage();
@@ -231,6 +259,7 @@
 
   function collectArchiveRecords() {
     var records = [];
+    records._cards = [];
     document.querySelectorAll('.card').forEach(function (card) {
       var data = extractCardData(card);
       var touched = false;
@@ -239,7 +268,7 @@
         var field = valueEl ? valueEl.querySelector('input, textarea') : null;
         if (field && field.value.trim() && field.value !== field.defaultValue) touched = true;
       });
-      if (touched) records.push(data);
+      if (touched) { records.push(data); records._cards.push(card); }
     });
     return records;
   }
@@ -263,26 +292,43 @@
     URL.revokeObjectURL(url);
   }
 
-  // Saves the cards to the shared list, skipping any card already saved with identical content
-  // so pressing both アーカイブに保存 and PDFとして保存 does not create duplicates.
+  // Cards already saved (or opened from the list for editing): saving again overwrites that record.
+  function isTagged(r) { return Object.keys(r).some(function (k) { return k.indexOf('__') === 0; }); }
+
+  // Saves the cards to the shared list. A card that was saved before (or opened from the list) replaces
+  // its old record; other cards are added unless an identical record already exists.
   async function archiveRecords(records) {
     if (records.length === 0) return false;
+    var cards = records._cards || [];
     try {
-      var fresh = records;
+      var all = null;
       try {
         var res0 = await fetch(SYNC_API + '/paint?_=' + Date.now());
-        if (res0.ok) {
-          var existing = (await res0.json()).map(stableJson);
-          fresh = records.filter(function (r) { return existing.indexOf(stableJson(r)) === -1; });
+        if (res0.ok) all = await res0.json();
+      } catch (e0) { all = null; }
+      var replaced = false, added = [];
+      if (all) {
+        records.forEach(function (rec, i) {
+          var orig = savedMap.get(cards[i]), idx = -1, key = stableJson(rec);
+          if (orig) {
+            var okey = stableJson(orig);
+            idx = all.findIndex(function (x) { return !isTagged(x) && stableJson(x) === okey; });
+          }
+          if (idx >= 0) { if (stableJson(all[idx]) !== key) { all[idx] = rec; replaced = true; } }
+          else if (!all.some(function (x) { return stableJson(x) === key; })) { all.push(rec); added.push(rec); }
+        });
+        if (replaced) {
+          var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+          if (!put.ok) throw new Error('sync failed');
+        } else if (added.length) {
+          var res = await fetch(SYNC_API + '/paint', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(added) });
+          if (!res.ok) throw new Error('sync failed');
         }
-      } catch (e0) { fresh = records; }
-      if (fresh.length === 0) return true;
-      var res = await fetch(SYNC_API + '/paint', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(fresh)
-      });
-      if (!res.ok) throw new Error('sync failed');
+      } else {
+        var res2 = await fetch(SYNC_API + '/paint', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(records) });
+        if (!res2.ok) throw new Error('sync failed');
+      }
+      records.forEach(function (rec, i) { savedMap.set(cards[i], rec); });
       return true;
     } catch (e) {
       console.error(e);
@@ -368,17 +414,10 @@
   // Used by the saved list: lays the given records out 4 per page and returns one canvas per page.
   window.__bulkReady = true;
   window.renderPaintPages = async function (records) {
-    var KEY = { 'お客様名': '.f-customer', 'カラー': '.f-color', '希望納期': '.f-due', '塗り残し': '.f-margin', '表面': '.f-surface', 'ブランクス': '.f-blank', '合計本数': '.f-qty', '備考欄': '.f-notes' };
     pagesEl.innerHTML = '';
     for (var p = 0; p < Math.max(1, Math.ceil(records.length / 4)); p++) addPage();
     var cards = pagesEl.querySelectorAll('.card');
-    cards.forEach(function (card, i) {
-      var r = records[i];
-      Object.keys(KEY).forEach(function (k) { card.querySelector(KEY[k]).value = r && r[k] != null ? r[k] : ''; });
-      var dEl = card.querySelector('.f-date');
-      if (r && r['記入日']) { var s = r['記入日'].split('/'); dEl.value = s[0] + '-' + String(s[1]).padStart(2, '0') + '-' + String(s[2]).padStart(2, '0'); }
-      else dEl.value = '';
-    });
+    cards.forEach(function (card, i) { fillCard(card, records[i]); });
     document.body.classList.add('pdf-capture');
     var swaps = swapFieldsForCapture();
     try {

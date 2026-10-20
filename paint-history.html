@@ -161,6 +161,22 @@
 
       var detail = document.createElement('div');
       detail.className = 'order-detail';
+      var acts = document.createElement('div');
+      acts.style.cssText = 'display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.7rem;';
+      function actBtn(label, red, fn) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+        b.style.cssText = 'flex:1;min-width:11rem;font-family:inherit;font-size:0.82rem;font-weight:700;padding:0.65rem 1rem;cursor:pointer;border:1px solid ' + (red ? '#cc2200' : '#111') + ';background:' + (red ? '#cc2200' : '#111') + ';color:#fff;';
+        b.addEventListener('click', function (e) { e.stopPropagation(); fn(); });
+        return b;
+      }
+      acts.appendChild(actBtn('この内容を塗装指示書で編集する →', false, function () {
+        localStorage.setItem('paint-reload', JSON.stringify(record)); location.href = 'paint-instruction.html';
+      }));
+      acts.appendChild(actBtn('コピーして新しく作る →', true, function () {
+        var c = JSON.parse(JSON.stringify(record)); c.__copy = true;
+        localStorage.setItem('paint-reload', JSON.stringify(c)); location.href = 'paint-instruction.html';
+      }));
+      detail.appendChild(acts);
       var dl = document.createElement('dl');
       dl.className = 'detail-grid';
       Object.keys(record).forEach(function (k) {
