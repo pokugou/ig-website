@@ -1988,6 +1988,13 @@ function buildOrderCard() {
         + (nameCustom ? r('ネーム仕様', nameCustom) : '')
         + (noteVal    ? r('備考', noteVal) : '')
       + '</div>'
+      // 配送・お支払い
+      + '<div style="'+s.sec+'">'
+        + '<div style="'+s.stitle+'">配送・お支払い</div>'
+        + r('電話番号',       data.get('tel') || '—')
+        + r('送り先住所',     data.get('address') || '—')
+        + r('お支払い方法',   payText)
+      + '</div>'
     + '</div>'
     // ── 税込合計 ──
     + '<div style="background:#f5f5f5;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(0,0,0,0.1);">'
