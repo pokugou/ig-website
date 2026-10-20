@@ -1937,6 +1937,11 @@ function buildOrderCard() {
   var bc = gf('blank-color'), tc = gf('tip-color'), rc2 = gf('reel-color');
   var tm = gf('thread-main'), tt = gf('thread-tip'), tp = gf('thread-pin');
 
+  var payEl2  = document.getElementById('sel-pay');
+  var payText = payEl2 && payEl2.selectedIndex > 0 ? payEl2.options[payEl2.selectedIndex].text : '—';
+  var shippEl2 = document.getElementById('sel-shipping');
+  var shipText = shippEl2 && shippEl2.selectedIndex > 0 ? shippEl2.options[shippEl2.selectedIndex].text : '—';
+
   var now = new Date();
   var dateStr = now.getFullYear() + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + String(now.getDate()).padStart(2,'0');
   var totalText = document.getElementById('p-total').textContent;
