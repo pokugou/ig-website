@@ -52,7 +52,7 @@
   .fs3 textarea { font-size: 1.6rem; }
 
   table.tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  table.tbl td { border: 1.5px solid var(--ink); padding: 0; vertical-align: top; }
+  table.tbl td { border: 1.5px solid var(--ink); padding: 0; vertical-align: middle; }
   table.tbl td textarea { padding: 0.4rem 0.5rem; font-size: 0.95rem; line-height: 1.5; min-height: 2.4em; }
   table.tbl td.k { background: #111; }
   table.tbl td.k textarea { color: #fff; }
@@ -365,7 +365,7 @@
     var ncols = b.rows[0].length;
     if (axis === 'r') b.rows.splice(index, 0, new Array(ncols).fill(''));
     else { b.rows.forEach(function (r) { r.splice(index, 0, ''); }); if (b.align) b.align.splice(index, 0, ''); }
-    ['cal', 'fill', 'col', 'bld'].forEach(function (m) {
+    ['cal', 'fill', 'col', 'bld', 'va'].forEach(function (m) {
       if (!b[m]) return;
       var out = {};
       Object.keys(b[m]).forEach(function (k) {
@@ -384,6 +384,13 @@
     if (sel && sel.b === b) return selRange(b);
     alert('先に、挿入したい位置のマス（または行番号）をクリックしてください。');
     return null;
+  }
+  function cellVAlign(b, ri, ci) { return (b.va && b.va[ri + ',' + ci]) || 'middle'; }
+  function applyVAlign(b, val) {
+    if (!b.va) b.va = {};
+    var g = selRange(b);
+    for (var r = g.r1; r <= g.r2; r++) for (var c = g.c1; c <= g.c2; c++) b.va[r + ',' + c] = val;
+    renderBlocks(); saveDraft();
   }
   function applyAlign(b, val) {
     if (!b.cal) b.cal = {};
@@ -464,6 +471,11 @@
           ab.title = '選択したマス・行を' + { left: '左寄せ', center: '中央寄せ', right: '右寄せ' }[a[0]] + '（選択なしなら表全体）';
           bar.appendChild(ab);
         });
+        [['top', '上揃え', 'マスの文字を上に揃える'], ['middle', '上下中央', 'マスの文字を枠の上下中央に揃える'], ['bottom', '下揃え', 'マスの文字を下に揃える']].forEach(function (v) {
+          var vb = barBtn(v[1], function () { applyVAlign(b, v[0]); }, 'al-btn');
+          vb.title = v[2] + '（選択したマス・行。選択なしなら表全体）';
+          bar.appendChild(vb);
+        });
         [['black', '黒背景', '選択したマス・行を白文字の黒背景にする（選択なしなら表全体）'], ['none', '背景なし', '選択したマス・行の黒背景を外す（選択なしなら表全体）']].forEach(function (f) {
           var fb = barBtn(f[1], function () { applyFill(b, f[0]); }, 'al-btn');
           fb.title = f[2];
@@ -487,9 +499,9 @@
           bar.appendChild(ib);
         });
         bar.appendChild(barBtn('＋行', function () { b.rows.push(b.rows[0].map(function () { return ''; })); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.fill[k]; }); ['col', 'bld'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.fill[k]; }); ['col', 'bld', 'va'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
         bar.appendChild(barBtn('＋列', function () { b.rows.forEach(function (r) { r.push(''); }); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.fill[k]; }); ['col', 'bld'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.fill[k]; }); ['col', 'bld', 'va'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
       }
       if (b.type === 'image') {
         bar.appendChild(barBtn('＋ この枠に画像を追加', function () { pendingArea = b; document.getElementById('f-img').click(); }));
@@ -537,6 +549,7 @@
           tr.appendChild(rs);
           r.forEach(function (cell, ci) {
             var td = document.createElement('td'); td.dataset.r = ri; td.dataset.c = ci;
+            td.style.verticalAlign = cellVAlign(b, ri, ci);
             if (isBlack(b, ri, ci)) { td.className = 'k'; }
             var cta = document.createElement('textarea'); cta.rows = 1; cta.value = cell || '';
             cta.style.textAlign = cellAlign(b, ri, ci);
