@@ -214,6 +214,22 @@
 
   addPage();
 
+  // 一覧から「まとめて編集」で開いたとき：複数件を4枚ずつのページに並べて入れる（保存すると各記録を上書き）
+  (function loadMultiFromList() {
+    try {
+      var raw = localStorage.getItem('paint-reload-multi');
+      if (!raw) return;
+      localStorage.removeItem('paint-reload-multi');
+      var list = JSON.parse(raw);
+      if (!Array.isArray(list) || !list.length) return;
+      while (pagesEl.querySelectorAll('.page').length < Math.ceil(list.length / 4)) addPage();
+      var cards = pagesEl.querySelectorAll('.card');
+      list.forEach(function (rec, i) { fillCard(cards[i], rec); savedMap.set(cards[i], rec); });
+      var badge = document.getElementById('paint-editing');
+      if (badge) { badge.textContent = '✎ 一覧から開いた塗装指示書' + list.length + '件をまとめて編集中（保存すると元の記録が上書きされます）'; badge.style.display = 'block'; }
+    } catch (e) { console.error(e); }
+  })();
+
   // 一覧から「編集」で開いたとき：その1件を最初のカードに入れる（保存すると元の記録を上書き。コピーなら新規）
   (function loadFromList() {
     try {
