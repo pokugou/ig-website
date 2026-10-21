@@ -13,3 +13,8 @@ RewriteRule ^([^./]+)$ $1.html [L]
 
 # Custom 404 page
 ErrorDocument 404 /404.html
+
+# HTML: always fetch fresh from server (prevents stale-cache navigation bug)
+<FilesMatch "\.(html|htm)$">
+  Header set Cache-Control "no-cache, must-revalidate"
+</FilesMatch>
