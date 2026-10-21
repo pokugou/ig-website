@@ -38,7 +38,7 @@
 
     /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 80px; background: rgba(245,245,245,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--wborder); }
-    .nav-logo { display: flex; align-items: center; background: #111; padding: 4px 8px; border-radius: 3px; }
+    .nav-logo { display: flex; align-items: center; background: #111; padding: 4px; border-radius: 3px; }
     .nav-menu { list-style: none; display: flex; align-items: center; gap: 0; }
     .nav-menu li a { display: flex; align-items: center; height: 68px; padding: 0 1rem; font-size: 0.8rem; font-weight: 500; color: #555; letter-spacing: 0.04em; transition: color 0.2s; white-space: nowrap; }
     .nav-menu li a:hover { color: var(--fg); }
@@ -162,7 +162,7 @@
     /* FOOTER */
     footer { background: #fff; border-top: 1px solid var(--wborder); padding: 3.5rem 2rem 2rem; }
     .footer-inner { max-width: 1200px; margin: 0 auto; }
-    .footer-logo { margin-bottom: 2.5rem; }
+    .footer-logo { display: inline-block; background: #111; padding: 4px; border-radius: 3px; margin-bottom: 2.5rem; }
     .footer-nav-list { list-style: none; border-top: 1px solid var(--wborder); }
     .footer-nav-item { display: flex; align-items: center; border-bottom: 1px solid var(--wborder); padding: 1rem 0; gap: 3rem; }
     .footer-nav-en { font-family: 'DM Sans',sans-serif; font-size: 0.9rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; min-width: 160px; color: var(--fg); }
@@ -189,8 +189,14 @@
       .nav-btns { display: none; }
       .hamburger { display: flex; }
       .nav-logo img { height: 44px !important; }
-      nav:has(.nav-menu.is-open) .nav-social { display: flex; position: fixed; bottom: 0; left: 0; right: 0; justify-content: center; gap: 1.5rem; padding: 0.9rem 1.5rem; background: rgba(255,255,255,0.98); border-top: 1px solid var(--wborder); z-index: 310; }
-      nav:has(.nav-menu.is-open) .nav-btns { display: flex; position: fixed; bottom: 3.4rem; left: 0; right: 0; justify-content: center; gap: 0.75rem; padding: 0.9rem 1.5rem; background: rgba(255,255,255,0.98); border-top: 1px solid var(--wborder); z-index: 310; }
+      nav { justify-content: flex-start; gap: 0.5rem; }
+      .hamburger { margin-left: auto; }
+      .nav-btns { display: flex !important; gap: 0.4rem; margin: 0; }
+      .nav-btn-order { height: 26px; padding: 0 0.55rem; font-size: 0.65rem; }
+      .nav-btn-contact { display: none !important; }
+      .nav-social { display: flex !important; gap: 0.55rem; margin: 0; padding: 0; border: none; }
+      .nav-social svg { width: 17px; height: 17px; }
+
       .nav-social { display: none; }
       .hero { height: 50vh; }
       .hero-content { padding: 2rem 1.5rem; }
