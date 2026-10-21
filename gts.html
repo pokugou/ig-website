@@ -37,8 +37,8 @@
     a { text-decoration: none; color: inherit; }
 
     /* NAV */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(245,245,245,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--wborder); }
-    .nav-logo { display: flex; align-items: center; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 80px; background: rgba(245,245,245,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--wborder); }
+    .nav-logo { display: flex; align-items: center; background: #fff; padding: 4px 8px; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.10); }
     .nav-menu { list-style: none; display: flex; align-items: center; gap: 0; }
     .nav-menu li a { display: flex; align-items: center; height: 68px; padding: 0 1rem; font-size: 0.8rem; font-weight: 500; color: #555; letter-spacing: 0.04em; transition: color 0.2s; white-space: nowrap; }
     .nav-menu li a:hover { color: var(--fg); }
@@ -71,7 +71,7 @@
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* HERO */
-    .hero { position: relative; width: 100%; height: 60vh; min-height: 320px; margin-top: 68px; overflow: hidden; background: #0a0a0a; }
+    .hero { position: relative; width: 100%; height: 60vh; min-height: 320px; margin-top: 80px; overflow: hidden; background: #0a0a0a; }
     .hero-bg { position: absolute; inset: 0; background-image: url(gts-banner.png); background-size: cover; background-position: center; opacity: 0.45; }
     .hero-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem 4rem; }
     .hero-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.6rem; }
@@ -186,7 +186,7 @@
       .od-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
-      nav .nav-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--wborder); gap: 0; }
+      nav .nav-menu { display: none; position: fixed; top: 80px; left: 0; right: 0; height: calc(100vh - 80px); background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--wborder); gap: 0; }
       nav .nav-menu.is-open { display: flex; }
       nav .nav-menu li { border-bottom: 1px solid var(--wborder); width: 100%; }
       nav .nav-menu li a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; color: var(--fg); }
@@ -211,7 +211,7 @@
 <!-- NAV -->
 <nav>
   <a href="index" class="nav-logo">
-    <img src="logo.png" alt="IG Rod Planning" style="height:42px;width:auto;" />
+    <img src="logo.png" alt="IG Rod Planning" style="height:72px;width:auto;" />
   </a>
   <ul class="nav-menu">
     <li class="has-drop"><a href="products">商品一覧</a>
