@@ -70,8 +70,18 @@
     .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* HERO — dark, keep as-is */
-    .hero { position: relative; width: 100%; height: 44vh; margin-top: 80px; overflow: hidden; background-image: url(strixedge-banner-b.webp); background-size: cover; background-position: center; background-color: var(--black); }
+    /* HERO SLIDER */
+    .hero { position: relative; width: 100%; margin-top: 80px; overflow: hidden; background: var(--black); }
+    .hero-slides { display: flex; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); }
+    .hero-slide { min-width: 100%; aspect-ratio: 16/3.15; background-size: cover; background-position: center; }
+    .hero-prev, .hero-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; z-index: 10; transition: background 0.2s; }
+    .hero-prev:hover, .hero-next:hover { background: rgba(0,0,0,0.7); }
+    .hero-prev { left: 1rem; }
+    .hero-next { right: 1rem; }
+    .hero-dots { position: absolute; bottom: 0.7rem; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+    .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; border: none; transition: background 0.2s; }
+    .hero-dot.active { background: #fff; }
+    @media (max-width: 768px) { .hero-slide { aspect-ratio: 16/9.4; } }
 
     /* SECTIONS */
     .section { padding: 2.5rem 3rem; max-width: 1200px; margin: 0 auto; }
@@ -271,8 +281,16 @@
   <button class="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- HERO — dark banner, kept dark -->
-<section class="hero"></section>
+<!-- HERO SLIDER — add more slides here -->
+<section class="hero">
+  <div class="hero-slides" id="seSlides">
+    <div class="hero-slide" style="background-image:url(strixedge-banner-a.webp);"></div>
+    <!-- 追加スライドはここに <div class="hero-slide" style="background-image:url(XXX.webp);"></div> -->
+  </div>
+  <button class="hero-prev" id="sePrev">&#8249;</button>
+  <button class="hero-next" id="seNext">&#8250;</button>
+  <div class="hero-dots" id="seDots"></div>
+</section>
 
 <!-- CONCEPT -->
 <div class="section">
@@ -531,6 +549,34 @@
       });
     });
   }
+</script>
+<script>
+  (function() {
+    var slides = document.querySelectorAll('#seSlides .hero-slide');
+    var dotsWrap = document.getElementById('seDots');
+    var idx = 0;
+    var total = slides.length;
+    if (total <= 1) {
+      document.getElementById('sePrev').style.display = 'none';
+      document.getElementById('seNext').style.display = 'none';
+    }
+    slides.forEach(function(_, i) {
+      var d = document.createElement('button');
+      d.className = 'hero-dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('data-i', i);
+      d.addEventListener('click', function() { go(i); });
+      dotsWrap.appendChild(d);
+    });
+    function go(n) {
+      idx = (n + total) % total;
+      document.getElementById('seSlides').style.transform = 'translateX(-' + idx * 100 + '%)';
+      dotsWrap.querySelectorAll('.hero-dot').forEach(function(d, i) {
+        d.classList.toggle('active', i === idx);
+      });
+    }
+    document.getElementById('sePrev').addEventListener('click', function() { go(idx - 1); });
+    document.getElementById('seNext').addEventListener('click', function() { go(idx + 1); });
+  })();
 </script>
 </body>
 </html>
