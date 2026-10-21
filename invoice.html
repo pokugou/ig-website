@@ -809,6 +809,21 @@
     catch (e) { console.error(e); alert('PDFは作成しましたが、' + DOC.title + '一覧への保存に失敗しました。通信状況を確認してもう一度「PDFとして保存」を押してください。'); }
   });
 
+  // 一覧ページの「PDF保存」用：読み込んだ書類をこのページで描いて画像にする（編集画面で保存したPDFと同じ見た目）
+  window.captureForBulk = async function () {
+    $('memo-box').classList.toggle('empty', !$('f-notes').value.trim());
+    document.body.classList.add('pdf-capture');
+    var swaps = swapFields();
+    var fillers = addFillerRows();
+    try {
+      return await html2canvas($('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
+    } finally {
+      fillers.forEach(function (tr) { tr.remove(); });
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+    }
+  };
+
   $('btn-print').addEventListener('click', function () { window.print(); });
   $('btn-reset').addEventListener('click', function () {
     if (!confirm('入力内容をクリアして新しい' + DOC.title + 'を作りますか？\n（保存済みの' + DOC.title + 'は一覧に残ります）')) return;
@@ -849,7 +864,7 @@
   (function () {
     try {
       var p = location.pathname + location.search, k = 'fresh:' + p;
-      if (sessionStorage.getItem(k)) return;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
       Promise.all([
         fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
         fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })

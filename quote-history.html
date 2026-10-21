@@ -80,6 +80,18 @@
   var term = '';
   var selected = {};
 
+  // 一覧の1件だけをPDF保存する（「選択したものをまとめてPDF保存」の仕組みを、その1件だけ選んだ状態で使う）
+  function pdfOne(key, btn) {
+    var keep = selected; selected = {}; selected[key] = true;
+    try { document.getElementById('btn-pdf').click(); } finally { selected = keep; }
+    if (btn) { var l = btn.textContent; btn.disabled = true; btn.textContent = '作成中…'; setTimeout(function () { btn.disabled = false; btn.textContent = l; }, 2500); }
+  }
+  function pdfBtn(key, cls) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = 'PDF保存';
+    b.addEventListener('click', function (e) { e.stopPropagation(); pdfOne(key, b); });
+    return b;
+  }
+
   var LABELS = [
     ['fillDate', '記入日'], ['leadTime', '納期'], ['due', '希望納期'], ['model', 'ベースモデル'], ['type', 'タイプ'],
     ['blank', 'ブランクス'], ['tip', 'ティップ'], ['grip', 'グリップ仕様'], ['seat', 'シート種類'],
@@ -219,7 +231,7 @@
         try { await deleteRecord(q.id); } catch (e) { alert('削除の反映に失敗しました。通信状況を確認してもう一度お試しください。'); }
         render();
       });
-      acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(del); d.appendChild(acts);
+      acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(pdfBtn(q.id, 'edit-btn again-btn')); acts.appendChild(del); d.appendChild(acts);
       LABELS.forEach(function (p) { if (q[p[0]]) d.appendChild(row(p[1], q[p[0]])); });
       (q.items || []).forEach(function (it) { d.appendChild(row(it.name || '項目', it.amt ? '¥' + (parseFloat(String(it.amt).replace(/[^0-9.-]/g, '')) || 0).toLocaleString('ja-JP') : '')); });
       card.appendChild(s); card.appendChild(d); list.appendChild(card);

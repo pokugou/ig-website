@@ -81,6 +81,18 @@
   var term = '';
   var selected = {};
 
+  // 一覧の1件だけをPDF保存する（「選択したものをまとめてPDF保存」の仕組みを、その1件だけ選んだ状態で使う）
+  function pdfOne(key, btn) {
+    var keep = selected; selected = {}; selected[key] = true;
+    try { document.getElementById('btn-pdf').click(); } finally { selected = keep; }
+    if (btn) { var l = btn.textContent; btn.disabled = true; btn.textContent = '作成中…'; setTimeout(function () { btn.disabled = false; btn.textContent = l; }, 2500); }
+  }
+  function pdfBtn(key, cls) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = 'PDF保存';
+    b.addEventListener('click', function (e) { e.stopPropagation(); pdfOne(key, b); });
+    return b;
+  }
+
   function fmtDate(iso) {
     var p = iso ? iso.split('-') : null;
     return p && p.length === 3 ? p[0] + '/' + Number(p[1]) + '/' + Number(p[2]) : '';
@@ -160,7 +172,7 @@
         try { await deleteRecord(o.id); } catch (e) { alert('削除の反映に失敗しました。通信状況を確認してもう一度お試しください。'); }
         render();
       });
-      acts.appendChild(again); acts.appendChild(edit); acts.appendChild(del); d.appendChild(acts);
+      acts.appendChild(again); acts.appendChild(edit); acts.appendChild(pdfBtn(o.id, 'edit-btn again-btn')); acts.appendChild(del); d.appendChild(acts);
       d.appendChild(row('作成日', fmtDate(o.date)));
       d.appendChild(row('作成者', o.author || ''));
       items.forEach(function (r, i) {

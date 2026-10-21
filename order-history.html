@@ -340,6 +340,18 @@
   var sortOrder = 'none';
   var selected = {};
 
+  // 一覧の1件だけをPDF保存する（「選択したものをまとめてPDF保存」の仕組みを、その1件だけ選んだ状態で使う）
+  function pdfOne(key, btn) {
+    var keep = selected; selected = {}; selected[key] = true;
+    try { document.getElementById('btn-pdf').click(); } finally { selected = keep; }
+    if (btn) { var l = btn.textContent; btn.disabled = true; btn.textContent = '作成中…'; setTimeout(function () { btn.disabled = false; btn.textContent = l; }, 2500); }
+  }
+  function pdfBtn(key, cls) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = 'PDF保存';
+    b.addEventListener('click', function (e) { e.stopPropagation(); pdfOne(key, b); });
+    return b;
+  }
+
   function noSortInfo(record) {
     var no = (record['No.'] || '').toString().trim();
     var withoutFraction = no.replace(/\d+\s*\/\s*\d+/g, '');
@@ -533,6 +545,7 @@
       actions.appendChild(editBtn);
       actions.appendChild(copyBtn);
       actions.appendChild(printToggleBtn);
+      actions.appendChild(pdfBtn(record.__id, 'print-toggle-btn'));
       actions.appendChild(deleteBtn);
       detail.appendChild(actions);
       detail.appendChild(buildDetail(record));

@@ -30,7 +30,7 @@
   .stats { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; font-size: 0.78rem; color: var(--sub); margin-bottom: 1rem; }
   .stats b { color: var(--ink); font-size: 0.95rem; }
   .card { background: var(--paper); border: 1px solid var(--line); margin-bottom: 0.7rem; }
-  .summary { display: grid; grid-template-columns: 6.5rem 1fr auto 1rem; align-items: center; gap: 0.9rem; padding: 0.85rem 1.1rem; cursor: pointer; }
+  .summary { display: grid; grid-template-columns: auto 6.5rem 1fr auto 1rem; align-items: center; gap: 0.9rem; padding: 0.85rem 1.1rem; cursor: pointer; }
   .summary:hover { background: #fafafa; }
   .summary .when { font-size: 0.78rem; color: var(--sub); line-height: 1.35; }
   .summary .when small { display: block; font-size: 0.68rem; }
@@ -58,12 +58,21 @@
   .sum div { display: flex; justify-content: space-between; padding: 0.15rem 0.3rem; }
   .sum .g { border-top: 2px solid var(--ink); margin-top: 0.2rem; padding-top: 0.35rem; font-weight: 900; }
   .notes { margin-top: 0.7rem; font-size: 0.8rem; white-space: pre-wrap; color: var(--sub); }
+  .pick { width: 17px; height: 17px; cursor: pointer; }
+  .select-bar { display: none; background: var(--paper); border: 1px solid var(--line); padding: 0.7rem 1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .select-bar.active { display: flex; }
+  .select-bar span { font-size: 0.8rem; color: var(--sub); }
+  .select-bar .btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .select-bar button { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.55rem 1rem; cursor: pointer; white-space: nowrap; }
+  .select-bar button:hover { background: var(--red); border-color: var(--red); }
+  .select-bar button:disabled { opacity: 0.6; cursor: default; }
   .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
   @media screen and (max-width: 560px) {
     .filters.with-status { grid-template-columns: 1fr; }
     .filters { grid-template-columns: 1fr; }
-    .summary { grid-template-columns: 1fr auto; row-gap: 0.1rem; }
-    .summary .when { grid-column: 1 / -1; }
+    .summary { grid-template-columns: auto 1fr auto; row-gap: 0.1rem; }
+    .summary .when { grid-column: 2 / -1; }
+    .summary .who { grid-column: 2; }
     .summary .arrow { display: none; }
     table.lines .hide-sm { display: none; }
   }
@@ -85,9 +94,19 @@
       <select id="f-month"><option value="">すべての月</option></select>
     </div>
     <div class="stats"><span id="status-line">読み込み中…</span><span id="sum-line"></span></div>
+    <div class="select-bar" id="select-bar">
+      <span id="select-count">0件選択中</span>
+      <div class="btns">
+        <button type="button" id="btn-pdf">選択したものをまとめてPDF保存</button>
+        <button type="button" id="btn-clear">選択解除</button>
+      </div>
+    </div>
     <div id="list"></div>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script src="bulk-pdf.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var invoices = [];
@@ -100,6 +119,7 @@
   document.getElementById('new-btn').href = DOC.editor;
   document.getElementById('new-btn').textContent = '＋ 新しい' + DOC.title;
   var term = '', month = '', status = '';
+  var selected = {};
 
   // 全角の数字・記号（日本語入力オンのまま入力した場合）も半角にして読む
   function toHalf(s) { return String(s == null ? '' : s).replace(/[０-９．，－]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[ー−‐]/g, '-'); }
@@ -141,6 +161,34 @@
     invoices.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')) || String(b.number || '').localeCompare(String(a.number || '')); });
   }
 
+  /* ---------- PDF保存（1件／チェックしたものをまとめて） ---------- */
+  function updateSelectBar() {
+    var n = Object.keys(selected).length;
+    document.getElementById('select-bar').classList.toggle('active', n > 0);
+    document.getElementById('select-count').textContent = n + '件選択中';
+  }
+  function pdfName(items) {
+    if (items.length === 1) {
+      var r = items[0], who = String(r.customer || '').trim().replace(/[\\/:*?"<>|]/g, '');
+      return String(r.date || '').replace(/-/g, '') + (KIND === 'delivery' ? '納品書' : '') + (who ? who + '様' : DOC.title) + '.pdf';
+    }
+    return DOC.title + '_' + items.length + '件_' + bulkStamp() + '.pdf';
+  }
+  function makePdf(items, btn) {
+    BulkPdf.run({
+      btn: btn, items: items, storageKey: DOC.reloadKey,
+      margin: 0, // 請求書は窓付き封筒に合わせて用紙いっぱいに配置しているので余白を足さない
+      renderOne: function (r) {
+        return BulkPdf.viaFrame(DOC.editor + (DOC.editor.indexOf('?') > -1 ? '&' : '?') + 'embed=1', DOC.reloadKey, JSON.stringify(r), function (w) { return w.captureForBulk(); });
+      },
+      name: pdfName
+    });
+  }
+  document.getElementById('btn-pdf').addEventListener('click', function () {
+    makePdf(invoices.filter(function (r) { return selected[r.id]; }), this);
+  });
+  document.getElementById('btn-clear').addEventListener('click', function () { selected = {}; updateSelectBar(); render(); });
+
   function openInEditor(inv) {
     localStorage.setItem(DOC.reloadKey, JSON.stringify(inv));
     location.href = DOC.editor;
@@ -176,6 +224,10 @@
       var f = figures(inv);
       var card = el('div', 'card');
       var s = el('div', 'summary');
+      var pick = document.createElement('input'); pick.type = 'checkbox'; pick.className = 'pick'; pick.checked = !!selected[inv.id];
+      pick.addEventListener('click', function (e) { e.stopPropagation(); });
+      pick.addEventListener('change', function () { if (pick.checked) selected[inv.id] = true; else delete selected[inv.id]; updateSelectBar(); });
+      s.appendChild(pick);
       var when = el('span', 'when', fmtDate(inv.date)); when.appendChild(el('small', null, inv.number || ''));
       var who = el('span', 'who', inv.customer ? inv.customer + ' ' + (inv.honor || '様') : '(名前未記入)');
       if (KIND === 'delivery') who.appendChild(el('span', 'badge ' + (inv.billedBy ? 'billed' : 'unbilled'), inv.billedBy ? '請求済み' + (inv.billedNumber ? ' ' + inv.billedNumber : '') : '未請求'));
@@ -215,6 +267,9 @@
         });
         acts.appendChild(toInv);
       }
+      var pdfBtn = el('button', 'copy-btn', 'PDF保存'); pdfBtn.type = 'button';
+      pdfBtn.addEventListener('click', function () { makePdf([inv], pdfBtn); });
+      acts.appendChild(pdfBtn);
       acts.appendChild(del);
       d.appendChild(acts);
 

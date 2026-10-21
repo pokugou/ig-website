@@ -95,6 +95,18 @@
   var searchTerm = '';
   var selected = {};
 
+  // 一覧の1件だけをPDF保存する（「選択したものをまとめてPDF保存」の仕組みを、その1件だけ選んだ状態で使う）
+  function pdfOne(key, btn) {
+    var keep = selected; selected = {}; selected[key] = true;
+    try { document.getElementById('btn-pdf').click(); } finally { selected = keep; }
+    if (btn) { var l = btn.textContent; btn.disabled = true; btn.textContent = '作成中…'; setTimeout(function () { btn.disabled = false; btn.textContent = l; }, 2500); }
+  }
+  function pdfBtn(key, cls) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = 'PDF保存';
+    b.addEventListener('click', function (e) { e.stopPropagation(); pdfOne(key, b); });
+    return b;
+  }
+
   function matchesSearch(record) {
     if (!searchTerm) return true;
     return Object.keys(record).some(function (k) {
@@ -194,6 +206,8 @@
           acts.appendChild(actBtn('同じ記入日（' + record['記入日'] + '）の' + sameDate.length + '件をまとめて編集 →', false, function () { openForEdit(sameDate); }));
         }
       }
+      var pb = actBtn('この1件をPDF保存', false, function () { pdfOne(rid, pb); });
+      acts.appendChild(pb);
       detail.appendChild(acts);
       var dl = document.createElement('dl');
       dl.className = 'detail-grid';
