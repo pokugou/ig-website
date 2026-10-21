@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZGVJT9WSZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9ZGVJT9WSZ');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>オーダーフォーム | IG Rod Planning</title>
+  <meta name="description" content="IG Rod Planningのカスタムロッドオーダーフォーム。STRIX EDGEをはじめ、各モデルのオーダーはこちらから。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010; --white:#f8f8f8;
+      --gray:#d0d0d0; --gray2:#999999;
+      --gold:#f5d062; --gold2:#e8a020; --gold3:#c87c10;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+      /* white theme */
+      --bg:#fff; --fg:#111; --fg2:#444; --fg3:#888;
+      --wborder:#e5e5e5; --wborder2:#d0d0d0;
+      --card-bg:#f7f7f7; --section-bg:#f4f4f4;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--bg); color: var(--fg); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(255,255,255,0.97); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--wborder); }
+    .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul > li { position: relative; }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(17,17,17,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--fg); background: rgba(0,0,0,0.03); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(255,255,255,0.99); border: 1px solid var(--wborder); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .has-drop:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(17,17,17,0.6); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--fg); background: rgba(204,34,0,0.06); }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: #fff !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .nav-contact:hover { background: var(--red2) !important; }
+    .nav-social { display: flex; align-items: center; gap: 1.2rem; margin-left: 1.25rem; border-left: 1px solid var(--wborder); padding-left: 1.25rem; }
+    .nav-social a { display: flex; transition: opacity 0.2s; opacity: 0.75; }
+    .nav-social a:hover { opacity: 1; }
+    .nav-genre { font-size: 0.58rem; color: #cc2200; letter-spacing: 0.04em; margin-left: 0.4rem; opacity: 1; font-weight: 600; }
+
+    /* HERO */
+    .page-hero { padding: 7rem 2rem 1rem; text-align: center; border-bottom: 1px solid var(--wborder); background: var(--section-bg); position: relative; overflow: hidden; }
+    .hero-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.75rem; }
+    .page-hero h1 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.75rem; color: var(--fg); }
+    .page-hero p { font-size: 0.9rem; color: var(--fg2); max-width: 500px; margin: 0 auto; }
+    .delivery-badge { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.25rem; padding: 0.45rem 1rem; border: 1px solid var(--wborder2); font-size: 0.75rem; color: var(--fg3); }
+    .delivery-badge span { color: var(--red); font-weight: 700; }
+
+    /* FORM WRAP */
+    .form-wrap { max-width: 760px; margin: 0 auto; padding: 1rem 2rem 1.5rem; }
+
+    /* SECTION BLOCK */
+    .form-section { margin-bottom: 1rem; }
+    .form-section-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .form-section-title::before { content: ''; display: block; width: 24px; height: 1px; background: var(--red); }
+
+    /* FIELD */
+    .field { margin-bottom: 1.25rem; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: 0.03em; }
+    .field label .req { font-size: 0.6rem; font-weight: 700; color: var(--red2); background: rgba(204,34,0,0.12); padding: 0.15rem 0.4rem; border-radius: 2px; margin-left: 0.4rem; letter-spacing: 0.06em; vertical-align: middle; }
+    .field-note { font-size: 0.7rem; color: var(--gray2); margin-bottom: 0.5rem; line-height: 1.6; }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%; background-color: #181818; background-image: none; border: 1px solid var(--border2); color: var(--white);
+      font-family: inherit; font-size: 0.88rem; padding: 0.75rem 1rem; outline: none;
+      transition: border-color 0.2s, background-color 0.2s;
+      -webkit-appearance: none; appearance: none; border-radius: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    select:focus,
+    textarea:focus { border-color: var(--red); background: var(--dark3); }
+    input::placeholder, textarea::placeholder { color: rgba(248,248,248,0.25); }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; cursor: pointer; }
+    select option { background: var(--dark2); }
+    textarea { resize: vertical; min-height: 100px; }
+
+    /* COLOR MODAL TRIGGER */
+    .cm-wrap { margin-top: 0.4rem; }
+    .cm-trigger { width: 100%; padding: 0.75rem 1rem; background: var(--dark2); border: 1px solid rgba(255,255,255,0.12); color: var(--white); border-radius: 8px; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; font-family: inherit; font-size: 0.88rem; transition: border-color 0.2s; }
+    .cm-trigger:hover { border-color: rgba(255,255,255,0.4); }
+    .cm-trigger-left { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
+    .cm-trigger-img { width: 36px; height: 36px; object-fit: cover; border-radius: 4px; display: none; flex-shrink: 0; }
+    .cm-trigger-txt { color: rgba(248,248,248,0.35); font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cm-trigger-txt.chosen { color: var(--white); }
+    .cm-trigger-arrow { flex-shrink: 0; opacity: 0.5; }
+    .cm-error .cm-trigger { border-color: var(--red2) !important; }
+
+    /* COLOR MODAL OVERLAY */
+    .cm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; align-items: center; justify-content: center; padding: 1rem; }
+    .cm-overlay.open { display: flex; }
+
+    /* COLOR MODAL BOX */
+    .cm-box { background: #18181b; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; }
+    .cm-box::-webkit-scrollbar { width: 4px; }
+    .cm-box::-webkit-scrollbar-track { background: #18181b; }
+    .cm-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+    /* MODAL HEADER */
+    .cm-head { position: sticky; top: 0; background: #18181b; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+    .cm-title { font-size: 1.5rem; font-weight: 900; color: var(--white); letter-spacing: -0.02em; }
+    .cm-close { background: none; border: none; cursor: pointer; color: rgba(248,248,248,0.45); padding: 0.25rem; transition: color 0.15s; line-height: 0; }
+    .cm-close:hover { color: var(--white); }
+
+    /* MODAL BODY */
+    .cm-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 2rem; }
+    .cm-note { font-size: 0.82rem; color: rgba(248,248,248,0.4); margin-top: -0.5rem; }
+
+    /* MODAL SECTION */
+    .cm-section-title { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+    /* OMAKASE BUTTONS */
+    .cm-omakase-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .cm-omakase-btn { width: 100%; padding: 0.85rem 1rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.15); cursor: pointer; transition: border-color 0.15s, transform 0.12s, background 0.15s; text-align: left; background: transparent; color: var(--white); font-family: inherit; font-size: 0.9rem; font-weight: 600; }
+    .cm-omakase-btn:hover { border-color: rgba(255,255,255,0.5); transform: scale(1.01); }
+    .cm-omakase-btn.selected { border-color: var(--white); background: rgba(255,255,255,0.07); }
+    .cm-warn { font-size: 0.72rem; color: var(--gold); text-align: center; margin-top: 0.6rem; }
+
+    /* COLOR GRID */
+    .cm-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.75rem; }
+    .cm-color-btn { border-radius: 8px; border: 2px solid rgba(255,255,255,0.12); cursor: pointer; transition: border-color 0.15s, transform 0.12s; background: transparent; padding: 0; overflow: hidden; text-align: left; }
+    .cm-color-btn:hover { border-color: rgba(255,255,255,0.5); transform: scale(1.03); }
+    .cm-color-btn.selected { border-color: var(--white); }
+    .cm-color-btn img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+    .cm-color-info { padding: 0.3rem 0.3rem 0.25rem; }
+    .cm-color-num { font-size: 0.65rem; font-weight: 700; color: var(--white); display: block; }
+    .cm-color-name { font-size: 0.62rem; color: rgba(248,248,248,0.5); display: block; }
+
+    /* OMAKASE PRICE TAG */
+    .cm-omakase-btn { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.18rem 0; }
+    .cm-omakase-price { font-size: 0.82rem; font-weight: 700; color: var(--gold); white-space: nowrap; margin-left: 0.75rem; flex-shrink: 0; }
+    .cm-omakase-note { font-size: 0.67rem; color: var(--gold); white-space: normal; margin-left: 0; flex-shrink: 0; width: 100%; }
+
+    /* OMAKASE ITEMS (スレッド) */
+    .sp-omakase { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+    .sp-omakase-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border: 2px solid transparent; border-radius: 3px; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: var(--dark3); }
+    .sp-omakase-item:hover { border-color: rgba(255,255,255,0.2); }
+    .sp-omakase-item.selected { border-color: var(--red); background: rgba(204,34,0,0.12); }
+    .sp-omakase-icon { width: 40px; height: 26px; border-radius: 2px; flex-shrink: 0; }
+    .sp-omakase-name { font-size: 0.83rem; font-weight: 700; }
+    .sp-omakase-sub { font-size: 0.68rem; color: var(--gray2); }
+
+    /* THREAD SWATCH GRID */
+    .cm-thread-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.45rem; }
+    .cm-thread-btn { border-radius: 6px; border: 2px solid rgba(255,255,255,0.12); cursor: pointer; transition: border-color 0.15s, transform 0.12s; background: transparent; padding: 0; overflow: hidden; text-align: left; }
+    .cm-thread-btn:hover { border-color: rgba(255,255,255,0.5); transform: scale(1.05); }
+    .cm-thread-btn.selected { border-color: var(--white); }
+    .cm-thread-btn img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; }
+    .cm-thread-info { padding: 0.2rem 0.25rem; }
+    .cm-thread-num { font-size: 0.55rem; font-weight: 700; color: var(--white); display: block; }
+    .cm-thread-name { font-size: 0.5rem; color: rgba(248,248,248,0.5); display: block; }
+
+    @media (max-width: 600px) {
+      .cm-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+      .cm-thread-grid { grid-template-columns: repeat(4, 1fr); }
+      .cm-title { font-size: 1.2rem; }
+      .cm-head { padding: 1rem; }
+      .cm-body { padding: 1rem; gap: 1.5rem; }
+    }
+
+    /* POSTAL CODE LOOKUP */
+    .zip-row { display: flex; align-items: stretch; gap: 0; margin-bottom: 0.5rem; }
+    .zip-mark { background: var(--dark3); border: 1px solid var(--border2); border-right: none; padding: 0 0.85rem; color: var(--gray2); font-size: 1rem; flex-shrink: 0; display: flex; align-items: center; }
+    .zip-input { flex: none !important; width: 170px !important; }
+    .zip-hint { font-size: 0.7rem; color: var(--gray2); margin-bottom: 0.5rem; }
+    .zip-status { font-size: 0.74rem; margin-left: 0.75rem; display: flex; align-items: center; }
+    .zip-status.zip-loading { color: var(--gray2); }
+    .zip-status.zip-ok { color: #4ade80; }
+    .zip-status.zip-error { color: var(--red2); }
+
+    /* SHARE BUTTONS (confirm + success) */
+    .confirm-share { padding: 0.75rem 2rem; display: flex; gap: 0.6rem; border-top: 1px solid var(--border); }
+    .share-btn { flex: 1; padding: 0.65rem 0.75rem; border: 1.5px solid rgba(255,255,255,0.12); background: transparent; font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; transition: background 0.15s, border-color 0.15s; text-decoration: none; letter-spacing: 0.02em; }
+    .share-btn.share-line { color: #06c755; border-color: rgba(6,199,85,0.4); }
+    .share-btn.share-line:hover { background: rgba(6,199,85,0.1); border-color: #06c755; }
+    .share-btn.share-save { color: var(--gold); border-color: rgba(245,208,98,0.4); }
+    .share-btn.share-save:hover { background: rgba(245,208,98,0.08); border-color: var(--gold); }
+    .share-btn.is-loading { opacity: 0.55; cursor: wait; pointer-events: none; }
+    .success-share { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
+    .success-share .share-btn { flex: none; min-width: 160px; padding: 0.8rem 1.25rem; }
+    @media (max-width: 600px) { .success-share { flex-direction: column; align-items: stretch; } .success-share .share-btn { min-width: unset; } }
+
+    /* CONFIRMATION OVERLAY */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 600; overflow-y: auto; padding: 2rem 1.5rem 3rem; }
+    .confirm-overlay.open { display: block; }
+    .confirm-box { background: #ffffff; border: 1px solid rgba(0,0,0,0.12); box-shadow: 0 8px 48px rgba(0,0,0,0.18); max-width: 980px; width: 100%; margin: 0 auto; animation: fadeInUp 0.25s ease; border-radius: 4px; overflow: hidden; }
+    .confirm-head { padding: 2rem 3rem 1.75rem; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid rgba(0,0,0,0.08); background: #fff; }
+    .confirm-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.4rem; }
+    .confirm-title { font-size: 1.9rem; font-weight: 900; letter-spacing: -0.02em; color: #111111; }
+    .confirm-back-top { background: none; border: 1px solid rgba(0,0,0,0.18); color: #999; padding: 0.5rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; line-height: 0; border-radius: 4px; flex-shrink: 0; margin-left: 1rem; }
+    .confirm-back-top:hover { color: #333; border-color: rgba(0,0,0,0.4); }
+    .confirm-lead { padding: 1rem 3rem; font-size: 0.92rem; color: #777; border-bottom: 1px solid rgba(0,0,0,0.07); line-height: 1.7; background: #fafafa; }
+    .confirm-body { padding: 2.25rem 3rem; display: flex; flex-direction: column; gap: 2rem; }
+    .confirm-section { }
+    .confirm-section.full-width { }
+    @media (min-width: 769px) {
+      .confirm-body { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem 4rem; }
+      .confirm-section.full-width { grid-column: 1 / -1; }
+      .confirm-lead { font-size: 1.1rem; }
+      .confirm-section-label { font-size: 1.1rem; margin-bottom: 1rem; }
+      .confirm-section-label::before { width: 20px; }
+      .confirm-row { padding: 0.9rem 0; font-size: 1.5rem; }
+      .confirm-row-label { font-size: 1.3rem; min-width: 190px; }
+      .confirm-swatch { width: 52px; height: 52px; }
+      .confirm-swatch-thread { width: 66px; height: 44px; }
+      .confirm-price-title { font-size: 1.1rem; margin-bottom: 1.1rem; }
+      .confirm-price-row { font-size: 1.5rem; padding: 0.7rem 0; }
+      .confirm-price-total .cpl { font-size: 1.6rem; }
+      .confirm-price-total .cpv { font-size: 2.8rem; }
+      .confirm-btn-back { font-size: 1.3rem; padding: 1.2rem 1.5rem; }
+      .confirm-btn-send { font-size: 1.4rem; padding: 1.2rem 1.5rem; }
+    }
+    .confirm-section-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .confirm-section-label::before { content: ''; display: block; width: 16px; height: 1px; background: var(--red); }
+    .confirm-row { display: flex; align-items: flex-start; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid rgba(0,0,0,0.07); font-size: 0.95rem; }
+    .confirm-row:last-child { border-bottom: none; }
+    .confirm-row-label { color: #888; min-width: 130px; flex-shrink: 0; font-size: 0.88rem; padding-top: 0.1rem; }
+    .confirm-row-val { color: #111111; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; flex: 1; word-break: break-all; }
+    .confirm-swatch { width: 36px; height: 36px; object-fit: cover; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.12); }
+    .confirm-swatch-thread { width: 46px; height: 30px; object-fit: cover; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.12); }
+    .confirm-price-box { background: #f5f5f5; border: 1px solid rgba(0,0,0,0.09); padding: 1.5rem 1.75rem; border-radius: 3px; }
+    .confirm-price-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #999; margin-bottom: 0.9rem; }
+    .confirm-price-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(0,0,0,0.07); font-size: 0.95rem; color: #444; }
+    .confirm-price-row .cpv { font-family: 'DM Sans', sans-serif; font-weight: 700; color: #222; }
+    .confirm-price-total { display: flex; justify-content: space-between; align-items: center; padding-top: 0.9rem; margin-top: 0.25rem; border-top: 2px solid rgba(0,0,0,0.12); }
+    .confirm-price-total .cpl { font-size: 1rem; font-weight: 700; color: #111; }
+    .confirm-price-total .cpv { font-family: 'DM Sans', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--red); }
+    .confirm-actions { padding: 1.75rem 3rem 2.25rem; display: flex; gap: 0.75rem; border-top: 1px solid rgba(0,0,0,0.08); background: #fafafa; }
+    .confirm-btn-back { flex: 1; padding: 1rem 1.25rem; background: transparent; border: 1px solid rgba(0,0,0,0.2); color: #666; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; transition: border-color 0.15s, color 0.15s; }
+    .confirm-btn-back:hover { border-color: rgba(0,0,0,0.4); color: #222; }
+    .confirm-btn-send { flex: 2; padding: 1rem 1.25rem; background: var(--red); border: none; color: var(--white); font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; letter-spacing: 0.05em; transition: background 0.2s, box-shadow 0.2s; box-shadow: 0 0 20px rgba(204,34,0,0.2); }
+    .confirm-btn-send:hover { background: var(--red2); box-shadow: 0 0 35px rgba(204,34,0,0.4); }
+
+    /* SUCCESS OVERLAY */
+    .success-overlay { display: none; position: fixed; inset: 0; background: var(--black); z-index: 700; align-items: center; justify-content: center; padding: 2rem; }
+    .success-overlay.open { display: flex; animation: fadeInUp 0.3s ease; }
+    .success-box { max-width: 460px; width: 100%; text-align: center; }
+    .success-check { width: 68px; height: 68px; background: rgba(204,34,0,0.1); border: 2px solid var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+    .success-check svg { color: var(--red); }
+    .success-eyebrow { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.75rem; }
+    .success-h { font-size: 1.5rem; font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .success-p { font-size: 0.88rem; color: var(--gray2); line-height: 1.9; margin-bottom: 0.75rem; }
+    .success-note { font-size: 0.78rem; color: rgba(248,248,248,0.5); background: var(--dark2); border: 1px solid var(--border2); padding: 0.85rem 1.1rem; margin: 0 auto 2rem; line-height: 1.8; max-width: 380px; }
+    .success-note strong { color: var(--gold); }
+    .success-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; background: transparent; border: 1px solid var(--border2); color: var(--gray); font-family: inherit; font-size: 0.88rem; font-weight: 600; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+    .success-btn:hover { border-color: rgba(255,255,255,0.4); color: var(--white); }
+
+    @media (max-width: 600px) {
+      /* 確認画面：モバイル1画面に収める */
+      .confirm-overlay { padding: 0; overflow: hidden; }
+      .confirm-box { border-left: none; border-right: none; border-radius: 0; zoom: 0.72; width: calc(100vw / 0.72); max-width: none; margin-left: 0; }
+      .confirm-eyebrow { display: none; }
+      .confirm-title { font-size: 0.92rem; }
+      .confirm-head { padding: 0.55rem 0.9rem 0.5rem; }
+      .confirm-back-top { padding: 0.2rem; }
+      .confirm-lead { display: none; }
+      .confirm-body { padding: 0.35rem 0.9rem; gap: 0.28rem; display: flex; flex-direction: column; }
+      .confirm-section-label { font-size: 0.48rem; margin-bottom: 0.14rem; letter-spacing: 0.1em; }
+      .confirm-section-label::before { width: 10px; }
+      .confirm-row { padding: 0.1rem 0; font-size: 0.72rem; gap: 0.3rem; }
+      .confirm-row-label { min-width: 74px; font-size: 0.65rem; padding-top: 0.08rem; }
+      .confirm-row-val { font-size: 0.72rem; gap: 0.3rem; }
+      .confirm-swatch { width: 19px; height: 19px; }
+      .confirm-swatch-thread { width: 25px; height: 16px; }
+      .confirm-price-box { padding: 0.35rem 0.7rem; }
+      .confirm-price-title { display: none; }
+      .confirm-price-row { padding: 0.1rem 0; font-size: 0.72rem; }
+      .confirm-price-row .cpv { font-size: 0.72rem; }
+      .confirm-price-total { padding-top: 0.22rem; margin-top: 0.08rem; }
+      .confirm-price-total .cpl { font-size: 0.78rem; }
+      .confirm-price-total .cpv { font-size: 1rem; }
+      .confirm-share { padding: 0.28rem 0.9rem; gap: 0.35rem; }
+      .share-btn { padding: 0.42rem 0.4rem; font-size: 0.68rem; gap: 0.28rem; }
+      .confirm-actions { flex-direction: column-reverse; padding: 0.28rem 0.9rem 0.45rem; gap: 0.3rem; }
+      .confirm-btn-back, .confirm-btn-send { padding: 0.5rem 0.75rem; font-size: 0.76rem; }
+    }
+
+    /* SWATCH PICKER (スレッド) */
+    .sp-wrap { border: 1px solid var(--border2); padding: 1.25rem; background: var(--dark); margin-top: 0.4rem; }
+    .sp-cat-lbl { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; color: var(--red2); margin-bottom: 0.6rem; margin-top: 1rem; }
+    .sp-cat-lbl:first-child { margin-top: 0; }
+    .sp-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.4rem; margin-bottom: 0.25rem; }
+    .sp-item { cursor: pointer; display: flex; flex-direction: column; gap: 0.2rem; border: 2px solid transparent; border-radius: 3px; padding: 2px; transition: border-color 0.15s, background 0.15s; }
+    .sp-item:hover { border-color: rgba(255,255,255,0.25); }
+    .sp-item.selected { border-color: var(--red); background: rgba(204,34,0,0.12); }
+    .sp-item img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; border-radius: 2px; }
+    .sp-item .sp-name { font-size: 0.5rem; color: rgba(248,248,248,0.45); line-height: 1.2; text-align: center; }
+    .sp-current { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.6rem; font-size: 0.75rem; min-height: 1.4em; }
+    .sp-current-img { width: 28px; height: 18px; object-fit: cover; border-radius: 2px; display: none; border: 1px solid var(--border2); flex-shrink: 0; }
+    .sp-current-txt { color: var(--gray2); }
+    .sp-current-txt.chosen { color: var(--white); font-weight: 700; }
+    .sp-error { border-color: var(--red2) !important; }
+
+    /* PRICE BOX */
+    .price-box { background: var(--dark); border: 1px solid var(--border2); padding: 2rem; margin-bottom: 2rem; }
+    .price-box-title { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.25rem; }
+    .price-row { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--gray); }
+    .price-row:last-child { border-bottom: none; }
+    .price-row .price-label { }
+    .price-row .price-val { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); }
+    .price-row.total { padding-top: 1rem; margin-top: 0.25rem; border-top: 1px solid var(--border2); border-bottom: none; }
+    .price-row.total .price-label { font-size: 0.9rem; font-weight: 700; color: var(--white); }
+    .price-row.total .price-val { font-size: 1.3rem; color: var(--gold); }
+
+    /* NOTICE */
+    .notice-box { background: rgba(204,34,0,0.06); border: 1px solid rgba(204,34,0,0.2); border-left: 3px solid var(--red); padding: 1rem 1.25rem; margin-bottom: 2rem; font-size: 0.78rem; color: var(--gray); line-height: 1.8; }
+    .notice-box strong { color: var(--white); display: block; margin-bottom: 0.3rem; font-size: 0.82rem; }
+
+    /* CONTACT METHOD TOGGLE */
+    .contact-method-toggle { display: flex; border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; width: fit-content; }
+    .cm-method-btn { padding: 0.55rem 1.25rem; font-size: 0.82rem; font-weight: 700; border: none; background: transparent; color: rgba(248,248,248,0.4); cursor: pointer; font-family: inherit; letter-spacing: 0.03em; transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 0.5rem; }
+    .cm-method-btn:first-child { border-right: 1px solid var(--border2); }
+    .cm-method-btn.active { background: var(--dark3); color: var(--white); }
+    .cm-method-btn.active.line-btn { color: #06c755; }
+    .line-contact-note { font-size: 0.82rem; color: var(--gray2); line-height: 1.8; padding: 0.85rem 1rem; background: rgba(6,199,85,0.05); border: 1px solid rgba(6,199,85,0.2); border-radius: 4px; }
+
+    /* SUBMIT */
+    .btn-submit { display: flex; align-items: center; justify-content: center; gap: 0.6rem; width: 100%; padding: 1.1rem; background: var(--red); color: var(--white); font-family: inherit; font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s, box-shadow 0.2s; box-shadow: 0 0 30px rgba(204,34,0,0.3); }
+    .btn-submit:hover { background: var(--red2); transform: translateY(-2px); box-shadow: 0 0 50px rgba(204,34,0,0.5); }
+    .btn-submit.line-mode { background: #06c755; box-shadow: 0 0 30px rgba(6,199,85,0.3); }
+    .btn-submit.line-mode:hover { background: #05b34a; box-shadow: 0 0 50px rgba(6,199,85,0.5); }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0.75rem 0; }
+
+    /* HAMBURGER */
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--fg); border-radius: 2px; transition: transform 0.28s, opacity 0.28s; transform-origin: center; }
+    .hamburger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* FOOTER */
+    footer { background: var(--bg); border-top: 1px solid var(--wborder); padding: 4rem 3rem 2.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--wborder); }
+    .footer-brand p { font-size: 0.85rem; color: var(--fg2); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg3); margin-bottom: 1.5rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--fg2); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--fg); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--fg3); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--fg3); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--fg2); }
+
+    @media (max-width: 1024px) {
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    }
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+
+      nav ul { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 0.5rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--wborder); }
+      nav ul.is-open { display: flex; }
+      nav ul > li { display: block !important; width: 100%; border-bottom: 1px solid var(--wborder); }
+      nav ul > li > a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; }
+      .has-drop:hover .dropdown { display: none; }
+      .has-drop.is-open .dropdown { display: block; }
+      .dropdown { position: static; border: none; border-top: 1px solid var(--wborder); background: rgba(0,0,0,0.02); min-width: unset; box-shadow: none; }
+      .dropdown li a { padding: 0.75rem 2rem; }
+      .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
+      .form-wrap { padding: 1rem 1.5rem 1.5rem; }
+      .color-field-wrap { flex-direction: column; }
+      .color-chart-link { width: 100%; justify-content: center; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      footer { padding: 3rem 1.5rem 2rem; }
+    }
+
+    /* ========== フォームセクション白カード ========== */
+    .form-section {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.28);
+    }
+    .divider { display: none; } /* カード間の区切り線は不要 */
+
+    /* カード内テキスト */
+    .form-section .form-section-title { color: var(--red2); }
+    .form-section .field label { color: #111111; }
+    .form-section .field .req { color: var(--red2); background: rgba(204,34,0,0.1); }
+    .form-section .field-note { color: #666666; }
+
+    /* カード内フォーム要素 */
+    .form-section input[type="text"],
+    .form-section input[type="email"],
+    .form-section input[type="tel"],
+    .form-section select,
+    .form-section textarea {
+      background: #f4f4f4;
+      border: 1px solid rgba(0,0,0,0.14);
+      color: #111111;
+    }
+    .form-section input[type="text"]:focus,
+    .form-section input[type="email"]:focus,
+    .form-section input[type="tel"]:focus,
+    .form-section select:focus,
+    .form-section textarea:focus {
+      background: #ffffff;
+      border-color: var(--red);
+    }
+    .form-section input::placeholder,
+    .form-section textarea::placeholder { color: rgba(0,0,0,0.28); }
+    .form-section select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
+    .form-section select option { background: #ffffff; color: #111111; }
+
+    /* カード内連絡方法トグル */
+    .form-section .contact-method-toggle { border-color: rgba(0,0,0,0.15); }
+    .form-section .cm-method-btn { color: rgba(0,0,0,0.4); }
+    .form-section .cm-method-btn:first-child { border-color: rgba(0,0,0,0.12); }
+    .form-section .cm-method-btn.active { background: rgba(0,0,0,0.07); color: #111111; }
+    .form-section .cm-method-btn.active.line-btn { color: #06c755; }
+    .form-section .line-contact-note { color: #444444; }
+
+    /* カード内カラーモーダルトリガー */
+    .form-section .cm-trigger { background: #f4f4f4; border-color: rgba(0,0,0,0.14); color: #111111; }
+    .form-section .cm-trigger:hover { border-color: rgba(0,0,0,0.35); }
+    .form-section .cm-trigger-txt { color: rgba(0,0,0,0.35); }
+    .form-section .cm-trigger-txt.chosen { color: #111111; }
+
+    /* カード内スレッドピッカー */
+    .form-section .sp-wrap { background: #f0f0f0; border-color: rgba(0,0,0,0.1); }
+    .form-section .sp-cat-lbl { color: var(--red2); }
+    .form-section .sp-item .sp-name { color: rgba(0,0,0,0.45); }
+    .form-section .sp-item:hover { border-color: rgba(0,0,0,0.3); }
+    .form-section .sp-omakase-item { background: #e8e8e8; }
+    .form-section .sp-omakase-item:hover { border-color: rgba(0,0,0,0.25); }
+    .form-section .sp-omakase-name { color: #111111; }
+    .form-section .sp-omakase-sub { color: #666666; }
+    .form-section .sp-current-txt { color: #888888; }
+    .form-section .sp-current-txt.chosen { color: #111111; }
+
+    /* カード内郵便番号 */
+    .form-section .zip-mark { background: #ebebeb; border-color: rgba(0,0,0,0.12); color: #666666; }
+    .form-section .zip-hint { color: #888888; }
+
+    /* 料金ボックス（カード内） */
+    .form-section .price-box { background: #f4f4f4; border-color: rgba(0,0,0,0.1); }
+    .form-section .price-box-title { color: #888888; }
+    .form-section .price-row { color: #444444; border-color: rgba(0,0,0,0.1); }
+    .form-section .price-row .price-val { color: #111111; }
+    .form-section .price-row.total .price-label { color: #111111; }
+    .form-section .price-row.total .price-val { color: var(--red); }
+
+    /* 注意書き（カード内） */
+    .form-section .notice-box { background: rgba(204,34,0,0.04); border-color: rgba(204,34,0,0.22); color: #555555; }
+    .form-section .notice-box strong { color: #111111; }
+
+    @media (max-width: 768px) {
+      .form-section { padding: 1.25rem; border-radius: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:42px;width:auto;" />
+  </a>
+  <ul id="nav-menu">
+    <li class="has-drop"><a href="products.html">商品一覧</a>
+      <ul class="dropdown">
+        <li class="has-drop"><a href="products.html">オフショア</a>
+          <ul class="dropdown" style="left:100%;top:0;">
+            <li><a href="strixedge.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
+            <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+            <li><a href="gtlj.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
+            <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
+            <li><a href="gts.html">GTS <span class="nav-genre">スロージギング</span></a></li>
+            <li><a href="gtr.html">GTR <span class="nav-genre">タイラバ</span></a></li>
+          </ul>
+        </li>
+        <li class="has-drop"><a href="products.html">ショア</a>
+          <ul class="dropdown" style="left:100%;top:0;">
+            <li><a href="gtx.html">GTX <span class="nav-genre">ロックショア</span></a></li>
+          </ul>
+        </li>
+        <li class="has-drop"><a href="products.html">船竿</a>
+          <ul class="dropdown" style="left:100%;top:0;">
+            <li><a href="ika.html">イカ竿</a></li>
+          </ul>
+        </li>
+        <li class="has-drop"><a href="products.html">底物</a>
+          <ul class="dropdown" style="left:100%;top:0;">
+            <li><a href="ishidai.html">VS石鯛</a></li>
+            <li><a href="vskue.html">VS九絵</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li class="has-drop"><a href="order.html">オーダーについて</a>
+      <ul class="dropdown">
+        <li><a href="order.html">オーダーシートはこちらから</a></li>
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+        <li><a href="simulator.html">カラーシミュレーター</a></li>
+      </ul>
+    </li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+    <a href="order.html" style="display:inline-flex;align-items:center;height:34px;padding:0 1rem;background:transparent;border:1px solid var(--wborder2);color:var(--fg2);border-radius:3px;font-size:0.76rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='#aaa';this.style.color='#111'" onmouseout="this.style.borderColor='var(--wborder2)';this.style.color='var(--fg2)'">オーダーシート</a>
+    <a href="contact.html" class="nav-contact">お問い合わせ</a>
+  </div>
+  <div class="nav-social">
+    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><defs><radialGradient id="ig-nav-grad" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig-nav-grad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="https://www.tiktok.com/@ig2025123?_r=1&amp;_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#111111"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+    <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="hero-eyebrow">Custom Order</div>
+  <h1>オーダーフォーム</h1>
+  <p>ご注文内容をご記入のうえ送信してください。<br>確認後、担当者よりご連絡いたします。</p>
+  <div class="delivery-badge">納期の目安：<span>お支払い後 60〜70日前後</span></div>
+  <p style="font-size:0.82rem; color:var(--fg2); margin-top:1rem; line-height:1.9;">特殊な仕様と在庫状況によってさらにお待たせする場合もございます。オーダー送信後に返答させていただきます。<br>記入方法がよくわからない場合は直接 <a href="https://lin.ee/8eONfci" target="_blank" rel="noopener" style="color:#06c755; font-weight:700; text-decoration:none;">公式LINE</a> か <a href="contact.html" style="color:var(--fg); font-weight:700; text-decoration:underline;">メール</a> でお問い合わせください。</p>
+</div>
+
+<!-- QUICK LINKS -->
+<div style="max-width:720px; margin:0 auto; padding:0 1.5rem 2.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+  <a href="color.html" target="_blank" rel="noopener" style="flex:1; min-width:140px; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.75rem 1rem; border:1px solid #d0d0d0; color:#555; background:transparent; text-decoration:none; font-size:0.8rem; font-weight:700; letter-spacing:0.04em; border-radius:3px; transition:border-color 0.2s, color 0.2s;" onmouseover="this.style.borderColor='#999';this.style.color='#111'" onmouseout="this.style.borderColor='#d0d0d0';this.style.color='#555'">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22c4.97 0 9-2.69 9-6-0-.83-.29-1.61-.79-2.3"/><path d="M12 22C7.03 22 3 19.31 3 16c0-2.07 1.47-3.9 3.71-5"/></svg>
+    カラーチャートを見る
+  </a>
+  <a href="custom.html" target="_blank" rel="noopener" style="flex:1; min-width:140px; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.75rem 1rem; border:1px solid #d0d0d0; color:#555; background:transparent; text-decoration:none; font-size:0.8rem; font-weight:700; letter-spacing:0.04em; border-radius:3px; transition:border-color 0.2s, color 0.2s;" onmouseover="this.style.borderColor='#999';this.style.color='#111'" onmouseout="this.style.borderColor='#d0d0d0';this.style.color='#555'">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    カスタム箇所の説明
+  </a>
+</div>
+
+<!-- FORM -->
+<div class="form-wrap">
+  <form id="order-form" novalidate>
+
+    <!-- 基本情報 -->
+    <div class="form-section">
+      <div class="form-section-title">基本情報</div>
+
+      <div class="field">
+        <label>お客様名<span class="req">必須</span></label>
+        <input type="text" name="name" placeholder="例：山田 太郎" required />
+      </div>
+
+      <!-- 連絡方法 -->
+      <div class="field">
+        <label>連絡方法<span class="req">必須</span></label>
+        <div class="contact-method-toggle">
+          <button type="button" class="cm-method-btn active" id="method-email">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            メール
+          </button>
+          <button type="button" class="cm-method-btn line-btn" id="method-line">
+            <svg width="14" height="14" viewBox="0 0 48 48" fill="#06c755"><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1s12.7-7.5 17.3-12.7c3.3-3.8 5-7.3 5-9.3z"/></svg>
+            LINE公式
+          </button>
+        </div>
+        <input type="hidden" name="contact-method" id="contact-method-input" value="email" />
+      </div>
+
+      <div class="field" id="field-email">
+        <label>メールアドレス<span class="req">必須</span></label>
+        <input type="email" name="email" id="email-input" placeholder="例：info@example.com" required />
+      </div>
+
+      <div class="field" id="field-line-note" style="display:none;">
+        <p class="line-contact-note">注文内容を確認後、LINEで担当者に送信します。<br>公式アカウントを友だち追加していない方は先に追加してください。</p>
+      </div>
+
+      <div class="field">
+        <label>電話番号<span class="req">必須</span></label>
+        <input type="tel" name="tel" placeholder="例：090-0000-0000" required />
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- ベースモデル -->
+    <div class="form-section">
+      <div class="form-section-title">ベースモデル</div>
+
+      <div class="field">
+        <label>モデル選択<span class="req">必須</span></label>
+        <select name="model" id="sel-model" required>
+          <option value="">選択してください</option>
+          <optgroup label="── STRIX EDGE　イカメタル ──">
+            <option value="SE510ML-B" data-price="39300">SE510ML-B（ベイト）　¥39,300</option>
+            <option value="SE66ML-B"  data-price="39600">SE66ML-B（ベイト）　¥39,600</option>
+            <option value="SE510ML-S" data-price="39300">SE510ML-S（スピニング）　¥39,300</option>
+            <option value="SE66ML-S"  data-price="39600">SE66ML-S（スピニング）　¥39,600</option>
+          </optgroup>
+          <optgroup label="── STRIX EDGE　ティップランカスタム ──">
+            <option value="SE510ML-TR" data-price="41200">SE510ML-TR（スピニング）　¥41,200</option>
+            <option value="SE66ML-TR"  data-price="41500">SE66ML-TR（スピニング）　¥41,500</option>
+          </optgroup>
+          <optgroup label="── GTLJ　ライトジギング ──">
+            <option value="GTLJ63ULB" data-price="32800">GTLJ63ULB（ベイト）　¥32,800</option>
+            <option value="GTLJ63LB"  data-price="33200">GTLJ63LB（ベイト）　¥33,200</option>
+            <option value="GTLJ63MB"  data-price="34500">GTLJ63MB（ベイト）　¥34,500</option>
+            <option value="GTLJ63ULS" data-price="32800">GTLJ63ULS（スピニング）　¥32,800</option>
+            <option value="GTLJ63LS"  data-price="33200">GTLJ63LS（スピニング）　¥33,200</option>
+            <option value="GTLJ63MS"  data-price="34500">GTLJ63MS（スピニング）　¥34,500</option>
+          </optgroup>
+          <optgroup label="── GTSLJ　超万能ライトオフショアロッド ──">
+            <option value="GTSLJ62UL-B" data-price="29800">GTSLJ62UL-B（ベイト）　¥29,800</option>
+            <option value="GTSLJ63L-B"  data-price="29800">GTSLJ63L-B（ベイト）　¥29,800</option>
+            <option value="GTSLJ62UL-S" data-price="29800">GTSLJ62UL-S（スピニング）　¥29,800</option>
+            <option value="GTSLJ63L-S"  data-price="29800">GTSLJ63L-S（スピニング）　¥29,800</option>
+          </optgroup>
+          <optgroup label="── GTS　スロージギング ──">
+            <option value="GTS632"  data-price="35600">GTS632（ベイト）　¥35,600</option>
+            <option value="GTS5102" data-price="35300">GTS5102（ベイト）　¥35,300</option>
+            <option value="GTS633"  data-price="36300">GTS633（ベイト）　¥36,300</option>
+            <option value="GTS5103" data-price="36000">GTS5103（ベイト）　¥36,000</option>
+            <option value="GTS634"  data-price="36800">GTS634（ベイト）　¥36,800</option>
+            <option value="GTS5104" data-price="33000">GTS5104（ベイト）　¥33,000</option>
+          </optgroup>
+          <optgroup label="── GTJ　ジギング ──">
+            <option value="GTJ62MLS" data-price="33800">GTJ62MLS（スピニング）　¥33,800</option>
+            <option value="GTJ62MS"  data-price="34800">GTJ62MS（スピニング）　¥34,800</option>
+            <option value="GTJ62MHS" data-price="35800">GTJ62MHS（スピニング）　¥35,800</option>
+            <option value="GTLJ63ULS-B" data-price="33800">GTLJ63ULS（ベイト）　¥33,800</option>
+            <option value="GTLJ63LS-B"  data-price="34800">GTLJ63LS（ベイト）　¥34,800</option>
+            <option value="GTLJ63MS-B"  data-price="35800">GTLJ63MS（ベイト）　¥35,800</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- カラーカスタム -->
+    <div class="form-section">
+      <div class="form-section-title">カラーカスタム</div>
+
+      <!-- ブランクスカラー -->
+      <div class="field">
+        <label>ブランクスカラー<span class="req">必須</span></label>
+        <div class="cm-wrap" id="cm-wrap-blank-color">
+          <button type="button" class="cm-trigger" id="cm-trigger-blank-color">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-blank-color" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-blank-color">カラーチャートから選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+        <input type="hidden" name="blank-color" id="f-blank-color" />
+      </div>
+
+      <!-- ティップカラー -->
+      <div class="field">
+        <label>ティップカラー<span class="req">必須</span></label>
+        <div class="cm-wrap" id="cm-wrap-tip-color">
+          <button type="button" class="cm-trigger" id="cm-trigger-tip-color">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-tip-color" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-tip-color">カラーチャートから選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+        <input type="hidden" name="tip-color" id="f-tip-color" />
+      </div>
+
+      <!-- メインスレッド -->
+      <div class="field">
+        <label>メインスレッド<span class="req">必須</span></label>
+        <div class="cm-wrap" id="cm-wrap-thread-main">
+          <button type="button" class="cm-trigger" id="cm-trigger-thread-main">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-thread-main" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-thread-main">スレッドカラーを選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+        <input type="hidden" name="thread-main" id="f-thread-main" />
+      </div>
+
+      <!-- ティップ部分スレッド -->
+      <div class="field">
+        <label>ティップ部分スレッド<span class="req">必須</span></label>
+        <div class="cm-wrap" id="cm-wrap-thread-tip">
+          <button type="button" class="cm-trigger" id="cm-trigger-thread-tip">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-thread-tip" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-thread-tip">スレッドカラーを選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+        <input type="hidden" name="thread-tip" id="f-thread-tip" />
+      </div>
+
+      <!-- ピンラインスレッド -->
+      <div class="field">
+        <label>ピンラインスレッド<span class="req">必須</span></label>
+        <div class="cm-wrap" id="cm-wrap-thread-pin">
+          <button type="button" class="cm-trigger" id="cm-trigger-thread-pin">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-thread-pin" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-thread-pin">スレッドカラーを選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+        <input type="hidden" name="thread-pin" id="f-thread-pin" />
+        <p class="field-note" style="margin-top:0.5rem">※ チタントップの箇所にピンラインは付きません。</p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- カスタムオプション -->
+    <div class="form-section">
+      <div class="form-section-title">カスタムオプション</div>
+
+      <div class="field">
+        <label>ガイド仕様<span class="req">必須</span></label>
+        <select name="guide" id="sel-guide" required>
+          <option value="straight" data-price="0">ストレート（＋¥0）</option>
+          <option value="spiral-r"  data-price="0">右スパイラル（＋¥0）</option>
+          <option value="spiral-l"  data-price="0">左スパイラル（＋¥0）</option>
+          <option value="torzite"   data-price="6000">トルザイトガイド（＋¥6,000）</option>
+        </select>
+      </div>
+
+      <div class="field" id="torzite-layout-field" style="display:none">
+        <label>トルザイト ガイドレイアウト<span class="req">必須</span></label>
+        <select id="sel-guide-layout">
+          <option value="">選択してください</option>
+          <option value="ストレート">ストレート</option>
+          <option value="右スパイラル">右スパイラル</option>
+          <option value="左スパイラル">左スパイラル</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>グリップ仕様<span class="req">必須</span></label>
+        <select name="grip" id="sel-grip" required>
+          <option value="eva"    data-price="0">EVA（＋¥0）</option>
+          <option value="cork"   data-price="3800">コルクグリップ（＋¥3,800）</option>
+          <option value="reel"   data-price="6000">リールシート塗装（＋¥6,000）</option>
+        </select>
+      </div>
+
+      <!-- リールシートカラー（リールシート塗装選択時のみ表示） -->
+      <div class="field" id="reel-color-field" style="display:none">
+        <label>リールシートカラー<span class="req">必須</span></label>
+        <div class="cm-wrap" id="cm-wrap-reel-color">
+          <button type="button" class="cm-trigger" id="cm-trigger-reel-color">
+            <div class="cm-trigger-left">
+              <img class="cm-trigger-img" id="cm-timg-reel-color" src="" alt="">
+              <span class="cm-trigger-txt" id="cm-ttxt-reel-color">カラーチャートから選択</span>
+            </div>
+            <svg class="cm-trigger-arrow" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        </div>
+        <input type="hidden" name="reel-color" id="f-reel-color" />
+      </div>
+
+      <div class="field">
+        <label>ネーム仕様</label>
+        <select name="name-custom" id="sel-name">
+          <option value="定番ネームのみ（＋¥0）" data-price="0">定番ネームのみ（＋¥0）</option>
+          <option value="オリジナルネーム（１箇所 ¥1,200）" data-price="1200">オリジナルネーム（１箇所 ¥1,200）</option>
+        </select>
+        <div id="name-original-note" style="display:none; margin-top:0.6rem; font-size:0.82rem; color:var(--gray2); background:rgba(255,255,255,0.04); border:1px solid var(--border2); border-radius:4px; padding:0.7rem 1rem; line-height:1.7;">
+          ご希望の文字（ローマ字・漢字・カタカナ等）を下の<strong style="color:var(--white);">自由記入欄</strong>にご記入ください。
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- 備考 -->
+    <div class="form-section">
+      <div class="form-section-title">こだわり・備考</div>
+      <div class="field">
+        <label>自由記入</label>
+        <textarea name="note" placeholder="カラーコーディネートのご希望、ご質問など何でもお気軽にどうぞ。"></textarea>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- 配送・支払い -->
+    <div class="form-section">
+      <div class="form-section-title">配送・お支払い</div>
+
+      <div class="field">
+        <label>送料<span class="req">必須</span></label>
+        <select name="shipping" required>
+          <option value="">選択してください</option>
+          <option value="free">西濃運輸の営業所止め・事業所宛（送料無料）</option>
+          <option value="paid">個人宅宛（着払い）</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>送り先住所<span class="req">必須</span></label>
+        <div class="zip-row">
+          <span class="zip-mark">〒</span>
+          <input type="text" id="zip-input" class="zip-input" placeholder="郵便番号（数字7桁）" maxlength="8" inputmode="numeric" autocomplete="postal-code" />
+          <span class="zip-status" id="zip-status"></span>
+        </div>
+        <p class="zip-hint">郵便番号を入力すると住所が自動で入力されます</p>
+        <textarea name="address" id="address-input" placeholder="都道府県・市区町村・番地・建物名&#10;（西濃運輸の営業所名でも可）" style="min-height:80px;" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>お支払い方法<span class="req">必須</span></label>
+        <select name="payment" required>
+          <option value="">選択してください</option>
+          <option value="bank">銀行振込（振込先を返信にてご案内します）</option>
+          <option value="paypay">PayPay（決済用URLをお送りします）</option>
+          <option value="card">カード決済（お客様専用の決済用URLをお送りします）</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- 料金確認 -->
+    <div class="price-box">
+      <div class="price-box-title">料金確認</div>
+      <div class="price-row">
+        <span class="price-label">ベースモデル</span>
+        <span class="price-val" id="p-base">¥0</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">ガイド仕様</span>
+        <span class="price-val" id="p-guide">＋¥0</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">グリップ仕様</span>
+        <span class="price-val" id="p-grip">＋¥0</span>
+      </div>
+      <div class="price-row" id="pr-blank-color-row" style="display:none">
+        <span class="price-label">ブランクスカラー</span>
+        <span class="price-val" id="p-blank-color">＋¥0</span>
+      </div>
+      <div class="price-row" id="pr-tip-color-row" style="display:none">
+        <span class="price-label">ティップカラー</span>
+        <span class="price-val" id="p-tip-color">＋¥0</span>
+      </div>
+      <div class="price-row" id="pr-reel-color-row" style="display:none">
+        <span class="price-label">リールシートカラー</span>
+        <span class="price-val" id="p-reel-color">＋¥0</span>
+      </div>
+      <div class="price-row" id="pr-name-row" style="display:none">
+        <span class="price-label">ネーム仕様</span>
+        <span class="price-val" id="p-name">＋¥0</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">合計（税抜）</span>
+        <span class="price-val" id="p-subtotal">¥0</span>
+      </div>
+      <div class="price-row total">
+        <span class="price-label">税込合計</span>
+        <span class="price-val" id="p-total">¥0</span>
+      </div>
+    </div>
+
+    <div class="notice-box">
+      <strong>ご注文前にご確認ください</strong>
+      ・ご注文確定後のキャンセル・変更はお受けできない場合があります。<br>
+      ・納期はお支払い確認後、60〜70日前後を予定しています。<br>
+      ・カラーは画面上の色味と実物が異なる場合があります。ご不明な点はお気軽にお問い合わせください。
+    </div>
+
+    <button type="submit" class="btn-submit">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      内容を確認して送信する
+    </button>
+
+  </form>
+</div>
+
+<!-- ===== COLOR MODALS ===== -->
+
+<!-- ブランクスカラーモーダル -->
+<div class="cm-overlay" id="cm-overlay-blank-color">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">ブランクスカラーを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-blank-color">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="cm-body">
+      <p class="cm-note">※これ以外に希望するカラーも調色で塗装可能なのでこだわり欄に記載してください</p>
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="blank-color" data-val="こだわり備考欄に記載" data-img="" data-price="0"><span>こだわり備考欄に記載</span><span class="cm-omakase-note">別途オプション料金（送信後やり取りさせていただきます）</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="blank-color" data-val="派手系でおまかせコーディネート" data-img="" data-price="9000"><span>派手系でおまかせコーディネート</span><span class="cm-omakase-price">＋¥9,000</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="blank-color" data-val="ダーク系のシンプルでコーディネート" data-img="" data-price="3000"><span>ダーク系のシンプルでコーディネート</span><span class="cm-omakase-price">＋¥3,000</span></button>
+        </div>
+        <p class="cm-warn">※上記三つを選択した場合はこちらから再度見積させて頂きます。</p>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット通常色 ¥8,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="001 ホワイト" data-img="swatches/b001.jpg" data-price="8000"><img src="swatches/b001.jpg" alt="ホワイト"><div class="cm-color-info"><span class="cm-color-num">001</span><span class="cm-color-name">ホワイト</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="002 ブラック" data-img="swatches/b002.jpg" data-price="8000"><img src="swatches/b002.jpg" alt="ブラック"><div class="cm-color-info"><span class="cm-color-num">002</span><span class="cm-color-name">ブラック</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="003 ブルー" data-img="swatches/b003.jpg" data-price="8000"><img src="swatches/b003.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">003</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="004 レッド" data-img="swatches/b004.jpg" data-price="8000"><img src="swatches/b004.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">004</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="005 イエロー" data-img="swatches/b005.jpg" data-price="8000"><img src="swatches/b005.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">005</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="006 グリーン" data-img="swatches/b006.jpg" data-price="8000"><img src="swatches/b006.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">006</span><span class="cm-color-name">グリーン</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラットメタリック色 ¥9,500UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="007 シルバー" data-img="swatches/b007.jpg" data-price="9500"><img src="swatches/b007.jpg" alt="シルバー"><div class="cm-color-info"><span class="cm-color-num">007</span><span class="cm-color-name">シルバー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="008 ゴールド" data-img="swatches/b008.jpg" data-price="9500"><img src="swatches/b008.jpg" alt="ゴールド"><div class="cm-color-info"><span class="cm-color-num">008</span><span class="cm-color-name">ゴールド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="009 ブルー" data-img="swatches/b009.jpg" data-price="9500"><img src="swatches/b009.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">009</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="010 レッド" data-img="swatches/b010.jpg" data-price="9500"><img src="swatches/b010.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">010</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="011 グリーン" data-img="swatches/b011.jpg" data-price="9500"><img src="swatches/b011.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">011</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="012 オレンジ" data-img="swatches/b012.jpg" data-price="9500"><img src="swatches/b012.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">012</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット蛍光色 ¥9,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="013 グリーン" data-img="swatches/b013.jpg" data-price="9000"><img src="swatches/b013.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">013</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="014 イエロー" data-img="swatches/b014.jpg" data-price="9000"><img src="swatches/b014.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">014</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="015 ピンク" data-img="swatches/b015.jpg" data-price="9000"><img src="swatches/b015.jpg" alt="ピンク"><div class="cm-color-info"><span class="cm-color-num">015</span><span class="cm-color-name">ピンク</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="016 オレンジ" data-img="swatches/b016.jpg" data-price="9000"><img src="swatches/b016.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">016</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">マジョーラ色 ¥12,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="blank-color" data-val="017 ブルーパープルマジョーラ" data-img="swatches/b017.jpg" data-price="12000"><img src="swatches/b017.jpg" alt="ブルーパープルマジョーラ"><div class="cm-color-info"><span class="cm-color-num">017</span><span class="cm-color-name">ブルーパープルマジョーラ</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ティップカラーモーダル -->
+<div class="cm-overlay" id="cm-overlay-tip-color">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">ティップカラーを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-tip-color">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="cm-body">
+      <p class="cm-note">※これ以外に希望するカラーも調色で塗装可能なのでこだわり欄に記載してください</p>
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="tip-color" data-val="変更なし" data-img="" data-price="0"><span>変更なし</span><span class="cm-omakase-price">＋¥0</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="tip-color" data-val="こだわり備考欄に記載" data-img="" data-price="0"><span>こだわり備考欄に記載</span><span class="cm-omakase-note">別途オプション料金（送信後やり取りさせていただきます）</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="tip-color" data-val="派手系でおまかせコーディネート" data-img="" data-price="3000"><span>派手系でおまかせコーディネート</span><span class="cm-omakase-price">＋¥3,000</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="tip-color" data-val="ダーク系のシンプルでコーディネート" data-img="" data-price="3000"><span>ダーク系のシンプルでコーディネート</span><span class="cm-omakase-price">＋¥3,000</span></button>
+        </div>
+        <p class="cm-warn">※上記三つを選択した場合はこちらから再度見積させて頂きます。</p>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット通常色 ¥3,000UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="001 ホワイト" data-img="swatches/b001.jpg" data-price="3000"><img src="swatches/b001.jpg" alt="ホワイト"><div class="cm-color-info"><span class="cm-color-num">001</span><span class="cm-color-name">ホワイト</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="002 ブラック" data-img="swatches/b002.jpg" data-price="3000"><img src="swatches/b002.jpg" alt="ブラック"><div class="cm-color-info"><span class="cm-color-num">002</span><span class="cm-color-name">ブラック</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="003 ブルー" data-img="swatches/b003.jpg" data-price="3000"><img src="swatches/b003.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">003</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="004 レッド" data-img="swatches/b004.jpg" data-price="3000"><img src="swatches/b004.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">004</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="005 イエロー" data-img="swatches/b005.jpg" data-price="3000"><img src="swatches/b005.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">005</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="006 グリーン" data-img="swatches/b006.jpg" data-price="3000"><img src="swatches/b006.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">006</span><span class="cm-color-name">グリーン</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラットメタリック色 ¥3,500UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="007 シルバー" data-img="swatches/b007.jpg" data-price="3500"><img src="swatches/b007.jpg" alt="シルバー"><div class="cm-color-info"><span class="cm-color-num">007</span><span class="cm-color-name">シルバー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="008 ゴールド" data-img="swatches/b008.jpg" data-price="3500"><img src="swatches/b008.jpg" alt="ゴールド"><div class="cm-color-info"><span class="cm-color-num">008</span><span class="cm-color-name">ゴールド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="009 ブルー" data-img="swatches/b009.jpg" data-price="3500"><img src="swatches/b009.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">009</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="010 レッド" data-img="swatches/b010.jpg" data-price="3500"><img src="swatches/b010.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">010</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="011 グリーン" data-img="swatches/b011.jpg" data-price="3500"><img src="swatches/b011.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">011</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="012 オレンジ" data-img="swatches/b012.jpg" data-price="3500"><img src="swatches/b012.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">012</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット蛍光色 ¥3,500UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="013 グリーン" data-img="swatches/b013.jpg" data-price="3500"><img src="swatches/b013.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">013</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="014 イエロー" data-img="swatches/b014.jpg" data-price="3500"><img src="swatches/b014.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">014</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="015 ピンク" data-img="swatches/b015.jpg" data-price="3500"><img src="swatches/b015.jpg" alt="ピンク"><div class="cm-color-info"><span class="cm-color-num">015</span><span class="cm-color-name">ピンク</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="016 オレンジ" data-img="swatches/b016.jpg" data-price="3500"><img src="swatches/b016.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">016</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">マジョーラ色 ¥4,200UP</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="tip-color" data-val="017 ブルーパープルマジョーラ" data-img="swatches/b017.jpg" data-price="4200"><img src="swatches/b017.jpg" alt="ブルーパープルマジョーラ"><div class="cm-color-info"><span class="cm-color-num">017</span><span class="cm-color-name">ブルーパープルマジョーラ</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REEL COLOR MODAL ===== -->
+<div class="cm-overlay" id="cm-overlay-reel-color">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">リールシートカラーを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-reel-color">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="cm-body">
+      <p class="cm-note">※全カテゴリー共通 ＋¥6,000</p>
+      <div>
+        <h4 class="cm-section-title">フラット通常色 ¥6,000</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="001 ホワイト" data-img="swatches/b001.jpg" data-price="0"><img src="swatches/b001.jpg" alt="ホワイト"><div class="cm-color-info"><span class="cm-color-num">001</span><span class="cm-color-name">ホワイト</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="002 ブラック" data-img="swatches/b002.jpg" data-price="0"><img src="swatches/b002.jpg" alt="ブラック"><div class="cm-color-info"><span class="cm-color-num">002</span><span class="cm-color-name">ブラック</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="003 ブルー" data-img="swatches/b003.jpg" data-price="0"><img src="swatches/b003.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">003</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="004 レッド" data-img="swatches/b004.jpg" data-price="0"><img src="swatches/b004.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">004</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="005 イエロー" data-img="swatches/b005.jpg" data-price="0"><img src="swatches/b005.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">005</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="006 グリーン" data-img="swatches/b006.jpg" data-price="0"><img src="swatches/b006.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">006</span><span class="cm-color-name">グリーン</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラットメタリック色 ¥6,000</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="007 シルバー" data-img="swatches/b007.jpg" data-price="0"><img src="swatches/b007.jpg" alt="シルバー"><div class="cm-color-info"><span class="cm-color-num">007</span><span class="cm-color-name">シルバー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="008 ゴールド" data-img="swatches/b008.jpg" data-price="0"><img src="swatches/b008.jpg" alt="ゴールド"><div class="cm-color-info"><span class="cm-color-num">008</span><span class="cm-color-name">ゴールド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="009 ブルー" data-img="swatches/b009.jpg" data-price="0"><img src="swatches/b009.jpg" alt="ブルー"><div class="cm-color-info"><span class="cm-color-num">009</span><span class="cm-color-name">ブルー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="010 レッド" data-img="swatches/b010.jpg" data-price="0"><img src="swatches/b010.jpg" alt="レッド"><div class="cm-color-info"><span class="cm-color-num">010</span><span class="cm-color-name">レッド</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="011 グリーン" data-img="swatches/b011.jpg" data-price="0"><img src="swatches/b011.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">011</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="012 オレンジ" data-img="swatches/b012.jpg" data-price="0"><img src="swatches/b012.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">012</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">フラット蛍光色 ¥6,000</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="013 グリーン" data-img="swatches/b013.jpg" data-price="0"><img src="swatches/b013.jpg" alt="グリーン"><div class="cm-color-info"><span class="cm-color-num">013</span><span class="cm-color-name">グリーン</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="014 イエロー" data-img="swatches/b014.jpg" data-price="0"><img src="swatches/b014.jpg" alt="イエロー"><div class="cm-color-info"><span class="cm-color-num">014</span><span class="cm-color-name">イエロー</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="015 ピンク" data-img="swatches/b015.jpg" data-price="0"><img src="swatches/b015.jpg" alt="ピンク"><div class="cm-color-info"><span class="cm-color-num">015</span><span class="cm-color-name">ピンク</span></div></button>
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="016 オレンジ" data-img="swatches/b016.jpg" data-price="0"><img src="swatches/b016.jpg" alt="オレンジ"><div class="cm-color-info"><span class="cm-color-num">016</span><span class="cm-color-name">オレンジ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">マジョーラ色 ¥6,000</h4>
+        <div class="cm-grid">
+          <button type="button" class="cm-color-btn" data-field="reel-color" data-val="017 ブルーパープルマジョーラ" data-img="swatches/b017.jpg" data-price="0"><img src="swatches/b017.jpg" alt="ブルーパープルマジョーラ"><div class="cm-color-info"><span class="cm-color-num">017</span><span class="cm-color-name">ブルーパープルマジョーラ</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== THREAD MODALS ===== -->
+
+<!-- スレッド共通 HTML マクロ：メイン -->
+<div class="cm-overlay" id="cm-overlay-thread-main">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">メインスレッドを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-thread-main"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="cm-body">
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="thread-main" data-val="こだわり備考欄に記載" data-img="" data-price="0"><span>こだわり備考欄に記載</span><span class="cm-omakase-note">別途オプション料金（送信後やり取りさせていただきます）</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-main" data-val="派手にお任せコーディネート" data-img="" data-price="0"><span>派手にお任せコーディネート</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-main" data-val="ダーク系のシンプルコーディネート" data-img="" data-price="0"><span>ダーク系のシンプルコーディネート</span></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">ダルスレッド</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg" alt="ホワイト"><div class="cm-thread-info"><span class="cm-thread-num">101</span><span class="cm-thread-name">ホワイト</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg" alt="ブラック"><div class="cm-thread-info"><span class="cm-thread-num">102</span><span class="cm-thread-name">ブラック</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg" alt="ダークグレー"><div class="cm-thread-info"><span class="cm-thread-num">112</span><span class="cm-thread-name">D.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg" alt="ライトグレー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">L.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg" alt="ライトグリーン"><div class="cm-thread-info"><span class="cm-thread-num">172</span><span class="cm-thread-name">L.グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">103</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">104</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">166</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg" alt="ターコイズ"><div class="cm-thread-info"><span class="cm-thread-num">109</span><span class="cm-thread-name">ターコイズ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">145</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">105</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg" alt="ネイビー"><div class="cm-thread-info"><span class="cm-thread-num">106</span><span class="cm-thread-name">ネイビー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">107</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">メタリックカラー</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg" alt="シルバー"><div class="cm-thread-info"><span class="cm-thread-num">201</span><span class="cm-thread-name">シルバー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg" alt="ゴールド"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">ゴールド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">237</span><span class="cm-thread-name">ピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">203</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg" alt="Dピンク"><div class="cm-thread-info"><span class="cm-thread-num">206</span><span class="cm-thread-name">Dピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">207</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">208</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">209</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">210</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg" alt="カッパー"><div class="cm-thread-info"><span class="cm-thread-num">211</span><span class="cm-thread-name">カッパー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg" alt="ブラウン"><div class="cm-thread-info"><span class="cm-thread-num">212</span><span class="cm-thread-name">ブラウン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg" alt="ブロンズ"><div class="cm-thread-info"><span class="cm-thread-num">213</span><span class="cm-thread-name">ブロンズ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">蛍光色</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">301</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">302</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">303</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">304</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-main" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">305</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ティップ部分スレッドモーダル -->
+<div class="cm-overlay" id="cm-overlay-thread-tip">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">ティップ部分スレッドを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-thread-tip"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="cm-body">
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="thread-tip" data-val="こだわり備考欄に記載" data-img="" data-price="0"><span>こだわり備考欄に記載</span><span class="cm-omakase-note">別途オプション料金（送信後やり取りさせていただきます）</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-tip" data-val="派手にお任せコーディネート" data-img="" data-price="0"><span>派手にお任せコーディネート</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-tip" data-val="ダーク系のシンプルコーディネート" data-img="" data-price="0"><span>ダーク系のシンプルコーディネート</span></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">ダルスレッド</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg" alt="ホワイト"><div class="cm-thread-info"><span class="cm-thread-num">101</span><span class="cm-thread-name">ホワイト</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg" alt="ブラック"><div class="cm-thread-info"><span class="cm-thread-num">102</span><span class="cm-thread-name">ブラック</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg" alt="ダークグレー"><div class="cm-thread-info"><span class="cm-thread-num">112</span><span class="cm-thread-name">D.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg" alt="ライトグレー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">L.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg" alt="ライトグリーン"><div class="cm-thread-info"><span class="cm-thread-num">172</span><span class="cm-thread-name">L.グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">103</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">104</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">166</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg" alt="ターコイズ"><div class="cm-thread-info"><span class="cm-thread-num">109</span><span class="cm-thread-name">ターコイズ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">145</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">105</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg" alt="ネイビー"><div class="cm-thread-info"><span class="cm-thread-num">106</span><span class="cm-thread-name">ネイビー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">107</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">メタリックカラー</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg" alt="シルバー"><div class="cm-thread-info"><span class="cm-thread-num">201</span><span class="cm-thread-name">シルバー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg" alt="ゴールド"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">ゴールド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">237</span><span class="cm-thread-name">ピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">203</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg" alt="Dピンク"><div class="cm-thread-info"><span class="cm-thread-num">206</span><span class="cm-thread-name">Dピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">207</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">208</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">209</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">210</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg" alt="カッパー"><div class="cm-thread-info"><span class="cm-thread-num">211</span><span class="cm-thread-name">カッパー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg" alt="ブラウン"><div class="cm-thread-info"><span class="cm-thread-num">212</span><span class="cm-thread-name">ブラウン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg" alt="ブロンズ"><div class="cm-thread-info"><span class="cm-thread-num">213</span><span class="cm-thread-name">ブロンズ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">蛍光色</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">301</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">302</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">303</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">304</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-tip" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">305</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ピンラインスレッドモーダル -->
+<div class="cm-overlay" id="cm-overlay-thread-pin">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3 class="cm-title">ピンラインスレッドを選択</h3>
+      <button type="button" class="cm-close" id="cm-close-thread-pin"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="cm-body">
+      <div>
+        <h4 class="cm-section-title">おまかせ・備考欄指定</h4>
+        <div class="cm-omakase-list">
+          <button type="button" class="cm-omakase-btn" data-field="thread-pin" data-val="こだわり備考欄に記載" data-img="" data-price="0"><span>こだわり備考欄に記載</span><span class="cm-omakase-note">別途オプション料金（送信後やり取りさせていただきます）</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-pin" data-val="派手にお任せコーディネート" data-img="" data-price="0"><span>派手にお任せコーディネート</span></button>
+          <button type="button" class="cm-omakase-btn" data-field="thread-pin" data-val="ダーク系のシンプルコーディネート" data-img="" data-price="0"><span>ダーク系のシンプルコーディネート</span></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">ダルスレッド</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="101 ホワイト" data-img="swatches/t101.jpg"><img src="swatches/t101.jpg" alt="ホワイト"><div class="cm-thread-info"><span class="cm-thread-num">101</span><span class="cm-thread-name">ホワイト</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="102 ブラック" data-img="swatches/t102.jpg"><img src="swatches/t102.jpg" alt="ブラック"><div class="cm-thread-info"><span class="cm-thread-num">102</span><span class="cm-thread-name">ブラック</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="112 ダークグレー" data-img="swatches/t112.jpg"><img src="swatches/t112.jpg" alt="ダークグレー"><div class="cm-thread-info"><span class="cm-thread-num">112</span><span class="cm-thread-name">D.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="118 ライトグレー" data-img="swatches/t118lg.jpg"><img src="swatches/t118lg.jpg" alt="ライトグレー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">L.グレー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="172 ライトグリーン" data-img="swatches/t172.jpg"><img src="swatches/t172.jpg" alt="ライトグリーン"><div class="cm-thread-info"><span class="cm-thread-num">172</span><span class="cm-thread-name">L.グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="202 グリーン" data-img="swatches/t202g.jpg"><img src="swatches/t202g.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="103 レッド" data-img="swatches/t103.jpg"><img src="swatches/t103.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">103</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="104 オレンジ" data-img="swatches/t104.jpg"><img src="swatches/t104.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">104</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="166 パープル" data-img="swatches/t166.jpg"><img src="swatches/t166.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">166</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="109 ターコイズ" data-img="swatches/t109.jpg"><img src="swatches/t109.jpg" alt="ターコイズ"><div class="cm-thread-info"><span class="cm-thread-num">109</span><span class="cm-thread-name">ターコイズ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="145 ライトブルー" data-img="swatches/t145.jpg"><img src="swatches/t145.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">145</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="118 ブルー" data-img="swatches/t118b.jpg"><img src="swatches/t118b.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">118</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="105 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">105</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="106 ネイビー" data-img="swatches/t106.jpg"><img src="swatches/t106.jpg" alt="ネイビー"><div class="cm-thread-info"><span class="cm-thread-num">106</span><span class="cm-thread-name">ネイビー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="107 ピンク" data-img="swatches/t107.jpg"><img src="swatches/t107.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">107</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">メタリックカラー</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="201 シルバー" data-img="swatches/t201.jpg"><img src="swatches/t201.jpg" alt="シルバー"><div class="cm-thread-info"><span class="cm-thread-num">201</span><span class="cm-thread-name">シルバー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="202 ゴールド" data-img="swatches/t202go.jpg"><img src="swatches/t202go.jpg" alt="ゴールド"><div class="cm-thread-info"><span class="cm-thread-num">202</span><span class="cm-thread-name">ゴールド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="237 ピンク" data-img="swatches/t237.jpg"><img src="swatches/t237.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">237</span><span class="cm-thread-name">ピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="203 レッド" data-img="swatches/t203.jpg"><img src="swatches/t203.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">203</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="206 Dピンク" data-img="swatches/t206.jpg"><img src="swatches/t206.jpg" alt="Dピンク"><div class="cm-thread-info"><span class="cm-thread-num">206</span><span class="cm-thread-name">Dピンク</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="207 パープル" data-img="swatches/t207.jpg"><img src="swatches/t207.jpg" alt="パープル"><div class="cm-thread-info"><span class="cm-thread-num">207</span><span class="cm-thread-name">パープル</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="208 ブルー" data-img="swatches/t208.jpg"><img src="swatches/t208.jpg" alt="ブルー"><div class="cm-thread-info"><span class="cm-thread-num">208</span><span class="cm-thread-name">ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="209 ライトブルー" data-img="swatches/t209.jpg"><img src="swatches/t209.jpg" alt="ライトブルー"><div class="cm-thread-info"><span class="cm-thread-num">209</span><span class="cm-thread-name">L.ブルー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="210 グリーン" data-img="swatches/t210.jpg"><img src="swatches/t210.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">210</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="211 カッパー" data-img="swatches/t211.jpg"><img src="swatches/t211.jpg" alt="カッパー"><div class="cm-thread-info"><span class="cm-thread-num">211</span><span class="cm-thread-name">カッパー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="212 ブラウン" data-img="swatches/t212.jpg"><img src="swatches/t212.jpg" alt="ブラウン"><div class="cm-thread-info"><span class="cm-thread-num">212</span><span class="cm-thread-name">ブラウン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="213 ブロンズ" data-img="swatches/t213.jpg"><img src="swatches/t213.jpg" alt="ブロンズ"><div class="cm-thread-info"><span class="cm-thread-num">213</span><span class="cm-thread-name">ブロンズ</span></div></button>
+        </div>
+      </div>
+      <div>
+        <h4 class="cm-section-title">蛍光色</h4>
+        <div class="cm-thread-grid">
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="301 イエロー" data-img="swatches/t105.jpg"><img src="swatches/t105.jpg" alt="イエロー"><div class="cm-thread-info"><span class="cm-thread-num">301</span><span class="cm-thread-name">イエロー</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="302 オレンジ" data-img="swatches/t302.jpg"><img src="swatches/t302.jpg" alt="オレンジ"><div class="cm-thread-info"><span class="cm-thread-num">302</span><span class="cm-thread-name">オレンジ</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="303 グリーン" data-img="swatches/t303.jpg"><img src="swatches/t303.jpg" alt="グリーン"><div class="cm-thread-info"><span class="cm-thread-num">303</span><span class="cm-thread-name">グリーン</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="304 レッド" data-img="swatches/t304.jpg"><img src="swatches/t304.jpg" alt="レッド"><div class="cm-thread-info"><span class="cm-thread-num">304</span><span class="cm-thread-name">レッド</span></div></button>
+          <button type="button" class="cm-thread-btn" data-field="thread-pin" data-val="305 ピンク" data-img="swatches/t305.jpg"><img src="swatches/t305.jpg" alt="ピンク"><div class="cm-thread-info"><span class="cm-thread-num">305</span><span class="cm-thread-name">ピンク</span></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER SUMMARY CARD (html2canvas capture target) -->
+<div id="order-card" style="position:fixed;left:-9999px;top:0;width:375px;background:#ffffff;font-family:'Noto Sans JP',sans-serif;overflow:hidden;color:#111111;"></div>
+
+<!-- IMAGE PREVIEW OVERLAY -->
+<div id="img-preview-overlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.96);overflow-y:auto;-webkit-overflow-scrolling:touch;">
+  <div style="max-width:400px;margin:0 auto;padding:20px 16px 40px;">
+    <div style="font-size:8px;font-weight:700;letter-spacing:0.18em;color:#cc2200;text-align:center;margin-bottom:4px;">ORDER IMAGE</div>
+    <div style="font-size:12px;color:#888;text-align:center;margin-bottom:12px;">長押しして「写真に追加」で保存できます</div>
+    <img id="img-preview" src="" alt="オーダー内容" style="width:100%;border-radius:4px;display:block;-webkit-user-select:none;user-select:none;" />
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px;">
+      <a id="img-download-link" href="" download="" style="display:block;padding:13px;background:#222;color:#f0f0f0;border-radius:4px;text-decoration:none;font-size:13px;font-weight:700;text-align:center;">⬇ 画像を保存する</a>
+      <a href="line://" style="display:block;padding:13px;background:#06c755;color:#fff;border-radius:4px;text-decoration:none;font-size:13px;font-weight:700;text-align:center;">LINE を開く</a>
+      <button onclick="closeImgPreview()" style="padding:11px;background:transparent;color:#666;border:1px solid #333;border-radius:4px;font-size:12px;cursor:pointer;width:100%;">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION OVERLAY -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-head">
+      <div>
+        <div class="confirm-eyebrow">Order Confirmation</div>
+        <h2 class="confirm-title">注文内容の確認</h2>
+      </div>
+      <button type="button" class="confirm-back-top" id="confirm-back-top" aria-label="閉じる">
+        <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="confirm-lead">以下の内容でご注文を承ります。内容をご確認のうえ、送信ボタンを押してください。</p>
+    <div class="confirm-body" id="confirm-body"></div>
+    <div class="confirm-share" style="flex-wrap:wrap;">
+      <a href="https://lin.ee/8eONfci" target="_blank" rel="noopener" class="share-btn share-line" id="btn-line-confirm">
+        <svg width="16" height="16" viewBox="0 0 48 48" fill="currentColor"><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1S41 14.5 44.7 20.1z" opacity=".01"/><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1s12.7-7.5 17.3-12.7c3.3-3.8 5-7.3 5-9.3z"/></svg>
+        LINE公式に相談
+      </a>
+      <button type="button" class="share-btn share-save" id="btn-save-image">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        画像に保存してLINEに送る
+      </button>
+      <p style="width:100%; font-size:0.73rem; color:var(--red); margin:0.5rem 0 0; line-height:1.7;">※ 上記のオーダーフォームをスクショしてLINEに送ってくれてもいいです。</p>
+    </div>
+    <div class="confirm-actions">
+      <button type="button" class="confirm-btn-back" id="confirm-btn-back">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+        戻って修正する
+      </button>
+      <button type="button" class="confirm-btn-send" id="confirm-btn-send">
+        内容を確認して送信する
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-box">
+    <div class="success-check">
+      <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <div class="success-eyebrow">Order Sent</div>
+    <h2 class="success-h">ご注文ありがとうございます</h2>
+    <p class="success-p">オーダー内容を <strong>info@ig-rod.jp</strong> へ送信しました。<br>担当者よりご連絡いたします。</p>
+    <div class="success-share" style="flex-wrap:wrap;">
+      <a href="https://lin.ee/8eONfci" target="_blank" rel="noopener" class="share-btn share-line">
+        <svg width="16" height="16" viewBox="0 0 48 48" fill="currentColor"><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1s12.7-7.5 17.3-12.7c3.3-3.8 5-7.3 5-9.3z"/></svg>
+        LINE公式に相談
+      </a>
+      <button type="button" class="share-btn share-save" id="btn-save-success">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        画像に保存してLINEに送る
+      </button>
+      <p style="width:100%; font-size:0.73rem; color:var(--red); margin:0.5rem 0 0; line-height:1.7;">※ 上記のオーダーフォームをスクショしてLINEに送ってくれてもいいです。</p>
+    </div>
+    <div class="success-note">
+      ご不明な点は<br>
+      <strong>info@ig-rod.jp</strong> まで直接ご連絡ください
+    </div>
+    <a href="index.html" class="success-btn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      トップページへ戻る
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="IG Rod Planning" style="height:40px;width:auto;display:block;" />
+        </a>
+        <p>自分色のオリジナル釣竿を作ってみませんか。カスタムロッド制作・リメイク・カラーカスタムを一本一本丁寧に手作りで仕上げるロッドビルダーです。</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="strixedge.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
+          <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+          <li><a href="gtlj.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
+          <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html">オリジナルロッド制作</a></li>
+          <li><a href="services.html">リメイク</a></li>
+          <li><a href="services.html">カラーカスタム</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></li>
+                              <li style="padding-top:0.25rem;">
+            <div style="display:flex;gap:1rem;align-items:center;">
+              <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram" style="display:flex;transition:opacity 0.2s;opacity:0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><defs><radialGradient id="ig-footer-grad" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig-footer-grad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+              <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook" style="display:flex;transition:opacity 0.2s;opacity:0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+              <a href="https://www.tiktok.com/@ig2025123?_r=1&amp;_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok" style="display:flex;transition:opacity 0.2s;opacity:0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#f8f8f8"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+              <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube" style="display:flex;transition:opacity 0.2s;opacity:0.8;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <a href="https://ig-rod.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+// --- お任せオプション料金管理 ---
+var cmPrices = { 'blank-color': 0, 'tip-color': 0, 'reel-color': 0 };
+
+// --- カラー／スレッドモーダル ---
+var cmFields = ['blank-color', 'tip-color', 'reel-color', 'thread-main', 'thread-tip', 'thread-pin'];
+cmFields.forEach(function(field) {
+  var trigger = document.getElementById('cm-trigger-' + field);
+  var overlay = document.getElementById('cm-overlay-' + field);
+  var closeBtn = document.getElementById('cm-close-' + field);
+  if (!trigger || !overlay) return;
+
+  // トリガーボタンクリックでモーダルを開く
+  trigger.addEventListener('click', function() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  // 閉じるボタン
+  closeBtn.addEventListener('click', function() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  // オーバーレイ背景クリックで閉じる
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // カラーボタン（スウォッチ）クリック
+  overlay.querySelectorAll('.cm-color-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var val = this.dataset.val;
+      var img = this.dataset.img;
+      // 同フィールドの選択状態リセット
+      overlay.querySelectorAll('.cm-color-btn, .cm-thread-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
+      this.classList.add('selected');
+      // hidden inputに値セット
+      document.getElementById('f-' + field).value = val;
+      // カラー料金を記録して再計算
+      cmPrices[field] = parseInt(this.dataset.price || 0);
+      calcPrice();
+      // トリガーボタン表示更新
+      var txt = document.getElementById('cm-ttxt-' + field);
+      var timg = document.getElementById('cm-timg-' + field);
+      txt.textContent = val;
+      txt.classList.add('chosen');
+      if (img) { timg.src = img; timg.style.display = 'block'; }
+      // エラー解除
+      var wrap = document.getElementById('cm-wrap-' + field);
+      if (wrap) wrap.classList.remove('cm-error');
+      delete formErrors[field]; updateErrorDisplay();
+      // モーダルを閉じる
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // スレッドボタンクリック
+  overlay.querySelectorAll('.cm-thread-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var val = this.dataset.val;
+      var img = this.dataset.img;
+      overlay.querySelectorAll('.cm-color-btn, .cm-thread-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
+      this.classList.add('selected');
+      document.getElementById('f-' + field).value = val;
+      cmPrices[field] = 0;
+      var txt = document.getElementById('cm-ttxt-' + field);
+      var timg = document.getElementById('cm-timg-' + field);
+      txt.textContent = val;
+      txt.classList.add('chosen');
+      if (img) { timg.src = img; timg.style.display = 'block'; }
+      var wrap = document.getElementById('cm-wrap-' + field);
+      if (wrap) wrap.classList.remove('cm-error');
+      delete formErrors[field]; updateErrorDisplay();
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // お任せボタンクリック
+  overlay.querySelectorAll('.cm-omakase-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var val = this.dataset.val;
+      var price = parseInt(this.dataset.price || 0);
+      // 同フィールドの選択状態リセット
+      overlay.querySelectorAll('.cm-color-btn, .cm-thread-btn, .cm-omakase-btn').forEach(function(b){ b.classList.remove('selected'); });
+      this.classList.add('selected');
+      // hidden inputに値セット
+      document.getElementById('f-' + field).value = val;
+      // お任せ料金を記録して再計算
+      cmPrices[field] = price;
+      calcPrice();
+      // トリガーボタン表示更新
+      var txt = document.getElementById('cm-ttxt-' + field);
+      var timg = document.getElementById('cm-timg-' + field);
+      txt.textContent = val + (price > 0 ? '　＋¥' + price.toLocaleString('ja-JP') : '');
+      txt.classList.add('chosen');
+      timg.style.display = 'none';
+      // エラー解除
+      var wrap = document.getElementById('cm-wrap-' + field);
+      if (wrap) wrap.classList.remove('cm-error');
+      delete formErrors[field]; updateErrorDisplay();
+      // モーダルを閉じる
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+});
+
+// Escキーでモーダルを閉じる
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.cm-overlay.open').forEach(function(o){
+      o.classList.remove('open');
+    });
+    document.body.style.overflow = '';
+  }
+});
+
+
+// --- 料金計算 ---
+function calcPrice() {
+  const modelEl  = document.getElementById('sel-model');
+  const guideEl  = document.getElementById('sel-guide');
+  const gripEl   = document.getElementById('sel-grip');
+
+  const base  = modelEl.selectedIndex > 0 ? parseInt(modelEl.options[modelEl.selectedIndex].dataset.price || 0) : 0;
+  const guide = parseInt(guideEl.options[guideEl.selectedIndex].dataset.price || 0);
+  const grip  = parseInt(gripEl.options[gripEl.selectedIndex].dataset.price || 0);
+  const blankColorPrice = cmPrices['blank-color'] || 0;
+  const tipColorPrice   = cmPrices['tip-color'] || 0;
+  const reelColorPrice  = cmPrices['reel-color'] || 0;
+  const nameEl  = document.getElementById('sel-name');
+  const namePrice = parseInt(nameEl.options[nameEl.selectedIndex].dataset.price || 0);
+
+  const fmt = n => '¥' + n.toLocaleString('ja-JP');
+
+  // ブランクスカラー行（色が選択されたら表示）
+  var blankSel = document.getElementById('f-blank-color').value;
+  var blankRow = document.getElementById('pr-blank-color-row');
+  if (blankRow) blankRow.style.display = blankSel ? '' : 'none';
+  document.getElementById('p-blank-color').textContent = '＋' + fmt(blankColorPrice);
+
+  // ティップカラー行（色が選択されたら表示）
+  var tipSel = document.getElementById('f-tip-color').value;
+  var tipRow = document.getElementById('pr-tip-color-row');
+  if (tipRow) tipRow.style.display = tipSel ? '' : 'none';
+  document.getElementById('p-tip-color').textContent = '＋' + fmt(tipColorPrice);
+
+  // リールシートカラー行（色が選択されたら表示）
+  var reelSel = document.getElementById('f-reel-color').value;
+  var reelRow = document.getElementById('pr-reel-color-row');
+  if (reelRow) reelRow.style.display = (reelSel && reelColorPrice > 0) ? '' : 'none';
+  var reelPriceEl = document.getElementById('p-reel-color');
+  if (reelPriceEl) reelPriceEl.textContent = '＋' + fmt(reelColorPrice);
+
+  // ネーム仕様行
+  var nameRow = document.getElementById('pr-name-row');
+  if (nameRow) nameRow.style.display = namePrice > 0 ? '' : 'none';
+  document.getElementById('p-name').textContent = '＋' + fmt(namePrice);
+
+  const subtotal = base + guide + grip + blankColorPrice + tipColorPrice + reelColorPrice + namePrice;
+  const total    = Math.round(subtotal * 1.1);
+
+  document.getElementById('p-base').textContent     = fmt(base);
+  document.getElementById('p-guide').textContent    = '＋' + fmt(guide);
+  document.getElementById('p-grip').textContent     = '＋' + fmt(grip);
+  document.getElementById('p-subtotal').textContent = fmt(subtotal);
+  document.getElementById('p-total').textContent    = fmt(total);
+}
+
+document.getElementById('sel-model').addEventListener('change', calcPrice);
+document.getElementById('sel-guide').addEventListener('change', function() {
+  var layoutField = document.getElementById('torzite-layout-field');
+  var layoutSel   = document.getElementById('sel-guide-layout');
+  if (this.value === 'torzite') {
+    layoutField.style.display = '';
+  } else {
+    layoutField.style.display = 'none';
+    layoutSel.value = '';
+    delete formErrors['guide-layout'];
+    if (typeof updateErrorDisplay === 'function') updateErrorDisplay();
+  }
+  calcPrice();
+});
+document.getElementById('sel-grip').addEventListener('change', function() {
+  var reelField = document.getElementById('reel-color-field');
+  if (this.value === 'reel') {
+    reelField.style.display = '';
+  } else {
+    reelField.style.display = 'none';
+    document.getElementById('f-reel-color').value = '';
+    cmPrices['reel-color'] = 0;
+    var ttxt = document.getElementById('cm-ttxt-reel-color');
+    if (ttxt) { ttxt.textContent = 'カラーチャートから選択'; ttxt.classList.remove('chosen'); }
+    var timg = document.getElementById('cm-timg-reel-color');
+    if (timg) { timg.src = ''; timg.style.display = 'none'; }
+    var wrap = document.getElementById('cm-wrap-reel-color');
+    if (wrap) wrap.classList.remove('cm-error');
+    delete formErrors['reel-color']; if (typeof updateErrorDisplay === 'function') updateErrorDisplay();
+  }
+  calcPrice();
+});
+
+// --- バリデーション管理 ---
+var formErrors = {};
+var FIELD_LABELS = {
+  'name': 'お客様名', 'email': 'メールアドレス', 'tel': '電話番号',
+  'model': 'モデル選択', 'guide': 'ガイド仕様', 'grip': 'グリップ仕様',
+  'shipping': '送料', 'address': '送り先住所', 'payment': 'お支払い方法'
+};
+var PICKER_LABELS = {
+  'blank-color': 'ブランクスカラー', 'tip-color': 'ティップカラー', 'reel-color': 'リールシートカラー',
+  'thread-main': 'メインスレッド', 'thread-tip': 'ティップ部分スレッド', 'thread-pin': 'ピンラインスレッド'
+};
+
+function updateErrorDisplay() {
+  var keys = Object.keys(formErrors);
+  var errDiv = document.getElementById('form-error-msg');
+  if (keys.length === 0) { if (errDiv) errDiv.remove(); return; }
+  if (!errDiv) {
+    errDiv = document.createElement('div');
+    errDiv.id = 'form-error-msg';
+    errDiv.style.cssText = 'margin:1rem 0; padding:1rem 1.25rem; background:rgba(204,34,0,0.1); border:1px solid var(--red2); border-radius:4px; font-size:0.82rem; line-height:2; color:var(--red);';
+    var submitBtn = document.querySelector('.btn-submit');
+    submitBtn.parentNode.insertBefore(errDiv, submitBtn);
+  }
+  errDiv.innerHTML = keys.map(function(k) { return '・' + formErrors[k] + ' が未選択 / 未入力です。'; }).join('<br>');
+}
+
+// --- フォーム送信 → 確認画面へ ---
+document.getElementById('order-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var form = e.target;
+
+  // バリデーション（全フィールドをチェック）
+  formErrors = {};
+  form.querySelectorAll('input[required]:not([type="hidden"]), select[required], textarea[required]').forEach(function(el) {
+    el.style.borderColor = '';
+    if (!el.value.trim()) {
+      el.style.borderColor = 'var(--red2)';
+      formErrors[el.name] = FIELD_LABELS[el.name] || el.name;
+    }
+  });
+  ['blank-color','tip-color'].forEach(function(field) {
+    var hiddenEl = document.getElementById('f-' + field);
+    var wrapEl   = document.getElementById('cm-wrap-' + field);
+    if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); formErrors[field] = PICKER_LABELS[field]; }
+  });
+  if (document.getElementById('sel-guide').value === 'torzite') {
+    var layoutSel = document.getElementById('sel-guide-layout');
+    if (layoutSel && !layoutSel.value) {
+      layoutSel.style.borderColor = 'var(--red2)';
+      formErrors['guide-layout'] = 'トルザイト ガイドレイアウト';
+    }
+  }
+  if (document.getElementById('sel-grip').value === 'reel') {
+    var reelHidden = document.getElementById('f-reel-color');
+    var reelWrap   = document.getElementById('cm-wrap-reel-color');
+    if (reelHidden && !reelHidden.value) { if (reelWrap) reelWrap.classList.add('cm-error'); formErrors['reel-color'] = 'リールシートカラー'; }
+  }
+  ['thread-main','thread-tip','thread-pin'].forEach(function(field) {
+    var hiddenEl = document.getElementById('f-' + field);
+    var wrapEl   = document.getElementById('cm-wrap-' + field);
+    if (hiddenEl && !hiddenEl.value) { if (wrapEl) wrapEl.classList.add('cm-error'); formErrors[field] = PICKER_LABELS[field]; }
+  });
+  updateErrorDisplay();
+  if (Object.keys(formErrors).length > 0) {
+    document.getElementById('form-error-msg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  showConfirm();
+});
+
+// --- リアルタイムエラー解除（テキスト・セレクト・テキストエリア）---
+document.getElementById('order-form').querySelectorAll('input[required]:not([type="hidden"]), select[required], textarea[required]').forEach(function(el) {
+  ['input', 'change'].forEach(function(ev) {
+    el.addEventListener(ev, function() {
+      if (el.value.trim() && formErrors[el.name]) {
+        el.style.borderColor = '';
+        delete formErrors[el.name];
+        updateErrorDisplay();
+      }
+    });
+  });
+});
+
+// ガイドレイアウトのリアルタイムエラー解除
+document.getElementById('sel-guide-layout').addEventListener('change', function() {
+  if (this.value) {
+    this.style.borderColor = '';
+    delete formErrors['guide-layout'];
+    updateErrorDisplay();
+  }
+});
+
+// --- 確認画面を生成して表示 ---
+function showConfirm() {
+  var form      = document.getElementById('order-form');
+  var data      = new FormData(form);
+  var modelEl   = document.getElementById('sel-model');
+  var guideEl   = document.getElementById('sel-guide');
+  var gripEl    = document.getElementById('sel-grip');
+  var shippEl   = form.querySelector('[name="shipping"]');
+  var payEl     = form.querySelector('[name="payment"]');
+
+  var modelText = modelEl.selectedIndex > 0 ? modelEl.options[modelEl.selectedIndex].text.split('　')[0].trim() : '—';
+  var guideText = guideEl.options[guideEl.selectedIndex].text;
+  if (guideEl.value === 'torzite') {
+    var layoutVal = document.getElementById('sel-guide-layout').value;
+    if (layoutVal) guideText = 'トルザイトガイド・' + layoutVal + '（＋¥6,000）';
+  }
+  var gripText  = gripEl.options[gripEl.selectedIndex].text;
+  var shipText  = shippEl && shippEl.selectedIndex > 0 ? shippEl.options[shippEl.selectedIndex].text : '—';
+  var payText   = payEl && payEl.selectedIndex > 0 ? payEl.options[payEl.selectedIndex].text : '—';
+
+  function getField(field) {
+    var timg   = document.getElementById('cm-timg-' + field);
+    var hasImg = timg && timg.style.display !== 'none' && timg.src && !timg.src.endsWith(window.location.href.split('?')[0]);
+    return { val: document.getElementById('f-' + field).value || '—', img: hasImg ? timg.src : '' };
+  }
+  var bc = getField('blank-color');
+  var tc = getField('tip-color');
+  var rc = getField('reel-color');
+  var tm = getField('thread-main');
+  var tt = getField('thread-tip');
+  var tp = getField('thread-pin');
+
+  function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>'); }
+  function row(label, val, img, isThread) {
+    var cls = isThread ? 'confirm-swatch-thread' : 'confirm-swatch';
+    var imgTag = img ? '<img src="' + img + '" class="' + cls + '" alt="">' : '';
+    return '<div class="confirm-row"><span class="confirm-row-label">' + label + '</span>'
+      + '<span class="confirm-row-val">' + imgTag + '<span>' + esc(val) + '</span></span></div>';
+  }
+
+  var bcp = cmPrices['blank-color'] || 0;
+  var tcp = cmPrices['tip-color'] || 0;
+  var rcp = cmPrices['reel-color'] || 0;
+
+  var html = ''
+    + '<div class="confirm-section"><div class="confirm-section-label">基本情報</div>'
+      + row('お客様名',      data.get('name') || '—')
+      + row('メールアドレス', data.get('email') || '—')
+      + row('電話番号',      data.get('tel') || '—')
+    + '</div>'
+    + '<div class="confirm-section"><div class="confirm-section-label">ベースモデル</div>'
+      + row('モデル', modelText)
+    + '</div>'
+    + '<div class="confirm-section full-width"><div class="confirm-section-label">カラーカスタム</div>'
+      + row('ブランクスカラー',     bc.val, bc.img, false)
+      + row('ティップカラー',       tc.val, tc.img, false)
+      + (document.getElementById('sel-grip').value === 'reel' ? row('リールシートカラー', rc.val, rc.img, false) : '')
+      + row('メインスレッド',       tm.val, tm.img, true)
+      + row('ティップ部分スレッド', tt.val, tt.img, true)
+      + row('ピンラインスレッド',   tp.val, tp.img, true)
+    + '</div>'
+    + '<div class="confirm-section"><div class="confirm-section-label">カスタムオプション</div>'
+      + row('ガイド仕様',   guideText)
+      + row('グリップ仕様', gripText)
+      + row('ネーム仕様',   data.get('name-custom') || '希望なし')
+    + '</div>';
+
+  var noteVal = (data.get('note') || '').trim();
+  if (noteVal) {
+    html += '<div class="confirm-section full-width"><div class="confirm-section-label">こだわり・備考</div>'
+      + '<div class="confirm-row"><span class="confirm-row-label">備考内容</span>'
+      + '<span class="confirm-row-val"><span>' + esc(noteVal) + '</span></span></div>'
+      + '</div>';
+  }
+
+  html += '<div class="confirm-section"><div class="confirm-section-label">配送・お支払い</div>'
+      + row('送料', shipText)
+      + '<div class="confirm-row"><span class="confirm-row-label">送り先住所</span>'
+      + '<span class="confirm-row-val"><span>' + esc(data.get('address') || '—') + '</span></span></div>'
+      + row('お支払い方法', payText)
+    + '</div>'
+    + '<div class="confirm-section full-width"><div class="confirm-section-label">料金確認</div>'
+      + '<div class="confirm-price-box">'
+        + '<div class="confirm-price-title">PRICE SUMMARY</div>'
+        + '<div class="confirm-price-row"><span>ベースモデル</span><span class="cpv">' + document.getElementById('p-base').textContent + '</span></div>'
+        + '<div class="confirm-price-row"><span>ガイド仕様</span><span class="cpv">' + document.getElementById('p-guide').textContent + '</span></div>'
+        + '<div class="confirm-price-row"><span>グリップ仕様</span><span class="cpv">' + document.getElementById('p-grip').textContent + '</span></div>'
+        + (document.getElementById('f-blank-color').value ? '<div class="confirm-price-row"><span>ブランクスカラー</span><span class="cpv">' + document.getElementById('p-blank-color').textContent + '</span></div>' : '')
+        + (document.getElementById('f-tip-color').value ? '<div class="confirm-price-row"><span>ティップカラー</span><span class="cpv">' + document.getElementById('p-tip-color').textContent + '</span></div>' : '')
+        + (document.getElementById('pr-name-row').style.display !== 'none' ? '<div class="confirm-price-row"><span>ネーム仕様</span><span class="cpv">' + document.getElementById('p-name').textContent + '</span></div>' : '')
+        + '<div class="confirm-price-row"><span>合計（税抜）</span><span class="cpv">' + document.getElementById('p-subtotal').textContent + '</span></div>'
+        + '<div class="confirm-price-total"><span class="cpl">税込合計</span><span class="cpv">' + document.getElementById('p-total').textContent + '</span></div>'
+      + '</div>'
+    + '</div>';
+
+  document.getElementById('confirm-body').innerHTML = html;
+  var overlay = document.getElementById('confirm-overlay');
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+
+  // モバイルのみ：確認画面を1画面に収める
+  var _cbox = document.querySelector('#confirm-overlay .confirm-box');
+  if (window.innerWidth <= 600) {
+    _cbox.style.zoom = '1';
+    _cbox.style.width = window.innerWidth + 'px';
+    setTimeout(function() {
+      var vw = window.innerWidth;
+      var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      var oh = _cbox.scrollHeight;
+      var s = (vh / oh) * 0.93;
+      if (s >= 1) s = 1;
+      _cbox.style.zoom = s.toFixed(4);
+      _cbox.style.width = Math.ceil(vw / s) + 'px';
+    }, 400);
+  } else {
+    _cbox.style.zoom = '1';
+    _cbox.style.width = '';
+  }
+}
+
+function resetConfirmOverlay() {
+  var overlay = document.getElementById('confirm-overlay');
+  overlay.classList.remove('open');
+  overlay.style.overflowY = '';
+  var box = overlay.querySelector('.confirm-box');
+  if (box) { box.style.zoom = ''; box.style.width = ''; box.style.marginLeft = ''; }
+  document.body.style.overflow = '';
+}
+
+// 確認オーバーレイ：戻るボタン
+document.getElementById('confirm-back-top').addEventListener('click', resetConfirmOverlay);
+document.getElementById('confirm-btn-back').addEventListener('click', function() {
+  resetConfirmOverlay();
+  document.body.style.overflow = '';
+});
+
+// 確認オーバーレイ：最終送信ボタン
+document.getElementById('confirm-btn-send').addEventListener('click', function() {
+  var form = document.getElementById('order-form');
+  var data = new FormData(form);
+
+  if (document.getElementById('contact-method-input').value === 'line') {
+    resetConfirmOverlay();
+    document.getElementById('success-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    window.open('https://lin.ee/8eONfci', '_blank');
+    return;
+  }
+
+  // トルザイトのレイアウト選択をガイドフィールドに結合
+  var guideEl2 = document.getElementById('sel-guide');
+  if (guideEl2.value === 'torzite') {
+    var layoutVal2 = document.getElementById('sel-guide-layout').value;
+    if (layoutVal2) data.set('guide', 'トルザイトガイド・' + layoutVal2);
+  } else {
+    var gOpts = guideEl2.options;
+    data.set('guide', gOpts[guideEl2.selectedIndex].text.split('（')[0].trim());
+  }
+
+  // グリップ表示名を設定
+  var gripEl2 = document.getElementById('sel-grip');
+  data.set('grip', gripEl2.options[gripEl2.selectedIndex].text.split('（')[0].trim());
+
+  // 料金情報をフォームデータに追加
+  data.append('p_base',        document.getElementById('p-base').textContent);
+  data.append('p_guide',       document.getElementById('p-guide').textContent);
+  data.append('p_grip',        document.getElementById('p-grip').textContent);
+  data.append('p_blank_color', document.getElementById('f-blank-color').value ? document.getElementById('p-blank-color').textContent : '');
+  data.append('p_tip_color',   document.getElementById('f-tip-color').value   ? document.getElementById('p-tip-color').textContent   : '');
+  data.append('p_name',        document.getElementById('pr-name-row').style.display !== 'none' ? document.getElementById('p-name').textContent : '');
+  data.append('p_subtotal',    document.getElementById('p-subtotal').textContent);
+  data.append('p_total',       document.getElementById('p-total').textContent);
+
+  var btn = document.getElementById('confirm-btn-send');
+  btn.disabled = true;
+  btn.textContent = '生成中...';
+
+  // オーダーカード（白背景）を生成してメールに添付する
+  buildOrderCard();
+  var orderCard = document.getElementById('order-card');
+
+  // キャプチャ前にカードをleft:0に移動（left:-9999pxのままだとcanvasが巨大になり黒帯が出る）
+  orderCard.style.left = '0px';
+  var cardW = orderCard.offsetWidth;
+  var cardH = orderCard.offsetHeight;
+
+  var capturePromise = window.html2canvas
+    ? html2canvas(orderCard, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: cardW,
+        height: cardH,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: cardW,
+        windowHeight: cardH
+      }).then(function(canvas) {
+        orderCard.style.left = '-9999px'; // 元に戻す
+        return canvas;
+      })
+    : Promise.resolve(null);
+
+  capturePromise.then(function(canvas) {
+
+    if (canvas) {
+      data.append('order_img', canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
+    }
+    btn.textContent = '送信中...';
+    return fetch('order_mail.php', { method: 'POST', body: data });
+  })
+    .then(function(res) { return res.json(); })
+    .then(function(json) {
+      if (json.ok) {
+        resetConfirmOverlay();
+        document.getElementById('success-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      } else {
+        alert('送信に失敗しました。お手数ですが info@ig-rod.jp まで直接ご連絡ください。');
+        btn.disabled = false;
+        btn.innerHTML = '内容を確認して送信する <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+      }
+    })
+    .catch(function() {
+      alert('送信に失敗しました。お手数ですが info@ig-rod.jp まで直接ご連絡ください。');
+      btn.disabled = false;
+      btn.innerHTML = '内容を確認して送信する <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+    });
+});
+
+// --- オーダーカード生成 (html2canvas用) ---
+function buildOrderCard() {
+  var form     = document.getElementById('order-form');
+  var data     = new FormData(form);
+  var modelEl  = document.getElementById('sel-model');
+  var guideEl  = document.getElementById('sel-guide');
+  var gripEl   = document.getElementById('sel-grip');
+
+  var modelText = modelEl.selectedIndex > 0 ? modelEl.options[modelEl.selectedIndex].text.split('　')[0].trim() : '—';
+  var guideText = guideEl.options[guideEl.selectedIndex].text;
+  if (guideEl.value === 'torzite') {
+    var layoutVal = document.getElementById('sel-guide-layout').value;
+    if (layoutVal) guideText = 'トルザイトガイド・' + layoutVal + '（＋¥6,000）';
+  }
+  var gripText  = gripEl.options[gripEl.selectedIndex].text;
+
+  function gf(field) {
+    var timg   = document.getElementById('cm-timg-' + field);
+    var hasImg = timg && timg.style.display !== 'none' && timg.src && timg.src.indexOf('swatches/') !== -1;
+    return { val: document.getElementById('f-' + field).value || '—', img: hasImg ? timg.src : '' };
+  }
+  var bc = gf('blank-color'), tc = gf('tip-color'), rc2 = gf('reel-color');
+  var tm = gf('thread-main'), tt = gf('thread-tip'), tp = gf('thread-pin');
+
+  var payEl2  = form.querySelector('[name="payment"]');
+  var payText = payEl2 && payEl2.selectedIndex > 0 ? payEl2.options[payEl2.selectedIndex].text : '—';
+  var shippEl2 = form.querySelector('[name="shipping"]');
+  var shipText = shippEl2 && shippEl2.selectedIndex > 0 ? shippEl2.options[shippEl2.selectedIndex].text : '—';
+
+  var now = new Date();
+  var dateStr = now.getFullYear() + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + String(now.getDate()).padStart(2,'0');
+  var totalText = document.getElementById('p-total').textContent;
+
+  // inline style shortcuts
+  var s = {
+    sec:   'margin-bottom:11px;',
+    stitle:'font-size:8.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#cc2200;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid rgba(0,0,0,0.1);',
+    row:   'display:flex;align-items:center;gap:6px;padding:2.5px 0;',
+    lbl:   'font-size:10px;color:#666666;width:98px;flex-shrink:0;',
+    val:   'font-size:10px;color:#111111;font-weight:500;flex:1;line-height:1.4;',
+    sw:    'width:22px;height:22px;object-fit:cover;border-radius:2px;flex-shrink:0;border:1px solid rgba(0,0,0,0.15);',
+    swt:   'width:30px;height:19px;object-fit:cover;border-radius:2px;flex-shrink:0;border:1px solid rgba(0,0,0,0.15);'
+  };
+
+  function r(label, val, img, isThread) {
+    var imgTag = img ? '<img src="'+img+'" style="'+(isThread?s.swt:s.sw)+'">' : '';
+    return '<div style="'+s.row+'"><span style="'+s.lbl+'">'+label+'</span>'+imgTag+'<span style="'+s.val+'">'+(val||'—')+'</span></div>';
+  }
+
+  var nameCustom = data.get('name-custom') || '';
+  var noteVal    = (data.get('note') || '').trim();
+
+  var html = ''
+    // ── ヘッダー ──
+    + '<div style="background:#f5f5f5;padding:13px 16px 11px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,0.1);">'
+      + '<img src="logo.png" style="height:26px;width:auto;display:block;">'
+      + '<span style="font:600 10px/1 \'DM Sans\',sans-serif;color:#888888;letter-spacing:2px;">'+dateStr+'</span>'
+    + '</div>'
+    // ── バナー ──
+    + '<div style="background:#cc2200;text-align:center;padding:5px 0;font-size:8.5px;font-weight:700;letter-spacing:3px;color:#fff;">ORDER SUMMARY</div>'
+    // ── ボディ ──
+    + '<div style="padding:12px 16px 8px;background:#ffffff;">'
+      // 基本情報
+      + '<div style="'+s.sec+'">'
+        + '<div style="'+s.stitle+'">お客様情報</div>'
+        + r('お客様名', data.get('name') || '—')
+        + r('モデル', modelText)
+      + '</div>'
+      // カラーカスタム
+      + '<div style="'+s.sec+'">'
+        + '<div style="'+s.stitle+'">カラーカスタム</div>'
+        + r('ブランクスカラー', bc.val, bc.img, false)
+        + r('ティップカラー',   tc.val, tc.img, false)
+        + r('メインスレッド',   tm.val, tm.img, true)
+        + r('ティップスレッド', tt.val, tt.img, true)
+        + r('ピンライン',       tp.val, tp.img, true)
+      + '</div>'
+      // オプション
+      + '<div style="'+s.sec+'">'
+        + '<div style="'+s.stitle+'">カスタムオプション</div>'
+        + r('ガイド仕様',   guideText)
+        + r('グリップ仕様', gripText)
+        + (nameCustom ? r('ネーム仕様', nameCustom) : '')
+        + (noteVal    ? r('備考', noteVal) : '')
+      + '</div>'
+      // 配送・お支払い
+      + '<div style="'+s.sec+'">'
+        + '<div style="'+s.stitle+'">配送・お支払い</div>'
+        + r('電話番号',       data.get('tel') || '—')
+        + r('送り先住所',     data.get('address') || '—')
+        + r('お支払い方法',   payText)
+      + '</div>'
+    + '</div>'
+    // ── 税込合計 ──
+    + '<div style="background:#f5f5f5;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(0,0,0,0.1);">'
+      + '<span style="font-size:11px;font-weight:700;color:#333333;">税込合計</span>'
+      + '<span style="font:700 19px/1 \'DM Sans\',sans-serif;color:#cc2200;">'+totalText+'</span>'
+    + '</div>'
+    // ── フッター ──
+    + '<div style="background:#f0f0f0;padding:7px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(0,0,0,0.08);">'
+      + '<span style="font-size:8.5px;color:#999999;letter-spacing:0.5px;">IG Rod Planning</span>'
+      + '<span style="font-size:8.5px;color:#999999;">@igrod_pl</span>'
+    + '</div>';
+
+  document.getElementById('order-card').innerHTML = html;
+}
+
+// --- 画像に保存してLINEに送る ---
+var SAVE_BTN_LABEL = '<svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> 画像に保存してLINEに送る';
+
+function closeImgPreview() {
+  document.getElementById('img-preview-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function showImgOverlay(dataURL, filename) {
+  document.getElementById('img-preview').src = dataURL;
+  var dl = document.getElementById('img-download-link');
+  dl.href = dataURL;
+  dl.setAttribute('download', filename);
+  document.getElementById('img-preview-overlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function saveAsImage(btnEl) {
+  if (!window.html2canvas) { alert('ライブラリを読み込み中です。しばらく待ってからお試しください。'); return; }
+  buildOrderCard();
+  if (btnEl) { btnEl.classList.add('is-loading'); btnEl.textContent = '生成中…'; }
+
+  html2canvas(document.getElementById('order-card'), {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#0f0f0f',
+    logging: false
+  }).then(function(canvas) {
+    var filename = 'ig-rod-order-' + new Date().toISOString().slice(0,10) + '.png';
+    var dataURL = canvas.toDataURL('image/png');
+    if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.innerHTML = SAVE_BTN_LABEL; }
+
+    // Web Share API が使えればネイティブシェートシートを試みる
+    canvas.toBlob(function(blob) {
+      var file = new File([blob], filename, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: 'IGロッド オーダー内容' })
+          .catch(function(err) {
+            // キャンセル以外のエラーならオーバーレイへ
+            if (!err || err.name !== 'AbortError') { showImgOverlay(dataURL, filename); }
+          });
+      } else {
+        // 非対応ブラウザ: オーバーレイで画像表示 + 保存 + LINE起動
+        showImgOverlay(dataURL, filename);
+      }
+    }, 'image/png');
+
+  }).catch(function() {
+    if (btnEl) { btnEl.classList.remove('is-loading'); btnEl.innerHTML = SAVE_BTN_LABEL; }
+    alert('画像の生成に失敗しました。スクリーンショットをご利用ください。');
+  });
+}
+
+// 保存ボタンのイベント（確認画面）
+document.getElementById('btn-save-image').addEventListener('click', function() {
+  saveAsImage(this);
+});
+// 保存ボタンのイベント（成功画面）
+document.getElementById('btn-save-success').addEventListener('click', function() {
+  saveAsImage(this);
+});
+
+// --- 郵便番号 → 住所自動入力 ---
+(function() {
+  var zipInput  = document.getElementById('zip-input');
+  var addrInput = document.getElementById('address-input');
+  var statusEl  = document.getElementById('zip-status');
+  if (!zipInput || !addrInput || !statusEl) return;
+
+  var timer = null;
+
+  zipInput.addEventListener('input', function() {
+    // ハイフンを除いた数字のみ抽出
+    var digits = this.value.replace(/[^\d]/g, '');
+    statusEl.textContent = '';
+    statusEl.className = 'zip-status';
+    clearTimeout(timer);
+
+    if (digits.length === 7) {
+      statusEl.textContent = '検索中…';
+      statusEl.className = 'zip-status zip-loading';
+
+      timer = setTimeout(function() {
+        fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + digits)
+          .then(function(r) { return r.json(); })
+          .then(function(json) {
+            if (json.results && json.results[0]) {
+              var r   = json.results[0];
+              var addr = r.address1 + r.address2 + r.address3;
+              addrInput.value = addr;
+              statusEl.textContent = '✓ 住所を入力しました';
+              statusEl.className = 'zip-status zip-ok';
+              // 番地入力のためカーソルを住所欄の末尾へ
+              addrInput.focus();
+              addrInput.setSelectionRange(addrInput.value.length, addrInput.value.length);
+            } else {
+              statusEl.textContent = '該当する住所が見つかりません';
+              statusEl.className = 'zip-status zip-error';
+            }
+          })
+          .catch(function() {
+            statusEl.textContent = '通信エラー';
+            statusEl.className = 'zip-status zip-error';
+          });
+      }, 300);
+    }
+  });
+})();
+
+// --- ネーム仕様トグル ---
+(function(){
+  var sel = document.getElementById('sel-name');
+  var note = document.getElementById('name-original-note');
+  if (!sel || !note) return;
+  sel.addEventListener('change', function(){
+    note.style.display = sel.value.indexOf('オリジナル') !== -1 ? 'block' : 'none';
+    calcPrice();
+  });
+})();
+
+// --- 連絡方法トグル ---
+(function(){
+  var btnEmail  = document.getElementById('method-email');
+  var btnLine   = document.getElementById('method-line');
+  var inputM    = document.getElementById('contact-method-input');
+  var fieldEmail = document.getElementById('field-email');
+  var fieldLine  = document.getElementById('field-line-note');
+  var emailInput = document.getElementById('email-input');
+  var submitBtn  = document.querySelector('.btn-submit');
+  var confirmSend = document.getElementById('confirm-btn-send');
+
+  function setMethod(method) {
+    inputM.value = method;
+    if (method === 'line') {
+      btnLine.classList.add('active');
+      btnEmail.classList.remove('active');
+      fieldEmail.style.display = 'none';
+      fieldLine.style.display = '';
+      emailInput.required = false;
+      submitBtn.classList.add('line-mode');
+      submitBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 48 48" fill="currentColor"><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1s12.7-7.5 17.3-12.7c3.3-3.8 5-7.3 5-9.3z"/></svg>LINEで確認・送信する';
+      confirmSend.innerHTML = '<svg width="16" height="16" viewBox="0 0 48 48" fill="currentColor"><path d="M44.7 20.1C44.7 10.5 35.4 2.7 24 2.7S3.3 10.5 3.3 20.1c0 8.5 7.5 15.6 17.7 16.9.7.2 1.6.5 1.8 1.1.2.5.1 1.3.1 1.3l-.3 1.9c-.1.5-.5 2.1 1.8 1.1s12.7-7.5 17.3-12.7c3.3-3.8 5-7.3 5-9.3z"/></svg>LINEで相談する';
+    } else {
+      btnEmail.classList.add('active');
+      btnLine.classList.remove('active');
+      fieldEmail.style.display = '';
+      fieldLine.style.display = 'none';
+      emailInput.required = true;
+      submitBtn.classList.remove('line-mode');
+      submitBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>内容を確認して送信する';
+      confirmSend.innerHTML = '内容を確認して送信する<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+    }
+  }
+
+  btnEmail.addEventListener('click', function(){ setMethod('email'); });
+  btnLine.addEventListener('click', function(){ setMethod('line'); });
+})();
+
+// --- ハンバーガー ---
+(function(){
+  var ham = document.getElementById('hamburger');
+  var ul  = document.getElementById('nav-menu');
+  if (!ham || !ul) return;
+  ham.addEventListener('click', function(){
+    ham.classList.toggle('is-active');
+    ul.classList.toggle('is-open');
+  });
+  document.querySelectorAll('.has-drop > a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        a.parentElement.classList.toggle('is-open');
+      }
+    });
+  });
+  document.querySelectorAll('.dropdown a, #nav-menu > li:not(.has-drop) > a').forEach(function(a){
+    a.addEventListener('click', function(){
+      ham.classList.remove('is-active');
+      ul.classList.remove('is-open');
+      document.querySelectorAll('.has-drop').forEach(function(d){ d.classList.remove('is-open'); });
+    });
+  });
+})();
+</script>
+
+<script>
+  // 商品ページの「詳細と購入方法を見る」から ?model=GTS5103 のように開いたとき、モデルを選んだ状態にする
+  (function () {
+    try {
+      var m = new URLSearchParams(location.search).get('model');
+      var sel = document.getElementById('sel-model');
+      if (!m || !sel) return;
+      sel.value = m;
+      if (sel.value !== m) return;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      setTimeout(function () { sel.scrollIntoView({ block: 'center' }); }, 300);
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>
