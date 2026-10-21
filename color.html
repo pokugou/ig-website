@@ -42,8 +42,8 @@
     .nav-subdropdown li a:hover { color:var(--red); background:rgba(204,34,0,0.04); }
     .nav-genre { font-size:0.58rem; color:var(--red); letter-spacing:0.04em; margin-left:0.4rem; font-weight:600; }
     .nav-btns { display:flex; align-items:center; gap:0.5rem; margin:0 0.8rem; flex-shrink:0; }
-    .nav-btn-order { display:inline-flex; align-items:center; height:34px; padding:0 1rem; border:1.5px solid var(--wborder2); color:var(--fg2); border-radius:3px; font-size:0.75rem; font-weight:700; text-decoration:none; transition:border-color 0.2s; }
-    .nav-btn-order:hover { border-color:var(--fg2); }
+    .nav-btn-order { display:inline-flex; align-items:center; height:34px; padding:0 1rem; border: 1.5px solid var(--red); color: var(--red); border-radius:3px; font-size:0.75rem; font-weight:700; text-decoration:none; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+    .nav-btn-order:hover { border-color: var(--red2); color: #fff; background: var(--red); }
     .nav-btn-contact { display:inline-flex; align-items:center; height:34px; padding:0 1rem; background:var(--red); color:#fff; border-radius:3px; font-size:0.75rem; font-weight:700; text-decoration:none; transition:background 0.2s; }
     .nav-btn-contact:hover { background:var(--red2); }
     .nav-social { display:flex; align-items:center; gap:0.9rem; margin-left:0.8rem; }
@@ -135,6 +135,8 @@
       .nav-btns { display:none; }
       .hamburger { display:flex; }
       .nav-logo img { height: 44px !important; }
+      nav:has(.nav-menu.is-open) .nav-social { display: flex; position: fixed; bottom: 0; left: 0; right: 0; justify-content: center; gap: 1.5rem; padding: 0.9rem 1.5rem; background: rgba(255,255,255,0.98); border-top: 1px solid var(--wborder); z-index: 310; }
+      nav:has(.nav-menu.is-open) .nav-btns { display: flex; position: fixed; bottom: 3.4rem; left: 0; right: 0; justify-content: center; gap: 0.75rem; padding: 0.9rem 1.5rem; background: rgba(255,255,255,0.98); border-top: 1px solid var(--wborder); z-index: 310; }
       .nav-social { display:none; }
       .page-header { padding:7rem 1.5rem 3rem; }
       .main-wrap { padding:4rem 1.5rem; }
