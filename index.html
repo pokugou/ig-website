@@ -139,9 +139,9 @@
     .prod-card-sub { font-size: 0.72rem; color: var(--fg3); }
 
     /* ─── QUICK NAV ─── */
-    .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; }
-    .quick-nav-scroll { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; gap: 0.6rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
-    .quick-nav-scroll::-webkit-scrollbar { display: none; }
+    .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+    .quick-nav::-webkit-scrollbar { display: none; }
+    .quick-nav-scroll { display: flex; gap: 0.6rem; padding: 0 1.5rem; width: max-content; min-width: 100%; justify-content: center; box-sizing: border-box; }
     .qn-card { flex-shrink: 0; display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100px; border: 1px solid var(--wborder); border-radius: 5px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
     .qn-card:hover { border-color: var(--red); box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
     .qn-card-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
