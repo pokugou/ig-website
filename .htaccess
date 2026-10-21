@@ -1,17 +1,7 @@
-# Clean URLs: /strixedge → strixedge.html, /ika → ika.html, etc.
+Options +FollowSymLinks
 RewriteEngine On
+
+# Clean URLs: /ika → ika.html, /strixedge → strixedge.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(.*)$ $1.html [L,R=301]
-
-# HTML files: no cache (always fetch fresh)
-<FilesMatch "\.(html|htm)$">
-  Header set Cache-Control "no-cache, must-revalidate"
-  Header set Pragma "no-cache"
-</FilesMatch>
-
-# Static assets: cache for 1 week
-<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|css|js|woff|woff2)$">
-  Header set Cache-Control "public, max-age=604800"
-</FilesMatch>
+RewriteRule ^([^./]+)$ $1.html [L]
