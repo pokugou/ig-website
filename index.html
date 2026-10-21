@@ -103,6 +103,7 @@
     /* Slide 2: strix edge */
     .hero-slide-strix { position: relative; cursor: pointer; background: #0a0a0a; aspect-ratio: 16/3.15; display: flex; align-items: center; overflow: hidden; }
     .slide-strix-bg { position: absolute; inset: 0; background-image: url(strixedge-rods.jpg); background-size: cover; background-position: center; opacity: 0.25; }
+    .slide-gtslj-bg { position: absolute; inset: 0; background-image: url(gtslj-banner.png); background-size: cover; background-position: center; opacity: 0.35; }
     .slide-strix-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 3rem; padding: 0 10%; width: 100%; }
     .slide-strix-inner img { height: clamp(80px,13vw,160px); width: auto; flex-shrink: 0; }
     .slide-strix-text h2 { font-size: clamp(1.4rem,3vw,2.6rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.3rem; color: #fff; }
@@ -351,57 +352,41 @@
         </div>
       </div>
     </div>
+    <!-- Slide 3: GTSLJ -->
+    <div class="hero-slide">
+      <div class="hero-slide-strix" onclick="location.href='gtslj'">
+        <div class="slide-gtslj-bg"></div>
+        <div class="slide-strix-inner">
+          <div class="slide-strix-text">
+            <p style="font-size:0.72rem;letter-spacing:0.18em;color:#fff;margin:0;font-weight:500;line-height:1;">ジーティーエスエルジェイ</p>
+            <h2 style="margin-top:0.1rem;">GTSLJ</h2>
+            <p style="font-size:0.78rem;font-weight:700;letter-spacing:0.12em;color:#fff;margin-bottom:0.4rem;">スーパーライトジギングロッド</p>
+            <p>カーボンチューブラーの剛性とサードのような<br />動きを見せてくれる自由で選べる超万能な一本。</p>
+            <a href="gtslj" class="btn btn-red">詳細を見る →</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <button class="hero-prev" id="heroPrev">&#8249;</button>
   <button class="hero-next" id="heroNext">&#8250;</button>
   <div class="hero-dots">
     <button class="hero-dot active" data-idx="0"></button>
     <button class="hero-dot" data-idx="1"></button>
+    <button class="hero-dot" data-idx="2"></button>
   </div>
 </section>
 
-<!-- QUICK NAV -->
+<!-- QUICK NAV (スライダーに追加したらここにカードを追加) -->
 <section class="quick-nav">
   <div class="quick-nav-scroll">
     <a href="strixedge" class="qn-card">
-      <div class="qn-card-img"><img src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">Strix Edge</div><div class="qn-card-ja">イカメタル</div></div>
-    </a>
-    <a href="gtlj" class="qn-card">
-      <div class="qn-card-img"><img src="gtlj-banner.png" alt="GTLJ" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">GTLJ</div><div class="qn-card-ja">ライトジギング</div></div>
+      <div class="qn-card-img"><img src="strixedge-rods.jpg" alt="STRIX EDGE" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">Strix Edge</div><div class="qn-card-ja">イカメタルロッド</div></div>
     </a>
     <a href="gtslj" class="qn-card">
       <div class="qn-card-img"><img src="gtslj-banner.png" alt="GTSLJ" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">GTSLJ</div><div class="qn-card-ja">スーパーライト</div></div>
-    </a>
-    <a href="gtj" class="qn-card">
-      <div class="qn-card-img"><img src="gtj-banner.png" alt="GTJ" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">GTJ</div><div class="qn-card-ja">ジギング</div></div>
-    </a>
-    <a href="gts" class="qn-card">
-      <div class="qn-card-img"><img src="gts-banner.png" alt="GTS" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">GTS</div><div class="qn-card-ja">ショアジギング</div></div>
-    </a>
-    <a href="gtr" class="qn-card">
-      <div class="qn-card-img"><img src="gtr-banner.png" alt="GTR" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">GTR</div><div class="qn-card-ja">ロックフィッシュ</div></div>
-    </a>
-    <a href="gtx" class="qn-card">
-      <div class="qn-card-img"><img src="gtx-banner.png" alt="GTX" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">GTX</div><div class="qn-card-ja">エギング</div></div>
-    </a>
-    <a href="ika" class="qn-card">
-      <div class="qn-card-img"><img src="ika-banner.png" alt="IKA" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">IKA</div><div class="qn-card-ja">イカ竿</div></div>
-    </a>
-    <a href="ishidai" class="qn-card">
-      <div class="qn-card-img"><img src="ishidai-banner.png" alt="Ishidai" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">Ishidai</div><div class="qn-card-ja">石鯛竿</div></div>
-    </a>
-    <a href="vskue" class="qn-card">
-      <div class="qn-card-img"><img src="vskue-banner.png" alt="VS-KUE" loading="lazy" /></div>
-      <div class="qn-card-body"><div class="qn-card-en">VS-KUE</div><div class="qn-card-ja">クエ竿</div></div>
+      <div class="qn-card-body"><div class="qn-card-en">GTSLJ</div><div class="qn-card-ja">スーパーライトジギング</div></div>
     </a>
   </div>
 </section>
