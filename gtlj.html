@@ -60,19 +60,43 @@
     .nav-social a:hover { opacity: 1; }
     .nav-genre { font-size: 0.58rem; color: #ff2244; letter-spacing: 0.04em; margin-left: 0.4rem; opacity: 1; font-weight: 600; text-shadow: 0 0 8px rgba(255,30,60,0.7), 0 0 16px rgba(255,30,60,0.35); }
 
-    /* HERO */
-    .hero { position: relative; width: 100%; height: 60vh; margin-top: 68px; overflow: hidden; display: flex; }
-    .hero-banner { width: 50%; height: 100%; flex-shrink: 0; background-image: url(gtlj-banner.png); background-size: cover; background-position: center center; }
-    .hero-rod { width: 50%; height: 100%; flex-shrink: 0; background: var(--dark2); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-    .hero-rod img { width: 92%; height: 88%; object-fit: contain; display: block; }
-    .hero-rod-label { position: absolute; bottom: 1.5rem; right: 1.75rem; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(248,248,248,0.25); font-family: 'DM Sans', sans-serif; }
-    .hero-overlay { display: none; }
-    .hero-content { display: none; }
-    .hero-eyebrow { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.75rem; }
-    .hero-title { font-size: clamp(3rem, 8vw, 7rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; margin-bottom: 1rem; }
-    .hero-sub { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 300; color: rgba(248,248,248,0.75); letter-spacing: 0.03em; margin-bottom: 2rem; }
-    .hero-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .hero-tag { font-size: 0.7rem; padding: 0.3rem 0.8rem; border: 1px solid rgba(255,255,255,0.25); color: rgba(248,248,248,0.65); letter-spacing: 0.06em; }
+    /* PRODUCT GALLERY */
+    .product-gallery { margin-top: 68px; background: var(--black); border-bottom: 1px solid var(--border); }
+    .gallery-main-wrap { position: relative; overflow: hidden; background: var(--dark3); }
+    .gallery-track { display: flex; transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); }
+    .gallery-slide { min-width: 100%; aspect-ratio: 16/8; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--dark3); }
+    .gallery-slide img { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; display: block; }
+    .gal-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(8,8,8,0.75); border: 1px solid var(--border2); color: var(--white); width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.5rem; z-index: 10; transition: background 0.2s; }
+    .gal-btn:hover { background: rgba(204,34,0,0.85); }
+    .gal-btn.prev { left: 1rem; }
+    .gal-btn.next { right: 1rem; }
+    .gallery-thumbs { display: flex; gap: 0.6rem; padding: 0.8rem 1.5rem; background: var(--dark); border-top: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+    .gallery-thumbs::-webkit-scrollbar { display: none; }
+    .gallery-thumb { flex-shrink: 0; width: 88px; height: 64px; border: 2px solid var(--border); background: var(--dark3); overflow: hidden; cursor: pointer; transition: border-color 0.2s; }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-thumb.active { border-color: var(--red); }
+    .gallery-thumb:hover:not(.active) { border-color: rgba(204,34,0,0.5); }
+
+    /* LIGHTBOX */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.94); z-index: 1000; align-items: center; justify-content: center; }
+    .lightbox.open { display: flex; }
+    .lightbox-img { max-width: 92vw; max-height: 90vh; object-fit: contain; display: block; }
+    .lb-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; color: var(--white); font-size: 2.2rem; cursor: pointer; opacity: 0.75; line-height: 1; transition: opacity 0.2s; }
+    .lb-close:hover { opacity: 1; }
+    .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: var(--white); width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.7rem; transition: background 0.2s; }
+    .lb-nav:hover { background: rgba(204,34,0,0.7); }
+    .lb-prev { left: 1.5rem; }
+    .lb-next { right: 1.5rem; }
+
+    /* PRODUCT INFO */
+    .product-info-section { max-width: 1200px; margin: 0 auto; padding: 3.5rem 3rem 2rem; }
+    .product-eyebrow { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.9rem; }
+    .product-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
+    .product-name { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.5rem; }
+    .product-tagline { font-size: clamp(1rem, 2vw, 1.35rem); font-weight: 300; color: rgba(248,248,248,0.65); letter-spacing: 0.03em; margin-bottom: 1.5rem; }
+    .product-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.75rem; }
+    .product-tag { font-size: 0.7rem; padding: 0.3rem 0.8rem; border: 1px solid rgba(255,255,255,0.25); color: rgba(248,248,248,0.65); letter-spacing: 0.06em; }
+    .product-desc-text { font-size: 0.95rem; color: var(--gray); line-height: 1.9; max-width: 700px; margin-bottom: 2rem; }
 
     /* SECTIONS */
     .section { padding: 6rem 3rem; max-width: 1200px; margin: 0 auto; }
@@ -188,11 +212,11 @@
       .dropdown .has-subdrop > a::after { transition: transform 0.25s; display: inline-block; }
       .dropdown .has-subdrop.is-open > a::after { transform: rotate(90deg); }
       .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
-      .hero { height: auto; flex-direction: column; overflow: visible; }
-      .hero-banner { width: 100%; height: 200px; flex-shrink: 0; }
-      .hero-rod { width: 100%; height: 170px; flex-shrink: 0; }
-      .hero-overlay { display: none; }
-      .hero-content { display: block; position: relative; background: var(--black); padding: 1.5rem 1.5rem 1rem; z-index: 1; }
+      .gallery-slide { aspect-ratio: 4/3; }
+      .gallery-thumb { width: 60px; height: 46px; }
+      .product-info-section { padding: 2rem 1.5rem 1.5rem; }
+      .lb-prev { left: 0.5rem; }
+      .lb-next { right: 0.5rem; }
       .specs-grid { grid-template-columns: repeat(2, 1fr); }
       .features-grid { grid-template-columns: 1fr; }
       .footer-top { grid-template-columns: 1fr; gap: 2rem; }
@@ -297,36 +321,48 @@
   <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-banner"></div>
-  <div class="hero-rod">
-    <img src="gtlj-rod.webp" alt="GTLJ ロッド" />
-    <span class="hero-rod-label">GTLJ</span>
+<!-- PRODUCT GALLERY -->
+<section class="product-gallery">
+  <div class="gallery-main-wrap">
+    <div class="gallery-track" id="galleryTrack">
+      <div class="gallery-slide"><img src="gtlj-rod.webp" alt="GTLJ ロッド全体" /></div>
+      <div class="gallery-slide"><img src="gtlj-photo1.jpg" alt="GTLJ 全体" /></div>
+      <div class="gallery-slide"><img src="gtlj-photo2.jpg" alt="GTLJ 全体2" /></div>
+      <div class="gallery-slide"><img src="gtlj-photo3.jpg" alt="GTLJ ガイド" /></div>
+    </div>
+    <button class="gal-btn prev" onclick="galMove(-1)">&#8249;</button>
+    <button class="gal-btn next" onclick="galMove(1)">&#8250;</button>
   </div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">LIGHT JIGGING ROD</div>
-    <h1 class="hero-title">GTLJ</h1>
-    <p class="hero-sub">超万能ライトジギングロッド</p>
-    <div class="hero-tags">
-      <span class="hero-tag">ライトジギング</span>
-      <span class="hero-tag">ジギング</span>
-      <span class="hero-tag">スロージギング</span>
-      <span class="hero-tag">タイジギング</span>
-      <span class="hero-tag">ディープタイラバ</span>
-    </div>
-    <div style="margin-top:1.75rem;">
-      <a href="order.html" class="btn btn-red">オーダーシートへ &#x2192;</a>
-    </div>
+  <div class="gallery-thumbs">
+    <div class="gallery-thumb active" onclick="galTo(0)"><img src="gtlj-rod.webp" alt="" /></div>
+    <div class="gallery-thumb" onclick="galTo(1)"><img src="gtlj-photo1.jpg" alt="" /></div>
+    <div class="gallery-thumb" onclick="galTo(2)"><img src="gtlj-photo2.jpg" alt="" /></div>
+    <div class="gallery-thumb" onclick="galTo(3)"><img src="gtlj-photo3.jpg" alt="" /></div>
   </div>
 </section>
 
-<!-- CONCEPT -->
-<div class="section">
-  <div class="section-label">Concept</div>
-  <h2 class="section-title">曲げて遊べる、超万能な一本。</h2>
-  <p class="section-desc">カーボンチューブラーなのにソリッドのような粘りを見せてくれる。24t・30t混在弾性カーボンのマルチバイアス設計により、細身でありながら高い破断強度を実現。青物・真イカ・根魚など多彩なターゲットに対応するライトジギングロッド。</p>
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="lbClose()">&#x2715;</button>
+  <button class="lb-nav lb-prev" onclick="lbMove(-1)">&#8249;</button>
+  <img class="lightbox-img" id="lbImg" src="" alt="" />
+  <button class="lb-nav lb-next" onclick="lbMove(1)">&#8250;</button>
+</div>
+
+<!-- PRODUCT INFO -->
+<div class="product-info-section">
+  <div class="product-eyebrow">LIGHT JIGGING ROD</div>
+  <h1 class="product-name">GTLJ</h1>
+  <p class="product-tagline">超万能ライトジギングロッド</p>
+  <div class="product-tags">
+    <span class="product-tag">ライトジギング</span>
+    <span class="product-tag">ジギング</span>
+    <span class="product-tag">スロージギング</span>
+    <span class="product-tag">タイジギング</span>
+    <span class="product-tag">ディープタイラバ</span>
+  </div>
+  <p class="product-desc-text">カーボンチューブラーなのにソリッドのような粘りを見せてくれる。24t・30t混在弾性カーボンのマルチバイアス設計により、細身でありながら高い破断強度を実現。青物・真イカ・根魚など多彩なターゲットに対応するライトジギングロッド。</p>
+  <a href="order.html" class="btn btn-red">オーダーシートへ &#x2192;</a>
 </div>
 
 <!-- SPECS -->
@@ -422,46 +458,23 @@
   </div>
 </div>
 
-<!-- PHOTO SLIDER -->
-<div class="slider-section">
-  <div class="slider-inner">
-    <div class="section-label">Gallery</div>
-    <h2 class="section-title" style="margin-bottom:2rem;">製品ギャラリー</h2>
-    <div class="slider-wrap">
-      <div class="slider-track" id="sliderTrack">
-        <div class="slider-slide"><img src="gtlj-rod.webp" alt="GTLJ ロッド全体" /></div>
-        <div class="slider-slide"><img src="gtlj-photo1.jpg" alt="GTLJ 全体" /></div>
-        <div class="slider-slide"><img src="gtlj-photo2.jpg" alt="GTLJ 全体2" /></div>
-        <div class="slider-slide"><img src="gtlj-photo3.jpg" alt="GTLJ ガイド" /></div>
-      </div>
-      <button class="slider-btn prev" onclick="slideMove(-1)">&#8249;</button>
-      <button class="slider-btn next" onclick="slideMove(1)">&#8250;</button>
-    </div>
-    <div class="slider-dots" id="sliderDots">
-      <div class="slider-dot active" onclick="slideTo(0)"></div>
-      <div class="slider-dot" onclick="slideTo(1)"></div>
-      <div class="slider-dot" onclick="slideTo(2)"></div>
-      <div class="slider-dot" onclick="slideTo(3)"></div>
-    </div>
-  </div>
-</div>
 <script>
-  var sliderIdx = 0;
-  var total = 4;
-  function updateSlider() {
-    document.getElementById('sliderTrack').style.transform = 'translateX(-' + (sliderIdx * 100) + '%)';
-    document.querySelectorAll('.slider-dot').forEach(function(d, i) {
-      d.classList.toggle('active', i === sliderIdx);
-    });
+  var galIdx = 0, galTotal = 4;
+  var galSrcs = ['gtlj-rod.webp','gtlj-photo1.jpg','gtlj-photo2.jpg','gtlj-photo3.jpg'];
+  function galUpdate() {
+    document.getElementById('galleryTrack').style.transform = 'translateX(-' + (galIdx * 100) + '%)';
+    document.querySelectorAll('.gallery-thumb').forEach(function(t,i){ t.classList.toggle('active', i===galIdx); });
   }
-  function slideMove(dir) {
-    sliderIdx = (sliderIdx + dir + total) % total;
-    updateSlider();
-  }
-  function slideTo(i) {
-    sliderIdx = i;
-    updateSlider();
-  }
+  function galMove(d) { galIdx = (galIdx+d+galTotal)%galTotal; galUpdate(); }
+  function galTo(i) { galIdx = i; galUpdate(); }
+  document.querySelectorAll('.gallery-slide img').forEach(function(img, i) {
+    img.addEventListener('click', function(){ lbOpen(i); });
+  });
+  var lbIdx = 0;
+  function lbOpen(i) { lbIdx = i; document.getElementById('lbImg').src = galSrcs[i]; document.getElementById('lightbox').classList.add('open'); }
+  function lbClose() { document.getElementById('lightbox').classList.remove('open'); }
+  function lbMove(d) { lbIdx = (lbIdx+d+galTotal)%galTotal; document.getElementById('lbImg').src = galSrcs[lbIdx]; }
+  document.getElementById('lightbox').addEventListener('click', function(e){ if(e.target===this) lbClose(); });
 </script>
 
 <!-- FEATURES -->
