@@ -131,6 +131,22 @@
     .prod-card-name { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.2rem; color: var(--fg); }
     .prod-card-sub { font-size: 0.72rem; color: var(--fg3); }
 
+    /* ─── QUICK NAV ─── */
+    .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; }
+    .quick-nav-scroll { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; gap: 0.6rem; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+    .quick-nav-scroll::-webkit-scrollbar { display: none; }
+    .qn-card { flex-shrink: 0; display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100px; border: 1px solid var(--wborder); border-radius: 5px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+    .qn-card:hover { border-color: var(--red); box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+    .qn-card-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+    .qn-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+    .qn-card:hover .qn-card-img img { transform: scale(1.06); }
+    .qn-card-body { padding: 0.35rem 0.45rem 0.4rem; }
+    .qn-card-en { font-family: 'DM Sans',sans-serif; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .qn-card-ja { font-size: 0.55rem; color: var(--fg3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 0.1rem; }
+    @media (max-width: 768px) {
+      .qn-card { width: 86px; }
+    }
+
     /* ─── CATEGORY ─── */
     .category { padding: 4rem 0; background: var(--section-bg); border-top: 1px solid var(--wborder); border-bottom: 1px solid var(--wborder); }
     .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin-top: 2rem; }
@@ -341,6 +357,52 @@
   <div class="hero-dots">
     <button class="hero-dot active" data-idx="0"></button>
     <button class="hero-dot" data-idx="1"></button>
+  </div>
+</section>
+
+<!-- QUICK NAV -->
+<section class="quick-nav">
+  <div class="quick-nav-scroll">
+    <a href="strixedge" class="qn-card">
+      <div class="qn-card-img"><img src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">Strix Edge</div><div class="qn-card-ja">イカメタル</div></div>
+    </a>
+    <a href="gtlj" class="qn-card">
+      <div class="qn-card-img"><img src="gtlj-banner.png" alt="GTLJ" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">GTLJ</div><div class="qn-card-ja">ライトジギング</div></div>
+    </a>
+    <a href="gtslj" class="qn-card">
+      <div class="qn-card-img"><img src="gtslj-banner.png" alt="GTSLJ" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">GTSLJ</div><div class="qn-card-ja">スーパーライト</div></div>
+    </a>
+    <a href="gtj" class="qn-card">
+      <div class="qn-card-img"><img src="gtj-banner.png" alt="GTJ" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">GTJ</div><div class="qn-card-ja">ジギング</div></div>
+    </a>
+    <a href="gts" class="qn-card">
+      <div class="qn-card-img"><img src="gts-banner.png" alt="GTS" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">GTS</div><div class="qn-card-ja">ショアジギング</div></div>
+    </a>
+    <a href="gtr" class="qn-card">
+      <div class="qn-card-img"><img src="gtr-banner.png" alt="GTR" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">GTR</div><div class="qn-card-ja">ロックフィッシュ</div></div>
+    </a>
+    <a href="gtx" class="qn-card">
+      <div class="qn-card-img"><img src="gtx-banner.png" alt="GTX" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">GTX</div><div class="qn-card-ja">エギング</div></div>
+    </a>
+    <a href="ika" class="qn-card">
+      <div class="qn-card-img"><img src="ika-banner.png" alt="IKA" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">IKA</div><div class="qn-card-ja">イカ竿</div></div>
+    </a>
+    <a href="ishidai" class="qn-card">
+      <div class="qn-card-img"><img src="ishidai-banner.png" alt="Ishidai" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">Ishidai</div><div class="qn-card-ja">石鯛竿</div></div>
+    </a>
+    <a href="vskue" class="qn-card">
+      <div class="qn-card-img"><img src="vskue-banner.png" alt="VS-KUE" loading="lazy" /></div>
+      <div class="qn-card-body"><div class="qn-card-en">VS-KUE</div><div class="qn-card-ja">クエ竿</div></div>
+    </a>
   </div>
 </section>
 
