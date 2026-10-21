@@ -1,0 +1,10 @@
+# HTML files: no cache (always fetch fresh)
+<FilesMatch "\.(html|htm)$">
+  Header set Cache-Control "no-cache, must-revalidate"
+  Header set Pragma "no-cache"
+</FilesMatch>
+
+# Static assets: cache for 1 week
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|css|js|woff|woff2)$">
+  Header set Cache-Control "public, max-age=604800"
+</FilesMatch>
