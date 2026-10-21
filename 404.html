@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ページが見つかりません | IG Rod Planning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red: #cc2200; --red2: #e83010;
+      --bg: #ffffff; --fg: #111111; --fg2: #444444; --fg3: #888888;
+      --wborder: #e5e5e5; --wborder2: #d0d0d0;
+      --card-bg: #f7f7f7; --section-bg: #f4f4f4;
+    }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; display: flex; flex-direction: column; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; padding: 0 2rem; height: 68px; background: rgba(255,255,255,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--wborder); }
+    .nav-logo img { height: 36px; }
+
+    .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 1.5rem 4rem; text-align: center; }
+    .err-code { font-family: 'DM Sans', sans-serif; font-size: clamp(5rem, 18vw, 10rem); font-weight: 800; color: var(--section-bg); line-height: 1; letter-spacing: -0.04em; }
+    .err-title { font-size: 1.25rem; font-weight: 700; margin-top: 0.5rem; }
+    .err-sub { font-size: 0.9rem; color: var(--fg2); margin-top: 0.75rem; line-height: 1.8; }
+    .err-home { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem; padding: 0.75rem 2rem; background: var(--red); color: #fff; border-radius: 4px; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.04em; transition: background 0.2s; }
+    .err-home:hover { background: var(--red2); }
+
+    .products-section { width: 100%; max-width: 800px; margin: 3rem auto 0; }
+    .products-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg3); margin-bottom: 1.2rem; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; }
+    .prod-link { display: block; padding: 0.9rem 1rem; background: var(--card-bg); border: 1px solid var(--wborder); border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: var(--fg2); transition: border-color 0.2s, color 0.2s; }
+    .prod-link:hover { border-color: var(--red); color: var(--red); }
+    .prod-en { font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.15rem; }
+    .prod-ja { font-size: 0.72rem; color: var(--fg3); }
+
+    footer { border-top: 1px solid var(--wborder); padding: 1.5rem 2rem; text-align: center; font-size: 0.72rem; color: var(--fg3); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="logo.svg" alt="IG Rod Planning" height="36" onerror="this.style.display='none'">
+    </a>
+  </nav>
+
+  <main class="main">
+    <div class="err-code">404</div>
+    <h1 class="err-title">ページが見つかりません</h1>
+    <p class="err-sub">お探しのページは移動または削除された可能性があります。<br>以下のリンクから目的のページへお進みください。</p>
+    <a href="index.html" class="err-home">トップページへ戻る</a>
+
+    <div class="products-section">
+      <div class="products-label">製品ラインナップ</div>
+      <div class="products-grid">
+        <a href="strixedge.html" class="prod-link">
+          <div class="prod-en">Strix Edge</div>
+          <div class="prod-ja">イカメタル</div>
+        </a>
+        <a href="gtlj.html" class="prod-link">
+          <div class="prod-en">GTLJ</div>
+          <div class="prod-ja">オフショアジギング</div>
+        </a>
+        <a href="gtslj.html" class="prod-link">
+          <div class="prod-en">GTSLJ</div>
+          <div class="prod-ja">スーパーライト</div>
+        </a>
+        <a href="gtj.html" class="prod-link">
+          <div class="prod-en">GTJ</div>
+          <div class="prod-ja">ジギング</div>
+        </a>
+        <a href="gts.html" class="prod-link">
+          <div class="prod-en">GTS</div>
+          <div class="prod-ja">ショアジギング</div>
+        </a>
+        <a href="gtr.html" class="prod-link">
+          <div class="prod-en">GTR</div>
+          <div class="prod-ja">ロックフィッシュ</div>
+        </a>
+        <a href="gtx.html" class="prod-link">
+          <div class="prod-en">GTX</div>
+          <div class="prod-ja">エギング</div>
+        </a>
+        <a href="ika.html" class="prod-link">
+          <div class="prod-en">IKA</div>
+          <div class="prod-ja">イカ竿</div>
+        </a>
+        <a href="ishidai.html" class="prod-link">
+          <div class="prod-en">Ishidai</div>
+          <div class="prod-ja">石鯛竿</div>
+        </a>
+        <a href="vskue.html" class="prod-link">
+          <div class="prod-en">VS-KUE</div>
+          <div class="prod-ja">クエ竿</div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer>© IG Rod Planning. All rights reserved.</footer>
+</body>
+</html>
