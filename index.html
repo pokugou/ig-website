@@ -85,7 +85,7 @@
     .hero-slides { display: flex; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); }
     .hero-slide { min-width: 100%; position: relative; }
     /* Slide 1: text overlay — 70% height via aspect-ratio */
-    .hero-slide-main { position: relative; background: var(--black); aspect-ratio: 16/5.5; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .hero-slide-main { position: relative; background: var(--black); aspect-ratio: 16/3; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .hero-slide-main-bg { position: absolute; inset: 0; background-image: url(main-banner.jpg); background-size: cover; background-position: center; opacity: 0.5; }
     .hero-slide-main-content { position: relative; z-index: 1; text-align: center; padding: 0 2rem; }
     .hero-slide-main-content img { height: clamp(60px,10vw,110px); width: auto; margin: 0 auto 0.75rem; }
@@ -101,7 +101,7 @@
     .btn-ghost-dark { background: transparent; border: 1px solid var(--wborder2); color: var(--fg2); }
     .btn-ghost-dark:hover { border-color: #aaa; color: var(--fg); }
     /* Slide 2: strix edge */
-    .hero-slide-strix { position: relative; cursor: pointer; background: #0a0a0a; aspect-ratio: 16/5.5; display: flex; align-items: center; overflow: hidden; }
+    .hero-slide-strix { position: relative; cursor: pointer; background: #0a0a0a; aspect-ratio: 16/3; display: flex; align-items: center; overflow: hidden; }
     .slide-strix-bg { position: absolute; inset: 0; background-image: url(strixedge-rods.jpg); background-size: cover; background-position: center; opacity: 0.25; }
     .slide-strix-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 3rem; padding: 0 10%; width: 100%; }
     .slide-strix-inner img { height: clamp(80px,13vw,160px); width: auto; flex-shrink: 0; }
