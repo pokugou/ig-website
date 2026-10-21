@@ -419,6 +419,7 @@
     <h2 class="section-title" style="margin-bottom:2rem;">製品ギャラリー</h2>
     <div class="slider-wrap">
       <div class="slider-track" id="sliderTrack">
+        <div class="slider-slide"><img src="gtlj-rod.webp" alt="GTLJ ロッド全体" /></div>
         <div class="slider-slide"><img src="gtlj-photo1.jpg" alt="GTLJ 全体" /></div>
         <div class="slider-slide"><img src="gtlj-photo2.jpg" alt="GTLJ 全体2" /></div>
         <div class="slider-slide"><img src="gtlj-photo3.jpg" alt="GTLJ ガイド" /></div>
@@ -430,12 +431,13 @@
       <div class="slider-dot active" onclick="slideTo(0)"></div>
       <div class="slider-dot" onclick="slideTo(1)"></div>
       <div class="slider-dot" onclick="slideTo(2)"></div>
+      <div class="slider-dot" onclick="slideTo(3)"></div>
     </div>
   </div>
 </div>
 <script>
   var sliderIdx = 0;
-  var total = 3;
+  var total = 4;
   function updateSlider() {
     document.getElementById('sliderTrack').style.transform = 'translateX(-' + (sliderIdx * 100) + '%)';
     document.querySelectorAll('.slider-dot').forEach(function(d, i) {
