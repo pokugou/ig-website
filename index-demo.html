@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IG Rod Planning | オリジナル釣竿・カスタムロッド制作</title>
+  <meta name="description" content="自分色のオリジナル釣竿を作ってみませんか。IG Rod Planningはカスタムロッド制作・リメイク・カラーカスタムを承る釣竿専門工房です。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #080808; --dark: #111111; --dark2: #181818; --dark3: #222222;
+      --red: #cc2200; --red2: #e83010;
+      --white: #f8f8f8; --gray: #d0d0d0; --gray2: #999999;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+      /* white theme */
+      --bg: #ffffff; --fg: #111111; --fg2: #444444; --fg3: #888888;
+      --wborder: #e5e5e5; --wborder2: #d0d0d0;
+      --card-bg: #f7f7f7; --card-bg2: #efefef;
+      --section-bg: #f4f4f4; --section-bg2: #ffffff;
+    }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--bg); color: var(--fg); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #eee; }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── NAV ─── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(255,255,255,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--wborder); }
+    .nav-logo { display: flex; align-items: center; }
+    .nav-menu { list-style: none; display: flex; align-items: center; gap: 0; }
+    .nav-menu li a { display: flex; align-items: center; height: 68px; padding: 0 1rem; font-size: 0.8rem; font-weight: 500; color: #555; letter-spacing: 0.04em; transition: color 0.2s; white-space: nowrap; }
+    .nav-menu li a:hover { color: var(--fg); }
+    .nav-btn { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; background: var(--red); color: #fff; border-radius: 3px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; margin-left: 0.5rem; transition: background 0.2s; }
+    .nav-btn:hover { background: var(--red2); }
+    .nav-menu li { position: relative; }
+    .nav-dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 160px; background: #fff; border: 1px solid var(--wborder2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .has-drop:hover > .nav-dropdown { display: block; }
+    .nav-dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: var(--fg2); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .nav-dropdown li a:hover { color: var(--fg); background: var(--card-bg); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.5; margin-left: 3px; }
+    .nav-dropdown .has-subdrop { position: relative; }
+    .nav-dropdown .has-subdrop > a { display: flex; justify-content: space-between; align-items: center; }
+    .nav-dropdown .has-subdrop > a::after { content: '›'; font-size: 1rem; opacity: 0.45; margin-left: 0.8rem; line-height: 1; }
+    .nav-subdropdown { display: none; position: absolute; left: 100%; top: -1px; min-width: 220px; background: #fff; border: 1px solid var(--wborder2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 500; box-shadow: 4px 4px 16px rgba(0,0,0,0.08); }
+    .has-subdrop:hover > .nav-subdropdown { display: block; }
+    .nav-subdropdown li a { display: block; padding: 0.55rem 1.1rem; font-size: 0.78rem; color: var(--fg2); text-decoration: none; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .nav-subdropdown li a:hover { color: var(--fg); background: var(--card-bg); }
+    .nav-genre { font-size: 0.58rem; color: var(--red2); letter-spacing: 0.04em; margin-left: 0.35rem; font-weight: 600; }
+    .nav-btns { display: flex; align-items: center; gap: 0.5rem; margin: 0 0.8rem; flex-shrink: 0; }
+    .nav-btn-order { display: inline-flex; align-items: center; height: 34px; padding: 0 1rem; border: 1.5px solid var(--wborder2); color: var(--fg2); border-radius: 3px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap; transition: border-color 0.2s, color 0.2s; }
+    .nav-btn-order:hover { border-color: var(--fg); color: var(--fg); }
+    .nav-btn-contact { display: inline-flex; align-items: center; height: 34px; padding: 0 1rem; background: var(--red); color: #fff; border-radius: 3px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap; transition: background 0.2s; }
+    .nav-btn-contact:hover { background: var(--red2); }
+    .nav-social { display: flex; align-items: center; gap: 1.1rem; margin-left: 1.2rem; padding-left: 1.2rem; border-left: 1px solid var(--wborder2); }
+    .nav-social a { opacity: 1; transition: opacity 0.2s; display: flex; }
+    .nav-social a:hover { opacity: 0.45; }
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--fg); border-radius: 2px; transition: transform 0.28s, opacity 0.28s; transform-origin: center; }
+    .hamburger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ─── SECTION HEADER (justace style) ─── */
+    .sec-head { text-align: center; margin-bottom: 2.5rem; }
+    .sec-head-en { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; letter-spacing: -0.02em; font-family: 'DM Sans', sans-serif; line-height: 1; margin-bottom: 0.35rem; color: var(--fg); }
+    .sec-head-ja { font-size: 0.78rem; color: var(--fg3); letter-spacing: 0.1em; }
+    .sec-divider { width: 100%; height: 1px; background: var(--wborder); margin: 0; }
+
+    /* ─── HERO SLIDER ─── */
+    .hero { position: relative; margin-top: 68px; overflow: hidden; }
+    .hero-slides { display: flex; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); }
+    .hero-slide { min-width: 100%; position: relative; }
+    /* Slide 1: text overlay — 70% height via aspect-ratio */
+    .hero-slide-main { position: relative; background: var(--black); aspect-ratio: 16/4.2; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .hero-slide-main-bg { position: absolute; inset: 0; background-image: url(main-banner.jpg); background-size: cover; background-position: center; opacity: 0.5; }
+    .hero-slide-main-content { position: relative; z-index: 1; text-align: center; padding: 0 2rem; }
+    .hero-slide-main-content img { height: clamp(60px,10vw,110px); width: auto; margin: 0 auto 0.75rem; }
+    .hero-slide-main-content h1 { font-size: clamp(0.7rem,1.2vw,0.9rem); font-weight: 400; color: rgba(248,248,248,0.7); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1rem; }
+    .hero-slide-main-content p { font-size: clamp(0.7rem,1vw,0.82rem); color: rgba(248,248,248,0.55); margin-bottom: 1.5rem; letter-spacing: 0.08em; }
+    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.75rem 1.6rem; border-radius: 3px; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; border: none; transition: background 0.2s, transform 0.18s; font-family: inherit; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: #fff; }
+    .btn-red:hover { background: var(--red2); }
+    .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.35); color: rgba(248,248,248,0.75); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+    .btn-ghost-dark { background: transparent; border: 1px solid var(--wborder2); color: var(--fg2); }
+    .btn-ghost-dark:hover { border-color: #aaa; color: var(--fg); }
+    /* Slide 2: strix edge */
+    .hero-slide-strix { position: relative; cursor: pointer; background: #0a0a0a; aspect-ratio: 16/4.2; display: flex; align-items: center; overflow: hidden; }
+    .slide-strix-bg { position: absolute; inset: 0; background-image: url(strixedge-rods.jpg); background-size: cover; background-position: center; opacity: 0.25; }
+    .slide-strix-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 3rem; padding: 0 10%; width: 100%; }
+    .slide-strix-inner img { height: clamp(80px,13vw,160px); width: auto; flex-shrink: 0; }
+    .slide-strix-text h2 { font-size: clamp(1.4rem,3vw,2.6rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.3rem; color: #fff; }
+    .slide-strix-text p { font-size: 0.85rem; color: rgba(248,248,248,0.7); margin-bottom: 1rem; }
+    .pickup-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: var(--red); color: #fff; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.3rem 0.8rem; margin-bottom: 0.6rem; }
+    /* Hero controls */
+    .hero-prev, .hero-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; z-index: 10; transition: background 0.2s; }
+    .hero-prev:hover, .hero-next:hover { background: rgba(204,34,0,0.8); }
+    .hero-prev { left: 1rem; }
+    .hero-next { right: 1rem; }
+    .hero-dots { position: absolute; bottom: 0.8rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.45rem; z-index: 10; }
+    .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; border: none; transition: background 0.2s; }
+    .hero-dot.active { background: #fff; }
+
+    /* ─── PRODUCTS ─── */
+    .products { padding: 4rem 0; background: var(--bg); }
+    .inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin-top: 2rem; }
+    .prod-card { background: #fff; display: flex; flex-direction: column; cursor: pointer; transition: background 0.2s; text-decoration: none; color: inherit; }
+    .prod-card:hover { background: var(--card-bg); }
+    .prod-card-img { aspect-ratio: 16/9; overflow: hidden; background: var(--card-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .prod-card-img img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.4s; }
+    .prod-card:hover .prod-card-img img { transform: scale(1.04); }
+    .prod-card-body { padding: 1rem 1.1rem 1.2rem; border-top: 1px solid var(--wborder); }
+    .prod-card-en { font-family: 'DM Sans',sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.25rem; }
+    .prod-card-name { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.2rem; color: var(--fg); }
+    .prod-card-sub { font-size: 0.72rem; color: var(--fg3); }
+
+    /* ─── CATEGORY ─── */
+    .category { padding: 4rem 0; background: var(--section-bg); border-top: 1px solid var(--wborder); border-bottom: 1px solid var(--wborder); }
+    .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin-top: 2rem; }
+    .cat-card { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; text-align: center; cursor: pointer; text-decoration: none; color: inherit; overflow: hidden; aspect-ratio: 3/2; }
+    .cat-card-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.5s ease; }
+    .cat-card:hover .cat-card-bg { transform: scale(1.06); }
+    .cat-card-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.42); transition: background 0.3s; }
+    .cat-card:hover .cat-card-overlay { background: rgba(0,0,0,0.55); }
+    .cat-card-content { position: relative; z-index: 2; padding: 1.2rem 0.8rem; width: 100%; }
+    .cat-card-en { font-family: 'DM Sans',sans-serif; font-size: 0.95rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem; color: #fff; }
+    .cat-card-ja { font-size: 0.72rem; color: rgba(255,255,255,0.78); letter-spacing: 0.08em; }
+
+    /* ─── SERVICES ─── */
+    .services { padding: 4rem 0; background: var(--bg); }
+    .svc-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin-top: 2rem; }
+    .svc-card { background: #fff; padding: 2rem 1.75rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .svc-num { font-family: 'DM Sans',sans-serif; font-size: 2.5rem; font-weight: 900; color: var(--red); opacity: 0.5; line-height: 1; }
+    .svc-card h3 { font-size: 1.15rem; font-weight: 800; color: var(--fg); }
+    .svc-card p { font-size: 0.83rem; color: var(--fg2); line-height: 1.85; }
+    .svc-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+    .svc-card ul li { font-size: 0.77rem; color: var(--fg3); padding-left: 0.9rem; position: relative; }
+    .svc-card ul li::before { content: '—'; position: absolute; left: 0; color: var(--red); font-size: 0.7rem; }
+    .svc-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+
+    /* ─── GALLERY ─── */
+    .gallery { padding: 4rem 0; background: var(--section-bg); border-top: 1px solid var(--wborder); border-bottom: 1px solid var(--wborder); }
+    .gal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin-top: 2rem; }
+    .gal-item { aspect-ratio: 1/1; overflow: hidden; position: relative; background: var(--card-bg); }
+    .gal-item.tall { grid-row: span 2; }
+    .gal-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .gal-item:hover img { transform: scale(1.05); }
+    .gal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); opacity: 0; display: flex; align-items: flex-end; padding: 1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; transition: opacity 0.3s; }
+    .gal-item:hover .gal-overlay { opacity: 1; }
+    .gal-more { display: flex; align-items: center; justify-content: center; margin-top: 1.5rem; }
+
+    /* ─── CTA ─── */
+    .cta { padding: 6rem 0; position: relative; overflow: hidden; background: var(--black); }
+    .cta-bg { position: absolute; inset: 0; background-image: url(https://ig-rod.jp/wp-content/uploads/2025/10/IMG_6185.jpg); background-size: cover; background-position: center; opacity: 0.15; }
+    .cta-content { position: relative; z-index: 1; text-align: center; max-width: 600px; margin: 0 auto; padding: 0 2rem; color: #fff; }
+    .cta-content h2 { font-size: clamp(1.8rem,4vw,3rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1rem; line-height: 1.2; color: #fff; }
+    .cta-content p { font-size: 0.9rem; color: rgba(255,255,255,0.65); margin-bottom: 2rem; line-height: 1.9; }
+    .cta-note { margin-top: 1.5rem; font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+
+    /* ─── FOOTER ─── */
+    footer { background: #fff; border-top: 1px solid var(--wborder); padding: 3.5rem 2rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-logo { margin-bottom: 2.5rem; }
+    .footer-nav-list { list-style: none; border-top: 1px solid var(--wborder); }
+    .footer-nav-item { display: flex; align-items: center; border-bottom: 1px solid var(--wborder); padding: 1rem 0; gap: 3rem; }
+    .footer-nav-en { font-family: 'DM Sans',sans-serif; font-size: 0.9rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; min-width: 160px; color: var(--fg); }
+    .footer-nav-ja { font-size: 0.8rem; color: var(--fg3); }
+    .footer-nav-item a { display: flex; align-items: center; gap: 3rem; text-decoration: none; color: inherit; width: 100%; transition: opacity 0.2s; }
+    .footer-nav-item a:hover { opacity: 0.6; }
+    .footer-bottom { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--wborder); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-copy { font-size: 0.72rem; color: var(--fg3); letter-spacing: 0.04em; }
+    .footer-social { display: flex; gap: 1.2rem; }
+    .footer-social a { display: flex; opacity: 0.55; transition: opacity 0.2s; }
+    .footer-social a:hover { opacity: 1; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .products-grid { grid-template-columns: repeat(3, 1fr); }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .svc-grid { grid-template-columns: 1fr; }
+      .gal-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      nav .nav-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--wborder); gap: 0; }
+      nav .nav-menu.is-open { display: flex; }
+      nav .nav-menu li { border-bottom: 1px solid var(--wborder); width: 100%; }
+      nav .nav-menu li a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; color: var(--fg); }
+      .nav-btns { display: none; }
+      .hamburger { display: flex; }
+      .nav-social { display: none; }
+      .hero-slide-main { aspect-ratio: 4/3; }
+      .hero-slide-strix { aspect-ratio: 4/3; }
+      .slide-strix-inner { flex-direction: column; gap: 1.5rem; padding: 2rem; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .gal-grid { grid-template-columns: repeat(2, 1fr); }
+      .gal-item.tall { grid-row: span 1; }
+      .footer-nav-en { min-width: 100px; font-size: 0.8rem; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:42px;width:auto;" />
+  </a>
+  <ul class="nav-menu">
+    <li class="has-drop"><a href="products.html">商品一覧</a>
+      <ul class="nav-dropdown">
+        <li class="has-subdrop"><a href="products.html">オフショア</a>
+          <ul class="nav-subdropdown">
+            <li><a href="strixedge.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
+            <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+            <li><a href="gtlj.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
+            <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
+            <li><a href="gts.html">GTS <span class="nav-genre">スロージギング</span></a></li>
+            <li><a href="gtr.html">GTR <span class="nav-genre">タイラバ</span></a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop"><a href="products.html">ショア</a>
+          <ul class="nav-subdropdown">
+            <li><a href="gtx.html">GTX <span class="nav-genre">ロックショア</span></a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop"><a href="products.html">船竿</a>
+          <ul class="nav-subdropdown">
+            <li><a href="ika.html">イカ竿</a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop"><a href="products.html">底物</a>
+          <ul class="nav-subdropdown">
+            <li><a href="ishidai.html">VS石鯛</a></li>
+            <li><a href="vskue.html">VS九絵</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li class="has-drop"><a href="order.html">オーダーについて</a>
+      <ul class="nav-dropdown">
+        <li><a href="order.html">オーダーシートはこちらから</a></li>
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+        <li><a href="simulator.html">カラーシミュレーター</a></li>
+      </ul>
+    </li>
+  </ul>
+  <div class="nav-btns">
+    <a href="order.html" class="nav-btn-order">オーダーシート</a>
+    <a href="contact.html" class="nav-btn-contact">お問い合わせ</a>
+  </div>
+  <div class="nav-social">
+    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig1)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+    <a href="https://www.tiktok.com/@ig2025123?_r=1&_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#111111"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+    </a>
+    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+    </a>
+    <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+  </div>
+  <button class="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO SLIDER -->
+<section class="hero">
+  <div class="hero-slides" id="heroSlides">
+    <!-- Slide 1: メインビジュアル -->
+    <div class="hero-slide">
+      <div class="hero-slide-main">
+        <div class="hero-slide-main-bg"></div>
+        <div class="hero-slide-main-content">
+          <img src="logo.png" alt="IG Rod Planning" />
+          <h1>Custom Rod &middot; 株式会社IG</h1>
+          <p>オリジナルロッド制作 &middot; リメイク &middot; カラーカスタム</p>
+          <div class="hero-actions">
+            <a href="order.html" class="btn btn-red">オーダーはこちら →</a>
+            <a href="#products" class="btn btn-ghost">ロッドを見る</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Slide 2: STRIX EDGE -->
+    <div class="hero-slide">
+      <div class="hero-slide-strix" onclick="location.href='strixedge.html'">
+        <div class="slide-strix-bg"></div>
+        <div class="slide-strix-inner">
+          <img src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
+          <div class="slide-strix-text">
+            <div class="pickup-badge">★ PICK UP</div>
+            <h2>STRIX EDGE</h2>
+            <p style="font-size:0.78rem;font-weight:700;letter-spacing:0.12em;color:rgba(248,248,248,0.85);margin-bottom:0.4rem;">カラーカスタムできるイカメタルロッド</p>
+            <p>響きが違う。見えない「触れ」が見える。<br />海中から届く微細な信号をチタントップで捉える。</p>
+            <a href="strixedge.html" class="btn btn-red">詳細を見る →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="hero-prev" id="heroPrev">&#8249;</button>
+  <button class="hero-next" id="heroNext">&#8250;</button>
+  <div class="hero-dots">
+    <button class="hero-dot active" data-idx="0"></button>
+    <button class="hero-dot" data-idx="1"></button>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="inner">
+    <div class="sec-head">
+      <div class="sec-head-en">PRODUCTS</div>
+      <div class="sec-head-ja">製品情報</div>
+    </div>
+    <div class="sec-divider"></div>
+    <div class="products-grid">
+
+      <a href="strixedge.html" class="prod-card">
+        <div class="prod-card-img">
+          <img src="strixedge-banner.png" alt="STRIX EDGE" loading="lazy" />
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-en">イカメタル / ティップラン</div>
+          <div class="prod-card-name">STRIX EDGE</div>
+          <div class="prod-card-sub">チタントップ搭載 高感度モデル</div>
+        </div>
+      </a>
+
+      <a href="gtlj.html" class="prod-card">
+        <div class="prod-card-img">
+          <img src="gtlj-banner.png" alt="GTLJ" loading="lazy" />
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-en">ライトジギング</div>
+          <div class="prod-card-name">GTLJ</div>
+          <div class="prod-card-sub">超万能ライトジギングロッド</div>
+        </div>
+      </a>
+
+      <a href="gtslj.html" class="prod-card">
+        <div class="prod-card-img">
+          <img src="gtslj-banner.png" alt="GTSLJ" loading="lazy" />
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-en">ライトオフショア</div>
+          <div class="prod-card-name">GTSLJ</div>
+          <div class="prod-card-sub">超万能ライトオフショアロッド</div>
+        </div>
+      </a>
+
+      <a href="gtj.html" class="prod-card">
+        <div class="prod-card-img">
+          <img src="gtj-banner.png" alt="GT-J" loading="lazy" />
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-en">ジギング</div>
+          <div class="prod-card-name">GT-J</div>
+          <div class="prod-card-sub">ジギング専用モデル</div>
+        </div>
+      </a>
+
+      <a href="gts.html" class="prod-card">
+        <div class="prod-card-img">
+          <img src="gts-banner.png" alt="GTS" loading="lazy" />
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-en">スロージギング</div>
+          <div class="prod-card-name">GTS</div>
+          <div class="prod-card-sub">スロージギング対応モデル</div>
+        </div>
+      </a>
+
+      <a href="gtr.html" class="prod-card">
+        <div class="prod-card-img">
+          <img src="gtr-banner.png" alt="GTR" loading="lazy" />
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-en">タイラバ</div>
+          <div class="prod-card-name">GTR</div>
+          <div class="prod-card-sub">タイラバ専用設計</div>
+        </div>
+      </a>
+
+      <a href="gtx.html" class="prod-card">
+        <div class="prod-card-img" style="background:var(--card-bg);display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'DM Sans',sans-serif;font-size:2rem;font-weight:900;color:rgba(0,0,0,0.07);">GTX</span>
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-en">ロックショア</div>
+          <div class="prod-card-name">GTX</div>
+          <div class="prod-card-sub">ロックショア対応モデル</div>
+        </div>
+      </a>
+
+      <a href="ika.html" class="prod-card">
+        <div class="prod-card-img" style="background:var(--card-bg);display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'DM Sans',sans-serif;font-size:1.5rem;font-weight:900;color:rgba(0,0,0,0.07);">イカ竿</span>
+        </div>
+        <div class="prod-card-body">
+          <div class="prod-card-en">船竿</div>
+          <div class="prod-card-name">イカ竿</div>
+          <div class="prod-card-sub">船からのイカ釣り専用</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORY -->
+<section class="category">
+  <div class="inner">
+    <div class="sec-head">
+      <div class="sec-head-en">CATEGORY</div>
+      <div class="sec-head-ja">カテゴリーから探す</div>
+    </div>
+    <div class="sec-divider"></div>
+    <div class="cat-grid">
+      <a href="products.html?cat=offshore" class="cat-card">
+        <div class="cat-card-bg" style="background-image: url('offshore-bg.jpg');"></div>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <div class="cat-card-en">Offshore</div>
+          <div class="cat-card-ja">オフショア</div>
+        </div>
+      </a>
+      <a href="products.html?cat=shore" class="cat-card">
+        <div class="cat-card-bg" style="background-image: url('shore-bg.jpg');"></div>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <div class="cat-card-en">Shore</div>
+          <div class="cat-card-ja">ショア</div>
+        </div>
+      </a>
+      <a href="products.html?cat=boat" class="cat-card">
+        <div class="cat-card-bg" style="background-image: url('boatrod-bg.jpg');"></div>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <div class="cat-card-en">Boat Rod</div>
+          <div class="cat-card-ja">船竿</div>
+        </div>
+      </a>
+      <a href="products.html?cat=bottom" class="cat-card">
+        <div class="cat-card-bg" style="background-image: url('bottom-bg.jpg');"></div>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <div class="cat-card-en">Bottom</div>
+          <div class="cat-card-ja">底物</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="inner">
+    <div class="sec-head">
+      <div class="sec-head-en">SERVICES</div>
+      <div class="sec-head-ja">3つのサービス</div>
+    </div>
+    <div class="sec-divider"></div>
+    <div class="svc-grid">
+      <div class="svc-card">
+        <span class="svc-num">01</span>
+        <img class="svc-img" src="https://ig-rod.jp/wp-content/uploads/2024/02/IMG_0049-1024x659.jpg" alt="オリジナルロッド制作" loading="lazy" />
+        <h3>オリジナルロッド制作</h3>
+        <p>ゼロから理想の一本を作り上げます。個人はもちろん、オリジナルブランドの立ち上げ支援・OEM製造にも対応。小ロットからの発注も歓迎です。</p>
+        <ul>
+          <li>ブランクス選定からご相談可能</li>
+          <li>ガイドセッティング・カラーも自由</li>
+          <li>スレッドカラーのフルカスタム</li>
+          <li>製造期間: 新規約90日 / リピート約50日</li>
+        </ul>
+      </div>
+      <div class="svc-card">
+        <span class="svc-num">02</span>
+        <h3>リメイク</h3>
+        <p>思い出の釣竿に新たな命を。古くなったロッドや愛着のある竿を現代仕様にリメイク。修理・ガイド交換・グリップ交換など幅広く対応。</p>
+        <ul>
+          <li>ガイド交換・追加</li>
+          <li>グリップ・リールシート交換</li>
+          <li>ロッドの塗装・スレッド巻き直し</li>
+          <li>折れ竿の修理・継ぎ直し</li>
+          <li>ブランクスコーティング</li>
+        </ul>
+      </div>
+      <div class="svc-card">
+        <span class="svc-num">03</span>
+        <img class="svc-img" src="https://ig-rod.jp/wp-content/uploads/2025/10/カラーチャート-2.jpg" alt="カラーカスタム" loading="lazy" />
+        <h3>カラーカスタム</h3>
+        <p>釣竿のカラーを自分好みにカスタマイズ。スレッドの色・パターン・デザインを自由に指定できます。まだ出していないカラーもご相談ください。</p>
+        <ul>
+          <li>スレッドカラー・パターンの変更</li>
+          <li>ガイドカラーの選択</li>
+          <li>オリジナルデザインの提案</li>
+          <li>グラデーション・多色使い対応</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="inner">
+    <div class="sec-head">
+      <div class="sec-head-en">GALLERY</div>
+      <div class="sec-head-ja">製作実績</div>
+    </div>
+    <div class="sec-divider"></div>
+    <div class="gal-grid">
+      <div class="gal-item tall">
+        <img src="https://ig-rod.jp/wp-content/uploads/2025/10/IMG_6185.jpg" alt="製作実績" loading="lazy" />
+        <div class="gal-overlay">Custom Rod Work</div>
+      </div>
+      <div class="gal-item">
+        <img src="https://ig-rod.jp/wp-content/uploads/2025/10/IMG_6195.jpg" alt="製作実績" loading="lazy" />
+        <div class="gal-overlay">Custom Build</div>
+      </div>
+      <div class="gal-item">
+        <img src="https://ig-rod.jp/wp-content/uploads/2025/10/IMG_0257.jpg" alt="STRIX EDGE" loading="lazy" />
+        <div class="gal-overlay">STRIX EDGE</div>
+      </div>
+      <div class="gal-item">
+        <img src="https://ig-rod.jp/wp-content/uploads/2025/10/IMG_0259.jpg" alt="Detail" loading="lazy" />
+        <div class="gal-overlay">STRIX EDGE — Detail</div>
+      </div>
+      <div class="gal-item">
+        <img src="https://ig-rod.jp/wp-content/uploads/2025/10/IMG_0258-2.jpg" alt="Rod Detail" loading="lazy" />
+        <div class="gal-overlay">Rod Detail</div>
+      </div>
+      <div class="gal-item">
+        <img src="https://ig-rod.jp/wp-content/uploads/2025/10/IMG_0371.jpg" alt="GT-J" loading="lazy" />
+        <div class="gal-overlay">GT-J — Jigging</div>
+      </div>
+    </div>
+    <div class="gal-more">
+      <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:0.8rem;">Instagram @igrod_pl でもっと見る ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+  <div class="cta-bg"></div>
+  <div class="cta-content">
+    <h2>あなただけの<br /><em style="font-style:normal;color:var(--red2);">一本を作りましょう</em></h2>
+    <p>オーダー・ご相談・お見積もりはすべて無料。まずはお気軽にご連絡ください。InstagramのDMでも受け付けています。</p>
+    <a href="order.html" class="btn btn-red" style="font-size:0.95rem;padding:1rem 2.5rem;">オーダーフォームへ →</a>
+    <p class="cta-note">※ カスタム内容・仕様のご相談も歓迎です</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="logo.png" alt="IG Rod Planning" style="height:40px;width:auto;" />
+    </div>
+    <ul class="footer-nav-list">
+      <li class="footer-nav-item">
+        <a href="products.html">
+          <span class="footer-nav-en">PRODUCTS</span>
+          <span class="footer-nav-ja">製品一覧</span>
+        </a>
+      </li>
+      <li class="footer-nav-item">
+        <a href="services.html">
+          <span class="footer-nav-en">SERVICES</span>
+          <span class="footer-nav-ja">サービス</span>
+        </a>
+      </li>
+      <li class="footer-nav-item">
+        <a href="order.html">
+          <span class="footer-nav-en">ORDER</span>
+          <span class="footer-nav-ja">オーダーシート</span>
+        </a>
+      </li>
+      <li class="footer-nav-item">
+        <a href="gallery.html">
+          <span class="footer-nav-en">GALLERY</span>
+          <span class="footer-nav-ja">ギャラリー</span>
+        </a>
+      </li>
+      <li class="footer-nav-item">
+        <a href="company.html">
+          <span class="footer-nav-en">COMPANY</span>
+          <span class="footer-nav-ja">事業概要</span>
+        </a>
+      </li>
+      <li class="footer-nav-item">
+        <a href="contact.html">
+          <span class="footer-nav-en">CONTACT</span>
+          <span class="footer-nav-ja">お問い合わせ</span>
+        </a>
+      </li>
+    </ul>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig2" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig2)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Hamburger menu toggle
+  var ham = document.querySelector('.hamburger');
+  var navMenu = document.querySelector('.nav-menu');
+  if (ham && navMenu) {
+    ham.addEventListener('click', function() {
+      ham.classList.toggle('is-active');
+      navMenu.classList.toggle('is-open');
+    });
+    navMenu.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        ham.classList.remove('is-active');
+        navMenu.classList.remove('is-open');
+      });
+    });
+  }
+
+  // Hero slider
+  var hIdx = 0, hTotal = 2;
+  var slides = document.getElementById('heroSlides');
+  function hUpdate() {
+    slides.style.transform = 'translateX(-' + (hIdx * 100) + '%)';
+    document.querySelectorAll('.hero-dot').forEach(function(d,i){ d.classList.toggle('active', i===hIdx); });
+  }
+  document.getElementById('heroPrev').addEventListener('click', function(){ hIdx = (hIdx-1+hTotal)%hTotal; hUpdate(); });
+  document.getElementById('heroNext').addEventListener('click', function(){ hIdx = (hIdx+1)%hTotal; hUpdate(); });
+  document.querySelectorAll('.hero-dot').forEach(function(d){ d.addEventListener('click', function(){ hIdx = parseInt(this.dataset.idx); hUpdate(); }); });
+  setInterval(function(){ hIdx = (hIdx+1)%hTotal; hUpdate(); }, 5500);
+</script>
+</body>
+</html>

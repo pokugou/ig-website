@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>カスタムオプション | IG Rod Planning</title>
+  <meta name="description" content="IG Rod Planningのカスタムオプション。ブランクスカラー・スレッド・グリップ・ティップカラーまで自分仕様に。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --black:#080808; --dark:#111111; --dark2:#181818; --dark3:#222222;
+      --red:#cc2200; --red2:#e83010;
+      --white:#f8f8f8; --gray:#d0d0d0; --gray2:#999999;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+      --bg:#ffffff; --fg:#111111; --fg2:#444444; --fg3:#888888;
+      --wborder:#e5e5e5; --wborder2:#d0d0d0;
+      --card-bg:#f7f7f7; --card-bg2:#efefef;
+      --section-bg:#f4f4f4; --section-bg2:#ffffff;
+    }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Noto Sans JP','DM Sans',sans-serif; background:var(--bg); color:var(--fg); line-height:1.7; overflow-x:hidden; }
+
+    /* NAV */
+    nav { position:fixed; top:0; left:0; right:0; z-index:300; display:flex; align-items:center; justify-content:space-between; padding:0 2rem; height:68px; background:rgba(255,255,255,0.97); backdrop-filter:blur(24px); border-bottom:1px solid var(--wborder); }
+    .nav-logo { display:flex; align-items:center; text-decoration:none; flex-shrink:0; }
+    .nav-menu { list-style:none; display:flex; align-items:center; gap:0; }
+    .nav-menu li { position:relative; }
+    .nav-menu li a { display:flex; align-items:center; height:68px; padding:0 1rem; font-size:0.8rem; font-weight:500; color:#555; text-decoration:none; white-space:nowrap; transition:color 0.2s; }
+    .nav-menu li a:hover { color:var(--fg); }
+    .has-drop > a::after { content:'▾'; font-size:0.55rem; opacity:0.45; margin-left:1px; }
+    .nav-dropdown { display:none; position:absolute; top:100%; left:0; min-width:160px; background:#fff; border:1px solid var(--wborder2); border-top:2px solid var(--red); list-style:none; padding:0.4rem 0; z-index:400; box-shadow:0 4px 16px rgba(0,0,0,0.08); }
+    .has-drop:hover > .nav-dropdown { display:block; }
+    .nav-dropdown li a { display:block; height:auto; padding:0.6rem 1.1rem; font-size:0.78rem; color:#666; }
+    .nav-dropdown li a:hover { color:var(--red); background:rgba(204,34,0,0.04); }
+    .has-subdrop { position:relative; }
+    .nav-subdropdown { display:none; position:absolute; left:100%; top:-1px; min-width:220px; background:#fff; border:1px solid var(--wborder2); border-top:2px solid var(--red); list-style:none; padding:0.4rem 0; z-index:500; box-shadow:4px 4px 16px rgba(0,0,0,0.08); }
+    .has-subdrop:hover > .nav-subdropdown { display:block; }
+    .nav-subdropdown li a { display:block; height:auto; padding:0.6rem 1.1rem; font-size:0.78rem; color:#666; }
+    .nav-subdropdown li a:hover { color:var(--red); background:rgba(204,34,0,0.04); }
+    .nav-genre { font-size:0.58rem; color:var(--red); letter-spacing:0.04em; margin-left:0.4rem; font-weight:600; }
+    .nav-btns { display:flex; align-items:center; gap:0.5rem; margin:0 0.8rem; flex-shrink:0; }
+    .nav-btn-order { display:inline-flex; align-items:center; height:34px; padding:0 1rem; border:1.5px solid var(--wborder2); color:var(--fg2); border-radius:3px; font-size:0.75rem; font-weight:700; text-decoration:none; transition:border-color 0.2s; }
+    .nav-btn-order:hover { border-color:var(--fg2); }
+    .nav-btn-contact { display:inline-flex; align-items:center; height:34px; padding:0 1rem; background:var(--red); color:#fff; border-radius:3px; font-size:0.75rem; font-weight:700; text-decoration:none; transition:background 0.2s; }
+    .nav-btn-contact:hover { background:var(--red2); }
+    .nav-social { display:flex; align-items:center; gap:0.9rem; margin-left:0.8rem; }
+    .nav-social a { display:flex; opacity:1; transition:opacity 0.2s; }
+    .nav-social a:hover { opacity:0.45; }
+    .hamburger { display:none; flex-direction:column; justify-content:center; gap:5px; width:36px; height:36px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { display:block; width:22px; height:2px; background:var(--fg); border-radius:2px; transition:transform 0.28s,opacity 0.28s; transform-origin:center; }
+    .hamburger.is-active span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .hamburger.is-active span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .hamburger.is-active span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+    /* HERO */
+    .cat-hero { padding:9rem 2rem 5rem; text-align:center; position:relative; background:var(--section-bg); border-bottom:1px solid var(--wborder); overflow:hidden; }
+    .cat-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 60% 70% at 50% 0%, rgba(204,34,0,0.05) 0%, transparent 60%); }
+    .infinity-badge { position:relative; z-index:1; display:inline-flex; align-items:center; gap:0.75rem; padding:0.5rem 1.25rem; border:1px solid var(--wborder2); border-radius:100px; font-size:0.7rem; font-weight:700; letter-spacing:0.12em; color:var(--fg3); margin-bottom:1.5rem; background:#fff; }
+    .inf-sym { font-size:1.4rem; font-weight:900; color:var(--red); }
+    .hero-catch-sm { position:relative; z-index:1; font-size:0.8rem; color:var(--fg3); letter-spacing:0.12em; margin-bottom:0.75rem; }
+    .hero-title { position:relative; z-index:1; font-size:clamp(2.5rem,6vw,4.5rem); font-weight:900; letter-spacing:-0.04em; line-height:1.05; margin-bottom:1rem; color:var(--fg); }
+    .hero-sub { position:relative; z-index:1; font-size:1rem; color:var(--fg2); max-width:500px; margin:0 auto 2rem; }
+    .hero-diagram { position:relative; z-index:1; max-width:600px; margin:2.5rem auto 0; cursor:zoom-in; }
+    .hero-diagram img { width:100%; border-radius:8px; border:1px solid var(--wborder); }
+    .btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.9rem 2rem; border-radius:4px; font-size:0.88rem; font-weight:700; text-decoration:none; cursor:pointer; border:none; transition:transform 0.2s,background 0.2s; letter-spacing:0.06em; text-transform:uppercase; font-family:inherit; white-space:nowrap; }
+    .btn:hover { transform:translateY(-2px); }
+    .btn-red { background:var(--red); color:#fff; position:relative; z-index:1; }
+    .btn-red:hover { background:var(--red2); }
+    .btn-ghost { background:transparent; border:1px solid var(--wborder2); color:var(--fg2); position:relative; z-index:1; }
+    .btn-ghost:hover { border-color:var(--fg); color:var(--fg); }
+
+    /* ORDER FLOW */
+    .order-flow { background:var(--card-bg); border-top:1px solid var(--wborder); border-bottom:1px solid var(--wborder); padding:2rem; }
+    .order-flow-inner { max-width:800px; margin:0 auto; }
+    .flow-label { font-size:0.62rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--fg3); margin-bottom:1.25rem; text-align:center; }
+    .flow-steps { display:flex; align-items:center; gap:0; flex-wrap:wrap; justify-content:center; }
+    .flow-step { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1.25rem; background:#fff; border:1px solid var(--wborder); border-radius:4px; min-width:180px; flex:1; }
+    .flow-num { width:28px; height:28px; border-radius:50%; background:var(--red); color:#fff; font-weight:900; font-size:0.78rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .flow-name { font-size:0.82rem; font-weight:800; line-height:1.3; color:var(--fg); }
+    .flow-desc { font-size:0.7rem; color:var(--fg3); margin-top:0.1rem; }
+    .flow-arrow { color:var(--fg3); font-size:1rem; padding:0 0.5rem; flex-shrink:0; }
+
+    /* SECTIONS */
+    .cat-sec { padding:4rem 2rem; border-bottom:1px solid var(--wborder); }
+    .cat-sec:nth-child(even) { background:var(--section-bg); }
+    .cat-inner { max-width:1100px; margin:0 auto; }
+    .step-hd { display:flex; align-items:flex-start; gap:1.25rem; margin-bottom:2.5rem; }
+    .step-num { width:44px; height:44px; border-radius:50%; background:var(--red); color:#fff; font-size:1.1rem; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .step-ttl { font-size:1.3rem; font-weight:900; letter-spacing:-0.02em; margin-bottom:0.25rem; color:var(--fg); }
+    .step-dsc { font-size:0.85rem; color:var(--fg3); }
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; }
+    .gold-lbl { font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--red); margin-bottom:0.75rem; }
+    .sw-cat-mini { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; color:var(--fg3); padding:0.3rem 0.5rem; border-left:2px solid var(--red); margin:1rem 0 0.5rem; background:var(--card-bg); }
+    .sw-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:0.5rem; }
+    .sw-item { display:flex; flex-direction:column; gap:0.25rem; }
+    .sw-img { width:100%; aspect-ratio:3/2; object-fit:cover; border-radius:3px; border:1px solid var(--wborder); display:block; cursor:zoom-in; }
+    .sw-img:hover { opacity:0.85; }
+    .sw-name { font-size:0.58rem; color:var(--fg3); line-height:1.3; }
+    .sw-more { display:inline-flex; align-items:center; font-size:0.75rem; color:var(--red); text-decoration:none; border-bottom:1px dashed var(--wborder2); padding-bottom:2px; margin-top:1rem; }
+    .sw-more:hover { color:var(--red2); }
+    .sw-note { font-size:0.7rem; color:var(--fg3); margin-top:0.75rem; line-height:1.8; }
+    .step-photo { cursor:zoom-in; border-radius:8px; overflow:hidden; border:1px solid var(--wborder); }
+    .step-photo img { width:100%; display:block; }
+    .photo-labels { padding:1rem 1.25rem; background:#fff; }
+    .ph-row { display:flex; align-items:flex-start; gap:0.75rem; padding:0.5rem 0; border-bottom:1px solid var(--wborder); }
+    .ph-row:last-child { border-bottom:none; }
+    .ph-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+    .ph-name { font-size:0.78rem; font-weight:700; color:var(--fg); }
+    .ph-desc { font-size:0.7rem; color:var(--fg3); }
+
+    /* THREAD SPLIT */
+    .thread-split { display:grid; grid-template-columns:1fr 1fr; gap:2rem; max-width:1100px; margin:0 auto; padding:0 2rem; }
+    .thread-card { background:#fff; border:1px solid var(--wborder); border-radius:8px; overflow:hidden; }
+    .tc-top { padding:1.5rem 1.5rem 1rem; }
+    .tc-tag { display:inline-block; font-size:0.62rem; font-weight:700; letter-spacing:0.1em; padding:0.25rem 0.75rem; border-radius:100px; margin-bottom:0.75rem; }
+    .tag-s { background:rgba(204,34,0,0.08); color:var(--red); border:1px solid rgba(204,34,0,0.2); }
+    .tag-w { background:rgba(17,17,17,0.06); color:var(--fg2); border:1px solid var(--wborder2); }
+    .tc-name { font-size:1.05rem; font-weight:900; color:var(--fg); margin-bottom:0.4rem; }
+    .tc-desc { font-size:0.78rem; color:var(--fg3); line-height:1.6; }
+    .tc-img { cursor:zoom-in; border-top:1px solid var(--wborder); border-bottom:1px solid var(--wborder); }
+    .tc-img img { width:100%; display:block; }
+    .tc-details { padding:1rem 1.5rem; }
+    .td-row { display:flex; align-items:flex-start; gap:0.75rem; padding:0.5rem 0; border-bottom:1px solid var(--wborder); }
+    .td-row:last-child { border-bottom:none; }
+    .td-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+    .td-name { font-size:0.78rem; font-weight:700; color:var(--fg); }
+    .td-desc { font-size:0.7rem; color:var(--fg3); }
+    .tc-note { padding:0.75rem 1.5rem; background:var(--card-bg); font-size:0.72rem; color:var(--red); font-weight:600; border-top:1px solid var(--wborder); }
+
+    /* GRIP */
+    .grip-row { display:flex; gap:1rem; }
+    .grip-opt { display:flex; flex-direction:column; align-items:center; gap:0.4rem; }
+    .grip-chip { width:56px; height:56px; border-radius:8px; border:1px solid var(--wborder); }
+    .grip-name { font-size:0.78rem; font-weight:700; color:var(--fg); }
+    .grip-sub { font-size:0.68rem; color:var(--fg3); }
+
+    /* CLOSING */
+    .cat-close { padding:5rem 2rem; text-align:center; background:var(--section-bg); border-top:1px solid var(--wborder); }
+    .cat-close-text { font-size:clamp(1.2rem,3vw,2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:2rem; color:var(--fg); }
+    .close-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+
+    /* FOOTER */
+    footer { background:#fff; border-top:1px solid var(--wborder); padding:3.5rem 2rem 2rem; }
+    .footer-inner { max-width:1200px; margin:0 auto; }
+    .footer-nav-list { list-style:none; border-top:1px solid var(--wborder); }
+    .footer-nav-item { display:flex; align-items:center; border-bottom:1px solid var(--wborder); padding:1rem 0; gap:3rem; }
+    .footer-nav-en { font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; min-width:160px; color:var(--fg); }
+    .footer-nav-ja { font-size:0.8rem; color:var(--fg3); }
+    .footer-nav-item a { display:flex; align-items:center; gap:3rem; text-decoration:none; color:inherit; width:100%; transition:opacity 0.2s; }
+    .footer-nav-item a:hover { opacity:0.6; }
+    .footer-bottom { margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--wborder); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+    .footer-copy { font-size:0.72rem; color:var(--fg3); letter-spacing:0.04em; }
+    .footer-social { display:flex; gap:1.2rem; }
+    .footer-social a { display:flex; opacity:0.55; transition:opacity 0.2s; }
+    .footer-social a:hover { opacity:1; }
+
+    @media (max-width:900px) {
+      .two-col { grid-template-columns:1fr; gap:2rem; }
+      .thread-split { grid-template-columns:1fr; }
+    }
+    @media (max-width:768px) {
+      nav .nav-menu { display:none; position:fixed; top:68px; left:0; right:0; height:calc(100vh - 68px); background:rgba(255,255,255,0.98); backdrop-filter:blur(12px); flex-direction:column; padding:1rem 0 2rem; overflow-y:auto; z-index:299; border-top:1px solid var(--wborder); gap:0; }
+      nav .nav-menu.is-open { display:flex; }
+      nav .nav-menu li { border-bottom:1px solid var(--wborder); width:100%; }
+      nav .nav-menu li a { height:auto; padding:1rem 1.5rem; font-size:0.95rem; width:100%; color:var(--fg); }
+      .nav-btns { display:none; }
+      .hamburger { display:flex; }
+      .nav-social { display:none; }
+      .cat-sec { padding:3rem 1.5rem; }
+      .thread-split { padding:0 1.5rem; }
+      .sw-grid { grid-template-columns:repeat(5,1fr); }
+      .footer-bottom { flex-direction:column; gap:0.5rem; text-align:center; }
+      footer { padding:3rem 1.5rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index-demo.html" class="nav-logo">
+    <img src="logo.png" alt="IG Rod Planning" style="height:42px;width:auto;" />
+  </a>
+  <ul class="nav-menu">
+    <li class="has-drop"><a href="products-demo.html">商品一覧</a>
+      <ul class="nav-dropdown">
+        <li class="has-subdrop"><a href="products-demo.html">オフショア</a>
+          <ul class="nav-subdropdown">
+            <li><a href="strixedge-demo.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
+            <li><a href="gtslj-demo.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+            <li><a href="gtlj-demo.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
+            <li><a href="gtj-demo.html">GT J <span class="nav-genre">ジギング</span></a></li>
+            <li><a href="gts-demo.html">GTS <span class="nav-genre">スロージギング</span></a></li>
+            <li><a href="gtr-demo.html">GTR <span class="nav-genre">タイラバ</span></a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop"><a href="products-demo.html">ショア</a>
+          <ul class="nav-subdropdown">
+            <li><a href="gtx-demo.html">GTX <span class="nav-genre">ロックショア</span></a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop"><a href="products-demo.html">船竿</a>
+          <ul class="nav-subdropdown">
+            <li><a href="ika-demo.html">イカ竿</a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop"><a href="products-demo.html">底物</a>
+          <ul class="nav-subdropdown">
+            <li><a href="ishidai-demo.html">VS石鯛</a></li>
+            <li><a href="vskue-demo.html">VS九絵</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="services-demo.html">サービス</a></li>
+    <li><a href="gallery-demo.html">ギャラリー</a></li>
+    <li><a href="company-demo.html">事業概要</a></li>
+    <li class="has-drop"><a href="order-demo.html">オーダーについて</a>
+      <ul class="nav-dropdown">
+        <li><a href="order-demo.html">オーダーシートはこちらから</a></li>
+        <li><a href="custom-demo.html">カスタム内容</a></li>
+        <li><a href="color-demo.html">カラーチャート</a></li>
+        <li><a href="simulator-demo.html">カラーシミュレーター</a></li>
+      </ul>
+    </li>
+  </ul>
+  <div class="nav-btns">
+    <a href="order-demo.html" class="nav-btn-order">オーダーシート</a>
+    <a href="contact-demo.html" class="nav-btn-contact">お問い合わせ</a>
+  </div>
+  <div class="nav-social">
+    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig1)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+    </a>
+  </div>
+  <button class="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<div class="cat-hero">
+  <div class="infinity-badge">
+    <span class="inf-lbl">組み合わせ</span>
+    <span class="inf-sym">∞</span>
+    <span class="inf-lbl">無限大</span>
+  </div>
+  <p class="hero-catch-sm">細部までこだわる、あなただけの１本を。</p>
+  <h1 class="hero-title">カスタムオプション</h1>
+  <p class="hero-sub">ブランクスカラーからスレッド、グリップ、ティップカラーまで<br>すべてを自分仕様に。</p>
+  <a href="order-demo.html" class="btn btn-red" style="margin-top:1.5rem;display:inline-flex;">オーダーシートはこちら &#x2192;</a>
+  <div class="hero-diagram">
+    <img src="custom-diagram.png" alt="カスタムオプション説明図" />
+  </div>
+</div>
+
+<!-- ORDER FLOW -->
+<div class="order-flow">
+  <div class="order-flow-inner">
+    <div class="flow-label">注文までの流れ</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-num">①</div>
+        <div>
+          <div class="flow-name">ヒアリング・見積</div>
+          <div class="flow-desc">オーダーシート記入</div>
+        </div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-num">②</div>
+        <div>
+          <div class="flow-name">お支払い</div>
+          <div class="flow-desc">振込・カード・PayPay</div>
+        </div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-num">③</div>
+        <div>
+          <div class="flow-name">納品</div>
+          <div class="flow-desc">約60〜70日</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 1 ブランクスカラー -->
+<section class="cat-sec">
+  <div class="cat-inner">
+    <div class="step-hd">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-ttl">ブランクスカラー</div>
+        <div class="step-dsc">ロッド全体の印象を決めるベースカラー。</div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="gold-lbl">ブランクスカラー塗装オプション</div>
+        <div class="sw-cat-mini">フラット通常色 ¥9,000</div>
+        <div class="sw-grid">
+          <div class="sw-item"><img class="sw-img" src="swatches/b001.jpg" alt="001 ホワイト"><div class="sw-name">001 ホワイト</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b002.jpg" alt="002 ブラック"><div class="sw-name">002 ブラック</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b003.jpg" alt="003 ブルー"><div class="sw-name">003 ブルー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b004.jpg" alt="004 レッド"><div class="sw-name">004 レッド</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b005.jpg" alt="005 イエロー"><div class="sw-name">005 イエロー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b006.jpg" alt="006 グリーン"><div class="sw-name">006 グリーン</div></div>
+        </div>
+        <div class="sw-cat-mini">フラットメタリック色 ¥9,500UP</div>
+        <div class="sw-grid">
+          <div class="sw-item"><img class="sw-img" src="swatches/b007.jpg" alt="007 シルバー"><div class="sw-name">007 シルバー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b008.jpg" alt="008 ゴールド"><div class="sw-name">008 ゴールド</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b009.jpg" alt="009 ブルー"><div class="sw-name">009 ブルー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b010.jpg" alt="010 レッド"><div class="sw-name">010 レッド</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b011.jpg" alt="011 グリーン"><div class="sw-name">011 グリーン</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b012.jpg" alt="012 オレンジ"><div class="sw-name">012 オレンジ</div></div>
+        </div>
+        <div class="sw-cat-mini">フラット蛍光色 ¥9,000UP</div>
+        <div class="sw-grid">
+          <div class="sw-item"><img class="sw-img" src="swatches/b013.jpg" alt="013 グリーン"><div class="sw-name">013 グリーン</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b014.jpg" alt="014 イエロー"><div class="sw-name">014 イエロー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b015.jpg" alt="015 ピンク"><div class="sw-name">015 ピンク</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b016.jpg" alt="016 オレンジ"><div class="sw-name">016 オレンジ</div></div>
+        </div>
+        <a href="color-demo.html" class="sw-more">スレッドカラーも含む全カラーチャートを見る &rarr;</a>
+        <p class="sw-note">※ 画面上の色味は実物と異なる場合があります。マジョーラカラーなど調色も別途対応可。</p>
+      </div>
+      <div class="step-photo">
+        <img src="custom-diagram.png" alt="ブランクスカラー参考" />
+        <div class="photo-labels">
+          <div class="ph-row">
+            <div class="ph-dot" style="background:#cc2200"></div>
+            <div><span class="ph-name">① ブランクスカラー</span></div>
+          </div>
+          <div class="ph-row">
+            <div class="ph-dot" style="background:#f5d062"></div>
+            <div><span class="ph-name">② メインスレッド</span> <span class="ph-desc">ロッド全体の印象を決めるメインカラー。</span></div>
+          </div>
+          <div class="ph-row">
+            <div class="ph-dot" style="background:#aaaaaa"></div>
+            <div><span class="ph-name">③ ピンライン</span> <span class="ph-desc">細いラインでアクセントをプラス。高級感・個性を演出。</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 スレッドカラー -->
+<section class="cat-sec">
+  <div class="cat-inner">
+    <div class="step-hd">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-ttl">スレッドカラーを選ぶ</div>
+        <div class="step-dsc">ガイドを固定する糸のカラーとパターンを選択。</div>
+      </div>
+    </div>
+  </div>
+  <div class="thread-split">
+    <div class="thread-card">
+      <div class="tc-top">
+        <div class="tc-tag tag-s">S仕様（シンプル）</div>
+        <div class="tc-name">シングルラッピング</div>
+        <div class="tc-desc">メインスレッドとピンラインの2色構成。すっきりとした洗練された仕上がり。</div>
+      </div>
+      <div class="tc-img">
+        <img src="custom-thread-s.png" alt="S仕様 スレッドパターン" />
+      </div>
+      <div class="tc-details">
+        <div class="td-row">
+          <div class="td-dot" style="background:#cc2200"></div>
+          <div>
+            <div class="td-name">① メインスレッド</div>
+            <div class="td-desc">ロッド全体の印象を決めるメインカラー。</div>
+          </div>
+        </div>
+        <div class="td-row">
+          <div class="td-dot" style="background:#f5d062"></div>
+          <div>
+            <div class="td-name">② ピンライン</div>
+            <div class="td-desc">アクセントとして入る細ライン。高級感・個性を演出。</div>
+          </div>
+        </div>
+      </div>
+      <div class="tc-note">ピンラインスレッドカラーも選択可能！</div>
+    </div>
+    <div class="thread-card">
+      <div class="tc-top">
+        <div class="tc-tag tag-w">W仕様（ダブルラッピング）</div>
+        <div class="tc-name">ダブルラッピング</div>
+        <div class="tc-desc">ガイド下巻きを加えた3色以上の構成。カラーレイヤーで個性をより表現。</div>
+      </div>
+      <div class="tc-img">
+        <img src="custom-thread-w.png" alt="W仕様 スレッドパターン" />
+      </div>
+      <div class="tc-details">
+        <div class="td-row">
+          <div class="td-dot" style="background:#0055cc"></div>
+          <div>
+            <div class="td-name">① メインスレッド</div>
+            <div class="td-desc">存在感のあるメインカラー。</div>
+          </div>
+        </div>
+        <div class="td-row">
+          <div class="td-dot" style="background:#cc2200"></div>
+          <div>
+            <div class="td-name">② ピンラインスレッド</div>
+            <div class="td-desc">細部までこだわるアクセント。</div>
+          </div>
+        </div>
+        <div class="td-row">
+          <div class="td-dot" style="background:#002288"></div>
+          <div>
+            <div class="td-name">ガイド下巻きスレッド</div>
+            <div class="td-desc">高級感と重厚感を演出する追加ラッピング。</div>
+          </div>
+        </div>
+      </div>
+      <div class="tc-note">ピンラインスレッドカラーも選択可能！</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 グリップ・リールシート -->
+<section class="cat-sec">
+  <div class="cat-inner">
+    <div class="step-hd">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-ttl">グリップ・リールシートを選ぶ</div>
+        <div class="step-dsc">グリップ素材の選択と、リールシートのカラーはブランクスカラーより選択可能。</div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div style="font-size:0.72rem;color:var(--fg3);margin-bottom:0.2rem">⑤</div>
+        <div style="font-size:1.1rem;font-weight:900;margin-bottom:0.25rem;color:var(--fg);">EVAグリップ</div>
+        <div style="font-size:0.78rem;color:var(--fg3);margin-bottom:0.75rem">EVA またはコルクから選択可能。</div>
+        <div class="grip-row">
+          <div class="grip-opt">
+            <div class="grip-chip" style="background:linear-gradient(135deg,#2a2a2a,#0a0a0a)"></div>
+            <div class="grip-name">EVA</div>
+            <div class="grip-sub">ブラック</div>
+          </div>
+          <div class="grip-opt">
+            <div class="grip-chip" style="background:linear-gradient(135deg,#c4996c,#a07845)"></div>
+            <div class="grip-name">コルク</div>
+            <div class="grip-sub">ナチュラル</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;color:var(--fg3);margin-bottom:0.2rem">⑥</div>
+        <div style="font-size:1.1rem;font-weight:900;margin-bottom:0.25rem;color:var(--fg);">リールシート</div>
+        <div style="font-size:0.78rem;color:var(--fg3);margin-bottom:0.75rem">ブランクスカラーの中から選択可能。</div>
+        <div class="gold-lbl">ブランクスカラーより選択可能</div>
+        <div class="sw-grid">
+          <div class="sw-item"><img class="sw-img" src="swatches/b001.jpg" alt="ホワイト"><div class="sw-name">ホワイト</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b002.jpg" alt="ブラック"><div class="sw-name">ブラック</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b003.jpg" alt="ブルー"><div class="sw-name">ブルー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b004.jpg" alt="レッド"><div class="sw-name">レッド</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b005.jpg" alt="イエロー"><div class="sw-name">イエロー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b006.jpg" alt="グリーン"><div class="sw-name">グリーン</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b007.jpg" alt="シルバー"><div class="sw-name">シルバー</div></div>
+          <div class="sw-item"><img class="sw-img" src="swatches/b008.jpg" alt="ゴールド"><div class="sw-name">ゴールド</div></div>
+        </div>
+        <p class="sw-note">※ ブランクスカラー全16色の中からお選びいただけます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 ティップカラー -->
+<section class="cat-sec">
+  <div class="cat-inner">
+    <div class="step-hd">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-ttl">ティップカラーを選ぶ</div>
+        <div class="step-dsc">ブランクスカラーの中から選択可能。視認性重視の蛍光系や、統一感ある同系色カスタムも。</div>
+      </div>
+    </div>
+    <div class="gold-lbl">ブランクスカラーより選択可能</div>
+    <div class="sw-grid">
+      <div class="sw-item"><img class="sw-img" src="swatches/b001.jpg" alt="ホワイト"><div class="sw-name">ホワイト</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b002.jpg" alt="ブラック"><div class="sw-name">ブラック</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b003.jpg" alt="ブルー"><div class="sw-name">ブルー</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b004.jpg" alt="レッド"><div class="sw-name">レッド</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b005.jpg" alt="イエロー"><div class="sw-name">イエロー</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b006.jpg" alt="グリーン"><div class="sw-name">グリーン</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b007.jpg" alt="シルバー"><div class="sw-name">シルバー</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b008.jpg" alt="ゴールド"><div class="sw-name">ゴールド</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b013.jpg" alt="蛍光グリーン"><div class="sw-name">蛍光G</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b014.jpg" alt="蛍光イエロー"><div class="sw-name">蛍光Y</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b015.jpg" alt="蛍光ピンク"><div class="sw-name">蛍光P</div></div>
+      <div class="sw-item"><img class="sw-img" src="swatches/b016.jpg" alt="蛍光オレンジ"><div class="sw-name">蛍光O</div></div>
+    </div>
+    <p class="sw-note">※ ブランクスカラー全16色の中からお選びいただけます。</p>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<div class="cat-close">
+  <p class="cat-close-text">自分だけの"最高の１本"を、その手に。</p>
+  <div class="close-actions">
+    <a href="order-demo.html" class="btn btn-red">オーダーはこちら &rarr;</a>
+    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" class="btn btn-ghost">Instagram</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo" style="margin-bottom:1.5rem;">
+      <img src="logo.png" alt="IG Rod Planning" style="height:40px;width:auto;" />
+    </div>
+    <ul class="footer-nav-list">
+      <li class="footer-nav-item"><a href="products-demo.html"><span class="footer-nav-en">PRODUCTS</span><span class="footer-nav-ja">製品一覧</span></a></li>
+      <li class="footer-nav-item"><a href="services-demo.html"><span class="footer-nav-en">SERVICES</span><span class="footer-nav-ja">サービス</span></a></li>
+      <li class="footer-nav-item"><a href="order-demo.html"><span class="footer-nav-en">ORDER</span><span class="footer-nav-ja">オーダーシート</span></a></li>
+      <li class="footer-nav-item"><a href="gallery-demo.html"><span class="footer-nav-en">GALLERY</span><span class="footer-nav-ja">ギャラリー</span></a></li>
+      <li class="footer-nav-item"><a href="company-demo.html"><span class="footer-nav-en">COMPANY</span><span class="footer-nav-ja">事業概要</span></a></li>
+      <li class="footer-nav-item"><a href="contact-demo.html"><span class="footer-nav-en">CONTACT</span><span class="footer-nav-ja">お問い合わせ</span></a></li>
+    </ul>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><defs><radialGradient id="ig2" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig2)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+var ham = document.querySelector('.hamburger');
+var navMenu = document.querySelector('.nav-menu');
+if (ham && navMenu) {
+  ham.addEventListener('click', function() {
+    ham.classList.toggle('is-active');
+    navMenu.classList.toggle('is-open');
+  });
+  navMenu.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      ham.classList.remove('is-active');
+      navMenu.classList.remove('is-open');
+    });
+  });
+}
+</script>
+</body>
+</html>

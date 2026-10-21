@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VS九絵 | IG Rod Planning</title>
+  <meta name="description" content="磯の王者・九絵に挑む専用ロッド。VS九絵は荒磯のパワーゲームを制するために生まれたショアロックロッドです。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #080808; --red: #cc2200; --red2: #e83010;
+      --bg: #ffffff; --fg: #111111; --fg2: #444444; --fg3: #888888;
+      --wborder: #e5e5e5; --wborder2: #d0d0d0;
+      --card-bg: #f7f7f7; --section-bg: #f4f4f4;
+    }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--bg); color: var(--fg); line-height: 1.7; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: #eee; } ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+    img { max-width: 100%; display: block; } a { text-decoration: none; color: inherit; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(255,255,255,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--wborder); }
+    .nav-logo { display: flex; align-items: center; }
+    .nav-menu { list-style: none; display: flex; align-items: center; gap: 0; }
+    .nav-menu li a { display: flex; align-items: center; height: 68px; padding: 0 1rem; font-size: 0.8rem; font-weight: 500; color: #555; letter-spacing: 0.04em; transition: color 0.2s; white-space: nowrap; }
+    .nav-menu li a:hover { color: var(--fg); }
+    .nav-menu li { position: relative; }
+    .nav-dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 160px; background: #fff; border: 1px solid var(--wborder2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .has-drop:hover > .nav-dropdown { display: block; }
+    .nav-dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: var(--fg2); text-decoration: none; white-space: nowrap; transition: color 0.2s, background 0.2s; height: auto; }
+    .nav-dropdown li a:hover { color: var(--fg); background: var(--card-bg); }
+    .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.5; margin-left: 3px; }
+    .nav-dropdown .has-subdrop { position: relative; }
+    .nav-dropdown .has-subdrop > a { display: flex; justify-content: space-between; align-items: center; }
+    .nav-dropdown .has-subdrop > a::after { content: '›'; font-size: 1rem; opacity: 0.45; margin-left: 0.8rem; line-height: 1; }
+    .nav-subdropdown { display: none; position: absolute; left: 100%; top: -1px; min-width: 220px; background: #fff; border: 1px solid var(--wborder2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 500; box-shadow: 4px 4px 16px rgba(0,0,0,0.08); }
+    .has-subdrop:hover > .nav-subdropdown { display: block; }
+    .nav-subdropdown li a { display: block; padding: 0.55rem 1.1rem; font-size: 0.78rem; color: var(--fg2); text-decoration: none; white-space: nowrap; transition: color 0.2s, background 0.2s; height: auto; }
+    .nav-subdropdown li a:hover { color: var(--fg); background: var(--card-bg); }
+    .nav-genre { font-size: 0.58rem; color: var(--red2); letter-spacing: 0.04em; margin-left: 0.35rem; font-weight: 600; }
+    .nav-btns { display: flex; align-items: center; gap: 0.5rem; margin: 0 0.8rem; flex-shrink: 0; }
+    .nav-btn-order { display: inline-flex; align-items: center; height: 34px; padding: 0 1rem; border: 1.5px solid var(--wborder2); color: var(--fg2); border-radius: 3px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; transition: border-color 0.2s, color 0.2s; }
+    .nav-btn-order:hover { border-color: var(--fg); color: var(--fg); }
+    .nav-btn-contact { display: inline-flex; align-items: center; height: 34px; padding: 0 1rem; background: var(--red); color: #fff; border-radius: 3px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; transition: background 0.2s; }
+    .nav-btn-contact:hover { background: var(--red2); }
+    .nav-social { display: flex; align-items: center; gap: 1.1rem; margin-left: 1.2rem; padding-left: 1.2rem; border-left: 1px solid var(--wborder2); }
+    .nav-social a { opacity: 1; transition: opacity 0.2s; display: flex; }
+    .nav-social a:hover { opacity: 0.45; }
+    .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--fg); border-radius: 2px; transition: transform 0.28s, opacity 0.28s; transform-origin: center; }
+    .hamburger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Photo-banner hero (60vh) */
+    .hero { position: relative; width: 100%; height: 60vh; min-height: 380px; margin-top: 68px; overflow: hidden; background: #0a0a0a; display: flex; align-items: flex-end; }
+    .hero-bg { position: absolute; inset: 0; background-image: url('vskue-banner.png'); background-size: cover; background-position: center; opacity: 0.45; z-index: 0; }
+    .hero-content { position: relative; z-index: 1; padding: 2.5rem 3rem; width: 100%; }
+    .hero-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 0.45rem; }
+    .hero-title { font-size: clamp(2.8rem, 8vw, 6.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.5rem; color: #fff; }
+    .hero-sub { font-size: clamp(0.85rem, 1.5vw, 1.1rem); font-weight: 300; color: rgba(248,248,248,0.72); letter-spacing: 0.03em; margin-bottom: 0.75rem; }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .hero-tag { font-size: 0.65rem; padding: 0.25rem 0.7rem; border: 1px solid rgba(255,255,255,0.3); color: rgba(248,248,248,0.6); letter-spacing: 0.06em; }
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.85rem 1.8rem; border-radius: 3px; font-size: 0.84rem; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; border: none; transition: background 0.2s, transform 0.18s; font-family: inherit; text-decoration: none; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: #fff; } .btn-red:hover { background: var(--red2); }
+    .inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .section-label::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1.25rem; color: var(--fg); }
+    .section-desc { font-size: 0.93rem; color: var(--fg2); line-height: 1.9; max-width: 700px; }
+    .concept { padding: 5rem 0; background: var(--bg); }
+    .concept-points { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2.5rem; }
+    .concept-point { border-left: 2px solid var(--red); padding-left: 1.25rem; }
+    .concept-point-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.25rem; }
+    .concept-point-title { font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem; color: var(--fg); }
+    .concept-point-desc { font-size: 0.85rem; color: var(--fg2); line-height: 1.85; }
+    .specs-section { background: var(--section-bg); border-top: 1px solid var(--wborder); border-bottom: 1px solid var(--wborder); padding: 4rem 0; }
+    .model-table-wrap { margin-top: 2rem; overflow-x: auto; }
+    .model-table { width: 100%; border-collapse: collapse; border: 1px solid var(--wborder); }
+    .model-table th { background: var(--card-bg); padding: 0.85rem 1.1rem; text-align: center; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; color: var(--fg3); border-bottom: 2px solid var(--wborder2); white-space: nowrap; }
+    .model-table td { padding: 0.9rem 1.1rem; font-size: 0.87rem; border-bottom: 1px solid var(--wborder); color: var(--fg2); text-align: center; }
+    .model-table tr:last-child td { border-bottom: none; }
+    .model-table tr:hover td { background: var(--card-bg); }
+    .model-name { font-weight: 700; color: var(--fg) !important; font-family: 'DM Sans', sans-serif; white-space: nowrap; }
+    .badge { display: inline-block; padding: 0.18rem 0.5rem; border-radius: 2px; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.04em; }
+    .badge-bait { background: #7a5400; color: #f7c948; }
+    .features-section { padding: 4rem 0; background: var(--bg); }
+    .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin-top: 2rem; }
+    .feature-card { background: #fff; padding: 1.5rem 1.75rem; }
+    .feature-title { font-size: 1rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--fg); }
+    .feature-desc { font-size: 0.83rem; color: var(--fg2); line-height: 1.85; }
+    .od-section { background: var(--section-bg); border-top: 1px solid var(--wborder); border-bottom: 1px solid var(--wborder); padding: 4rem 0; }
+    .od-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin: 2rem 0 2.5rem; }
+    .od-step { background: #fff; padding: 1.1rem 1.25rem; }
+    .od-step b { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.16em; color: var(--red2); margin-bottom: 0.3rem; }
+    .od-step span { font-size: 0.82rem; color: var(--fg3); line-height: 1.6; }
+    .od-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .od-card { display: flex; flex-direction: column; gap: 0.3rem; background: #fff; border: 1px solid var(--wborder); padding: 1.1rem 1.25rem 1.25rem; transition: border-color 0.2s, transform 0.2s; }
+    .od-card:hover { border-color: var(--red); transform: translateY(-2px); }
+    .od-kind { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; color: var(--fg3); text-transform: uppercase; }
+    .od-name { font-family: 'DM Sans', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--fg); }
+    .od-spec { font-size: 0.78rem; color: var(--fg3); margin-top: 0.1rem; }
+    .od-price { font-size: 0.8rem; color: var(--fg3); margin-top: 0.2rem; }
+    .od-price b { font-size: 1.05rem; color: var(--fg); font-family: 'DM Sans', sans-serif; }
+    .od-btn { margin-top: 0.7rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.75rem 0.8rem; background: var(--red); color: #fff; font-size: 0.82rem; font-weight: 700; border-radius: 3px; transition: background 0.2s; }
+    .od-btn:hover { background: var(--red2); }
+    .od-note { margin-top: 1.4rem; font-size: 0.75rem; color: var(--fg3); line-height: 1.8; }
+    .cta { position: relative; padding: 5rem 0; background: #0a0a0a; overflow: hidden; }
+    .cta-bg { position: absolute; inset: 0; background-image: url('vskue-banner.png'); background-size: cover; background-position: center; opacity: 0.15; z-index: 0; }
+    .cta-content { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .cta-text h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.5rem; color: #fff; }
+    .cta-text p { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(248,248,248,0.75); padding: 0.85rem 1.8rem; border-radius: 3px; font-size: 0.84rem; font-weight: 700; letter-spacing: 0.06em; display: inline-flex; align-items: center; transition: border-color 0.2s, color 0.2s; text-decoration: none; }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+    .order-fab { position: fixed; right: 1.1rem; bottom: 1.1rem; z-index: 250; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.85rem 1.3rem; background: var(--red); color: #fff; font-size: 0.85rem; font-weight: 800; border-radius: 40px; box-shadow: 0 6px 24px rgba(0,0,0,0.2), 0 0 20px rgba(204,34,0,0.3); transition: transform 0.2s, background 0.2s; text-decoration: none; }
+    .order-fab:hover { background: var(--red2); transform: translateY(-2px); }
+    footer { background: #fff; border-top: 1px solid var(--wborder); padding: 3.5rem 2rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-logo { margin-bottom: 2.5rem; }
+    .footer-nav-list { list-style: none; border-top: 1px solid var(--wborder); }
+    .footer-nav-item { display: flex; align-items: center; border-bottom: 1px solid var(--wborder); padding: 1rem 0; gap: 3rem; }
+    .footer-nav-en { font-family: 'DM Sans',sans-serif; font-size: 0.9rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; min-width: 160px; color: var(--fg); }
+    .footer-nav-ja { font-size: 0.8rem; color: var(--fg3); }
+    .footer-nav-item a { display: flex; align-items: center; gap: 3rem; text-decoration: none; color: inherit; width: 100%; transition: opacity 0.2s; }
+    .footer-nav-item a:hover { opacity: 0.6; }
+    .footer-bottom { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--wborder); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-copy { font-size: 0.72rem; color: var(--fg3); letter-spacing: 0.04em; }
+    .footer-social { display: flex; gap: 1.2rem; }
+    .footer-social a { display: flex; opacity: 0.55; transition: opacity 0.2s; }
+    .footer-social a:hover { opacity: 1; }
+    @media (max-width: 1024px) { .features-grid { grid-template-columns: repeat(2, 1fr); } .od-steps { grid-template-columns: repeat(2, 1fr); } .od-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) {
+      nav .nav-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--wborder); gap: 0; }
+      nav .nav-menu.is-open { display: flex; }
+      nav .nav-menu li { border-bottom: 1px solid var(--wborder); width: 100%; }
+      nav .nav-menu li a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; color: var(--fg); }
+      .nav-btns { display: none; } .hamburger { display: flex; } .nav-social { display: none; }
+      .hero-content { padding: 2rem 1.5rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .od-grid { grid-template-columns: 1fr; }
+      .cta-content { flex-direction: column; align-items: flex-start; }
+      .footer-nav-en { min-width: 100px; font-size: 0.8rem; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 480px) { .od-steps { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><img src="logo.png" alt="IG Rod Planning" style="height:42px;width:auto;" /></a>
+  <ul class="nav-menu">
+    <li class="has-drop"><a href="products.html">商品一覧</a>
+      <ul class="nav-dropdown">
+        <li class="has-subdrop"><a href="products.html">オフショア</a>
+          <ul class="nav-subdropdown">
+            <li><a href="strixedge.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
+            <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+            <li><a href="gtlj.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
+            <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
+            <li><a href="gts.html">GTS <span class="nav-genre">スロージギング</span></a></li>
+            <li><a href="gtr.html">GTR <span class="nav-genre">タイラバ</span></a></li>
+          </ul>
+        </li>
+        <li class="has-subdrop"><a href="products.html">ショア</a>
+          <ul class="nav-subdropdown"><li><a href="gtx.html">GTX <span class="nav-genre">ロックショア</span></a></li></ul>
+        </li>
+        <li class="has-subdrop"><a href="products.html">船竿</a>
+          <ul class="nav-subdropdown"><li><a href="ika.html">イカ竿</a></li></ul>
+        </li>
+        <li class="has-subdrop"><a href="products.html">底物</a>
+          <ul class="nav-subdropdown">
+            <li><a href="ishidai.html">VS石鯛</a></li>
+            <li><a href="vskue.html">VS九絵</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="services.html">サービス</a></li>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li class="has-drop"><a href="order.html">オーダーについて</a>
+      <ul class="nav-dropdown">
+        <li><a href="order.html">オーダーシートはこちらから</a></li>
+        <li><a href="custom.html">カスタム内容</a></li>
+        <li><a href="color.html">カラーチャート</a></li>
+        <li><a href="simulator.html">カラーシミュレーター</a></li>
+      </ul>
+    </li>
+  </ul>
+  <div class="nav-btns">
+    <a href="order.html" class="nav-btn-order">オーダーシート</a>
+    <a href="contact.html" class="nav-btn-contact">お問い合わせ</a>
+  </div>
+  <div class="nav-social">
+    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig1)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+  </div>
+  <button class="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">SHORE ROCK ROD</div>
+    <h1 class="hero-title">VS九絵</h1>
+    <p class="hero-sub">磯の王者に挑む専用ロッド</p>
+    <div class="hero-tags">
+      <span class="hero-tag">磯釣り</span>
+      <span class="hero-tag">底物</span>
+      <span class="hero-tag">九絵</span>
+      <span class="hero-tag">ショア</span>
+    </div>
+  </div>
+</section>
+
+<section class="concept">
+  <div class="inner">
+    <div class="section-label">Concept</div>
+    <h2 class="section-title">挑む者だけが、獲れる。</h2>
+    <p class="section-desc">VS九絵は、磯の王者と呼ばれる九絵（クエ）を専用設計で狙うショアロックロッド。モンスター級の引きに対抗する圧倒的なパワーと、荒磯の地形を熟知した感度設計を両立。クエ専門ロッドとしての矜持を持ち、磯師の期待に応える一本です。</p>
+    <div class="concept-points">
+      <div class="concept-point">
+        <div class="concept-point-label">Power</div>
+        <div class="concept-point-title">パワー — モンスター級の引きを制する力</div>
+        <div class="concept-point-desc">クエ特有の瞬間的な突進と粘り強い引きに対抗する圧倒的なバットパワー。根に入る前に主導権を奪取し、確実にランディングへ持ち込む。</div>
+      </div>
+      <div class="concept-point">
+        <div class="concept-point-label">Sensitivity</div>
+        <div class="concept-point-title">感度 — 荒磯での即合わせ対応</div>
+        <div class="concept-point-desc">荒磯の複雑な地形でもクエのあたりを明確に捉える高感度ティップ設計。瞬時の合わせが求められる底物釣りで、貴重なチャンスを逃さない。</div>
+      </div>
+      <div class="concept-point">
+        <div class="concept-point-label">Control</div>
+        <div class="concept-point-title">コントロール — 荒磯での操作性</div>
+        <div class="concept-point-desc">大型九絵とのやり取りで求められる精密なコントロール性能。適切なグリップバランスと重量設計が長時間のファイトでも疲れにくい操作感を実現。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="specs-section">
+  <div class="inner">
+    <div class="section-label">Spec</div>
+    <h2 class="section-title">主要スペック</h2>
+    <div class="model-table-wrap">
+      <table class="model-table">
+        <thead>
+          <tr><th>タイプ</th><th>品番</th><th>全長(m)</th><th>適合号数</th><th>定価（税抜）</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-bait">bait</span></td>
+            <td class="model-name">VSK480M</td>
+            <td>4.80</td>
+            <td>30〜80号</td>
+            <td>¥120,000</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-bait">bait</span></td>
+            <td class="model-name">VSK480H</td>
+            <td>4.80</td>
+            <td>50〜100号</td>
+            <td>¥123,000</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-bait">bait</span></td>
+            <td class="model-name">VSK510XH</td>
+            <td>5.10</td>
+            <td>70〜200号</td>
+            <td>¥270,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="features-section">
+  <div class="inner">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">VS九絵の4つの特長</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-title">九絵専用パワー設計</div>
+        <div class="feature-desc">磯の王者・九絵に特化したパワー設計。モンスター級の突進力に対抗するためのバットトルクと、ファイト中の主導権を維持するための剛性を両立している。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">荒磯対応ブランクス</div>
+        <div class="feature-desc">塩害・波しぶき・岩礁との摩擦など過酷な磯環境を想定した高耐久ブランクス設計。長期にわたって性能を維持し、磯師の信頼に応え続ける耐久性。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">即合わせ対応高感度</div>
+        <div class="feature-desc">底物釣りで重要な即合わせに対応する高感度ティップ設計。複雑な荒磯の地形でもクエの微妙なあたりを捉え、一瞬のチャンスを確実にフッキングへ繋げる。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">フルカスタム対応</div>
+        <div class="feature-desc">ブランクカラー・ガイド・グリップまで細部にわたるカスタムオーダーが可能。自分のスタイルと磯の条件に合わせた、世界に一本のVS九絵を作り上げよう。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="od-section" id="order">
+  <div class="inner">
+    <div class="section-label">Order</div>
+    <h2 class="section-title">VS九絵 をオーダーする</h2>
+    <p class="section-desc">気になるモデルを選ぶと、そのモデルを選んだ状態でオーダーシートが開きます。</p>
+    <div class="od-steps">
+      <div class="od-step"><b>STEP 1</b><span>モデルを選ぶ</span></div>
+      <div class="od-step"><b>STEP 2</b><span>ブランクスやガイドなどのカラー・仕様を選ぶ</span></div>
+      <div class="od-step"><b>STEP 3</b><span>オーダーシートを送信（担当者からご連絡します）</span></div>
+      <div class="od-step"><b>STEP 4</b><span>お支払い確認後、60〜70日前後でお届け</span></div>
+    </div>
+    <div class="od-grid">
+      <div class="od-card">
+        <div class="od-kind">ショアロックロッド / bait</div>
+        <div class="od-name">VSK480M</div>
+        <div class="od-spec">4.80m / 適合 30〜80号</div>
+        <div class="od-price">ベース価格（税抜）<b>¥120,000</b></div>
+        <a class="od-btn" href="order.html?model=VSK480M">詳細と購入方法を見る →</a>
+      </div>
+      <div class="od-card">
+        <div class="od-kind">ショアロックロッド / bait</div>
+        <div class="od-name">VSK480H</div>
+        <div class="od-spec">4.80m / 適合 50〜100号</div>
+        <div class="od-price">ベース価格（税抜）<b>¥123,000</b></div>
+        <a class="od-btn" href="order.html?model=VSK480H">詳細と購入方法を見る →</a>
+      </div>
+      <div class="od-card">
+        <div class="od-kind">ショアロックロッド / bait</div>
+        <div class="od-name">VSK510XH</div>
+        <div class="od-spec">5.10m / 適合 70〜200号</div>
+        <div class="od-price">ベース価格（税抜）<b>¥270,000</b></div>
+        <a class="od-btn" href="order.html?model=VSK510XH">詳細と購入方法を見る →</a>
+      </div>
+    </div>
+    <p class="od-note">※ 価格は税抜のベース価格です。ブランクス・ガイド・グリップなどのカスタムで変わります。合計金額はオーダーシートで確認できます。</p>
+  </div>
+</section>
+
+<a class="order-fab" href="#order">オーダー・購入方法 →</a>
+
+<section class="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-content">
+    <div class="cta-text">
+      <h2>オーダー・お問い合わせ</h2>
+      <p>仕様・カラーカスタムなど、お気軽にご相談ください。</p>
+    </div>
+    <div class="btn-group">
+      <a href="contact.html" class="btn btn-red">お問い合わせはこちら →</a>
+      <a href="products.html" class="btn-ghost">商品一覧へ戻る</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo"><img src="logo.png" alt="IG Rod Planning" style="height:40px;width:auto;" /></div>
+    <ul class="footer-nav-list">
+      <li class="footer-nav-item"><a href="products.html"><span class="footer-nav-en">PRODUCTS</span><span class="footer-nav-ja">製品一覧</span></a></li>
+      <li class="footer-nav-item"><a href="services.html"><span class="footer-nav-en">SERVICES</span><span class="footer-nav-ja">サービス</span></a></li>
+      <li class="footer-nav-item"><a href="order.html"><span class="footer-nav-en">ORDER</span><span class="footer-nav-ja">オーダーシート</span></a></li>
+      <li class="footer-nav-item"><a href="gallery.html"><span class="footer-nav-en">GALLERY</span><span class="footer-nav-ja">ギャラリー</span></a></li>
+      <li class="footer-nav-item"><a href="company.html"><span class="footer-nav-en">COMPANY</span><span class="footer-nav-ja">事業概要</span></a></li>
+      <li class="footer-nav-item"><a href="contact.html"><span class="footer-nav-en">CONTACT</span><span class="footer-nav-ja">お問い合わせ</span></a></li>
+    </ul>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig2" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig2)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+        <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+  var ham = document.querySelector('.hamburger'), navMenu = document.querySelector('.nav-menu');
+  if (ham && navMenu) {
+    ham.addEventListener('click', function() { ham.classList.toggle('is-active'); navMenu.classList.toggle('is-open'); });
+    navMenu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', function() { ham.classList.remove('is-active'); navMenu.classList.remove('is-open'); }); });
+  }
+  (function () {
+    var fab = document.querySelector('.order-fab'), sec = document.getElementById('order');
+    if (!fab || !sec || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (e) { fab.style.opacity = e[0].isIntersecting ? '0' : '1'; fab.style.pointerEvents = e[0].isIntersecting ? 'none' : ''; }, { threshold: 0.05, rootMargin: "0px 0px -35% 0px" }).observe(sec);
+  })();
+</script>
+</body>
+</html>
