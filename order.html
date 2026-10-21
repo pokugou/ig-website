@@ -24,40 +24,43 @@
       --gray:#d0d0d0; --gray2:#999999;
       --gold:#f5d062; --gold2:#e8a020; --gold3:#c87c10;
       --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+      /* white theme */
+      --bg:#fff; --fg:#111; --fg2:#444; --fg3:#888;
+      --wborder:#e5e5e5; --wborder2:#d0d0d0;
+      --card-bg:#f7f7f7; --section-bg:#f4f4f4;
     }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--black); color: var(--white); line-height: 1.7; overflow-x: hidden; }
+    body { font-family: 'Noto Sans JP','DM Sans',sans-serif; background: var(--bg); color: var(--fg); line-height: 1.7; overflow-x: hidden; }
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
 
     /* NAV */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(8,8,8,0.96); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--border); }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 68px; background: rgba(255,255,255,0.97); backdrop-filter: blur(24px) saturate(1.4); border-bottom: 1px solid var(--wborder); }
     .logo { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
     nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
     nav ul > li { position: relative; }
-    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(248,248,248,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
-    nav ul > li > a:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+    nav ul > li > a { display: flex; align-items: center; gap: 0.25rem; height: 68px; padding: 0 0.95rem; color: rgba(17,17,17,0.6); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    nav ul > li > a:hover { color: var(--fg); background: rgba(0,0,0,0.03); }
     .has-drop > a::after { content: '▾'; font-size: 0.55rem; opacity: 0.45; margin-left: 1px; }
-    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(12,12,12,0.98); border: 1px solid var(--border2); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; }
+    .dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: rgba(255,255,255,0.99); border: 1px solid var(--wborder); border-top: 2px solid var(--red); list-style: none; padding: 0.4rem 0; z-index: 400; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
     .has-drop:hover .dropdown { display: block; }
-    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(248,248,248,0.55); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
-    .dropdown li a:hover { color: var(--white); background: rgba(204,34,0,0.14); }
-    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: var(--white) !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
+    .dropdown li a { display: block; padding: 0.6rem 1.1rem; font-size: 0.78rem; color: rgba(17,17,17,0.6); text-decoration: none; letter-spacing: 0.03em; white-space: nowrap; transition: color 0.2s, background 0.2s; }
+    .dropdown li a:hover { color: var(--fg); background: rgba(204,34,0,0.06); }
+    .nav-contact { display: inline-flex; align-items: center; height: 36px; padding: 0 1.1rem; margin-left: 0.6rem; background: var(--red); color: #fff !important; border-radius: 3px; font-size: 0.78rem !important; font-weight: 700 !important; letter-spacing: 0.04em; text-decoration: none; transition: background 0.2s; }
     .nav-contact:hover { background: var(--red2) !important; }
-    .nav-social { display: flex; align-items: center; gap: 1.2rem; margin-left: 1.25rem; border-left: 1px solid var(--border2); padding-left: 1.25rem; }
+    .nav-social { display: flex; align-items: center; gap: 1.2rem; margin-left: 1.25rem; border-left: 1px solid var(--wborder); padding-left: 1.25rem; }
     .nav-social a { display: flex; transition: opacity 0.2s; opacity: 0.75; }
     .nav-social a:hover { opacity: 1; }
-    .nav-genre { font-size: 0.58rem; color: #ff2244; letter-spacing: 0.04em; margin-left: 0.4rem; opacity: 1; font-weight: 600; text-shadow: 0 0 8px rgba(255,30,60,0.7), 0 0 16px rgba(255,30,60,0.35); }
+    .nav-genre { font-size: 0.58rem; color: #cc2200; letter-spacing: 0.04em; margin-left: 0.4rem; opacity: 1; font-weight: 600; }
 
     /* HERO */
-    .page-hero { padding: 7rem 2rem 1rem; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-    .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(204,34,0,0.07) 0%, transparent 65%); pointer-events: none; }
+    .page-hero { padding: 7rem 2rem 1rem; text-align: center; border-bottom: 1px solid var(--wborder); background: var(--section-bg); position: relative; overflow: hidden; }
     .hero-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.75rem; }
-    .page-hero h1 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.75rem; }
-    .page-hero p { font-size: 0.9rem; color: rgba(248,248,248,0.6); max-width: 500px; margin: 0 auto; }
-    .delivery-badge { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.25rem; padding: 0.45rem 1rem; border: 1px solid var(--border2); font-size: 0.75rem; color: var(--gray); }
-    .delivery-badge span { color: var(--gold); font-weight: 700; }
+    .page-hero h1 { font-size: clamp(2rem, 6vw, 4rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.75rem; color: var(--fg); }
+    .page-hero p { font-size: 0.9rem; color: var(--fg2); max-width: 500px; margin: 0 auto; }
+    .delivery-badge { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.25rem; padding: 0.45rem 1rem; border: 1px solid var(--wborder2); font-size: 0.75rem; color: var(--fg3); }
+    .delivery-badge span { color: var(--red); font-weight: 700; }
 
     /* FORM WRAP */
     .form-wrap { max-width: 760px; margin: 0 auto; padding: 1rem 2rem 1.5rem; }
@@ -344,23 +347,23 @@
 
     /* HAMBURGER */
     .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; flex-shrink: 0; }
-    .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: transform 0.28s, opacity 0.28s; transform-origin: center; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--fg); border-radius: 2px; transition: transform 0.28s, opacity 0.28s; transform-origin: center; }
     .hamburger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* FOOTER */
-    footer { background: var(--black); border-top: 1px solid var(--border); padding: 4rem 3rem 2.5rem; }
+    footer { background: var(--bg); border-top: 1px solid var(--wborder); padding: 4rem 3rem 2.5rem; }
     .footer-inner { max-width: 1200px; margin: 0 auto; }
-    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--border); }
-    .footer-brand p { font-size: 0.85rem; color: var(--gray); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
-    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray2); margin-bottom: 1.5rem; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid var(--wborder); }
+    .footer-brand p { font-size: 0.85rem; color: var(--fg2); line-height: 1.9; margin-top: 1.25rem; max-width: 300px; }
+    .footer-col h4 { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg3); margin-bottom: 1.5rem; }
     .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
-    .footer-col ul a { font-size: 0.85rem; color: var(--gray); text-decoration: none; transition: color 0.2s; }
-    .footer-col ul a:hover { color: var(--white); }
-    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--gray2); letter-spacing: 0.04em; }
-    .footer-bottom a { color: var(--gray2); text-decoration: none; }
-    .footer-bottom a:hover { color: var(--gray); }
+    .footer-col ul a { font-size: 0.85rem; color: var(--fg2); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--fg); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--fg3); letter-spacing: 0.04em; }
+    .footer-bottom a { color: var(--fg3); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--fg2); }
 
     @media (max-width: 1024px) {
       .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
@@ -368,13 +371,13 @@
     @media (max-width: 768px) {
       .hamburger { display: flex; }
 
-      nav ul { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(8,8,8,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 0.5rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--border); }
+      nav ul { display: none; position: fixed; top: 68px; left: 0; right: 0; height: calc(100vh - 68px); background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 0.5rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--wborder); }
       nav ul.is-open { display: flex; }
-      nav ul > li { display: block !important; width: 100%; border-bottom: 1px solid var(--border); }
+      nav ul > li { display: block !important; width: 100%; border-bottom: 1px solid var(--wborder); }
       nav ul > li > a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; }
       .has-drop:hover .dropdown { display: none; }
       .has-drop.is-open .dropdown { display: block; }
-      .dropdown { position: static; border: none; border-top: 1px solid var(--border); background: rgba(255,255,255,0.03); min-width: unset; }
+      .dropdown { position: static; border: none; border-top: 1px solid var(--wborder); background: rgba(0,0,0,0.02); min-width: unset; box-shadow: none; }
       .dropdown li a { padding: 0.75rem 2rem; }
       .nav-contact { display: flex; margin: 1.25rem 1.5rem; height: 48px; width: calc(100% - 3rem); justify-content: center; font-size: 0.9rem !important; }
       .form-wrap { padding: 1rem 1.5rem 1.5rem; }
@@ -475,27 +478,43 @@
 
 <nav>
   <a href="index.html" class="logo">
-    <img src="logo.png" alt="IG Rod Planning" style="height:44px;width:auto;display:block;" />
+    <img src="logo.png" alt="IG Rod Planning" style="height:42px;width:auto;" />
   </a>
-    <div class="nav-social">
-    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig-nav-grad" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig-nav-grad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
-    <a href="https://www.tiktok.com/@ig2025123?_r=1&amp;_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#f8f8f8"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
-    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
-    <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
-  </div>
-  <ul>
-    <li class="has-drop">
-      <a href="products.html">商品一覧</a>
+  <ul id="nav-menu">
+    <li class="has-drop"><a href="products.html">商品一覧</a>
       <ul class="dropdown">
-        <li><a href="strixedge.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
-        <li><a href="gtlj.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
-        <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
-        <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+        <li class="has-drop"><a href="products.html">オフショア</a>
+          <ul class="dropdown" style="left:100%;top:0;">
+            <li><a href="strixedge.html">STRIX EDGE <span class="nav-genre">イカメタル/ティップラン</span></a></li>
+            <li><a href="gtslj.html">GTSLJ <span class="nav-genre">超万能ライトオフショアロッド</span></a></li>
+            <li><a href="gtlj.html">GTLJ <span class="nav-genre">万能ライトジギング</span></a></li>
+            <li><a href="gtj.html">GT J <span class="nav-genre">ジギング</span></a></li>
+            <li><a href="gts.html">GTS <span class="nav-genre">スロージギング</span></a></li>
+            <li><a href="gtr.html">GTR <span class="nav-genre">タイラバ</span></a></li>
+          </ul>
+        </li>
+        <li class="has-drop"><a href="products.html">ショア</a>
+          <ul class="dropdown" style="left:100%;top:0;">
+            <li><a href="gtx.html">GTX <span class="nav-genre">ロックショア</span></a></li>
+          </ul>
+        </li>
+        <li class="has-drop"><a href="products.html">船竿</a>
+          <ul class="dropdown" style="left:100%;top:0;">
+            <li><a href="ika.html">イカ竿</a></li>
+          </ul>
+        </li>
+        <li class="has-drop"><a href="products.html">底物</a>
+          <ul class="dropdown" style="left:100%;top:0;">
+            <li><a href="ishidai.html">VS石鯛</a></li>
+            <li><a href="vskue.html">VS九絵</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="services.html">サービス</a></li>
-    <li class="has-drop">
-      <a href="order.html">オーダーはこちらから</a>
+    <li><a href="gallery.html">ギャラリー</a></li>
+    <li><a href="company.html">事業概要</a></li>
+    <li class="has-drop"><a href="order.html">オーダーについて</a>
       <ul class="dropdown">
         <li><a href="order.html">オーダーシートはこちらから</a></li>
         <li><a href="custom.html">カスタム内容</a></li>
@@ -503,10 +522,17 @@
         <li><a href="simulator.html">カラーシミュレーター</a></li>
       </ul>
     </li>
-    <li><a href="gallery.html">ギャラリー</a></li>
-    <li><a href="company.html">事業概要</a></li>
-    <li><a href="contact.html" class="nav-contact">お問い合わせ</a></li>
   </ul>
+  <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+    <a href="order.html" style="display:inline-flex;align-items:center;height:34px;padding:0 1rem;background:transparent;border:1px solid var(--wborder2);color:var(--fg2);border-radius:3px;font-size:0.76rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='#aaa';this.style.color='#111'" onmouseout="this.style.borderColor='var(--wborder2)';this.style.color='var(--fg2)'">オーダーシート</a>
+    <a href="contact.html" class="nav-contact">お問い合わせ</a>
+  </div>
+  <div class="nav-social">
+    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><defs><radialGradient id="ig-nav-grad" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig-nav-grad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="https://www.tiktok.com/@ig2025123?_r=1&amp;_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#111111"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+    <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+  </div>
   <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
 </nav>
 
@@ -516,16 +542,16 @@
   <h1>オーダーフォーム</h1>
   <p>ご注文内容をご記入のうえ送信してください。<br>確認後、担当者よりご連絡いたします。</p>
   <div class="delivery-badge">納期の目安：<span>お支払い後 60〜70日前後</span></div>
-  <p style="font-size:0.82rem; color:var(--white); margin-top:1rem; line-height:1.9;">特殊な仕様と在庫状況によってさらにお待たせする場合もございます。オーダー送信後に返答させていただきます。<br>記入方法がよくわからない場合は直接 <a href="https://lin.ee/8eONfci" target="_blank" rel="noopener" style="color:#06c755; font-weight:700; text-decoration:none;">公式LINE</a> か <a href="contact.html" style="color:var(--white); font-weight:700; text-decoration:underline;">メール</a> でお問い合わせください。</p>
+  <p style="font-size:0.82rem; color:var(--fg2); margin-top:1rem; line-height:1.9;">特殊な仕様と在庫状況によってさらにお待たせする場合もございます。オーダー送信後に返答させていただきます。<br>記入方法がよくわからない場合は直接 <a href="https://lin.ee/8eONfci" target="_blank" rel="noopener" style="color:#06c755; font-weight:700; text-decoration:none;">公式LINE</a> か <a href="contact.html" style="color:var(--fg); font-weight:700; text-decoration:underline;">メール</a> でお問い合わせください。</p>
 </div>
 
 <!-- QUICK LINKS -->
 <div style="max-width:720px; margin:0 auto; padding:0 1.5rem 2.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
-  <a href="color.html" target="_blank" rel="noopener" style="flex:1; min-width:140px; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.75rem 1rem; border:1px solid #c8a44a; color:#c8a44a; background:transparent; text-decoration:none; font-size:0.8rem; font-weight:700; letter-spacing:0.04em; border-radius:3px; transition:border-color 0.2s, color 0.2s;" onmouseover="this.style.borderColor='#f5d062';this.style.color='#f5d062'" onmouseout="this.style.borderColor='#c8a44a';this.style.color='#c8a44a'">
+  <a href="color.html" target="_blank" rel="noopener" style="flex:1; min-width:140px; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.75rem 1rem; border:1px solid #d0d0d0; color:#555; background:transparent; text-decoration:none; font-size:0.8rem; font-weight:700; letter-spacing:0.04em; border-radius:3px; transition:border-color 0.2s, color 0.2s;" onmouseover="this.style.borderColor='#999';this.style.color='#111'" onmouseout="this.style.borderColor='#d0d0d0';this.style.color='#555'">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22c4.97 0 9-2.69 9-6-0-.83-.29-1.61-.79-2.3"/><path d="M12 22C7.03 22 3 19.31 3 16c0-2.07 1.47-3.9 3.71-5"/></svg>
     カラーチャートを見る
   </a>
-  <a href="custom.html" target="_blank" rel="noopener" style="flex:1; min-width:140px; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.75rem 1rem; border:1px solid #c8a44a; color:#c8a44a; background:transparent; text-decoration:none; font-size:0.8rem; font-weight:700; letter-spacing:0.04em; border-radius:3px; transition:border-color 0.2s, color 0.2s;" onmouseover="this.style.borderColor='#f5d062';this.style.color='#f5d062'" onmouseout="this.style.borderColor='#c8a44a';this.style.color='#c8a44a'">
+  <a href="custom.html" target="_blank" rel="noopener" style="flex:1; min-width:140px; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.75rem 1rem; border:1px solid #d0d0d0; color:#555; background:transparent; text-decoration:none; font-size:0.8rem; font-weight:700; letter-spacing:0.04em; border-radius:3px; transition:border-color 0.2s, color 0.2s;" onmouseover="this.style.borderColor='#999';this.style.color='#111'" onmouseout="this.style.borderColor='#d0d0d0';this.style.color='#555'">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
     カスタム箇所の説明
   </a>
@@ -2200,8 +2226,8 @@ document.getElementById('btn-save-success').addEventListener('click', function()
 // --- ハンバーガー ---
 (function(){
   var ham = document.getElementById('hamburger');
-  var ul  = document.querySelector('nav ul');
-  if (!ham) return;
+  var ul  = document.getElementById('nav-menu');
+  if (!ham || !ul) return;
   ham.addEventListener('click', function(){
     ham.classList.toggle('is-active');
     ul.classList.toggle('is-open');
@@ -2214,7 +2240,7 @@ document.getElementById('btn-save-success').addEventListener('click', function()
       }
     });
   });
-  document.querySelectorAll('.dropdown a, nav ul > li:not(.has-drop) > a').forEach(function(a){
+  document.querySelectorAll('.dropdown a, #nav-menu > li:not(.has-drop) > a').forEach(function(a){
     a.addEventListener('click', function(){
       ham.classList.remove('is-active');
       ul.classList.remove('is-open');
