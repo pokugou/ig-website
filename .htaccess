@@ -2,11 +2,14 @@ Options +FollowSymLinks
 RewriteEngine On
 
 # Fix broken cached filesystem-path redirect URLs (from old .htaccess bug)
-# e.g., /home/igrodplan/ig-rod.jp/public_html/strixedge/.html → /strixedge.html
-RewriteRule ^home/igrodplan/ig-rod\.jp/public_html/([^/]+)/\.html$ /$1.html [L,R=301]
-RewriteRule ^home/igrodplan/ig-rod\.jp/public_html/([^/]+)\.html$ /$1.html [L,R=301]
+RewriteRule ^home/igrodplan/ig-rod\.jp/public_html/([^/]+)/\.html$ /$1 [L,R=301]
+RewriteRule ^home/igrodplan/ig-rod\.jp/public_html/([^/]+)\.html$ /$1 [L,R=301]
 
-# Clean URLs: /ika → ika.html, /strixedge → strixedge.html
+# Redirect .html URLs to clean URLs (e.g. /strixedge.html → /strixedge)
+RewriteCond %{THE_REQUEST} \s/([^.?#]+)\.html[\s?#] [NC]
+RewriteRule ^ /%1 [L,R=301]
+
+# Serve .html for clean URLs: /ika → ika.html, /strixedge → strixedge.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([^./]+)$ $1.html [L]
