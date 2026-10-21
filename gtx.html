@@ -66,7 +66,9 @@
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* GRADIENT HERO */
-    .hero { position: relative; width: 100%; min-height: 100vh; margin-top: 80px; overflow: hidden; background: linear-gradient(155deg, #091408 0%, #0d2010 40%, #081208 70%, #050c05 100%); display: flex; align-items: center; }
+    .hero { position: relative; width: 100%; min-height: 100vh; margin-top: 80px; overflow: hidden; background: #050c05; display: flex; align-items: center; }
+    .hero-bg-photo { position: absolute; inset: 0; background-image: url(gtx-banner.webp); background-size: cover; background-position: center top; opacity: 0.28; }
+    .hero-bg-grad { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,12,5,0.92) 0%, rgba(5,12,5,0.72) 55%, rgba(5,12,5,0.2) 100%); }
     .hero-deco { position: absolute; right: -1%; top: 50%; transform: translateY(-50%); font-size: clamp(180px, 28vw, 400px); font-weight: 900; color: rgba(255,255,255,0.025); line-height: 1; pointer-events: none; user-select: none; font-family: 'DM Sans', sans-serif; letter-spacing: -0.05em; }
     .hero-content { position: relative; z-index: 1; padding: 4rem; max-width: 680px; }
     .hero-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--shore-green); margin-bottom: 0.6rem; }
@@ -220,6 +222,8 @@
 </nav>
 
 <section class="hero">
+  <div class="hero-bg-photo"></div>
+  <div class="hero-bg-grad"></div>
   <div class="hero-deco">X</div>
   <div class="hero-content">
     <div class="hero-eyebrow">SHORE CASTING ROD</div>
