@@ -733,15 +733,18 @@
     var bannerVideo = document.getElementById('bannerVideo');
     window.openVideoModal = function() {
       if (!vm || !modalVideo || !bannerVideo) return;
-      modalVideo.currentTime = bannerVideo.currentTime;
+      var t = bannerVideo.currentTime;
+      bannerVideo.pause();
+      modalVideo.currentTime = t;
       modalVideo.muted = false;
       vm.classList.add('open');
       document.body.style.overflow = 'hidden';
-      modalVideo.play();
+      modalVideo.play().catch(function() {});
     };
     function closeVideoModal() {
       vm.classList.remove('open');
       document.body.style.overflow = '';
+      bannerVideo.currentTime = modalVideo.currentTime;
       modalVideo.pause();
     }
     document.getElementById('seVmClose').addEventListener('click', function(e) {
