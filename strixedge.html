@@ -657,10 +657,18 @@
 
     var lb = document.getElementById('seLightbox');
     var lbImg = document.getElementById('seLbImg');
-    document.getElementById('seSlides').addEventListener('click', function() {
+    document.getElementById('seSlides').addEventListener('click', function(e) {
+      if (e.target.closest('.banner-play-btn')) return;
       var current = slides[idx];
       var bg = current.style.backgroundImage.replace(/url\(["']?|["']?\)/g, '');
-      if (!bg) return;
+      if (!bg || bg === 'none') {
+        var video = current.querySelector('video');
+        if (video) {
+          if (video.requestFullscreen) video.requestFullscreen();
+          else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+        }
+        return;
+      }
       lbImg.src = bg;
       lb.classList.add('open');
       document.body.style.overflow = 'hidden';
