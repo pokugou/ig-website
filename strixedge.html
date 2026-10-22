@@ -72,7 +72,7 @@
 
     /* HERO SLIDER */
     .hero { position: relative; width: 100%; margin-top: 80px; border-top: 6px solid var(--wborder); overflow: hidden; background: var(--black); }
-    .hero-slides { display: flex; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); }
+    .hero-slides { display: flex; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); cursor: zoom-in; }
     .hero-slide { min-width: 100%; aspect-ratio: 16/3.15; background-size: contain; background-position: center; background-repeat: no-repeat; }
     .hero-prev, .hero-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; z-index: 10; transition: background 0.2s; }
     .hero-prev:hover, .hero-next:hover { background: rgba(0,0,0,0.7); }
@@ -82,6 +82,13 @@
     .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; border: none; transition: background 0.2s; }
     .hero-dot.active { background: #fff; }
     @media (max-width: 768px) { .hero-slide { aspect-ratio: 16/9.4; } }
+
+    /* LIGHTBOX */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999; align-items: center; justify-content: center; cursor: zoom-out; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 95vw; max-height: 92vh; object-fit: contain; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+    .lightbox-close { position: absolute; top: 1rem; right: 1.2rem; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; background: none; border: none; transition: opacity 0.2s; }
+    .lightbox-close:hover { opacity: 1; }
 
     /* QUICK NAV */
     .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
@@ -306,6 +313,12 @@
   <button class="hero-next" id="seNext">&#8250;</button>
   <div class="hero-dots" id="seDots"></div>
 </section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="seLightbox">
+  <button class="lightbox-close" id="seLbClose">&times;</button>
+  <img id="seLbImg" src="" alt="" />
+</div>
 
 <!-- SLIDE THUMBNAILS -->
 <section class="quick-nav">
@@ -605,6 +618,25 @@
     document.getElementById('seNext').addEventListener('click', function() { go(idx + 1); });
     document.querySelectorAll('.se-thumb').forEach(function(btn) {
       btn.addEventListener('click', function() { go(parseInt(btn.getAttribute('data-idx'))); });
+    });
+
+    var lb = document.getElementById('seLightbox');
+    var lbImg = document.getElementById('seLbImg');
+    document.getElementById('seSlides').addEventListener('click', function() {
+      var current = slides[idx];
+      var bg = current.style.backgroundImage.replace(/url\(["']?|["']?\)/g, '');
+      lbImg.src = bg;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    document.getElementById('seLbClose').addEventListener('click', function(e) {
+      e.stopPropagation();
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+    lb.addEventListener('click', function() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
     });
   })();
 </script>
