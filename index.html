@@ -113,8 +113,8 @@
     .slide-ishidai-bg{ position: absolute; inset: 0; background-image: url(ishidai-banner.png);background-size: cover; background-position: center; opacity: 0.35; }
     .slide-vskue-bg  { position: absolute; inset: 0; background-image: url(vskue-banner.png);  background-size: cover; background-position: center; opacity: 0.35; }
     .slide-gtx-bg    { position: absolute; inset: 0; background-image: url(gtx-banner.webp);   background-size: cover; background-position: center top; opacity: 0.45; }
-    .slide-strix-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 3rem; padding: 0 10%; width: 100%; }
-    .slide-strix-inner img { height: clamp(80px,13vw,160px); width: auto; flex-shrink: 0; }
+    .slide-strix-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; padding: 0 8%; width: 100%; text-align: center; }
+    .slide-strix-inner > img { display: none; }
     .slide-strix-text h2 { font-size: clamp(1.4rem,3vw,2.6rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.3rem; color: #fff; }
     .slide-strix-text p { font-size: 0.85rem; color: #fff; margin-bottom: 1rem; }
     .pickup-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: var(--red); color: #fff; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.3rem 0.8rem; margin-bottom: 0.6rem; }
@@ -248,7 +248,7 @@
       .hero-slide-main { aspect-ratio: 16/9.4; }
       .hero-slide-strix { aspect-ratio: 16/9.4; }
       .slide-strix-inner { flex-direction: column; gap: 0.5rem; padding: 1rem 3.5rem; align-items: center; text-align: center; }
-      .slide-strix-inner > img { height: 34px !important; width: auto !important; max-width: none !important; margin-bottom: 0 !important; }
+      .slide-strix-inner > img { display: block !important; height: 34px !important; width: auto !important; max-width: none !important; margin-bottom: 0 !important; }
       .slide-strix-text h2 { font-size: 1.25rem !important; margin-bottom: 0.15rem; }
       .slide-strix-text > p:nth-child(4) { display: none; }
       .products-grid { grid-template-columns: repeat(2, 1fr); }
