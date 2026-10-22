@@ -137,6 +137,13 @@
     .feature-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
     .feature-title { font-size: 0.95rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.5rem; color: var(--fg); }
     .feature-desc { font-size: 0.78rem; color: var(--fg2); line-height: 1.85; }
+    .feature-video-wrap { position: relative; width: 100%; border-radius: 4px; overflow: hidden; margin-bottom: 0.6rem; cursor: pointer; background: #000; }
+    .feature-video-wrap video { width: 100%; display: block; }
+    .feature-play-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); transition: opacity 0.2s; }
+    .feature-play-icon { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,0.25); }
+    .feature-play-icon::after { content: ''; display: block; width: 0; height: 0; border-style: solid; border-width: 10px 0 10px 18px; border-color: transparent transparent transparent #111; margin-left: 4px; }
+    .feature-video-wrap.playing .feature-play-btn { opacity: 0; pointer-events: none; }
+    .feature-video-wrap:hover .feature-play-btn { opacity: 1; pointer-events: auto; }
 
     /* BUTTONS */
     .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.75rem 1.6rem; border-radius: 3px; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; border: none; transition: background 0.2s, transform 0.18s; font-family: inherit; text-decoration: none; }
@@ -361,7 +368,10 @@
   <h2 class="section-title">3つの特長</h2>
   <div class="features-grid">
     <div class="feature-card">
-      <video src="titanium-top.mp4" autoplay muted loop playsinline style="width:100%;display:block;border-radius:4px;margin-bottom:0.6rem;"></video>
+      <div class="feature-video-wrap">
+        <video src="titanium-top.mp4" muted loop playsinline></video>
+        <div class="feature-play-btn"><div class="feature-play-icon"></div></div>
+      </div>
       <div class="feature-title">チタントップ搭載</div>
       <div class="feature-desc">伝わる軽さと高感度を実現。海中の微細な信号をダイレクトに手元へ届けるチタニウムソリッドティップを採用。イカの繊細なアタリを逃さない。</div>
     </div>
@@ -370,7 +380,10 @@
       <div class="feature-desc">軽快な操作で思いのままに。軽量バランス設計により長時間の釣行でも疲労を最小化。イカメタルの細かなシャクリにも反応するレスポンスを実現。</div>
     </div>
     <div class="feature-card">
-      <video src="sensitivity.mp4" autoplay muted loop playsinline style="width:100%;display:block;border-radius:4px;margin-bottom:0.6rem;"></video>
+      <div class="feature-video-wrap">
+        <video src="sensitivity.mp4" muted loop playsinline></video>
+        <div class="feature-play-btn"><div class="feature-play-icon"></div></div>
+      </div>
       <div class="feature-title">高感度設計</div>
       <div class="feature-desc">わずかな変化も逃さない。Fuji製SiCチタンガイドとの組み合わせにより、ライン振動の伝達効率を最大化。ベイトモデルはスパイラルガイド仕上げに対応。</div>
     </div>
@@ -654,6 +667,19 @@
       document.body.style.overflow = '';
     });
   })();
+
+  document.querySelectorAll('.feature-video-wrap').forEach(function(wrap) {
+    var video = wrap.querySelector('video');
+    wrap.addEventListener('click', function() {
+      if (video.paused) {
+        video.play();
+        wrap.classList.add('playing');
+      } else {
+        video.pause();
+        wrap.classList.remove('playing');
+      }
+    });
+  });
 </script>
 </body>
 </html>
