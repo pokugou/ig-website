@@ -92,6 +92,13 @@
     .lightbox img { max-width: 95vw; max-height: 92vh; object-fit: contain; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
     .lightbox-close { position: absolute; top: 1rem; right: 1.2rem; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; background: none; border: none; transition: opacity 0.2s; }
     .lightbox-close:hover { opacity: 1; }
+    .video-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 999; align-items: center; justify-content: center; cursor: pointer; }
+    .video-modal.open { display: flex; }
+    .video-modal-inner { width: 70%; max-width: 1000px; cursor: default; position: relative; }
+    .video-modal-inner video { width: 100%; display: block; border-radius: 6px; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+    .video-modal-close { position: absolute; top: 1rem; right: 1.2rem; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; background: none; border: none; transition: opacity 0.2s; z-index: 1; }
+    .video-modal-close:hover { opacity: 1; }
+    @media (max-width: 768px) { .video-modal-inner { width: 95%; } }
 
     /* QUICK NAV */
     .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
@@ -343,6 +350,14 @@
 <div class="lightbox" id="seLightbox">
   <button class="lightbox-close" id="seLbClose">&times;</button>
   <img id="seLbImg" src="" alt="" />
+</div>
+
+<!-- VIDEO MODAL -->
+<div class="video-modal" id="seVideoModal">
+  <button class="video-modal-close" id="seVmClose">&times;</button>
+  <div class="video-modal-inner">
+    <video id="modalVideo" src="banner-video.mp4" muted controls playsinline></video>
+  </div>
 </div>
 
 <!-- SLIDE THUMBNAILS -->
@@ -670,11 +685,7 @@
       var current = slides[idx];
       var bg = current.style.backgroundImage.replace(/url\(["']?|["']?\)/g, '');
       if (!bg || bg === 'none') {
-        var video = current.querySelector('video');
-        if (video) {
-          if (video.requestFullscreen) video.requestFullscreen();
-          else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-        }
+        openVideoModal();
         return;
       }
       lbImg.src = bg;
@@ -710,11 +721,39 @@
       if (bannerFsBtn) {
         bannerFsBtn.addEventListener('click', function(e) {
           e.stopPropagation();
-          if (bannerVideo.requestFullscreen) bannerVideo.requestFullscreen();
-          else if (bannerVideo.webkitRequestFullscreen) bannerVideo.webkitRequestFullscreen();
+          openVideoModal();
         });
       }
     }
+  })();
+
+  (function() {
+    var vm = document.getElementById('seVideoModal');
+    var modalVideo = document.getElementById('modalVideo');
+    var bannerVideo = document.getElementById('bannerVideo');
+    window.openVideoModal = function() {
+      if (!vm || !modalVideo || !bannerVideo) return;
+      modalVideo.currentTime = bannerVideo.currentTime;
+      modalVideo.muted = false;
+      vm.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      modalVideo.play();
+    };
+    function closeVideoModal() {
+      vm.classList.remove('open');
+      document.body.style.overflow = '';
+      modalVideo.pause();
+    }
+    document.getElementById('seVmClose').addEventListener('click', function(e) {
+      e.stopPropagation();
+      closeVideoModal();
+    });
+    vm.addEventListener('click', function(e) {
+      if (e.target === vm) closeVideoModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeVideoModal();
+    });
   })();
 
   document.querySelectorAll('.feature-video-wrap').forEach(function(wrap) {
