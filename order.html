@@ -1634,6 +1634,39 @@ function calcPrice() {
 }
 
 document.getElementById('sel-model').addEventListener('change', calcPrice);
+
+// VS石鯛・VS九絵選択時のブランクスカラー料金を一律¥23,800に上書き
+(function() {
+  var vsModels = ['VS-ISHIDAI-450MH','VS-ISHIDAI-500MH','VS-ISHIDAI-530MH','VS-ISHIDAI-535MH','VSK480M','VSK480H','VSK510XH'];
+  var blankOverlay = document.getElementById('cm-overlay-blank-color');
+  if (!blankOverlay) return;
+
+  // 起動時に元の価格を保存
+  blankOverlay.querySelectorAll('.cm-color-btn, .cm-omakase-btn').forEach(function(btn) {
+    btn.dataset.priceOrig = btn.dataset.price;
+  });
+
+  function applyVsBlankPrices(isVs) {
+    blankOverlay.querySelectorAll('.cm-color-btn, .cm-omakase-btn').forEach(function(btn) {
+      var origPrice = parseInt(btn.dataset.priceOrig || btn.dataset.price || 0);
+      if (origPrice === 0) return;
+      btn.dataset.price = isVs ? '23800' : btn.dataset.priceOrig;
+      var priceLabel = btn.querySelector('.cm-omakase-price');
+      if (priceLabel) {
+        priceLabel.textContent = '＋¥' + parseInt(btn.dataset.price).toLocaleString('ja-JP');
+      }
+    });
+    var selectedBtn = blankOverlay.querySelector('.cm-color-btn.selected, .cm-omakase-btn.selected');
+    if (selectedBtn) {
+      cmPrices['blank-color'] = parseInt(selectedBtn.dataset.price || 0);
+      calcPrice();
+    }
+  }
+
+  document.getElementById('sel-model').addEventListener('change', function() {
+    applyVsBlankPrices(vsModels.indexOf(this.value) !== -1);
+  });
+})();
 document.getElementById('sel-guide').addEventListener('change', function() {
   var layoutField = document.getElementById('torzite-layout-field');
   var layoutSel   = document.getElementById('sel-guide-layout');
