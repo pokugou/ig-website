@@ -10,11 +10,11 @@
   <meta property="og:site_name" content="IG Rod Planning" />
   <meta property="og:url" content="https://ig-rod.jp/gtlj" />
   <meta property="og:title" content="GTLJ | IG Rod Planning" />
-  <meta property="og:description" content="超万能ライトジギングロッド GTLJ。カーボンチューブラーのシャープさとソリッドの粘りを両立した24t・30t混在弾性カーボン採用モデル。" />
+  <meta property="og:description" content="チューブラーでありながらソリッドのような粘りを持つ超万能ライトジギングロッド GTLJ。マルチバイアス設計でフルベンドファイトを楽しめる。" />
   <meta property="og:image" content="https://ig-rod.jp/gtlj-banner.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://ig-rod.jp/gtlj-banner.png" />
-  <meta name="description" content="超万能ライトジギングロッド GTLJ。カーボンチューブラーのシャープさとソリッドの粘りを両立した24t・30t混在弾性カーボン採用モデル。" />
+  <meta name="description" content="チューブラーでありながらソリッドのような粘りを持つ超万能ライトジギングロッド GTLJ。マルチバイアス設計でフルベンドファイトを楽しめる。" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
@@ -37,8 +37,6 @@
     ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
     img { max-width: 100%; display: block; }
     a { text-decoration: none; color: inherit; }
-
-    /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 80px; background: rgba(245,245,245,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--wborder); }
     .nav-logo { display: flex; align-items: center; background: #111; padding: 4px; border-radius: 3px; }
     .nav-menu { list-style: none; display: flex; align-items: center; gap: 0; }
@@ -71,60 +69,45 @@
     .hamburger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.is-active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    /* PRODUCT GALLERY — light theme */
-    .product-gallery { margin-top: 80px; background: var(--card-bg); border-bottom: 1px solid var(--wborder); }
-    .gallery-main-wrap { position: relative; overflow: hidden; background: var(--card-bg2); }
-    .gallery-track { display: flex; transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); }
-    .gallery-slide { min-width: 100%; aspect-ratio: 16/4; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--card-bg2); }
-    .gallery-slide img { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; display: block; }
-    .gal-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: 1px solid var(--wborder2); color: var(--fg); width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.5rem; z-index: 10; transition: background 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .gal-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
-    .gal-btn.prev { left: 1rem; }
-    .gal-btn.next { right: 1rem; }
-    .gallery-thumbs { display: flex; gap: 0.6rem; padding: 0.8rem 1.5rem; background: #fff; border-top: 1px solid var(--wborder); overflow-x: auto; scrollbar-width: none; }
-    .gallery-thumbs::-webkit-scrollbar { display: none; }
-    .gallery-thumb { flex-shrink: 0; width: 88px; height: 64px; border: 2px solid var(--wborder2); background: var(--card-bg); overflow: hidden; cursor: pointer; transition: border-color 0.2s; }
-    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .gallery-thumb.active { border-color: var(--red); }
-    .gallery-thumb:hover:not(.active) { border-color: rgba(204,34,0,0.4); }
-
-    /* LIGHTBOX */
-    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center; }
+    .hero { position: relative; width: 100%; margin-top: 80px; border-top: 6px solid #fff; overflow: hidden; background: var(--black); }
+    .hero-slides { display: flex; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); cursor: zoom-in; }
+    .hero-slide { min-width: 100%; aspect-ratio: 16/4.16; background-size: cover; background-position: center; }
+    @media (max-width: 768px) { .hero-slide { aspect-ratio: 16/7; } }
+    .hero-prev, .hero-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; z-index: 10; transition: background 0.2s; }
+    .hero-prev:hover, .hero-next:hover { background: rgba(0,0,0,0.7); }
+    .hero-prev { left: 1rem; }
+    .hero-next { right: 1rem; z-index: 20; }
+    .hero-dots { position: absolute; bottom: 0.7rem; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+    .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; border: none; transition: background 0.2s; }
+    .hero-dot.active { background: #fff; }
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999; align-items: center; justify-content: center; cursor: zoom-out; }
     .lightbox.open { display: flex; }
-    .lightbox-img { max-width: 92vw; max-height: 90vh; object-fit: contain; display: block; }
-    .lb-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; color: #fff; font-size: 2.2rem; cursor: pointer; opacity: 0.75; line-height: 1; transition: opacity 0.2s; }
-    .lb-close:hover { opacity: 1; }
-    .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.7rem; transition: background 0.2s; }
-    .lb-nav:hover { background: rgba(204,34,0,0.7); }
-    .lb-prev { left: 1.5rem; }
-    .lb-next { right: 1.5rem; }
-
-    /* PRODUCT INFO */
-    .product-info-section { max-width: 1200px; margin: 0 auto; padding: 3.5rem 3rem 2rem; }
-    .product-eyebrow { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.9rem; }
-    .product-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
-    .product-name { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.5rem; color: var(--fg); }
-    .product-tagline { font-size: clamp(1rem, 2vw, 1.35rem); font-weight: 300; color: var(--fg3); letter-spacing: 0.03em; margin-bottom: 1.5rem; }
-    .product-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.75rem; }
-    .product-tag { font-size: 0.7rem; padding: 0.3rem 0.8rem; border: 1px solid var(--wborder2); color: var(--fg3); letter-spacing: 0.06em; }
-    .product-desc-text { font-size: 0.95rem; color: var(--fg2); line-height: 1.9; max-width: 700px; margin-bottom: 2rem; }
-
-    /* SECTIONS */
-    .section { padding: 5rem 3rem; max-width: 1200px; margin: 0 auto; }
-    .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .lightbox img { max-width: 95vw; max-height: 92vh; object-fit: contain; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+    .lightbox-close { position: absolute; top: 1rem; right: 1.2rem; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; background: none; border: none; transition: opacity 0.2s; }
+    .lightbox-close:hover { opacity: 1; }
+    .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+    .quick-nav::-webkit-scrollbar { display: none; }
+    .quick-nav-scroll { display: flex; gap: 0.6rem; padding: 0 1.5rem; width: max-content; min-width: 100%; justify-content: center; box-sizing: border-box; }
+    .qn-card { flex-shrink: 0; display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100px; border: 1px solid var(--wborder); border-radius: 5px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+    .qn-card:hover { border-color: var(--red); box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+    .qn-card-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+    .qn-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
+    .qn-card:hover .qn-card-img img { transform: scale(1.06); }
+    .se-thumb { border: none; cursor: pointer; background: #fff; padding: 0; text-align: left; }
+    .se-thumb.active { border-color: var(--red); box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+    @media (max-width: 768px) { .qn-card { width: 86px; } }
+    .section { padding: 1.5rem 3rem; max-width: 1200px; margin: 0 auto; }
+    .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red2); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
     .section-label::before { content: ''; display: block; width: 28px; height: 1px; background: var(--red); }
-    .section-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1.5rem; color: var(--fg); }
+    .section-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.75rem; color: var(--fg); }
     .section-desc { font-size: 0.95rem; color: var(--fg2); line-height: 1.9; max-width: 700px; }
-
-    /* SPECS — light bg */
     .specs-section { background: var(--section-bg); border-top: 1px solid var(--wborder); border-bottom: 1px solid var(--wborder); }
-    .specs-inner { max-width: 1200px; margin: 0 auto; padding: 5rem 3rem 2rem; }
+    .specs-inner { max-width: 1200px; margin: 0 auto; padding: 1.5rem 3rem 1rem; }
     .model-table-wrap { margin-top: 1rem; overflow-x: auto; width: 100%; scrollbar-width: none; }
     .model-table-wrap::-webkit-scrollbar { display: none; }
     .model-table { width: 100%; border-collapse: collapse; border: 1px solid var(--wborder2); }
-    .model-table th { background: var(--card-bg2); padding: 0.85rem 1.25rem; text-align: center; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; color: var(--fg3); border-bottom: 2px solid var(--wborder2); white-space: nowrap; vertical-align: middle; }
-    .model-table td { padding: 1rem 1.25rem; font-size: 0.87rem; border-bottom: 1px solid var(--wborder); color: var(--fg2); vertical-align: middle; text-align: center; }
+    .model-table th { background: var(--card-bg2); padding: 0.65rem 1.25rem; text-align: center; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; color: var(--fg3); border-bottom: 2px solid var(--wborder2); white-space: nowrap; vertical-align: middle; }
+    .model-table td { padding: 0.7rem 1.25rem; font-size: 0.87rem; border-bottom: 1px solid var(--wborder); color: var(--fg2); vertical-align: middle; text-align: center; }
     .model-table tr:last-child td { border-bottom: none; }
     .model-table tr:hover td { background: var(--card-bg); color: var(--fg); }
     .model-table td.num { text-align: center; font-family: 'DM Sans', sans-serif; }
@@ -133,27 +116,20 @@
     .type-badge.spin { background: rgba(204,34,0,0.08); color: var(--red); border: 1px solid rgba(204,34,0,0.25); }
     .type-badge.bait { background: rgba(160,130,50,0.08); color: #8a6f20; border: 1px solid rgba(160,130,50,0.25); }
     .model-name { font-weight: 700; color: var(--fg) !important; white-space: nowrap; }
-
-    /* FEATURES */
     .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin-top: 0.75rem; }
-    .feature-card { background: #fff; padding: 1.5rem; }
-    .feature-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .feature-card { background: #fff; padding: 1.1rem 1.5rem; }
     .feature-title { font-size: 0.95rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.5rem; color: var(--fg); }
     .feature-desc { font-size: 0.78rem; color: var(--fg2); line-height: 1.85; }
-
-    /* BUTTONS */
     .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.75rem 1.6rem; border-radius: 3px; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; border: none; transition: background 0.2s, transform 0.18s; font-family: inherit; text-decoration: none; }
     .btn:hover { transform: translateY(-2px); }
     .btn-red { background: var(--red); color: #fff; }
     .btn-red:hover { background: var(--red2); }
-    .btn-ghost { background: transparent; border: 1px solid var(--wborder2); color: var(--fg2); }
-    .btn-ghost:hover { border-color: #aaa; color: var(--fg); }
+    .btn-ghost-light { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(248,248,248,0.75); }
+    .btn-ghost-light:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
     .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-    /* ORDER */
-    .od-section { background: var(--section-bg); border-top: 1px solid var(--wborder); padding: 5rem 3rem; }
+    .od-section { background: var(--section-bg); border-top: 1px solid var(--wborder); padding: 1.5rem 3rem; }
     .od-inner { max-width: 1200px; margin: 0 auto; }
-    .od-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin: 2rem 0 2.2rem; }
+    .od-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--wborder); border: 1px solid var(--wborder); margin: 1.25rem 0; }
     .od-step { background: #fff; padding: 1.1rem 1.2rem; }
     .od-step b { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.16em; color: var(--red2); margin-bottom: 0.3rem; }
     .od-step span { font-size: 0.82rem; color: var(--fg2); line-height: 1.6; }
@@ -169,40 +145,30 @@
     .od-note { margin-top: 1.4rem; font-size: 0.75rem; color: var(--fg3); line-height: 1.8; }
     .order-fab { position: fixed; right: 1.1rem; bottom: 1.1rem; z-index: 250; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.85rem 1.3rem; background: var(--red); color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 800; border-radius: 40px; box-shadow: 0 6px 24px rgba(0,0,0,0.15), 0 0 30px rgba(204,34,0,0.25); transition: transform 0.2s, background 0.2s; }
     .order-fab:hover { background: var(--red2); transform: translateY(-2px); }
-
-    /* CTA */
-    .cta-section { background: var(--black); border-top: 1px solid rgba(255,255,255,0.07); padding: 4rem 3rem; }
+    .cta-section { background: var(--black); border-top: 1px solid rgba(255,255,255,0.07); padding: 2rem 3rem; }
     .cta-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
     .cta-text h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.5rem; color: #fff; }
     .cta-text p { font-size: 0.9rem; color: rgba(248,248,248,0.65); }
-    .btn-ghost-light { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(248,248,248,0.75); }
-    .btn-ghost-light:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
-
-    /* FOOTER */
-    footer { background: #fff; border-top: 1px solid var(--wborder); padding: 3.5rem 2rem 2rem; }
+    footer { background: #fff; border-top: 1px solid var(--wborder); padding: 2rem 2rem 1.5rem; }
     .footer-inner { max-width: 1200px; margin: 0 auto; }
-    .footer-logo { display: inline-block; background: #111; padding: 4px; border-radius: 3px; margin-bottom: 2.5rem; }
+    .footer-logo { display: inline-block; background: #111; padding: 4px; border-radius: 3px; margin-bottom: 1.5rem; }
     .footer-nav-list { list-style: none; border-top: 1px solid var(--wborder); }
     .footer-nav-item { display: flex; align-items: center; border-bottom: 1px solid var(--wborder); padding: 1rem 0; gap: 3rem; }
     .footer-nav-en { font-family: 'DM Sans',sans-serif; font-size: 0.9rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; min-width: 160px; color: var(--fg); }
     .footer-nav-ja { font-size: 0.8rem; color: var(--fg3); }
     .footer-nav-item a { display: flex; align-items: center; gap: 3rem; text-decoration: none; color: inherit; width: 100%; transition: opacity 0.2s; }
     .footer-nav-item a:hover { opacity: 0.6; }
-    .footer-bottom { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--wborder); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-bottom { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--wborder); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
     .footer-copy { font-size: 0.72rem; color: var(--fg3); letter-spacing: 0.04em; }
     .footer-social { display: flex; gap: 1.2rem; }
     .footer-social a { display: flex; opacity: 0.55; transition: opacity 0.2s; }
     .footer-social a:hover { opacity: 1; }
-
-    /* RESPONSIVE */
     @media (max-width: 1024px) {
       .features-grid { grid-template-columns: repeat(2, 1fr); }
       .cta-inner { flex-direction: column; align-items: flex-start; }
-      .section { padding: 4rem 2rem; }
-      .specs-inner { padding: 4rem 2rem; }
-      .product-info-section { padding: 3rem 2rem; }
-      .cta-section { padding: 4rem 2rem; }
-      .od-section { padding: 4rem 2rem; }
+      .section { padding: 1.25rem 2rem; }
+      .specs-inner { padding: 1.25rem 2rem; }
+      .cta-section { padding: 1.25rem 2rem; }
     }
     @media (max-width: 768px) {
       .hamburger { display: flex; }
@@ -214,22 +180,19 @@
       .nav-btn-contact { display: none !important; }
       .nav-social { display: flex !important; gap: 0.65rem; margin: 0; padding: 0; border: none; }
       .nav-social svg { width: 20px; height: 20px; }
-
       nav .nav-menu { display: none; position: fixed; top: 80px; left: 0; right: 0; height: calc(100vh - 80px); background: rgba(255,255,255,0.98); backdrop-filter: blur(12px); flex-direction: column; padding: 1rem 0 2rem; overflow-y: auto; z-index: 299; border-top: 1px solid var(--wborder); gap: 0; }
       nav .nav-menu.is-open { display: flex; }
       nav .nav-menu li { border-bottom: 1px solid var(--wborder); width: 100%; }
       nav .nav-menu li a { height: auto; padding: 1rem 1.5rem; font-size: 0.95rem; width: 100%; color: var(--fg); }
       .nav-btns { display: none; }
       .nav-social { display: none; }
-      .gallery-slide { aspect-ratio: 8/3; }
       .features-grid { grid-template-columns: 1fr; }
       .od-steps { grid-template-columns: repeat(2, 1fr); }
       .od-grid { grid-template-columns: repeat(2, 1fr); }
-      .section { padding: 3.5rem 1.5rem; }
-      .specs-inner { padding: 3rem 1.5rem; }
-      .product-info-section { padding: 2.5rem 1.5rem; }
-      .cta-section { padding: 3rem 1.5rem; }
-      .od-section { padding: 3.5rem 1.5rem; }
+      .section { padding: 0.55rem 1.5rem 1.1rem; }
+      .specs-inner { padding: 0.55rem 1.5rem 1.1rem; }
+      .cta-section { padding: 0.55rem 1.5rem 1.1rem; }
+      .od-section { padding: 0.55rem 1.5rem 1.1rem; }
       .footer-nav-en { min-width: 100px; font-size: 0.8rem; }
       .footer-bottom { flex-direction: column; text-align: center; }
     }
@@ -293,202 +256,87 @@
     <a href="contact" class="nav-btn-contact">お問い合わせ</a>
   </div>
   <div class="nav-social">
-    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig1)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-    </a>
-    <a href="https://www.tiktok.com/@ig2025123?_r=1&_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#111111"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-    </a>
-    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
-    </a>
-    <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-    </a>
+    <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig1)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="https://www.tiktok.com/@ig2025123?_r=1&_t=ZS-98vDejkQJFZ" target="_blank" rel="noopener" aria-label="TikTok"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#111111"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+    <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+    <a href="https://www.facebook.com/p/IG-Rod-Planning-61556441514179/" target="_blank" rel="noopener" aria-label="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
   </div>
   <button class="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- PRODUCT GALLERY -->
-<section class="product-gallery">
-  <div class="gallery-main-wrap">
-    <div class="gallery-track" id="galleryTrack">
-      <div class="gallery-slide"><img src="gtlj-rod.webp" alt="GTLJ ロッド全体" /></div>
-      <div class="gallery-slide"><img src="gtlj-photo1.jpg" alt="GTLJ 全体1" /></div>
-      <div class="gallery-slide"><img src="gtlj-photo2.jpg" alt="GTLJ 全体2" /></div>
-      <div class="gallery-slide"><img src="gtlj-photo3.jpg" alt="GTLJ ガイド" /></div>
-    </div>
-    <button class="gal-btn prev" onclick="galMove(-1)">&#8249;</button>
-    <button class="gal-btn next" onclick="galMove(1)">&#8250;</button>
+<section class="hero">
+  <div class="hero-slides" id="seSlides">
+    <div class="hero-slide" style="background-image:url(gtlj-banner.png);"></div>
   </div>
-  <div class="gallery-thumbs">
-    <div class="gallery-thumb active" onclick="galTo(0)"><img src="gtlj-rod.webp" alt="" /></div>
-    <div class="gallery-thumb" onclick="galTo(1)"><img src="gtlj-photo1.jpg" alt="" /></div>
-    <div class="gallery-thumb" onclick="galTo(2)"><img src="gtlj-photo2.jpg" alt="" /></div>
-    <div class="gallery-thumb" onclick="galTo(3)"><img src="gtlj-photo3.jpg" alt="" /></div>
+  <button class="hero-prev" id="sePrev">&#8249;</button>
+  <button class="hero-next" id="seNext">&#8250;</button>
+  <div class="hero-dots" id="seDots"></div>
+</section>
+
+<div class="lightbox" id="seLightbox">
+  <button class="lightbox-close" id="seLbClose">&times;</button>
+  <img id="seLbImg" src="" alt="" />
+</div>
+
+<section class="quick-nav">
+  <div class="quick-nav-scroll" id="seThumbs">
+    <button class="qn-card se-thumb active" data-idx="0">
+      <div class="qn-card-img"><img src="gtlj-banner.png" alt="GTLJ バナー" /></div>
+    </button>
   </div>
 </section>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <button class="lb-close" onclick="lbClose()">&#x2715;</button>
-  <button class="lb-nav lb-prev" onclick="lbMove(-1)">&#8249;</button>
-  <img class="lightbox-img" id="lbImg" src="" alt="" />
-  <button class="lb-nav lb-next" onclick="lbMove(1)">&#8250;</button>
+<div class="section">
+  <div class="section-label">Concept</div>
+  <h2 class="section-title">チューブラーが魅せる、ソリッドの粘り。</h2>
+  <p class="section-desc">カーボンチューブラーなのにソリッドのような粘りを見せてくれる。24t・30t混在弾性カーボンのマルチバイアス設計により、細身でありながら高い破断強度を実現。青物・真イカ・根魚など多彩なターゲットに対応するライトジギングロッド。</p>
 </div>
 
-<!-- PRODUCT INFO -->
-<div class="product-info-section">
-  <div class="product-eyebrow">LIGHT JIGGING ROD</div>
-  <h1 class="product-name">GTLJ</h1>
-  <p class="product-tagline">超万能ライトジギングロッド</p>
-  <div class="product-tags">
-    <span class="product-tag">ライトジギング</span>
-    <span class="product-tag">ジギング</span>
-    <span class="product-tag">スロージギング</span>
-    <span class="product-tag">タイジギング</span>
-    <span class="product-tag">ディープタイラバ</span>
-  </div>
-  <p class="product-desc-text">カーボンチューブラーなのにソリッドのような粘りを見せてくれる。24t・30t混在弾性カーボンのマルチバイアス設計により、細身でありながら高い破断強度を実現。青物・真イカ・根魚など多彩なターゲットに対応するライトジギングロッド。</p>
-  <a href="order" class="btn btn-red">オーダーシートへ &#x2192;</a>
-</div>
-
-<!-- SPECS -->
 <div class="specs-section">
   <div class="specs-inner">
     <div class="section-label">Spec</div>
-    <h2 class="section-title" style="margin-bottom:0;">主要スペック</h2>
+    <h2 class="section-title">主要スペック</h2>
     <div class="model-table-wrap">
       <table class="model-table">
         <thead>
           <tr>
-            <th>タイプ</th>
-            <th>品番</th>
-            <th class="num">全長(m)</th>
-            <th class="num">平均自重(g)</th>
-            <th class="num">継数(本)</th>
-            <th class="num">仕舞寸法(cm)</th>
-            <th class="num">先径/元径(mm)</th>
-            <th class="num">適合ジグ(g)</th>
-            <th class="num">定価（税抜）</th>
+            <th>タイプ</th><th>品番</th><th class="num">全長(m)</th><th class="num">平均自重(g)</th>
+            <th class="num">継数(本)</th><th class="num">仕舞寸法(cm)</th><th class="num">先径/元径(mm)</th>
+            <th class="num">適合ジグ(g)</th><th class="num">定価（税抜）</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><span class="type-badge bait">ベイト</span></td>
-            <td class="model-name">GTLJ63ULB</td>
-            <td class="num">1.91</td>
-            <td class="num">105</td>
-            <td class="num">1</td>
-            <td class="num">191</td>
-            <td class="num">1.78 / 11.0</td>
-            <td class="num">〜160</td>
-            <td class="num">¥32,800</td>
-          </tr>
-          <tr>
-            <td><span class="type-badge bait">ベイト</span></td>
-            <td class="model-name">GTLJ63LB</td>
-            <td class="num">1.91</td>
-            <td class="num">107</td>
-            <td class="num">1</td>
-            <td class="num">191</td>
-            <td class="num">1.82 / 11.3</td>
-            <td class="num">〜180</td>
-            <td class="num">¥33,200</td>
-          </tr>
-          <tr>
-            <td><span class="type-badge bait">ベイト</span></td>
-            <td class="model-name">GTLJ63MB</td>
-            <td class="num">1.91</td>
-            <td class="num">112</td>
-            <td class="num">1</td>
-            <td class="num">191</td>
-            <td class="num">1.9 / 11.7</td>
-            <td class="num">〜200</td>
-            <td class="num">¥34,500</td>
-          </tr>
-          <tr>
-            <td><span class="type-badge spin">スピニング</span></td>
-            <td class="model-name">GTLJ63ULS</td>
-            <td class="num">1.91</td>
-            <td class="num">110</td>
-            <td class="num">1</td>
-            <td class="num">191</td>
-            <td class="num">1.78 / 11.0</td>
-            <td class="num">〜160</td>
-            <td class="num">¥32,800</td>
-          </tr>
-          <tr>
-            <td><span class="type-badge spin">スピニング</span></td>
-            <td class="model-name">GTLJ63LS</td>
-            <td class="num">1.91</td>
-            <td class="num">112</td>
-            <td class="num">1</td>
-            <td class="num">191</td>
-            <td class="num">1.82 / 11.3</td>
-            <td class="num">〜180</td>
-            <td class="num">¥33,200</td>
-          </tr>
-          <tr>
-            <td><span class="type-badge spin">スピニング</span></td>
-            <td class="model-name">GTLJ63MS</td>
-            <td class="num">1.91</td>
-            <td class="num">121</td>
-            <td class="num">1</td>
-            <td class="num">191</td>
-            <td class="num">1.9 / 11.7</td>
-            <td class="num">〜200</td>
-            <td class="num">¥34,500</td>
-          </tr>
+          <tr><td><span class="type-badge bait">ベイト</span></td><td class="model-name">GTLJ63ULB</td><td class="num">1.91</td><td class="num">105</td><td class="num">1</td><td class="num">191</td><td class="num">1.78/11.0</td><td class="num">〜160</td><td class="num">¥32,800</td></tr>
+          <tr><td><span class="type-badge bait">ベイト</span></td><td class="model-name">GTLJ63LB</td><td class="num">1.91</td><td class="num">107</td><td class="num">1</td><td class="num">191</td><td class="num">1.82/11.3</td><td class="num">〜180</td><td class="num">¥33,200</td></tr>
+          <tr><td><span class="type-badge bait">ベイト</span></td><td class="model-name">GTLJ63MB</td><td class="num">1.91</td><td class="num">112</td><td class="num">1</td><td class="num">191</td><td class="num">1.9/11.7</td><td class="num">〜200</td><td class="num">¥34,500</td></tr>
+          <tr><td><span class="type-badge spin">スピニング</span></td><td class="model-name">GTLJ63ULS</td><td class="num">1.91</td><td class="num">110</td><td class="num">1</td><td class="num">191</td><td class="num">1.78/11.0</td><td class="num">〜160</td><td class="num">¥32,800</td></tr>
+          <tr><td><span class="type-badge spin">スピニング</span></td><td class="model-name">GTLJ63LS</td><td class="num">1.91</td><td class="num">112</td><td class="num">1</td><td class="num">191</td><td class="num">1.82/11.3</td><td class="num">〜180</td><td class="num">¥33,200</td></tr>
+          <tr><td><span class="type-badge spin">スピニング</span></td><td class="model-name">GTLJ63MS</td><td class="num">1.91</td><td class="num">121</td><td class="num">1</td><td class="num">191</td><td class="num">1.9/11.7</td><td class="num">〜200</td><td class="num">¥34,500</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
-<script>
-  var galIdx = 0, galTotal = 4;
-  var galSrcs = ['gtlj-rod.webp','gtlj-photo1.jpg','gtlj-photo2.jpg','gtlj-photo3.jpg'];
-  function galUpdate() {
-    document.getElementById('galleryTrack').style.transform = 'translateX(-' + (galIdx * 100) + '%)';
-    document.querySelectorAll('.gallery-thumb').forEach(function(t,i){ t.classList.toggle('active', i===galIdx); });
-  }
-  function galMove(d) { galIdx = (galIdx+d+galTotal)%galTotal; galUpdate(); }
-  function galTo(i) { galIdx = i; galUpdate(); }
-  document.querySelectorAll('.gallery-slide img').forEach(function(img, i) {
-    img.addEventListener('click', function(){ lbOpen(i); });
-  });
-  var lbIdx = 0;
-  function lbOpen(i) { lbIdx = i; document.getElementById('lbImg').src = galSrcs[i]; document.getElementById('lightbox').classList.add('open'); }
-  function lbClose() { document.getElementById('lightbox').classList.remove('open'); }
-  function lbMove(d) { lbIdx = (lbIdx+d+galTotal)%galTotal; document.getElementById('lbImg').src = galSrcs[lbIdx]; }
-  document.getElementById('lightbox').addEventListener('click', function(e){ if(e.target===this) lbClose(); });
-</script>
-
-<!-- FEATURES -->
-<div class="section" style="padding-top:3rem; padding-bottom:1.5rem;">
+<div class="section">
   <div class="section-label">Features</div>
-  <h2 class="section-title">3つの特長</h2>
+  <h2 class="section-title">GTLJの3つの特長</h2>
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon">🎣</div>
       <div class="feature-title">マルチバイアス設計</div>
       <div class="feature-desc">24t・30t混在弾性カーボンのマルチバイアス設計により、チューブラーでありながらソリッドのような粘りを実現。フルベンドによる滑らかなファイトが楽しめる。</div>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">🐟</div>
       <div class="feature-title">マルチターゲット対応</div>
       <div class="feature-desc">青物・真イカ・根魚など多彩なターゲットに対応。ライトジギングシーンを幅広くカバーする汎用性の高い設計で、一本で複数の釣りを楽しみたい方に。</div>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">⚙️</div>
       <div class="feature-title">ベイト / スピニング対応</div>
       <div class="feature-desc">ベイトモデル・スピニングモデルを用意。釣りスタイルやターゲットに合わせて選択可能。どちらも同じコンセプトのもと、粘りと操作性を両立している。</div>
     </div>
   </div>
 </div>
 
-<!-- ORDER -->
 <section class="od-section" id="order">
   <div class="od-inner">
     <div class="section-label">Order</div>
@@ -501,57 +349,19 @@
       <div class="od-step"><b>STEP 4</b><span>お支払い確認後、60〜70日前後でお届け</span></div>
     </div>
     <div class="od-grid">
-      <div class="od-card">
-        <div class="od-kind">ベイト</div>
-        <div class="od-name">GTLJ63ULB</div>
-        <div class="od-price">ベース価格（税抜）<b>¥32,800</b></div>
-        <a class="od-btn" href="order?model=GTLJ63ULB">詳細と購入方法を見る →</a>
-      </div>
-      <div class="od-card">
-        <div class="od-kind">ベイト</div>
-        <div class="od-name">GTLJ63LB</div>
-        <div class="od-price">ベース価格（税抜）<b>¥33,200</b></div>
-        <a class="od-btn" href="order?model=GTLJ63LB">詳細と購入方法を見る →</a>
-      </div>
-      <div class="od-card">
-        <div class="od-kind">ベイト</div>
-        <div class="od-name">GTLJ63MB</div>
-        <div class="od-price">ベース価格（税抜）<b>¥34,500</b></div>
-        <a class="od-btn" href="order?model=GTLJ63MB">詳細と購入方法を見る →</a>
-      </div>
-      <div class="od-card">
-        <div class="od-kind">スピニング</div>
-        <div class="od-name">GTLJ63ULS</div>
-        <div class="od-price">ベース価格（税抜）<b>¥32,800</b></div>
-        <a class="od-btn" href="order?model=GTLJ63ULS">詳細と購入方法を見る →</a>
-      </div>
-      <div class="od-card">
-        <div class="od-kind">スピニング</div>
-        <div class="od-name">GTLJ63LS</div>
-        <div class="od-price">ベース価格（税抜）<b>¥33,200</b></div>
-        <a class="od-btn" href="order?model=GTLJ63LS">詳細と購入方法を見る →</a>
-      </div>
-      <div class="od-card">
-        <div class="od-kind">スピニング</div>
-        <div class="od-name">GTLJ63MS</div>
-        <div class="od-price">ベース価格（税抜）<b>¥34,500</b></div>
-        <a class="od-btn" href="order?model=GTLJ63MS">詳細と購入方法を見る →</a>
-      </div>
+      <div class="od-card"><div class="od-kind">ベイト</div><div class="od-name">GTLJ63ULB</div><div class="od-price">ベース価格（税抜）<b>¥32,800</b></div><a class="od-btn" href="order?model=GTLJ63ULB">詳細と購入方法を見る →</a></div>
+      <div class="od-card"><div class="od-kind">ベイト</div><div class="od-name">GTLJ63LB</div><div class="od-price">ベース価格（税抜）<b>¥33,200</b></div><a class="od-btn" href="order?model=GTLJ63LB">詳細と購入方法を見る →</a></div>
+      <div class="od-card"><div class="od-kind">ベイト</div><div class="od-name">GTLJ63MB</div><div class="od-price">ベース価格（税抜）<b>¥34,500</b></div><a class="od-btn" href="order?model=GTLJ63MB">詳細と購入方法を見る →</a></div>
+      <div class="od-card"><div class="od-kind">スピニング</div><div class="od-name">GTLJ63ULS</div><div class="od-price">ベース価格（税抜）<b>¥32,800</b></div><a class="od-btn" href="order?model=GTLJ63ULS">詳細と購入方法を見る →</a></div>
+      <div class="od-card"><div class="od-kind">スピニング</div><div class="od-name">GTLJ63LS</div><div class="od-price">ベース価格（税抜）<b>¥33,200</b></div><a class="od-btn" href="order?model=GTLJ63LS">詳細と購入方法を見る →</a></div>
+      <div class="od-card"><div class="od-kind">スピニング</div><div class="od-name">GTLJ63MS</div><div class="od-price">ベース価格（税抜）<b>¥34,500</b></div><a class="od-btn" href="order?model=GTLJ63MS">詳細と購入方法を見る →</a></div>
     </div>
     <p class="od-note">※ 価格は税抜のベース価格です。ブランクス・ガイド・グリップなどのカスタムで変わります。合計金額はオーダーシートで確認できます。</p>
   </div>
 </section>
 
 <a class="order-fab" href="#order">オーダー・購入方法 →</a>
-<script>
-  (function () {
-    var fab = document.querySelector('.order-fab'), sec = document.getElementById('order');
-    if (!fab || !sec || !('IntersectionObserver' in window)) return;
-    new IntersectionObserver(function (e) { fab.style.opacity = e[0].isIntersecting ? '0' : '1'; fab.style.pointerEvents = e[0].isIntersecting ? 'none' : ''; }, { threshold: 0.05, rootMargin: "0px 0px -35% 0px" }).observe(sec);
-  })();
-</script>
 
-<!-- CTA -->
 <div class="cta-section">
   <div class="cta-inner">
     <div class="cta-text">
@@ -559,17 +369,15 @@
       <p>仕様・カラーカスタムなど、お気軽にご相談ください。</p>
     </div>
     <div class="btn-group">
-      <a href="order" class="btn btn-red">オーダーはこちら &#x2192;</a>
-      <a href="products" class="btn btn-ghost-light">商品一覧へ戻る</a>
+      <a href="order" class="btn btn-red">オーダーはこちら →</a>
+      <a href="contact" class="btn btn-ghost-light">お問い合わせ →</a>
     </div>
   </div>
 </div>
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo">
-      <img src="logo.png" alt="IG Rod Planning" style="height:40px;width:auto;" />
-    </div>
+    <div class="footer-logo"><img src="logo.png" alt="IG Rod Planning" style="height:40px;width:auto;" /></div>
     <ul class="footer-nav-list">
       <li class="footer-nav-item"><a href="products"><span class="footer-nav-en">PRODUCTS</span><span class="footer-nav-ja">製品一覧</span></a></li>
       <li class="footer-nav-item"><a href="services"><span class="footer-nav-en">SERVICES</span><span class="footer-nav-ja">サービス</span></a></li>
@@ -581,32 +389,53 @@
     <div class="footer-bottom">
       <span class="footer-copy">&copy; 2026 株式会社IG / IG Rod Planning. All rights reserved.</span>
       <div class="footer-social">
-        <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig2" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig2)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        </a>
-        <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
-        </a>
+        <a href="https://www.instagram.com/igrod_pl/" target="_blank" rel="noopener" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><defs><radialGradient id="ig2" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig2)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+        <a href="https://www.youtube.com/@igrod123" target="_blank" rel="noopener" aria-label="YouTube"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
       </div>
     </div>
   </div>
 </footer>
 
 <script>
-  var ham = document.querySelector('.hamburger');
-  var navMenu = document.querySelector('.nav-menu');
+  var ham = document.querySelector('.hamburger'), navMenu = document.querySelector('.nav-menu');
   if (ham && navMenu) {
-    ham.addEventListener('click', function() {
-      ham.classList.toggle('is-active');
-      navMenu.classList.toggle('is-open');
-    });
-    navMenu.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', function() {
-        ham.classList.remove('is-active');
-        navMenu.classList.remove('is-open');
-      });
-    });
+    ham.addEventListener('click', function() { ham.classList.toggle('is-active'); navMenu.classList.toggle('is-open'); });
+    navMenu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', function() { ham.classList.remove('is-active'); navMenu.classList.remove('is-open'); }); });
   }
+  (function() {
+    var slides = document.querySelectorAll('#seSlides .hero-slide');
+    var dotsWrap = document.getElementById('seDots');
+    var idx = 0, total = slides.length;
+    slides.forEach(function(_, i) {
+      var d = document.createElement('button');
+      d.className = 'hero-dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('data-i', i);
+      d.addEventListener('click', function() { go(i); });
+      dotsWrap.appendChild(d);
+    });
+    function go(n) {
+      idx = (n + total) % total;
+      document.getElementById('seSlides').style.transform = 'translateX(-' + idx * 100 + '%)';
+      dotsWrap.querySelectorAll('.hero-dot').forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+      document.querySelectorAll('.se-thumb').forEach(function(btn, i) { btn.classList.toggle('active', i === idx); });
+    }
+    document.getElementById('sePrev').addEventListener('click', function() { go(idx - 1); });
+    document.getElementById('seNext').addEventListener('click', function() { go(idx + 1); });
+    document.querySelectorAll('.se-thumb').forEach(function(btn) { btn.addEventListener('click', function() { go(parseInt(btn.getAttribute('data-idx'))); }); });
+    var lb = document.getElementById('seLightbox'), lbImg = document.getElementById('seLbImg');
+    document.getElementById('seSlides').addEventListener('click', function() {
+      var bg = slides[idx].style.backgroundImage.replace(/url\(["']?|["']?\)/g, '');
+      if (!bg) return;
+      lbImg.src = bg; lb.classList.add('open'); document.body.style.overflow = 'hidden';
+    });
+    document.getElementById('seLbClose').addEventListener('click', function(e) { e.stopPropagation(); lb.classList.remove('open'); document.body.style.overflow = ''; });
+    lb.addEventListener('click', function() { lb.classList.remove('open'); document.body.style.overflow = ''; });
+  })();
+  (function() {
+    var fab = document.querySelector('.order-fab'), sec = document.getElementById('order');
+    if (!fab || !sec || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function(e) { fab.style.opacity = e[0].isIntersecting ? '0' : '1'; fab.style.pointerEvents = e[0].isIntersecting ? 'none' : ''; }, { threshold: 0.05, rootMargin: "0px 0px -35% 0px" }).observe(sec);
+  })();
 </script>
 </body>
 </html>
