@@ -71,13 +71,13 @@
     .hamburger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     /* HERO SLIDER */
-    .hero { position: relative; width: 100%; margin-top: 80px; overflow: hidden; background: var(--black); }
+    .hero { position: relative; width: 100%; margin-top: 83px; overflow: hidden; background: var(--black); }
     .hero-slides { display: flex; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); }
     .hero-slide { min-width: 100%; aspect-ratio: 16/3.15; background-size: cover; background-position: center; }
     .hero-prev, .hero-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; z-index: 10; transition: background 0.2s; }
     .hero-prev:hover, .hero-next:hover { background: rgba(0,0,0,0.7); }
     .hero-prev { left: 1rem; }
-    .hero-next { right: 1rem; }
+    .hero-next { right: 1rem; z-index: 20; }
     .hero-dots { position: absolute; bottom: 0.7rem; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
     .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); cursor: pointer; border: none; transition: background 0.2s; }
     .hero-dot.active { background: #fff; }
@@ -285,6 +285,7 @@
 <section class="hero">
   <div class="hero-slides" id="seSlides">
     <div class="hero-slide" style="background-image:url(strixedge-banner-a.webp);"></div>
+    <div class="hero-slide" style="background-image:url(strixedge-banner-b.webp);"></div>
     <!-- 追加スライドはここに <div class="hero-slide" style="background-image:url(XXX.webp);"></div> -->
   </div>
   <button class="hero-prev" id="sePrev">&#8249;</button>
@@ -556,10 +557,6 @@
     var dotsWrap = document.getElementById('seDots');
     var idx = 0;
     var total = slides.length;
-    if (total <= 1) {
-      document.getElementById('sePrev').style.display = 'none';
-      document.getElementById('seNext').style.display = 'none';
-    }
     slides.forEach(function(_, i) {
       var d = document.createElement('button');
       d.className = 'hero-dot' + (i === 0 ? ' active' : '');
