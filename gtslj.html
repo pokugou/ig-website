@@ -73,6 +73,10 @@
     .hero-slides { display: flex; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); cursor: zoom-in; }
     .hero-slide { min-width: 100%; aspect-ratio: 16/4.16; background-size: cover; background-position: center; }
     @media (max-width: 768px) { .hero-slide { aspect-ratio: 16/7; } }
+    .hero-slide-vid { position: relative; overflow: hidden; cursor: default; background: #000; }
+    .hero-slide-vid video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .qn-card-vid { position: relative; }
+    .qn-card-vid::after { content: '▶'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.7); }
     .hero-prev, .hero-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; z-index: 10; transition: background 0.2s; }
     .hero-prev:hover, .hero-next:hover { background: rgba(0,0,0,0.7); }
     .hero-prev { left: 1rem; }
@@ -268,9 +272,12 @@
 
 <section class="hero">
   <div class="hero-slides" id="seSlides">
-    <div class="hero-slide" style="background-image:url(gtslj-banner-a.webp);"></div>
-    <div class="hero-slide" style="background-image:url(gtslj-photo-1.jpg); background-position: center;"></div>
-    <div class="hero-slide" style="background-image:url(gtslj-photo-2.jpg); background-position: center;"></div>
+    <div class="hero-slide" style="background-image:url(gtslj-banner-b.webp);"></div>
+    <div class="hero-slide hero-slide-vid">
+      <video id="sliderVideo" muted loop playsinline poster="gtslj-banner-b.webp">
+        <source src="gtslj-video-lq.mp4" type="video/mp4">
+      </video>
+    </div>
     <div class="hero-slide" style="background-image:url(gtslj-photo-3.jpg); background-position: center;"></div>
     <div class="hero-slide" style="background-image:url(gtslj-photo-4.jpg); background-position: center;"></div>
   </div>
@@ -287,18 +294,15 @@
 <section class="quick-nav">
   <div class="quick-nav-scroll" id="seThumbs">
     <button class="qn-card se-thumb active" data-idx="0">
-      <div class="qn-card-img"><img src="gtslj-banner-a.webp" alt="GTSLJ バナー" /></div>
+      <div class="qn-card-img"><img src="gtslj-banner-b.webp" alt="GTSLJ バナー" /></div>
     </button>
     <button class="qn-card se-thumb" data-idx="1">
-      <div class="qn-card-img"><img src="gtslj-photo-1.jpg" alt="GTSLJ 釣果1" loading="lazy" /></div>
+      <div class="qn-card-img qn-card-vid"><img src="gtslj-banner-b.webp" alt="GTSLJ 動画" loading="lazy" /></div>
     </button>
     <button class="qn-card se-thumb" data-idx="2">
-      <div class="qn-card-img"><img src="gtslj-photo-2.jpg" alt="GTSLJ 釣果2" loading="lazy" /></div>
-    </button>
-    <button class="qn-card se-thumb" data-idx="3">
       <div class="qn-card-img"><img src="gtslj-photo-3.jpg" alt="GTSLJ 釣果3" loading="lazy" /></div>
     </button>
-    <button class="qn-card se-thumb" data-idx="4">
+    <button class="qn-card se-thumb" data-idx="3">
       <div class="qn-card-img"><img src="gtslj-photo-4.jpg" alt="GTSLJ 釣果4" loading="lazy" /></div>
     </button>
   </div>
@@ -436,6 +440,8 @@
       document.getElementById('seSlides').style.transform = 'translateX(-' + idx * 100 + '%)';
       dotsWrap.querySelectorAll('.hero-dot').forEach(function(d, i) { d.classList.toggle('active', i === idx); });
       document.querySelectorAll('.se-thumb').forEach(function(btn, i) { btn.classList.toggle('active', i === idx); });
+      var vid = document.getElementById('sliderVideo');
+      if (vid) { if (idx === 1) { vid.play().catch(function(){}); } else { vid.pause(); } }
     }
     document.getElementById('sePrev').addEventListener('click', function() { go(idx - 1); });
     document.getElementById('seNext').addEventListener('click', function() { go(idx + 1); });
