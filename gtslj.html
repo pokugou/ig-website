@@ -75,6 +75,8 @@
     @media (max-width: 768px) { .hero-slide { aspect-ratio: 16/7; } }
     .hero-slide-vid { position: relative; overflow: hidden; cursor: default; background: #000; }
     .hero-slide-vid video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .hero-slide-yt { position: relative; overflow: hidden; cursor: default; background: #000; }
+    .hero-slide-yt iframe { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 100%; height: 177.78vw; border: none; pointer-events: none; }
     .qn-card-vid { position: relative; }
     .qn-card-vid::after { content: '▶'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.7); }
     .hero-prev, .hero-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; z-index: 10; transition: background 0.2s; }
@@ -273,6 +275,9 @@
 <section class="hero">
   <div class="hero-slides" id="seSlides">
     <div class="hero-slide" style="background-image:url(gtslj-banner-b.webp);"></div>
+    <div class="hero-slide hero-slide-yt">
+      <iframe src="https://www.youtube.com/embed/v5uWsi9ZHIA?autoplay=1&mute=1&loop=1&playlist=v5uWsi9ZHIA&controls=0&playsinline=1&rel=0" allow="autoplay; encrypted-media" frameborder="0"></iframe>
+    </div>
     <div class="hero-slide" style="background-image:url(gtslj-photo-3.jpg); background-size: 130%; background-position: center 30%;"></div>
     <div class="hero-slide" style="background-image:url(gtslj-photo-4.jpg); background-position: center;"></div>
   </div>
@@ -292,9 +297,12 @@
       <div class="qn-card-img"><img src="gtslj-banner-b.webp" alt="GTSLJ バナー" /></div>
     </button>
     <button class="qn-card se-thumb" data-idx="1">
-      <div class="qn-card-img"><img src="gtslj-photo-3.jpg" alt="GTSLJ 釣果3" loading="lazy" /></div>
+      <div class="qn-card-img qn-card-vid"><img src="https://img.youtube.com/vi/v5uWsi9ZHIA/maxresdefault.jpg" alt="GTSLJ 動画" loading="lazy" /></div>
     </button>
     <button class="qn-card se-thumb" data-idx="2">
+      <div class="qn-card-img"><img src="gtslj-photo-3.jpg" alt="GTSLJ 釣果3" loading="lazy" /></div>
+    </button>
+    <button class="qn-card se-thumb" data-idx="3">
       <div class="qn-card-img"><img src="gtslj-photo-4.jpg" alt="GTSLJ 釣果4" loading="lazy" /></div>
     </button>
   </div>
