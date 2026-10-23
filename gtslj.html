@@ -275,8 +275,12 @@
 <section class="hero">
   <div class="hero-slides" id="seSlides">
     <div class="hero-slide" style="background-image:url(gtslj-banner-b.webp);"></div>
-    <div class="hero-slide hero-slide-yt">
+    <div class="hero-slide hero-slide-yt" style="cursor:pointer;" onclick="window.open('https://youtube.com/shorts/v5uWsi9ZHIA','_blank')">
       <iframe id="ytSlide" src="https://www.youtube.com/embed/v5uWsi9ZHIA?autoplay=1&mute=1&loop=1&playlist=v5uWsi9ZHIA&controls=0&playsinline=1&rel=0&enablejsapi=1&origin=https://ig-rod.jp" allow="autoplay; encrypted-media" frameborder="0"></iframe>
+      <div style="position:absolute;bottom:0.6rem;right:0.8rem;background:rgba(0,0,0,0.55);border-radius:4px;padding:0.25rem 0.5rem;display:flex;align-items:center;gap:0.35rem;pointer-events:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+        <span style="color:#fff;font-size:0.65rem;font-weight:700;letter-spacing:0.04em;">フルで見る</span>
+      </div>
     </div>
     <div class="hero-slide" style="background-image:url(gtslj-photo-3.jpg); background-size: 130%; background-position: center 30%;"></div>
     <div class="hero-slide" style="background-image:url(gtslj-photo-4.jpg); background-position: center;"></div>
@@ -297,7 +301,7 @@
       <div class="qn-card-img"><img src="gtslj-banner-b.webp" alt="GTSLJ バナー" /></div>
     </button>
     <button class="qn-card se-thumb" data-idx="1">
-      <div class="qn-card-img qn-card-vid"><img src="https://img.youtube.com/vi/v5uWsi9ZHIA/maxresdefault.jpg" alt="GTSLJ 動画" loading="lazy" /></div>
+      <div class="qn-card-img qn-card-vid"><img src="https://img.youtube.com/vi/v5uWsi9ZHIA/maxresdefault.jpg" alt="GTSLJ 動画" loading="lazy" style="transform:scale(2.6); transform-origin:center;" /></div>
     </button>
     <button class="qn-card se-thumb" data-idx="2">
       <div class="qn-card-img"><img src="gtslj-photo-3.jpg" alt="GTSLJ 釣果3" loading="lazy" /></div>
