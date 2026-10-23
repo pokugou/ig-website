@@ -273,11 +273,6 @@
 <section class="hero">
   <div class="hero-slides" id="seSlides">
     <div class="hero-slide" style="background-image:url(gtslj-banner-b.webp);"></div>
-    <div class="hero-slide hero-slide-vid">
-      <video id="sliderVideo" muted loop playsinline poster="gtslj-banner-b.webp">
-        <source src="gtslj-video-lq.mp4" type="video/mp4">
-      </video>
-    </div>
     <div class="hero-slide" style="background-image:url(gtslj-photo-3.jpg); background-size: 130%; background-position: center 30%;"></div>
     <div class="hero-slide" style="background-image:url(gtslj-photo-4.jpg); background-position: center;"></div>
   </div>
@@ -297,12 +292,9 @@
       <div class="qn-card-img"><img src="gtslj-banner-b.webp" alt="GTSLJ バナー" /></div>
     </button>
     <button class="qn-card se-thumb" data-idx="1">
-      <div class="qn-card-img qn-card-vid"><img src="gtslj-banner-b.webp" alt="GTSLJ 動画" loading="lazy" /></div>
-    </button>
-    <button class="qn-card se-thumb" data-idx="2">
       <div class="qn-card-img"><img src="gtslj-photo-3.jpg" alt="GTSLJ 釣果3" loading="lazy" /></div>
     </button>
-    <button class="qn-card se-thumb" data-idx="3">
+    <button class="qn-card se-thumb" data-idx="2">
       <div class="qn-card-img"><img src="gtslj-photo-4.jpg" alt="GTSLJ 釣果4" loading="lazy" /></div>
     </button>
   </div>
@@ -440,8 +432,6 @@
       document.getElementById('seSlides').style.transform = 'translateX(-' + idx * 100 + '%)';
       dotsWrap.querySelectorAll('.hero-dot').forEach(function(d, i) { d.classList.toggle('active', i === idx); });
       document.querySelectorAll('.se-thumb').forEach(function(btn, i) { btn.classList.toggle('active', i === idx); });
-      var vid = document.getElementById('sliderVideo');
-      if (vid) { if (idx === 1) { vid.play().catch(function(){}); } else { vid.pause(); } }
     }
     document.getElementById('sePrev').addEventListener('click', function() { go(idx - 1); });
     document.getElementById('seNext').addEventListener('click', function() { go(idx + 1); });
