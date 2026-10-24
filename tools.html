@@ -33,6 +33,10 @@
 
   footer { margin-top: 2rem; font-size: 0.72rem; color: var(--sub); text-align: center; }
 
+  /* 最後のカード（ディープカバー）は、枚数が奇数でも右下に置く */
+  @media (min-width: 561px) {
+    .grid > .card:last-child:nth-child(odd) { grid-column: 2; }
+  }
   @media (max-width: 560px) {
     .grid { grid-template-columns: 1fr; }
   }
@@ -93,6 +97,13 @@
         <span class="icon">🗒️</span>
         <h2>自由記入ページ</h2>
         <p>見出し・文章・表・画像を好きな順に並べて書ける自由なメモ帳です。PDF保存と一覧にも対応。</p>
+        <span class="go">開く →</span>
+      </a>
+
+      <a class="card" href="warranty.html">
+        <span class="icon">📜</span>
+        <h2>保証書（B5）</h2>
+        <p>品名を入れて印刷できるB5の保証書。保存した品名から、まとめてPDFにもできます。</p>
         <span class="go">開く →</span>
       </a>
 

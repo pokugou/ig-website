@@ -140,7 +140,7 @@
 
     <p class="thanks">当商品をお買い上げいただき、誠にありがとうございます。</p>
     <p class="lead">※ 本書は修理の際に必要となりますので、大切に保管してください（再発行はいたしません）。<br>
-      ※ 保証期間はお買い上げ日より<input type="text" class="fld" id="f-years" value="1年間">、保証修理は保証期間中<input type="text" class="fld" id="f-times" value="1回">までとさせていただきます。</p>
+      ※ 保証期間はお買い上げ日より<input type="text" class="fld" id="f-years" value="2年間">、保証修理は保証期間中<input type="text" class="fld" id="f-times" value="1回">までとさせていただきます。</p>
 
     <div class="rules">
       <h2>保証規定</h2>
@@ -233,6 +233,7 @@
       if (raw) { localStorage.removeItem('warranty-reload'); data = JSON.parse(raw); isCopy = !!data.__copy; }
     } catch (e) {}
     if (!data) { try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {} }
+    if (data && data.years === '1年間') data.years = '2年間'; // 以前の初期値（1年間）は2年間に更新
     if (data) { if (isCopy) delete data.id; populate(data, isCopy); } else updateDateBlank();
   })();
 
@@ -240,7 +241,7 @@
     if (!confirm('新しい保証書を始めますか？今の入力内容は消えます（保存一覧の記録は消えません）。')) return;
     currentId = null;
     ['f-product', 'f-date', 'f-shop', 'c-kana', 'c-name', 'c-addr'].forEach(function (id) { $(id).value = ''; });
-    $('f-loss').value = '定価の75%'; $('f-years').value = '1年間'; $('f-times').value = '1回'; $('f-copy').selectedIndex = 0;
+    $('f-loss').value = '定価の75%'; $('f-years').value = '2年間'; $('f-times').value = '1回'; $('f-copy').selectedIndex = 0;
     document.body.classList.remove('editing'); updateDateBlank(); saveDraft();
   });
   $('btn-print').addEventListener('click', function () { window.print(); });
