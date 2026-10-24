@@ -75,16 +75,16 @@
   .cust td.addr input { padding-top: 4px; }
   .cust td.mid { text-align: center; letter-spacing: 0.4em; }
 
-  .seller { margin-top: auto; padding-top: 8px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; position: relative; }
-  .seller .who { display: flex; gap: 10px; align-items: center; }
-  .seller .who img.logo { width: 42px; height: 42px; display: block; }
-  .seller .tt { font-size: 10px; letter-spacing: 0.2em; color: var(--sub); }
-  .seller .co { font-size: 15px; font-weight: 900; letter-spacing: 0.05em; line-height: 1.3; }
-  .seller .co small { display: block; font-size: 9.5px; font-weight: 700; color: var(--sub); letter-spacing: 0.1em; }
-  .seller .addr { font-size: 10.5px; line-height: 1.65; margin-top: 2px; }
-  .seller .brand { font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: 0.05em; text-align: right; }
-  .seller .brand input { width: 5em; text-align: right; font-weight: 800; font-size: 26px; font-family: 'DM Sans', sans-serif; }
-  .seal { position: absolute; right: 90px; bottom: 2px; width: 62px; height: 62px; opacity: 0.85; pointer-events: none; display: none; }
+  .seller { margin-top: auto; padding-top: 8px; position: relative; }
+  .seller .bar { border-top: 1.5px solid var(--ink); padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+  .seller .who { display: flex; gap: 11px; align-items: center; }
+  .seller .who img.logo { width: 56px; height: 56px; display: block; }
+  .seller .tt { font-size: 10px; letter-spacing: 0.3em; color: var(--sub); margin-bottom: 1px; }
+  .seller .co { font-size: 17px; font-weight: 900; letter-spacing: 0.05em; line-height: 1.3; }
+  .seller .co small { display: block; font-size: 10px; font-weight: 700; color: var(--sub); letter-spacing: 0.12em; }
+  .seller .addr { font-size: 11.5px; line-height: 1.7; text-align: right; }
+  .seller .addr b { font-size: 11.5px; letter-spacing: 0.05em; }
+  .seal { position: absolute; right: 150px; bottom: 6px; width: 62px; height: 62px; opacity: 0.85; pointer-events: none; display: none; }
   .show-seal .seal { display: block; }
 
   @media screen and (max-width: 740px) {
@@ -175,17 +175,16 @@
     </table>
 
     <div class="seller">
-      <div>
-        <div class="tt">販売元</div>
+      <div class="bar">
         <div class="who">
-          <img class="logo" src="logo.png" alt="">
+          <img class="logo" src="logo.png" alt="IG Rod Planning">
           <div>
+            <div class="tt">販売元</div>
             <div class="co">株式会社IG<small>IG Rod Planning</small></div>
           </div>
         </div>
-        <div class="addr">〒188-0004　東京都西東京市西原町5-3-30-301<br>TEL 090-1798-5613</div>
+        <div class="addr">〒188-0004<br>東京都西東京市西原町5-3-30-301<br><b>TEL 090-1798-5613</b></div>
       </div>
-      <div class="brand"><input type="text" id="f-brand" value="GZ"></div>
       <img class="seal" src="seal.png" alt="">
     </div>
   </div>
@@ -203,7 +202,7 @@
   function $(id) { return document.getElementById(id); }
   function jpDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '年' + Number(p[1]) + '月' + Number(p[2]) + '日'; }
 
-  var FIELDS = { product: 'f-product', date: 'f-date', loss: 'f-loss', shop: 'f-shop', years: 'f-years', times: 'f-times', copy: 'f-copy', brand: 'f-brand', kana: 'c-kana', name: 'c-name', addr: 'c-addr' };
+  var FIELDS = { product: 'f-product', date: 'f-date', loss: 'f-loss', shop: 'f-shop', years: 'f-years', times: 'f-times', copy: 'f-copy', kana: 'c-kana', name: 'c-name', addr: 'c-addr' };
 
   function updateDateBlank() { $('date-blank').style.display = $('f-date').value ? 'none' : ''; }
   $('f-date').addEventListener('input', updateDateBlank);
@@ -241,7 +240,7 @@
     if (!confirm('新しい保証書を始めますか？今の入力内容は消えます（保存一覧の記録は消えません）。')) return;
     currentId = null;
     ['f-product', 'f-date', 'f-shop', 'c-kana', 'c-name', 'c-addr'].forEach(function (id) { $(id).value = ''; });
-    $('f-loss').value = '定価の75%'; $('f-years').value = '1年間'; $('f-times').value = '1回'; $('f-copy').selectedIndex = 0; $('f-brand').value = 'GZ';
+    $('f-loss').value = '定価の75%'; $('f-years').value = '1年間'; $('f-times').value = '1回'; $('f-copy').selectedIndex = 0;
     document.body.classList.remove('editing'); updateDateBlank(); saveDraft();
   });
   $('btn-print').addEventListener('click', function () { window.print(); });

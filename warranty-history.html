@@ -109,7 +109,7 @@
   }
   function matches(o) {
     if (!term) return true;
-    var hay = [o.product, o.shop, o.name, o.brand, o.copy].join(' ').toLowerCase();
+    var hay = [o.product, o.shop, o.name, o.copy].join(' ').toLowerCase();
     return hay.indexOf(term) !== -1;
   }
   function row(l, v) {
@@ -213,7 +213,7 @@
         render();
       });
       acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(pt); acts.appendChild(pdfBtn(o.id, 'print-toggle-btn')); acts.appendChild(del); d.appendChild(acts);
-      [['品名', o.product], ['用途', o.copy], ['お買上日', o.date ? fmtDate(o.date) : ''], ['免責額', o.loss], ['保証期間', o.years], ['修理回数', o.times], ['お買上店名', o.shop], ['お客様名', o.name], ['フリガナ', o.kana], ['ご住所', o.addr], ['ブランド', o.brand]]
+      [['品名', o.product], ['用途', o.copy], ['お買上日', o.date ? fmtDate(o.date) : ''], ['免責額', o.loss], ['保証期間', o.years], ['修理回数', o.times], ['お買上店名', o.shop], ['お客様名', o.name], ['フリガナ', o.kana], ['ご住所', o.addr]]
         .forEach(function (p) { if (p[1]) d.appendChild(row(p[0], p[1])); });
       card.appendChild(s); card.appendChild(d); list.appendChild(card);
     });
