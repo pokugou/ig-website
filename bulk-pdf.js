@@ -35,7 +35,7 @@
   }
 
   // opts: { btn, items, renderOne(item) -> Promise<canvas[]>  (or renderAll(items) -> Promise<canvas[]>),
-  //         name(items) -> string, storageKey, margin (mm, default 8) }
+  //         name(items) -> string, storageKey, margin (mm, default 8), format (jsPDF page format, default 'a4') }
   async function run(opts) {
     var items = opts.items;
     if (!items.length) return;
@@ -44,7 +44,7 @@
     var win = window.open('', '_blank');
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…件数が多いと時間がかかります</p>'); win.document.close(); } } catch (e) {}
     try {
-      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: opts.format || 'a4' });
       var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = opts.margin != null ? opts.margin : 8, first = true;
       function addCanvas(c) {
         var imgW = pageW - margin * 2, imgH = imgW * c.height / c.width;

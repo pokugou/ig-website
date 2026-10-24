@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>保証書（B5）| IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #999; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; --label: #f1f1ee; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 1.6rem 1rem 4rem; }
+
+  .toolbar { max-width: 688px; margin: 0 auto 0.8rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .toolbar .back { margin-right: auto; font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .toolbar .back:hover { color: var(--red); }
+  .toolbar .hist { font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; border: 1px solid var(--ink); padding: 0.6rem 1rem; background: #fff; }
+  .toolbar .hist:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
+  .options { max-width: 688px; margin: 0 auto 0.8rem; display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.78rem; color: var(--sub); align-items: center; }
+  .options label { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+  .editing-badge { display: none; max-width: 688px; margin: 0 auto 0.6rem; font-size: 0.76rem; font-weight: 700; color: var(--red); }
+  .editing .editing-badge { display: block; }
+  .hint { max-width: 688px; margin: 0 auto 0.9rem; font-size: 0.72rem; color: var(--sub); }
+
+  /* B5（182 × 257mm）= 688 × 971px */
+  .sheet { position: relative; width: 688px; max-width: 100%; aspect-ratio: 182 / 257; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 34px 40px 30px; display: flex; flex-direction: column; overflow: hidden; }
+  .sheet input, .sheet textarea, .sheet select { font-family: inherit; color: inherit; background: transparent; border: none; font-size: inherit; }
+  .sheet input:focus, .sheet textarea:focus, .sheet select:focus { outline: none; background: #fff8e0; }
+  .sheet ::placeholder { color: #c2c2c2; font-weight: 400; }
+
+  .head { position: relative; text-align: center; padding-bottom: 8px; border-bottom: 3px double var(--ink); }
+  .head h1 { font-family: 'Noto Serif JP', serif; font-size: 34px; font-weight: 900; letter-spacing: 0.7em; padding-left: 0.7em; line-height: 1.2; }
+  .head .en { font-family: 'DM Sans', 'Noto Sans JP', sans-serif; font-size: 9px; letter-spacing: 0.45em; color: var(--sub); margin-top: 2px; }
+  .copy-tag { position: absolute; right: 0; top: 4px; border: 1.5px solid var(--ink); padding: 1px 6px; font-size: 11px; font-weight: 700; }
+  .copy-tag select { font-weight: 700; font-size: 11px; cursor: pointer; -webkit-appearance: none; appearance: none; }
+
+  .info { width: 100%; border-collapse: collapse; margin-top: 12px; border: 2.5px solid var(--ink); }
+  .info td { border: 1.2px solid var(--ink); padding: 0; vertical-align: middle; }
+  .info td.lb { background: var(--label); width: 84px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 0.15em; padding: 4px 4px; }
+  .info td input.prod { width: 100%; font-family: 'DM Sans', 'Noto Sans JP', sans-serif; font-size: 25px; font-weight: 800; letter-spacing: 0.02em; text-align: center; padding: 8px 10px; }
+  .info .row2 td { height: 34px; font-size: 13px; }
+  .date-cell { display: flex; align-items: center; gap: 6px; padding: 0 10px; }
+  .date-cell input[type=date] { width: auto; font-size: 13px; }
+  .date-cell .blank { letter-spacing: 0.1em; white-space: nowrap; }
+  .date-cell { white-space: nowrap; }
+  .loss-cell { text-align: center; font-size: 13px; }
+  .loss-cell input { width: 7.6em; text-align: center; font-weight: 700; font-size: 13px; }
+  .shop-cell { height: 84px; vertical-align: top !important; }
+  .shop-cell .lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--sub); padding: 4px 8px 0; display: block; }
+  .shop-cell textarea { width: 100%; height: 56px; resize: none; padding: 2px 8px; font-size: 14px; line-height: 1.5; }
+  .shop-hint { position: absolute; right: 12px; bottom: 6px; font-size: 10px; color: #bbb; letter-spacing: 0.2em; }
+  .shop-wrap { position: relative; }
+
+  .thanks { text-align: center; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; margin: 13px 0 8px; }
+  .lead { font-size: 11.8px; line-height: 1.75; margin-bottom: 6px; }
+  .lead .fld { display: inline-block; width: 3.6em; text-align: center; font-weight: 900; border-bottom: 1px solid var(--ink); font-size: 13px; padding: 0; }
+
+  .rules h2 { font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 900; letter-spacing: 0.15em; border-left: 4px solid var(--ink); padding-left: 7px; margin: 7px 0 3px; }
+  .rules h3 { font-size: 12.2px; font-weight: 700; margin: 5px 0 1px; }
+  .rules ul { list-style: none; }
+  .rules li { font-size: 11.2px; line-height: 1.56; padding-left: 1.1em; text-indent: -1.1em; }
+  .rules li::before { content: '●'; font-size: 7.5px; margin-right: 0.4em; vertical-align: 1px; }
+  .rules .warn { font-size: 11.2px; font-weight: 700; margin: 1px 0 0 0; }
+  .rules p.note { font-size: 11.2px; line-height: 1.55; }
+
+  .cust { width: 100%; border-collapse: collapse; margin-top: 9px; border: 2.5px solid var(--ink); }
+  .cust td { border: 1.2px solid var(--ink); padding: 0; font-size: 11.5px; height: 24px; }
+  .cust td.lb { background: var(--label); text-align: center; width: 70px; letter-spacing: 0.1em; font-weight: 700; font-size: 11px; }
+  .cust td input { width: 100%; padding: 2px 6px; font-size: 12px; }
+  .cust td.addr { height: 46px; vertical-align: top; }
+  .cust td.addr input { padding-top: 4px; }
+  .cust td.mid { text-align: center; letter-spacing: 0.4em; }
+
+  .seller { margin-top: auto; padding-top: 8px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; position: relative; }
+  .seller .who { display: flex; gap: 10px; align-items: center; }
+  .seller .who img.logo { width: 42px; height: 42px; display: block; }
+  .seller .tt { font-size: 10px; letter-spacing: 0.2em; color: var(--sub); }
+  .seller .co { font-size: 15px; font-weight: 900; letter-spacing: 0.05em; line-height: 1.3; }
+  .seller .co small { display: block; font-size: 9.5px; font-weight: 700; color: var(--sub); letter-spacing: 0.1em; }
+  .seller .addr { font-size: 10.5px; line-height: 1.65; margin-top: 2px; }
+  .seller .brand { font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: 0.05em; text-align: right; }
+  .seller .brand input { width: 5em; text-align: right; font-weight: 800; font-size: 26px; font-family: 'DM Sans', sans-serif; }
+  .seal { position: absolute; right: 90px; bottom: 2px; width: 62px; height: 62px; opacity: 0.85; pointer-events: none; display: none; }
+  .show-seal .seal { display: block; }
+
+  @media screen and (max-width: 740px) {
+    body { padding: 1rem 0.4rem 3rem; }
+    .sheet { padding: 4.6vw 5.4vw 4vw; }
+    .sheet { font-size: 1.62vw; }
+  }
+  .pdf-capture .toolbar, .pdf-capture .options, .pdf-capture .editing-badge, .pdf-capture .hint { visibility: hidden; }
+  .pdf-capture .sheet { width: 688px; height: 971px; max-width: none; aspect-ratio: auto; border: none; padding: 34px 40px 30px; font-size: 16px; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .options, .editing-badge, .hint { display: none !important; }
+    .sheet { width: 182mm; height: 257mm; max-width: none; aspect-ratio: auto; border: none; margin: 0; padding: 9mm 10.5mm 8mm; }
+    @page { size: 182mm 257mm; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a class="back" href="tools.html">← ツール一覧</a>
+    <a class="hist" href="warranty-history.html">📋 保存一覧</a>
+    <button type="button" class="secondary" id="btn-reset">新規</button>
+    <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
+    <button type="button" id="btn-save">PDFとして保存</button>
+  </div>
+  <div class="options">
+    <label><input type="checkbox" id="opt-seal"> 販売元に社印を表示</label>
+    <span style="color:#999">用紙：B5（182×257mm）／ 品名を入れて、そのまま印刷できます</span>
+  </div>
+  <div class="editing-badge" id="editing-badge">✎ 保存済みの保証書を編集中（保存すると上書きされます）</div>
+
+  <div class="sheet" id="sheet">
+    <div class="head">
+      <h1>保証書</h1>
+      <div class="en">WARRANTY CERTIFICATE</div>
+      <div class="copy-tag"><select id="f-copy"><option>お客様保管用</option><option>販売店保管用</option><option>当社控</option></select></div>
+    </div>
+
+    <table class="info">
+      <colgroup><col style="width:84px"><col><col style="width:84px"><col style="width:200px"></colgroup>
+      <tr><td class="lb">品　名</td><td colspan="3"><input type="text" class="prod" id="f-product" placeholder="品名を入力（例：LIVE BAIT SP 188GS）"></td></tr>
+      <tr class="row2">
+        <td class="lb">お買上日</td>
+        <td class="date-cell"><input type="date" id="f-date"><span class="blank" id="date-blank">　　　年　　　月　　　日</span></td>
+        <td class="lb">免責額</td>
+        <td class="loss-cell"><input type="text" id="f-loss" value="定価の75%"></td>
+      </tr>
+      <tr><td class="lb" style="vertical-align:top;padding-top:8px">お買上<br>店　名</td><td colspan="3" class="shop-cell"><div class="shop-wrap"><textarea id="f-shop" placeholder=""></textarea><span class="shop-hint">店　印</span></div></td></tr>
+    </table>
+
+    <p class="thanks">当商品をお買い上げいただき、誠にありがとうございます。</p>
+    <p class="lead">※ 本書は修理の際に必要となりますので、大切に保管してください（再発行はいたしません）。<br>
+      ※ 保証期間はお買い上げ日より<input type="text" class="fld" id="f-years" value="1年間">、保証修理は保証期間中<input type="text" class="fld" id="f-times" value="1回">までとさせていただきます。</p>
+
+    <div class="rules">
+      <h2>保証規定</h2>
+      <h3>１．保証内容</h3>
+      <ul>
+        <li>本保証書に記載の品名に限り、保証いたします。</li>
+        <li>お客様の正常な使用状態で故障が発生した場合に限り有効です。</li>
+        <li>保証期間内に修理をご依頼の際は、本保証書に現品を添えて、お買い上げの販売店へお申し付けください。</li>
+      </ul>
+      <p class="warn">※ お買い上げ店の捺印（証明）・お買い上げ年月日がない場合は無効となります。</p>
+      <h3>２．保証の例外規定</h3>
+      <p class="note">保証期間内でも、次の場合は有償修理となります。</p>
+      <ul>
+        <li>保管・手入れの不備による破損。</li>
+        <li>使用・操作上の誤りによる破損等、耐久または使用基準を超えた使用。</li>
+        <li>使用・操作上の著しい誤りや、特に乱暴な扱い（落下や衝撃）。</li>
+        <li>当社以外で行われた改造・修理・分解。</li>
+        <li>経時変化による自然退色・脱色・はく離など。</li>
+        <li>製品の機構上、必然的に発生する現象。</li>
+      </ul>
+      <h3>３．保証の範囲</h3>
+      <ul>
+        <li>当製品の故障に起因する付随的な損害（釣行に要した費用、共用製品の損失など）については、保証いたしかねます。</li>
+      </ul>
+    </div>
+
+    <table class="cust">
+      <colgroup><col style="width:70px"><col><col style="width:70px"><col style="width:150px"><col style="width:56px"><col style="width:84px"></colgroup>
+      <tr><td class="lb">フリガナ</td><td><input type="text" id="c-kana"></td><td class="lb">生年月日</td><td class="mid">年　月　日</td><td class="lb">性別</td><td class="mid" style="letter-spacing:0.15em">男・女</td></tr>
+      <tr><td class="lb">お名前</td><td colspan="5"><input type="text" id="c-name"></td></tr>
+      <tr><td class="lb">ご住所</td><td colspan="5" class="addr"><input type="text" id="c-addr" placeholder="〒"></td></tr>
+    </table>
+
+    <div class="seller">
+      <div>
+        <div class="tt">販売元</div>
+        <div class="who">
+          <img class="logo" src="logo.png" alt="">
+          <div>
+            <div class="co">株式会社IG<small>IG Rod Planning</small></div>
+          </div>
+        </div>
+        <div class="addr">〒188-0004　東京都西東京市西原町5-3-30-301<br>TEL 090-1798-5613</div>
+      </div>
+      <div class="brand"><input type="text" id="f-brand" value="GZ"></div>
+      <img class="seal" src="seal.png" alt="">
+    </div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var STORE_KEY = 'warranty-draft';
+  var TAG = '__warranty';
+  var currentId = null;
+  var B5 = [182, 257];
+
+  function $(id) { return document.getElementById(id); }
+  function jpDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '年' + Number(p[1]) + '月' + Number(p[2]) + '日'; }
+
+  var FIELDS = { product: 'f-product', date: 'f-date', loss: 'f-loss', shop: 'f-shop', years: 'f-years', times: 'f-times', copy: 'f-copy', brand: 'f-brand', kana: 'c-kana', name: 'c-name', addr: 'c-addr' };
+
+  function updateDateBlank() { $('date-blank').style.display = $('f-date').value ? 'none' : ''; }
+  $('f-date').addEventListener('input', updateDateBlank);
+
+  function collect() {
+    var r = { id: currentId || null, savedAt: new Date().toISOString(), seal: $('opt-seal').checked };
+    Object.keys(FIELDS).forEach(function (k) { r[k] = $(FIELDS[k]).value; });
+    r[TAG] = true;
+    return r;
+  }
+  function populate(r, isCopy) {
+    currentId = isCopy ? null : (r.id || null);
+    Object.keys(FIELDS).forEach(function (k) { if (r[k] != null) $(FIELDS[k]).value = r[k]; });
+    $('opt-seal').checked = !!r.seal;
+    document.body.classList.toggle('show-seal', !!r.seal);
+    document.body.classList.toggle('editing', !!currentId);
+    updateDateBlank();
+  }
+  function saveDraft() { try { var d = collect(); d.id = currentId; localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch (e) {} }
+  document.addEventListener('input', saveDraft);
+  document.addEventListener('change', saveDraft);
+  $('opt-seal').addEventListener('change', function () { document.body.classList.toggle('show-seal', this.checked); saveDraft(); });
+
+  (function init() {
+    var data = null, isCopy = false;
+    try {
+      var raw = localStorage.getItem('warranty-reload');
+      if (raw) { localStorage.removeItem('warranty-reload'); data = JSON.parse(raw); isCopy = !!data.__copy; }
+    } catch (e) {}
+    if (!data) { try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {} }
+    if (data) { if (isCopy) delete data.id; populate(data, isCopy); } else updateDateBlank();
+  })();
+
+  $('btn-reset').addEventListener('click', function () {
+    if (!confirm('新しい保証書を始めますか？今の入力内容は消えます（保存一覧の記録は消えません）。')) return;
+    currentId = null;
+    ['f-product', 'f-date', 'f-shop', 'c-kana', 'c-name', 'c-addr'].forEach(function (id) { $(id).value = ''; });
+    $('f-loss').value = '定価の75%'; $('f-years').value = '1年間'; $('f-times').value = '1回'; $('f-copy').selectedIndex = 0; $('f-brand').value = 'GZ';
+    document.body.classList.remove('editing'); updateDateBlank(); saveDraft();
+  });
+  $('btn-print').addEventListener('click', function () { window.print(); });
+
+  async function saveToHistory(saveOnly) {
+    var r = collect();
+    if (!r.product.trim()) { if (saveOnly) alert('品名を入力してください。'); return false; }
+    if (!r.id) r.id = 'wr-' + Date.now();
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var idx = all.findIndex(function (x) { return x[TAG] && x.id === r.id; });
+      if (idx >= 0) all[idx] = r; else all.push(r);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      if (!put.ok) throw new Error('save failed');
+      currentId = r.id;
+      document.body.classList.add('editing');
+      saveDraft();
+      return true;
+    } catch (e) {
+      console.error(e);
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '保証書一覧への保存に失敗しました。');
+      return false;
+    }
+  }
+  wireSaveOnly($('btn-save-only'), function () { return saveToHistory(true); });
+
+  function swapFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet input[type="text"], .sheet input[type="date"], .sheet textarea, .sheet select').forEach(function (el) {
+      var text = el.value, cs = getComputedStyle(el);
+      if (el.type === 'date') {
+        if (!el.value) { var prevD = el.style.display; el.style.display = 'none'; swaps.push({ el: el, o: document.createElement('span'), prev: prevD }); return; }
+        text = jpDate(el.value);
+      }
+      var o = document.createElement('div');
+      o.textContent = text || ' ';
+      var inline = el.tagName === 'SELECT' || el.classList.contains('fld') || el.type === 'date';
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:1.45;white-space:' + (inline ? 'nowrap' : 'pre-wrap') + ';word-break:break-word;'
+        + (inline ? 'display:inline-block;' + (el.classList.contains('fld') ? 'width:' + cs.width + ';border-bottom:1px solid #111;' : 'width:auto;') : 'width:100%;')
+        + (el.tagName === 'TEXTAREA' ? 'height:' + cs.height + ';' : '');
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+
+  async function capture() {
+    document.body.classList.add('pdf-capture');
+    var swaps = swapFields();
+    try {
+      return await html2canvas($('sheet'), { scale: 3, backgroundColor: '#ffffff', windowWidth: 1000 });
+    } finally {
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+    }
+  }
+  window.captureForBulk = capture;
+
+  $('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    try {
+      var canvas = await capture();
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: B5 });
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, B5[0], B5[1]);
+      var name = '保証書_' + ($('f-product').value.trim().replace(/[\\/:*?"<>|]/g, '') || '無題') + '_B5.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
+      btn.textContent = '一覧に保存中…';
+      await saveToHistory(false);
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+</script>
+<script src="arrow-nav.js"></script>
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        if (t[0] !== t[1]) {
+          sessionStorage.setItem(k, '1');
+          fetch(p, { cache: 'reload' }).then(function () { location.reload(); });
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>
