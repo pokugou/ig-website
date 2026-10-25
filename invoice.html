@@ -229,8 +229,8 @@
           <img src="logo.png" alt="">
           <div class="co">株式会社IG<small>IG Rod Planning</small></div>
         </div>
-        <div>〒188-0004</div>
-        <div>東京都西東京市西原町5-3-30-301</div>
+        <div id="from-zip">〒107-0061</div>
+        <div id="from-addr">東京都港区北青山1-3-1<br>アールキューブ3階</div>
         <div>TEL 090-1798-5613</div>
         <div class="reg">登録番号 T4010401187852</div>
         <img class="seal" src="seal.png" alt="">
@@ -834,6 +834,8 @@
 
   /* ---------- 起動 ---------- */
   (function applyKind() {
+    // 発行元の住所は請求書だけ北青山。納品書は従来の住所のまま
+    if (KIND === 'delivery') { $('from-zip').textContent = '〒188-0004'; $('from-addr').textContent = '東京都西東京市西原町5-3-30-301'; }
     document.body.classList.toggle('is-delivery', KIND === 'delivery');
     document.title = DOC.title + ' | IG Rod Planning';
     $('title-text').textContent = DOC.title;
