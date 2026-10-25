@@ -35,7 +35,7 @@
   }
 
   // opts: { btn, items, renderOne(item) -> Promise<canvas[]>  (or renderAll(items) -> Promise<canvas[]>),
-  //         name(items) -> string, storageKey, margin (mm, default 8), format (jsPDF page format, default 'a4') }
+  //         name(items) -> string, storageKey, margin (mm, default 8), format (jsPDF page format, default 'a4'), autoOrient (landscape pages for wide pictures) }
   async function run(opts) {
     var items = opts.items;
     if (!items.length) return;
@@ -44,13 +44,17 @@
     var win = window.open('', '_blank');
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…件数が多いと時間がかかります</p>'); win.document.close(); } } catch (e) {}
     try {
-      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: opts.format || 'a4' });
-      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = opts.margin != null ? opts.margin : 8, first = true;
+      var pdf = null, margin = opts.margin != null ? opts.margin : 8, fmt = opts.format || 'a4';
+      // Creates the PDF on the first picture so it can start in landscape or portrait (opts.autoOrient);
+      // later pictures get a page in their own orientation.
       function addCanvas(c) {
+        var land = !!opts.autoOrient && c.width > c.height;
+        var orient = land ? 'landscape' : 'portrait';
+        if (!pdf) pdf = new window.jspdf.jsPDF({ unit: 'mm', format: fmt, orientation: orient });
+        else pdf.addPage(fmt, orient);
+        var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
         var imgW = pageW - margin * 2, imgH = imgW * c.height / c.width;
         if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * c.width / c.height; }
-        if (!first) pdf.addPage();
-        first = false;
         pdf.addImage(c.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       }
       if (opts.renderAll) {
@@ -62,6 +66,7 @@
           (await opts.renderOne(items[i])).forEach(addCanvas);
         }
       }
+      if (!pdf) throw new Error('出力するページがありません');
       var name = opts.name(items);
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);

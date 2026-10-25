@@ -16,7 +16,7 @@
   }
   body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 2rem 1rem 4rem; }
 
-  .top-links { max-width: 1100px; margin: 0 auto 0.6rem; display: flex; justify-content: flex-end; }
+  .top-links { max-width: 1100px; margin: 0 auto 0.6rem; display: flex; justify-content: flex-end; gap: 0.6rem; align-items: center; }
   .top-links a { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; padding: 0.55rem 1.1rem; border: 1px solid var(--ink); background: #fff; }
   .top-links a:hover { background: var(--red); border-color: var(--red); color: #fff; }
 
@@ -137,13 +137,16 @@
 <body>
 
   <div class="top-links">
-    <a href="tools.html">🛠 社内ツール一覧へ →</a>
+    <a href="rod-docs.html" style="margin-right:auto">← 書類の選択へ</a>
+    <a href="rod-docs-history.html?kind=assembly">📋 保存一覧</a>
   </div>
 
+  <div id="asm-editing" style="display:none;max-width:1100px;margin:0 auto 0.5rem;font-size:0.76rem;font-weight:700;color:#cc2200;">✎ 保存済みの組立図を編集中（保存すると上書きされます）</div>
   <div class="toolbar">
     <button type="button" id="btn-add">＋ シートを追加</button>
     <div class="toolbar-right">
       <button type="button" class="secondary" id="btn-reset">クリア</button>
+      <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
       <button type="button" class="secondary" id="btn-save">PDFとして保存</button>
       <button type="button" id="btn-print">印刷</button>
     </div>
@@ -275,6 +278,7 @@ Line(PE):~4 product by GZ JAPAN</textarea>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var sheetsEl = document.getElementById('sheets');
   var template = document.querySelector('.sheet');
@@ -390,6 +394,7 @@ Line(PE):~4 product by GZ JAPAN</textarea>
     clone.querySelectorAll('.f-total-len').forEach(function(el){ el.value = '1890'; });
     clone.querySelectorAll('.f-guide-pos').forEach(function(el){ el.value = ''; });
     clone.querySelectorAll('.sheet-no-input').forEach(function(el){ el.value = document.querySelectorAll('.sheet').length + 1; });
+    clone.dataset.rid = '';
     sheetsEl.appendChild(clone);
     bindSheet(clone);
     updateRemoveVisibility();
@@ -407,41 +412,162 @@ Line(PE):~4 product by GZ JAPAN</textarea>
   document.getElementById('btn-reset').addEventListener('click', function(){
     if (!confirm('入力内容をすべてクリアしますか？')) return;
     document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function(el){ el.value = ''; });
-    document.querySelectorAll('.sheet').forEach(function(sheet){ renderRodSvg(sheet); });
+    document.querySelectorAll('.sheet').forEach(function(sheet){ sheet.dataset.rid = ''; renderRodSvg(sheet); });
+    if (typeof updateEditing === 'function') updateEditing();
   });
 
-  document.getElementById('btn-save').addEventListener('click', async function(){
-    var btn = this;
-    var originalLabel = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = '作成中…';
-    document.body.classList.add('pdf-capture');
+  /* ---------- 保存一覧（共有）に保存 ---------- */
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var TAG = '__assembly';
+
+  function inputsOf(root) { return Array.prototype.map.call(root.querySelectorAll('input[type="text"]'), function (e) { return e.value; }); }
+
+  function collectSheet(sheet) {
+    var q = function (s) { return sheet.querySelector(s); };
+    var memoTa = sheet.querySelector('.diagram-col .memo-box textarea');
+    return {
+      id: sheet.dataset.rid || null,
+      sheetNo: q('.sheet-no-input').value,
+      brand: q('.f-brand').value, series: q('.f-series').value, model: q('.f-model').value, spec: q('.f-spec').value,
+      totalLen: q('.f-total-len').value, guidePos: q('.f-guide-pos').value,
+      notes: Array.prototype.map.call(sheet.querySelectorAll('.note-row input'), function (e) { return e.value; }),
+      memo: memoTa ? memoTa.value : '',
+      no: q('.f-no').value, rawLen: q('.f-raw-len').value, finLen: q('.f-fin-len').value,
+      parts: Array.prototype.map.call(sheet.querySelectorAll('.parts-table .pt-row:not(.pt-head)'), function (r) { return inputsOf(r); }),
+      remarks: q('.f-remarks').value,
+      summary: inputsOf(sheet.querySelector('.summary-grid'))
+    };
+  }
+
+  function populateSheet(sheet, d, isCopy) {
+    var q = function (s) { return sheet.querySelector(s); };
+    sheet.dataset.rid = isCopy ? '' : (d.id || '');
+    q('.sheet-no-input').value = d.sheetNo != null ? d.sheetNo : '1';
+    q('.f-brand').value = d.brand || ''; q('.f-series').value = d.series || ''; q('.f-model').value = d.model || ''; q('.f-spec').value = d.spec || '';
+    q('.f-total-len').value = d.totalLen || ''; q('.f-guide-pos').value = d.guidePos || '';
+    // 注記
+    var nl = sheet.querySelector('.notes-list'), proto = nl.querySelector('.note-row');
+    var notes = (d.notes && d.notes.length) ? d.notes : [''];
+    nl.innerHTML = '';
+    notes.forEach(function (v) { var r = proto.cloneNode(true); r.querySelector('input').value = v; bindNoteRow(r); nl.appendChild(r); });
+    var memoTa = sheet.querySelector('.diagram-col .memo-box textarea'); if (memoTa) memoTa.value = d.memo || '';
+    q('.f-no').value = d.no || ''; q('.f-raw-len').value = d.rawLen || ''; q('.f-fin-len').value = d.finLen || '';
+    // 部品表
+    var table = sheet.querySelector('.parts-table'), rows = table.querySelectorAll('.pt-row:not(.pt-head)'), pproto = rows[0];
+    rows.forEach(function (r) { r.remove(); });
+    var parts = (d.parts && d.parts.length) ? d.parts : [['', '', '', '']];
+    parts.forEach(function (vals) {
+      var r = pproto.cloneNode(true);
+      Array.prototype.forEach.call(r.querySelectorAll('input[type="text"]'), function (e, i) { e.value = vals[i] || ''; });
+      bindPartRow(r); table.appendChild(r);
+    });
+    renumberParts(sheet);
+    q('.f-remarks').value = d.remarks || '';
+    Array.prototype.forEach.call(sheet.querySelector('.summary-grid').querySelectorAll('input[type="text"]'), function (e, i) { e.value = (d.summary && d.summary[i]) || ''; });
+    renderRodSvg(sheet);
+  }
+
+  function updateEditing() {
+    var on = Array.prototype.some.call(document.querySelectorAll('.sheet'), function (s) { return s.dataset.rid; });
+    document.getElementById('asm-editing').style.display = on ? 'block' : 'none';
+  }
+
+  async function saveToHistory(saveOnly) {
+    var sheets = Array.prototype.slice.call(document.querySelectorAll('.sheet'));
+    var recs = sheets.map(function (s) { return { s: s, d: collectSheet(s) }; });
     try {
-      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
-      var pageW = pdf.internal.pageSize.getWidth();
-      var pageH = pdf.internal.pageSize.getHeight();
-      var margin = 8;
-      var sheetEls = document.querySelectorAll('.sheet');
-      for (var i = 0; i < sheetEls.length; i++) {
-        var canvas = await html2canvas(sheetEls[i], { scale: 2, backgroundColor: '#ffffff' });
-        var imgData = canvas.toDataURL('image/jpeg', 0.92);
-        var imgW = pageW - margin * 2;
-        var imgH = imgW * canvas.height / canvas.width;
-        if (imgH > pageH - margin * 2) {
-          imgH = pageH - margin * 2;
-          imgW = imgH * canvas.width / canvas.height;
-        }
-        if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
-      }
-      pdf.save('組立図_' + todayISO().replace(/-/g, '') + '.pdf');
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var stamp = Date.now();
+      recs.forEach(function (x, i) {
+        x.d.id = x.s.dataset.rid || ('asm-' + stamp + '-' + i);
+        x.d[TAG] = true; x.d.savedAt = new Date().toISOString();
+        var idx = all.findIndex(function (r) { return r[TAG] && r.id === x.d.id; });
+        if (idx >= 0) all[idx] = x.d; else all.push(x.d);
+      });
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      if (!put.ok) throw new Error('save failed');
+      recs.forEach(function (x) { x.s.dataset.rid = x.d.id; });
+      updateEditing();
+      return true;
     } catch (e) {
       console.error(e);
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '組立図の保存一覧への保存に失敗しました。');
+      return false;
+    }
+  }
+  wireSaveOnly(document.getElementById('btn-save-only'), function () { return saveToHistory(true); });
+
+  /* 一覧の「編集」「コピー」から開いたとき：1件を1枚目のシートに入れる */
+  (function loadFromList() {
+    try {
+      var raw = localStorage.getItem('assembly-reload');
+      if (!raw) return;
+      localStorage.removeItem('assembly-reload');
+      var d = JSON.parse(raw), isCopy = !!d.__copy;
+      var sheet = document.querySelector('.sheet');
+      populateSheet(sheet, d, isCopy);
+      updateEditing();
+    } catch (e) { console.error(e); }
+  })();
+
+  /* ---------- PDF（入力欄を文字に置き換えてから撮影） ---------- */
+  function swapFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet input[type="text"], .sheet textarea').forEach(function (el) {
+      var cs = getComputedStyle(el), o = document.createElement('div');
+      o.textContent = el.value || ' ';
+      var area = el.tagName === 'TEXTAREA';
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (area ? '1.5' : '1.35') + ';white-space:pre-wrap;word-break:break-word;width:' + cs.width + ';min-height:' + (area ? cs.height : '0') + ';';
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+  async function captureSheets() {
+    document.body.classList.add('pdf-capture');
+    var swaps = swapFields(), out = [];
+    try {
+      var els = document.querySelectorAll('.sheet');
+      for (var i = 0; i < els.length; i++) out.push(await html2canvas(els[i], { scale: 2, backgroundColor: '#ffffff', windowWidth: 1100 }));
+      return out;
+    } finally {
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+    }
+  }
+  window.captureForBulk = captureSheets;
+
+  document.getElementById('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    try {
+      var canvases = await captureSheets();
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
+      canvases.forEach(function (canvas, i) {
+        var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+        if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+        if (i > 0) pdf.addPage();
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      });
+      var first = (document.querySelector('.f-model').value || '').trim().replace(/[\\/:*?"<>|]/g, '') || '組立図';
+      var name = '組立図_' + first + '_' + todayISO().replace(/-/g, '') + '.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
+      btn.textContent = '一覧に保存中…';
+      await saveToHistory(false);
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
-      document.body.classList.remove('pdf-capture');
-      btn.disabled = false;
-      btn.textContent = originalLabel;
+      btn.disabled = false; btn.textContent = label;
     }
   });
 </script>
