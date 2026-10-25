@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>TODO | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#111111" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root { --ink: #111; --sub: #666; --line: #e0e0dc; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; --star: #f0a400; --ok: #1f8f46; --blue: #1a5fb4; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 0 0 6rem; }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  header { background: var(--ink); color: #fff; padding: calc(0.9rem + env(safe-area-inset-top)) 1rem 0.8rem; position: sticky; top: 0; z-index: 20; }
+  header .row { display: flex; align-items: baseline; gap: 0.8rem; max-width: 680px; margin: 0 auto; }
+  header h1 { font-size: 1.35rem; font-weight: 900; letter-spacing: 0.1em; }
+  header .stat { font-size: 0.74rem; color: #bbb; margin-right: auto; }
+  header a, header button.link { font-size: 0.74rem; font-weight: 700; color: #ddd; text-decoration: none; background: none; border: 1px solid #555; padding: 0.3rem 0.65rem; border-radius: 3px; font-family: inherit; cursor: pointer; }
+  header a:hover, header button.link:hover { background: #333; }
+
+  .add { background: var(--paper); border-bottom: 1px solid var(--line); padding: 0.8rem 1rem; }
+  .add form { display: flex; flex-direction: column; gap: 0.55rem; }
+  .add .line1 { display: flex; gap: 0.5rem; }
+  .add input[type=text] { flex: 1; min-width: 0; font-family: inherit; font-size: 1.02rem; padding: 0.7rem 0.8rem; border: 2px solid var(--ink); border-radius: 4px; background: #fff; }
+  .add input[type=text]:focus { outline: none; border-color: var(--red); }
+  .btn { font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.7rem 1.1rem; border: 2px solid var(--ink); background: var(--ink); color: #fff; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+  .btn:active { transform: scale(0.98); }
+  .btn.ghost { background: #fff; color: var(--ink); }
+  .btn.red { background: var(--red); border-color: var(--red); }
+  .add .line2 { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .star-btn { font-size: 1.3rem; line-height: 1; padding: 0.35rem 0.6rem; border: 2px solid var(--line); background: #fff; border-radius: 4px; cursor: pointer; color: #bbb; }
+  .star-btn.on { color: var(--star); border-color: var(--star); background: #fff8e0; }
+  .add input[type=date], .add input[type=time], .add select { font-family: inherit; font-size: 0.86rem; padding: 0.5rem 0.45rem; border: 2px solid var(--line); border-radius: 4px; background: #fff; max-width: 9.5rem; }
+  .quick { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+  .quick button { font-family: inherit; font-size: 0.74rem; font-weight: 700; padding: 0.35rem 0.6rem; border: 1px solid var(--line); background: #fafafa; border-radius: 40px; cursor: pointer; color: var(--sub); }
+  .quick button:hover { border-color: var(--ink); color: var(--ink); }
+
+  .filters { display: flex; gap: 0.4rem; padding: 0.65rem 1rem 0.2rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .chip { flex-shrink: 0; font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.9rem; border: 1px solid var(--line); background: #fff; border-radius: 40px; cursor: pointer; color: var(--sub); }
+  .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip .n { font-size: 0.68rem; opacity: 0.75; margin-left: 0.25rem; }
+  .tags { padding: 0.2rem 1rem 0.4rem; }
+  .tags .chip { font-size: 0.72rem; padding: 0.3rem 0.7rem; }
+
+  .group { margin: 0.9rem 1rem 0; }
+  .group h2 { font-size: 0.72rem; font-weight: 900; letter-spacing: 0.12em; color: var(--sub); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+  .group h2.over { color: var(--red); }
+  .group h2.today { color: var(--blue); }
+  .group h2 button { margin-left: auto; font-family: inherit; font-size: 0.7rem; font-weight: 700; background: none; border: none; color: var(--sub); cursor: pointer; text-decoration: underline; }
+  .item { display: flex; align-items: flex-start; gap: 0.7rem; background: var(--paper); border: 1px solid var(--line); border-left: 4px solid transparent; padding: 0.8rem 0.8rem 0.8rem 0.7rem; margin-bottom: 0.45rem; border-radius: 4px; }
+  .item.star { border-left-color: var(--star); }
+  .item.over { border-left-color: var(--red); }
+  .item.done { opacity: 0.55; }
+  .item.done .txt { text-decoration: line-through; }
+  .chk { appearance: none; -webkit-appearance: none; width: 26px; height: 26px; border: 2px solid #999; border-radius: 50%; background: #fff; flex-shrink: 0; margin-top: 1px; cursor: pointer; position: relative; }
+  .chk:checked { background: var(--ok); border-color: var(--ok); }
+  .chk:checked::after { content: '✓'; position: absolute; inset: 0; color: #fff; font-size: 15px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+  .body { flex: 1; min-width: 0; cursor: pointer; }
+  .txt { font-size: 1rem; font-weight: 500; word-break: break-word; }
+  .meta { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.3rem; align-items: center; }
+  .badge { font-size: 0.68rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 40px; background: #eee; color: var(--sub); white-space: nowrap; }
+  .badge.due { background: #e8f0fb; color: var(--blue); }
+  .badge.over { background: #fde8e4; color: var(--red); }
+  .badge.today { background: var(--blue); color: #fff; }
+  .badge.tag { background: #f1ecdf; color: #7a5b00; }
+  .badge.note { background: #f4f4f4; }
+  .note-line { font-size: 0.78rem; color: var(--sub); margin-top: 0.2rem; white-space: pre-wrap; word-break: break-word; }
+  .starbtn { font-size: 1.35rem; line-height: 1; background: none; border: none; cursor: pointer; color: #ccc; padding: 0.1rem 0.2rem; flex-shrink: 0; }
+  .starbtn.on { color: var(--star); }
+  .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.9rem; }
+
+  .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
+  .sheet-bg.open { display: flex; }
+  .sheet { background: #fff; width: 100%; max-width: 680px; max-height: 92vh; overflow-y: auto; border-radius: 14px 14px 0 0; padding: 1rem 1rem calc(1.2rem + env(safe-area-inset-bottom)); }
+  .sheet h3 { font-size: 0.8rem; letter-spacing: 0.12em; color: var(--sub); margin-bottom: 0.7rem; display: flex; justify-content: space-between; align-items: center; }
+  .sheet h3 button { font-size: 1.4rem; background: none; border: none; cursor: pointer; color: var(--sub); }
+  .sheet label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--sub); margin: 0.7rem 0 0.2rem; letter-spacing: 0.06em; }
+  .sheet input[type=text], .sheet textarea, .sheet input[type=date], .sheet input[type=time], .sheet select { width: 100%; font-family: inherit; font-size: 1rem; padding: 0.6rem 0.7rem; border: 2px solid var(--line); border-radius: 4px; background: #fff; }
+  .sheet textarea { min-height: 4.2rem; resize: vertical; }
+  .sheet input:focus, .sheet textarea:focus, .sheet select:focus { outline: none; border-color: var(--red); }
+  .sheet .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .sheet .acts { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .sheet .acts .btn { flex: 1; min-width: 6.5rem; }
+  .cal-box { margin-top: 1rem; padding: 0.8rem; background: #f7f7f4; border: 1px dashed #bbb; border-radius: 4px; }
+  .cal-box p { font-size: 0.72rem; color: var(--sub); margin-top: 0.4rem; line-height: 1.6; }
+  .toast { position: fixed; left: 50%; bottom: calc(1.2rem + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #111; color: #fff; padding: 0.6rem 1.1rem; border-radius: 40px; font-size: 0.82rem; font-weight: 700; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .toast.show { opacity: 1; }
+  .sync { font-size: 0.66rem; color: #888; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="row">
+    <h1>TODO</h1>
+    <span class="stat" id="stat"></span>
+    <button type="button" class="link" id="btn-notify">🔔 通知</button>
+    <a href="tools.html">ツール一覧</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="add">
+    <form id="add-form" autocomplete="off">
+      <div class="line1">
+        <input type="text" id="new-text" placeholder="やることを入力して追加" enterkeyhint="done">
+        <button type="submit" class="btn">追加</button>
+      </div>
+      <div class="line2">
+        <button type="button" class="star-btn" id="new-star" title="大事なものにする">★</button>
+        <input type="date" id="new-due" title="期限">
+        <input type="time" id="new-time" title="時刻（任意）">
+        <select id="new-tag" title="種類"></select>
+      </div>
+      <div class="quick">
+        <button type="button" data-q="0">今日</button>
+        <button type="button" data-q="1">明日</button>
+        <button type="button" data-q="2">明後日</button>
+        <button type="button" data-q="7">1週間後</button>
+        <button type="button" data-q="x">期限なし</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="filters" id="filters"></div>
+  <div class="filters tags" id="tag-filters"></div>
+  <div id="list"></div>
+  <p class="sync" id="sync" style="text-align:center;margin-top:1.4rem"></p>
+</div>
+
+<div class="sheet-bg" id="sheet-bg">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <h3><span>編集</span><button type="button" id="ed-close" aria-label="閉じる">×</button></h3>
+    <label>やること</label>
+    <input type="text" id="ed-text">
+    <label>メモ</label>
+    <textarea id="ed-note" placeholder="詳細・電話番号・メモなど"></textarea>
+    <div class="two">
+      <div><label>期限</label><input type="date" id="ed-due"></div>
+      <div><label>時刻（任意）</label><input type="time" id="ed-time"></div>
+    </div>
+    <div class="two">
+      <div><label>種類</label><select id="ed-tag"></select></div>
+      <div><label>大事</label><select id="ed-star"><option value="0">ふつう</option><option value="1">★ 大事</option></select></div>
+    </div>
+    <div class="cal-box">
+      <label style="margin-top:0">カレンダーに入れて通知する（通知のタイミング）</label>
+      <div class="two">
+        <select id="ed-alarm">
+          <option value="0">時刻ちょうど</option>
+          <option value="10">10分前</option>
+          <option value="60" selected>1時間前</option>
+          <option value="1440">1日前</option>
+        </select>
+        <button type="button" class="btn ghost" id="ed-cal">📅 カレンダーに追加</button>
+      </div>
+      <p>押すと、iPhoneの「カレンダー」（またはGoogleカレンダー）に予定が入ります。通知は、カレンダーのアプリが出します。期限を入れてから押してください。</p>
+    </div>
+    <div class="acts">
+      <button type="button" class="btn ghost" id="ed-del" style="color:#cc2200;border-color:#cc2200">削除</button>
+      <button type="button" class="btn red" id="ed-save">保存</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var LS_KEY = 'todo-items-v1';
+  var REC_ID = 'todo-main';
+  var TAGS = ['発送', '製作', '発注', '連絡', '経理', 'その他'];
+  var items = [];
+  var filter = 'open';   // open / today / over / star / done / all
+  var tagFilter = '';
+  var editingId = null;
+  var newStar = false;
+
+  function $(id) { return document.getElementById(id); }
+  function uid() { return 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function todayIso() { return iso(new Date()); }
+  function plus(n) { var d = new Date(); d.setDate(d.getDate() + n); return iso(d); }
+  function toast(m) { var t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('show'); }, 1800); }
+  function esc(s) { return String(s == null ? '' : s); }
+  function dayLabel(d) {
+    var p = d.split('-'), dt = new Date(+p[0], +p[1] - 1, +p[2]), w = '日月火水木金土'[dt.getDay()];
+    return (+p[1]) + '/' + (+p[2]) + '(' + w + ')';
+  }
+
+  /* ---------- 保存（この端末 → 共有） ---------- */
+  function loadLocal() { try { items = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch (e) { items = []; } }
+  function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(items)); } catch (e) {} }
+  function live() { return items.filter(function (i) { return !i.deleted; }); }
+  var syncTimer = null;
+  function touch(it) { it.updatedAt = Date.now(); }
+  function changed() { saveLocal(); render(); clearTimeout(syncTimer); syncTimer = setTimeout(sync, 900); }
+
+  function merge(a, b) {
+    var m = {};
+    [a, b].forEach(function (list) { list.forEach(function (it) { var c = m[it.id]; if (!c || (it.updatedAt || 0) > (c.updatedAt || 0)) m[it.id] = it; }); });
+    var cut = Date.now() - 30 * 864e5;
+    return Object.keys(m).map(function (k) { return m[k]; }).filter(function (it) { return !(it.deleted && (it.updatedAt || 0) < cut); });
+  }
+  function same(a, b) { return JSON.stringify(a.slice().sort(function (x, y) { return x.id < y.id ? -1 : 1; })) === JSON.stringify(b.slice().sort(function (x, y) { return x.id < y.id ? -1 : 1; })); }
+
+  var syncing = false, again = false;
+  var NOSYNC = /[?&]nosync=1/.test(location.search); // テスト用：共有への同期をしない
+  async function sync() {
+    if (NOSYNC) return;
+    if (syncing) { again = true; return; }
+    syncing = true;
+    $('sync').textContent = '同期中…';
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load');
+      var all = await res.json();
+      var idx = all.findIndex(function (r) { return r.__todo && r.id === REC_ID; });
+      var remote = idx >= 0 ? (all[idx].items || []) : [];
+      var merged = merge(items, remote);
+      var needPush = idx < 0 || !same(merged, remote);
+      items = merged; saveLocal(); render();
+      if (needPush) {
+        var rec = { id: REC_ID, __todo: true, savedAt: new Date().toISOString(), items: merged };
+        var put;
+        if (idx < 0) put = await fetch(SYNC_API + '/paint', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify([rec]) });
+        else { all[idx] = rec; put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) }); }
+        if (!put.ok) throw new Error('save');
+      }
+      $('sync').textContent = '同期済み ' + new Date().toTimeString().slice(0, 5) + '（どの端末でも同じリストが見られます）';
+    } catch (e) {
+      console.error(e);
+      $('sync').textContent = '同期できませんでした（この端末には保存されています。通信が戻ると自動で再同期します）';
+    } finally {
+      syncing = false;
+      if (again) { again = false; sync(); }
+    }
+  }
+
+  /* ---------- 画面 ---------- */
+  function fillTagSelect(sel, val) {
+    var tags = TAGS.slice();
+    live().forEach(function (i) { if (i.tag && tags.indexOf(i.tag) === -1) tags.push(i.tag); });
+    sel.innerHTML = '<option value="">種類なし</option>' + tags.map(function (t) { return '<option>' + t + '</option>'; }).join('');
+    sel.value = val || '';
+  }
+
+  function isOver(i) { return !i.done && i.due && i.due < todayIso(); }
+  function isToday(i) { return !i.done && i.due === todayIso(); }
+  function sortFn(a, b) {
+    if (!!b.star - !!a.star) return !!b.star - !!a.star;
+    var ad = a.due ? a.due + (a.time || '') : '9999', bd = b.due ? b.due + (b.time || '') : '9999';
+    if (ad !== bd) return ad < bd ? -1 : 1;
+    return (a.createdAt || 0) - (b.createdAt || 0);
+  }
+
+  function render() {
+    var all = live();
+    var open = all.filter(function (i) { return !i.done; });
+    var counts = { open: open.length, today: all.filter(isToday).length, over: all.filter(isOver).length, star: open.filter(function (i) { return i.star; }).length, done: all.filter(function (i) { return i.done; }).length, all: all.length };
+    var names = [['open', '未完了'], ['today', '今日'], ['over', '期限切れ'], ['star', '★大事'], ['done', '完了'], ['all', 'すべて']];
+    $('filters').innerHTML = '';
+    names.forEach(function (n) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (filter === n[0] ? ' on' : '');
+      b.innerHTML = n[1] + '<span class="n">' + counts[n[0]] + '</span>';
+      b.addEventListener('click', function () { filter = n[0]; render(); });
+      $('filters').appendChild(b);
+    });
+    var tagSet = [];
+    all.forEach(function (i) { if (i.tag && tagSet.indexOf(i.tag) === -1) tagSet.push(i.tag); });
+    $('tag-filters').innerHTML = '';
+    $('tag-filters').style.display = tagSet.length ? '' : 'none';
+    if (tagFilter && tagSet.indexOf(tagFilter) === -1) tagFilter = '';
+    tagSet.forEach(function (t) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (tagFilter === t ? ' on' : ''); b.textContent = '#' + t;
+      b.addEventListener('click', function () { tagFilter = tagFilter === t ? '' : t; render(); });
+      $('tag-filters').appendChild(b);
+    });
+    $('stat').textContent = counts.today ? '今日 ' + counts.today + '件' + (counts.over ? '／期限切れ ' + counts.over + '件' : '') : (counts.over ? '期限切れ ' + counts.over + '件' : '未完了 ' + counts.open + '件');
+
+    var shown = all.filter(function (i) {
+      if (tagFilter && i.tag !== tagFilter) return false;
+      if (filter === 'open') return !i.done;
+      if (filter === 'today') return isToday(i);
+      if (filter === 'over') return isOver(i);
+      if (filter === 'star') return !i.done && i.star;
+      if (filter === 'done') return i.done;
+      return true;
+    });
+    var list = $('list'); list.innerHTML = '';
+    if (!shown.length) { var e = document.createElement('div'); e.className = 'empty'; e.textContent = filter === 'done' ? '完了したものはまだありません' : (filter === 'open' ? 'やることはありません。上の欄から追加できます' : '該当するものはありません'); list.appendChild(e); return; }
+
+    var groups = [];
+    if (filter === 'done') {
+      groups.push({ title: '完了', cls: '', rows: shown.sort(function (a, b) { return (b.doneAt || 0) - (a.doneAt || 0); }), clear: true });
+    } else {
+      var t = todayIso(), pend = shown.filter(function (i) { return !i.done; }).sort(sortFn), dn = shown.filter(function (i) { return i.done; });
+      var over = pend.filter(function (i) { return i.due && i.due < t; }), today = pend.filter(function (i) { return i.due === t; });
+      var later = pend.filter(function (i) { return i.due && i.due > t; }), none = pend.filter(function (i) { return !i.due; });
+      if (over.length) groups.push({ title: '期限切れ', cls: 'over', rows: over });
+      if (today.length) groups.push({ title: '今日', cls: 'today', rows: today });
+      if (later.length) groups.push({ title: 'これから', cls: '', rows: later });
+      if (none.length) groups.push({ title: '期限なし', cls: '', rows: none });
+      if (dn.length) groups.push({ title: '完了', cls: '', rows: dn.sort(function (a, b) { return (b.doneAt || 0) - (a.doneAt || 0); }), clear: true });
+    }
+    groups.forEach(function (g) {
+      var box = document.createElement('div'); box.className = 'group';
+      var h = document.createElement('h2'); h.className = g.cls; h.textContent = g.title + '（' + g.rows.length + '）';
+      if (g.clear) {
+        var cb = document.createElement('button'); cb.type = 'button'; cb.textContent = '完了をまとめて消す';
+        cb.addEventListener('click', function () { if (!confirm('完了した ' + g.rows.length + ' 件を消しますか？')) return; g.rows.forEach(function (i) { i.deleted = true; touch(i); }); changed(); });
+        h.appendChild(cb);
+      }
+      box.appendChild(h);
+      g.rows.forEach(function (i) { box.appendChild(rowEl(i)); });
+      list.appendChild(box);
+    });
+  }
+
+  function rowEl(i) {
+    var d = document.createElement('div');
+    d.className = 'item' + (i.star ? ' star' : '') + (isOver(i) ? ' over' : '') + (i.done ? ' done' : '');
+    var c = document.createElement('input'); c.type = 'checkbox'; c.className = 'chk'; c.checked = !!i.done;
+    c.addEventListener('change', function () { i.done = c.checked; i.doneAt = c.checked ? Date.now() : 0; touch(i); changed(); });
+    var b = document.createElement('div'); b.className = 'body';
+    var t = document.createElement('div'); t.className = 'txt'; t.textContent = esc(i.text); b.appendChild(t);
+    var meta = document.createElement('div'); meta.className = 'meta';
+    if (i.due) { var s = document.createElement('span'); s.className = 'badge ' + (isOver(i) ? 'over' : isToday(i) ? 'today' : 'due'); s.textContent = (isToday(i) ? '今日' : dayLabel(i.due)) + (i.time ? ' ' + i.time : ''); meta.appendChild(s); }
+    if (i.tag) { var g = document.createElement('span'); g.className = 'badge tag'; g.textContent = i.tag; meta.appendChild(g); }
+    if (meta.children.length) b.appendChild(meta);
+    if (i.note) { var n = document.createElement('div'); n.className = 'note-line'; n.textContent = i.note; b.appendChild(n); }
+    b.addEventListener('click', function () { openEdit(i.id); });
+    var st = document.createElement('button'); st.type = 'button'; st.className = 'starbtn' + (i.star ? ' on' : ''); st.textContent = '★'; st.title = '大事';
+    st.addEventListener('click', function (e) { e.stopPropagation(); i.star = !i.star; touch(i); changed(); });
+    d.appendChild(c); d.appendChild(b); d.appendChild(st);
+    return d;
+  }
+
+  /* ---------- 追加 ---------- */
+  $('new-star').addEventListener('click', function () { newStar = !newStar; this.classList.toggle('on', newStar); });
+  document.querySelectorAll('.quick button').forEach(function (b) {
+    b.addEventListener('click', function () { $('new-due').value = b.dataset.q === 'x' ? '' : plus(+b.dataset.q); });
+  });
+  $('add-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = $('new-text').value.trim();
+    if (!text) { $('new-text').focus(); return; }
+    var it = { id: uid(), text: text, done: false, star: newStar, due: $('new-due').value || '', time: $('new-due').value ? $('new-time').value : '', tag: $('new-tag').value, note: '', createdAt: Date.now() };
+    touch(it); items.push(it);
+    $('new-text').value = ''; $('new-due').value = ''; $('new-time').value = ''; newStar = false; $('new-star').classList.remove('on');
+    changed(); $('new-text').focus();
+    toast('追加しました');
+  });
+
+  /* ---------- 編集 ---------- */
+  function openEdit(id) {
+    var i = items.find(function (x) { return x.id === id; }); if (!i) return;
+    editingId = id;
+    $('ed-text').value = i.text; $('ed-note').value = i.note || ''; $('ed-due').value = i.due || ''; $('ed-time').value = i.time || '';
+    fillTagSelect($('ed-tag'), i.tag); $('ed-star').value = i.star ? '1' : '0';
+    $('sheet-bg').classList.add('open');
+  }
+  function closeEdit() { $('sheet-bg').classList.remove('open'); editingId = null; }
+  function applyEdit() {
+    var i = items.find(function (x) { return x.id === editingId; }); if (!i) return null;
+    var t = $('ed-text').value.trim(); if (t) i.text = t;
+    i.note = $('ed-note').value.trim(); i.due = $('ed-due').value; i.time = i.due ? $('ed-time').value : ''; i.tag = $('ed-tag').value; i.star = $('ed-star').value === '1';
+    touch(i); return i;
+  }
+  $('ed-close').addEventListener('click', closeEdit);
+  $('sheet-bg').addEventListener('click', function (e) { if (e.target === this) closeEdit(); });
+  $('ed-save').addEventListener('click', function () { applyEdit(); closeEdit(); changed(); });
+  $('ed-del').addEventListener('click', function () {
+    var i = items.find(function (x) { return x.id === editingId; }); if (!i) return;
+    if (!confirm('「' + i.text + '」を削除しますか？')) return;
+    i.deleted = true; touch(i); closeEdit(); changed();
+  });
+
+  /* ---------- カレンダーに追加（通知つき） ---------- */
+  function icsEsc(s) { return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n'); }
+  function stamp(d) { return d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, '0') + String(d.getUTCDate()).padStart(2, '0') + 'T' + String(d.getUTCHours()).padStart(2, '0') + String(d.getUTCMinutes()).padStart(2, '0') + '00Z'; }
+  function buildIcs(i, alarmMin) {
+    var L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//IG Rod Planning//TODO//JA', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT', 'UID:' + i.id + '@ig-rod-todo', 'DTSTAMP:' + stamp(new Date()), 'SUMMARY:' + icsEsc((i.star ? '★' : '') + i.text)];
+    if (i.note) L.push('DESCRIPTION:' + icsEsc(i.note));
+    if (i.time) {
+      var p = i.due.split('-'), t = i.time.split(':'), s = new Date(+p[0], +p[1] - 1, +p[2], +t[0], +t[1]), e = new Date(s.getTime() + 30 * 60000);
+      L.push('DTSTART:' + stamp(s), 'DTEND:' + stamp(e));
+      L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEsc(i.text), 'TRIGGER:-PT' + alarmMin + 'M', 'END:VALARM');
+    } else {
+      var q = i.due.split('-'), ds = q.join(''), nx = new Date(+q[0], +q[1] - 1, +q[2] + 1), de = iso(nx).replace(/-/g, '');
+      L.push('DTSTART;VALUE=DATE:' + ds, 'DTEND;VALUE=DATE:' + de);
+      // 終日の予定：当日の朝9時（「1日前」を選ぶと前日の朝9時）に通知
+      L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEsc(i.text), 'TRIGGER;RELATED=START:' + (alarmMin >= 1440 ? '-PT15H' : 'PT9H'), 'END:VALARM');
+    }
+    L.push('END:VEVENT', 'END:VCALENDAR');
+    return L.join('\r\n');
+  }
+  $('ed-cal').addEventListener('click', function () {
+    var i = applyEdit(); if (!i) return;
+    if (!i.due) { alert('先に期限（日付）を入れてください。'); return; }
+    changed();
+    var blob = new Blob([buildIcs(i, +$('ed-alarm').value)], { type: 'text/calendar;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = 'todo.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    toast('カレンダーの追加画面を開きます');
+  });
+
+  /* ---------- このページを開いている間の通知 ---------- */
+  var notified = {};
+  try { notified = JSON.parse(localStorage.getItem('todo-notified') || '{}'); } catch (e) {}
+  function checkDue() {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    var now = new Date(), nowStr = iso(now) + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    live().forEach(function (i) {
+      if (i.done || !i.due) return;
+      var when = i.due + ' ' + (i.time || '09:00'), key = i.id + '|' + when;
+      if (when <= nowStr && !notified[key]) {
+        notified[key] = 1;
+        try { localStorage.setItem('todo-notified', JSON.stringify(notified)); } catch (e) {}
+        try { new Notification((i.star ? '★ ' : '') + i.text, { body: (i.time ? i.time + ' ' : '') + '期限です' + (i.note ? '\n' + i.note : '') }); } catch (e) {}
+      }
+    });
+  }
+  function updateBell() { var b = $('btn-notify'); b.textContent = ('Notification' in window && Notification.permission === 'granted') ? '🔔 通知オン' : '🔔 通知'; }
+  $('btn-notify').addEventListener('click', function () {
+    if (!('Notification' in window)) { alert('このブラウザでは、ページ内の通知は使えません。カレンダーに追加すると、通知が出ます。'); return; }
+    if (Notification.permission === 'granted') { toast('通知は許可済みです（このページを開いている間、期限に通知します）'); return; }
+    Notification.requestPermission().then(function () { updateBell(); toast(Notification.permission === 'granted' ? '通知をオンにしました' : '通知は許可されませんでした'); });
+  });
+  setInterval(checkDue, 30000);
+
+  /* ---------- 起動 ---------- */
+  fillTagSelect($('new-tag'), '');
+  loadLocal(); render(); updateBell(); checkDue();
+  sync();
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) { sync(); render(); } });
+</script>
+</body>
+</html>
