@@ -260,18 +260,18 @@
 
 <section class="hero">
   <div class="hero-slides" id="seSlides">
+    <div class="hero-slide hero-slide-video">
+      <video id="seVideo" muted loop playsinline preload="auto">
+        <source src="vskue-video.mp4" type="video/mp4">
+      </video>
+      <span class="video-expand-hint">⛶ タップで全画面</span>
+    </div>
     <div class="hero-slide" style="background-image:url('vskue-banner2.webp');"></div>
     <div class="hero-slide" style="background-image:url('vskue-photo-0.webp'); background-position:center;"></div>
     <div class="hero-slide" style="background-image:url('vskue-photo-3.webp'); background-size:contain; background-color:#e5e5e5; background-position:center; background-repeat:no-repeat;"></div>
     <div class="hero-slide" style="background-image:url('vskue-photo-5.webp'); background-size:contain; background-color:#e5e5e5; background-position:center; background-repeat:no-repeat;"></div>
     <div class="hero-slide" style="background-image:url('vskue-photo-2.jpg'); background-size:contain; background-color:#e5e5e5; background-position:center; background-repeat:no-repeat;"></div>
     <div class="hero-slide" style="background-image:url('vskue-photo-4.webp'); background-size:contain; background-color:#e5e5e5; background-position:center; background-repeat:no-repeat;"></div>
-    <div class="hero-slide hero-slide-video">
-      <video id="seVideo" muted loop playsinline preload="none">
-        <source src="vskue-video.mp4" type="video/mp4">
-      </video>
-      <span class="video-expand-hint">⛶ タップで全画面</span>
-    </div>
   </div>
   <button class="hero-prev" id="sePrev">&#8249;</button>
   <button class="hero-next" id="seNext">&#8250;</button>
@@ -290,28 +290,28 @@
 <section class="quick-nav">
   <div class="quick-nav-scroll" id="seThumbs">
     <button class="qn-card se-thumb active" data-idx="0">
-      <div class="qn-card-img" style="background-image:url('vskue-banner2.webp');background-size:cover;background-position:center;"></div>
-    </button>
-    <button class="qn-card se-thumb" data-idx="1">
-      <div class="qn-card-img"><img src="vskue-photo-0.webp" alt="VS九絵 ロッド4本" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
-    </button>
-    <button class="qn-card se-thumb" data-idx="2">
-      <div class="qn-card-img"><img src="vskue-photo-3.webp" alt="VS九絵 ロッド全体" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
-    </button>
-    <button class="qn-card se-thumb" data-idx="3">
-      <div class="qn-card-img"><img src="vskue-photo-1.webp" alt="VS九絵 グリップ" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
-    </button>
-    <button class="qn-card se-thumb" data-idx="4">
-      <div class="qn-card-img"><img src="vskue-photo-2.jpg" alt="VS九絵 グリップ2" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
-    </button>
-    <button class="qn-card se-thumb" data-idx="5">
-      <div class="qn-card-img"><img src="vskue-photo-4.webp" alt="VS九絵 ガイド" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
-    </button>
-    <button class="qn-card se-thumb" data-idx="6">
       <div class="qn-card-img" style="background:#111;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.2rem;">
         <span style="color:#fff;font-size:1.4rem;line-height:1;">▶</span>
         <span style="color:rgba(255,255,255,0.6);font-size:0.55rem;letter-spacing:0.05em;">VIDEO</span>
       </div>
+    </button>
+    <button class="qn-card se-thumb" data-idx="1">
+      <div class="qn-card-img" style="background-image:url('vskue-banner2.webp');background-size:cover;background-position:center;"></div>
+    </button>
+    <button class="qn-card se-thumb" data-idx="2">
+      <div class="qn-card-img"><img src="vskue-photo-0.webp" alt="VS九絵 ロッド4本" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
+    </button>
+    <button class="qn-card se-thumb" data-idx="3">
+      <div class="qn-card-img"><img src="vskue-photo-3.webp" alt="VS九絵 ロッド全体" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
+    </button>
+    <button class="qn-card se-thumb" data-idx="4">
+      <div class="qn-card-img"><img src="vskue-photo-5.webp" alt="VS九絵 グリップ" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
+    </button>
+    <button class="qn-card se-thumb" data-idx="5">
+      <div class="qn-card-img"><img src="vskue-photo-2.jpg" alt="VS九絵 グリップ2" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
+    </button>
+    <button class="qn-card se-thumb" data-idx="6">
+      <div class="qn-card-img"><img src="vskue-photo-4.webp" alt="VS九絵 ガイド" loading="lazy" style="width:100%;height:100%;object-fit:cover;" /></div>
     </button>
   </div>
 </section>
@@ -457,11 +457,12 @@
       dotsWrap.querySelectorAll('.hero-dot').forEach(function(d, i) { d.classList.toggle('active', i === idx); });
       document.querySelectorAll('.se-thumb').forEach(function(btn, i) { btn.classList.toggle('active', i === idx); });
       var v = document.getElementById('seVideo');
-      if(v){ if(idx === total - 1){ v.play(); } else { v.pause(); } }
+      if(v){ if(idx === 0){ v.play(); } else { v.pause(); } }
     }
     document.getElementById('sePrev').addEventListener('click', function() { go(idx - 1); });
     document.getElementById('seNext').addEventListener('click', function() { go(idx + 1); });
     document.querySelectorAll('.se-thumb').forEach(function(btn) { btn.addEventListener('click', function() { go(parseInt(btn.getAttribute('data-idx'))); }); });
+    var v0 = document.getElementById('seVideo'); if(v0){ v0.play().catch(function(){}); }
     var lb = document.getElementById('seLightbox'), lbImg = document.getElementById('seLbImg');
     var lbVideo = document.getElementById('seLbVideo');
     document.getElementById('seSlides').addEventListener('click', function() {
