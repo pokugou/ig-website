@@ -83,6 +83,9 @@
     .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999; align-items: center; justify-content: center; cursor: zoom-out; }
     .lightbox.open { display: flex; }
     .lightbox img { max-width: 95vw; max-height: 92vh; object-fit: contain; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+    .lightbox video { max-width: 95vw; max-height: 92vh; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
+    .hero-slide-video { cursor: pointer; }
+    .video-expand-hint { position: absolute; bottom: 0.8rem; right: 0.8rem; background: rgba(0,0,0,0.55); color: #fff; font-size: 0.65rem; letter-spacing: 0.06em; padding: 0.25rem 0.5rem; border-radius: 3px; pointer-events: none; }
     .lightbox-close { position: absolute; top: 1rem; right: 1.2rem; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; background: none; border: none; transition: opacity 0.2s; }
     .lightbox-close:hover { opacity: 1; }
     .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
@@ -267,6 +270,7 @@
       <video id="seVideo" muted loop playsinline preload="none">
         <source src="vskue-video.mp4" type="video/mp4">
       </video>
+      <span class="video-expand-hint">⛶ タップで全画面</span>
     </div>
   </div>
   <button class="hero-prev" id="sePrev">&#8249;</button>
@@ -278,6 +282,9 @@
 <div class="lightbox" id="seLightbox">
   <button class="lightbox-close" id="seLbClose">&times;</button>
   <img id="seLbImg" src="" alt="" />
+  <video id="seLbVideo" controls playsinline style="display:none;max-width:95vw;max-height:92vh;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
+    <source src="vskue-video.mp4" type="video/mp4">
+  </video>
 </div>
 
 <section class="quick-nav">
@@ -456,13 +463,23 @@
     document.getElementById('seNext').addEventListener('click', function() { go(idx + 1); });
     document.querySelectorAll('.se-thumb').forEach(function(btn) { btn.addEventListener('click', function() { go(parseInt(btn.getAttribute('data-idx'))); }); });
     var lb = document.getElementById('seLightbox'), lbImg = document.getElementById('seLbImg');
+    var lbVideo = document.getElementById('seLbVideo');
     document.getElementById('seSlides').addEventListener('click', function() {
+      var isVideoSlide = slides[idx].classList.contains('hero-slide-video');
+      if (isVideoSlide) {
+        lbImg.style.display = 'none'; lbVideo.style.display = '';
+        lbVideo.currentTime = 0; lbVideo.play();
+        lb.classList.add('open'); document.body.style.overflow = 'hidden';
+        return;
+      }
       var bg = slides[idx].style.backgroundImage.replace(/url\(["']?|["']?\)/g, '');
       if (!bg) return;
+      lbVideo.style.display = 'none'; lbImg.style.display = '';
       lbImg.src = bg; lb.classList.add('open'); document.body.style.overflow = 'hidden';
     });
-    document.getElementById('seLbClose').addEventListener('click', function(e) { e.stopPropagation(); lb.classList.remove('open'); document.body.style.overflow = ''; });
-    lb.addEventListener('click', function() { lb.classList.remove('open'); document.body.style.overflow = ''; });
+    function closeLb() { lb.classList.remove('open'); document.body.style.overflow = ''; lbVideo.pause(); lbVideo.style.display = 'none'; lbImg.style.display = ''; }
+    document.getElementById('seLbClose').addEventListener('click', function(e) { e.stopPropagation(); closeLb(); });
+    lb.addEventListener('click', function(e) { if (e.target === lb || e.target === lbImg) closeLb(); });
   })();
   (function() {
     var fab = document.querySelector('.order-fab'), sec = document.getElementById('order');
