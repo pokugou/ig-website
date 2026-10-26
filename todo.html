@@ -5,7 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>TODO | IG Rod Planning</title>
 <meta name="robots" content="noindex, nofollow" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="IGツール" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="theme-color" content="#111111" />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -201,7 +206,7 @@
   function live() { return items.filter(function (i) { return !i.deleted; }); }
   var syncTimer = null;
   function touch(it) { it.updatedAt = Date.now(); }
-  function changed() { saveLocal(); render(); clearTimeout(syncTimer); syncTimer = setTimeout(sync, 900); }
+  function changed() { saveLocal(); render(); clearTimeout(syncTimer); syncTimer = setTimeout(sync, 900); pushSyncSoon(); }
 
   function merge(a, b) {
     var m = {};
@@ -226,7 +231,7 @@
       var remote = idx >= 0 ? (all[idx].items || []) : [];
       var merged = merge(items, remote);
       var needPush = idx < 0 || !same(merged, remote);
-      items = merged; saveLocal(); render();
+      items = merged; saveLocal(); render(); pushSyncSoon();
       if (needPush) {
         var rec = { id: REC_ID, __todo: true, savedAt: new Date().toISOString(), items: merged };
         var put;
@@ -421,7 +426,7 @@
   var notified = {};
   try { notified = JSON.parse(localStorage.getItem('todo-notified') || '{}'); } catch (e) {}
   function checkDue() {
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    if (!('Notification' in window) || Notification.permission !== 'granted' || pushOn()) return;
     var now = new Date(), nowStr = iso(now) + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
     live().forEach(function (i) {
       if (i.done || !i.due) return;
@@ -433,8 +438,71 @@
       }
     });
   }
-  function updateBell() { var b = $('btn-notify'); b.textContent = ('Notification' in window && Notification.permission === 'granted') ? '🔔 通知オン' : '🔔 通知'; }
-  $('btn-notify').addEventListener('click', function () {
+  /* ---------- 通知（ホーム画面に追加したアプリ。ページを閉じていても届く） ---------- */
+  var PUSH_API = 'https://ig-push.pokugou.workers.dev';
+  var PUSH_FLAG = 'todo-push-on';
+  function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+  function isStandalone() { return window.navigator.standalone === true || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches); }
+  function pushCapable() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+  function pushOn() { try { return pushCapable() && localStorage.getItem(PUSH_FLAG) === '1' && Notification.permission === 'granted'; } catch (e) { return false; } }
+  function keyBytes(b64) { b64 = b64.replace(/-/g, '+').replace(/_/g, '/'); while (b64.length % 4) b64 += '='; var bin = atob(b64), out = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out; }
+  async function pushPost(path, body) {
+    var r = await fetch(PUSH_API + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (!r.ok) { var e = new Error('push ' + path + ' ' + r.status); e.status = r.status; throw e; }
+    return r.json();
+  }
+  async function pushReg() { await navigator.serviceWorker.register('sw.js'); return navigator.serviceWorker.ready; }
+  async function pushSubscription(create) {
+    var reg = await pushReg(), sub = await reg.pushManager.getSubscription();
+    if (!sub && create) {
+      var key = (await (await fetch(PUSH_API + '/vapid')).json()).publicKey;
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(key) });
+    }
+    return sub;
+  }
+  function pushItems() {
+    return live().filter(function (i) { return !i.done && i.due; }).map(function (i) { return { id: i.id, text: i.text, note: i.note || '', star: !!i.star, due: i.due, time: i.time || '' }; });
+  }
+  var pushTimer = null;
+  function pushSyncSoon() { if (!pushOn()) return; clearTimeout(pushTimer); pushTimer = setTimeout(pushSync, 1500); }
+  async function pushSync() {
+    if (!pushOn() || NOSYNC) return;
+    try {
+      var sub = await pushSubscription(false); if (!sub) return;
+      try { await pushPost('/sync', { endpoint: sub.endpoint, items: pushItems() }); }
+      catch (e) { if (e.status !== 404) throw e; await pushPost('/subscribe', { subscription: sub.toJSON() }); await pushPost('/sync', { endpoint: sub.endpoint, items: pushItems() }); }
+    } catch (e) { console.error(e); }
+  }
+  async function enablePush() {
+    var perm = await Notification.requestPermission();
+    if (perm !== 'granted') { toast('通知は許可されませんでした'); return; }
+    var sub = await pushSubscription(true);
+    await pushPost('/subscribe', { subscription: sub.toJSON() });
+    try { localStorage.setItem(PUSH_FLAG, '1'); } catch (e) {}
+    await pushPost('/sync', { endpoint: sub.endpoint, items: pushItems() });
+    updateBell(); toast('通知をオンにしました。期限の時刻に届きます');
+  }
+  function updateBell() { var b = $('btn-notify'); b.textContent = (pushOn() || (!pushCapable() && 'Notification' in window && Notification.permission === 'granted')) ? '🔔 通知オン' : '🔔 通知'; }
+  $('btn-notify').addEventListener('click', async function () {
+    if (pushCapable() && isIOS() && !isStandalone()) {
+      alert('iPhoneで通知を受け取るには、先に「ホーム画面に追加」します。\n\n1. Safariの共有ボタン（□↑）を押す\n2. 「ホーム画面に追加」を選ぶ\n3. ホーム画面にできた「IGツール」のアイコンから開き、このTODOの「🔔 通知」を押す');
+      return;
+    }
+    if (pushCapable()) {
+      try {
+        if (pushOn()) {
+          var sub = await pushSubscription(false);
+          if (confirm('通知はオンです。テスト通知を送りますか？\n（キャンセルを押すと、通知をオフにするか選べます）')) { await pushPost('/test', { endpoint: sub.endpoint }); toast('テスト通知を送りました'); return; }
+          if (confirm('通知をオフにしますか？')) { if (sub) { await pushPost('/unsubscribe', { endpoint: sub.endpoint }); await sub.unsubscribe(); } try { localStorage.removeItem(PUSH_FLAG); } catch (e) {} updateBell(); toast('通知をオフにしました'); }
+          return;
+        }
+        await enablePush();
+      } catch (e) {
+        console.error(e);
+        alert('通知を設定できませんでした。通信状況を確認してもう一度お試しください。\n（通知サーバーの準備がまだの場合も、このメッセージが出ます）');
+      }
+      return;
+    }
     if (!('Notification' in window)) { alert('このブラウザでは、ページ内の通知は使えません。カレンダーに追加すると、通知が出ます。'); return; }
     if (Notification.permission === 'granted') { toast('通知は許可済みです（このページを開いている間、期限に通知します）'); return; }
     Notification.requestPermission().then(function () { updateBell(); toast(Notification.permission === 'granted' ? '通知をオンにしました' : '通知は許可されませんでした'); });

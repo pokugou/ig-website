@@ -1,0 +1,11 @@
+name = "ig-push"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[triggers]
+crons = ["* * * * *"]
+
+# KV は `wrangler kv namespace create PUSH_KV` で作り、出てきた id を貼る
+[[kv_namespaces]]
+binding = "PUSH_KV"
+id = "ここに KV の id"
