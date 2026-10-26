@@ -694,10 +694,10 @@
             <option value="VS-ISHIDAI-530MH"  data-price="120000">530MH　¥120,000</option>
             <option value="VS-ISHIDAI-535MH"  data-price="98000">535MH　¥98,000</option>
           </optgroup>
-          <optgroup label="── VS九絵　ショアロックロッド ──">
-            <option value="VSK480M"   data-price="120000">VSK480M　¥120,000</option>
-            <option value="VSK480H"   data-price="123000">VSK480H　¥123,000</option>
-            <option value="VSK510XH"  data-price="270000">VSK510XH　¥270,000</option>
+          <optgroup label="── VS九絵　九絵竿 ──">
+            <option value="VSK4804M"   data-price="120000">VSK4804M　¥120,000</option>
+            <option value="VSK4804H"   data-price="123000">VSK4804H　¥123,000</option>
+            <option value="VSK5104XH"  data-price="270000">VSK5104XH　¥270,000</option>
           </optgroup>
         </select>
       </div>
@@ -1583,6 +1583,21 @@ cmFields.forEach(function(field) {
     });
   });
 });
+
+// URLパラメータ ?model= でモデルを自動選択
+(function(){
+  var m = new URLSearchParams(window.location.search).get('model');
+  if(!m) return;
+  var sel = document.getElementById('sel-model');
+  if(!sel) return;
+  for(var i=0; i<sel.options.length; i++){
+    if(sel.options[i].value === m){
+      sel.selectedIndex = i;
+      sel.dispatchEvent(new Event('change'));
+      break;
+    }
+  }
+})();
 
 // Escキーでモーダルを閉じる
 document.addEventListener('keydown', function(e) {
