@@ -34,6 +34,7 @@
   .save-bar { background: var(--paper); border: 1px solid var(--line); padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
   .save-bar p { font-size: 0.74rem; color: var(--sub); line-height: 1.6; }
   .save-bar .unsaved { color: var(--red); font-weight: 700; }
+  .save-bar .auto { display: flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; color: var(--sub); }
   .save-bar .buttons { display: flex; gap: 0.6rem; flex-wrap: wrap; }
   .save-btn { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.3rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; white-space: nowrap; }
   .save-btn:hover { background: var(--red); border-color: var(--red); }
@@ -106,8 +107,12 @@
     </div>
 
     <div class="save-bar">
-      <p id="save-status">読み込み中…</p>
+      <div>
+        <p id="save-status">読み込み中…</p>
+        <label class="auto"><input type="checkbox" id="opt-autoreflect" checked> 保存したとき、納期希望リストにも反映する</label>
+      </div>
       <div class="buttons">
+        <button type="button" class="save-btn secondary" id="btn-reflect">納期希望リストへ反映</button>
         <button type="button" class="save-btn secondary" id="btn-print">印刷</button>
         <button type="button" class="save-btn secondary" id="btn-pdf">PDFとして保存</button>
         <button type="button" class="save-btn" id="btn-save">この内容を保存</button>
@@ -294,6 +299,14 @@
     render();
   });
 
+  // 入口ページの検索から来たときは、その言葉で絞り込んだ状態で開く
+  (function () {
+    var m = /[?&]q=([^&]*)/.exec(location.search), v = m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
+    if (!v) return;
+    document.getElementById('f-search').value = v;
+    searchTerm = v.trim().toLowerCase();
+  })();
+
   document.getElementById('btn-add').addEventListener('click', function () {
     var dateEl = document.getElementById('f-date');
     var customerEl = document.getElementById('f-customer');
@@ -373,6 +386,52 @@
     }
   });
 
+  // 保存済みの納期希望リストのうち、この表の行とつながっている行（sid が一致）の顧客名・概要・本数・希望納期・返答納期を更新する
+  async function reflectToLists(sourceRows) {
+    var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+    if (!res.ok) throw new Error('load failed');
+    var all = await res.json(), byId = {}, changedRows = 0, changedLists = 0;
+    sourceRows.forEach(function (r) { byId[r.id] = r; });
+    all.forEach(function (rec) {
+      if (!rec.__delivery || !rec.sids || !rec.rows) return;
+      var hit = false;
+      rec.sids.forEach(function (sid, i) {
+        var s = sid ? byId[sid] : null, cells = rec.rows[i];
+        if (!s || !cells) return;
+        var vals = [s.customer || '', s.note || '', s.qty == null ? '' : String(s.qty), s.date || '', s.confirmed || ''];
+        var diff = vals.some(function (v, k) { return String(cells[k] == null ? '' : cells[k]) !== v; });
+        if (!diff) return;
+        vals.forEach(function (v, k) { cells[k] = v; });
+        changedRows++; hit = true;
+      });
+      if (hit) changedLists++;
+    });
+    if (changedRows) {
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      if (!put.ok) throw new Error('save failed');
+    }
+    return { rows: changedRows, lists: changedLists };
+  }
+  function reflectMessage(r) { return r.rows ? '納期希望リスト ' + r.lists + ' 件（' + r.rows + ' 行）にも反映しました。' : '納期希望リストは反映済みの内容と同じでした。'; }
+
+  try { document.getElementById('opt-autoreflect').checked = localStorage.getItem('schedule-autoreflect') !== '0'; } catch (e) {}
+  document.getElementById('opt-autoreflect').addEventListener('change', function (e) { try { localStorage.setItem('schedule-autoreflect', e.target.checked ? '1' : '0'); } catch (x) {} });
+
+  document.getElementById('btn-reflect').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    if (dirty && !confirm('未保存の変更があります。いまの表の内容を納期希望リストに反映しますか？（生産スケジュール自体の保存は「この内容を保存」で行います）')) return;
+    btn.disabled = true; btn.textContent = '反映中…';
+    try {
+      var r = await reflectToLists(rows);
+      var el = document.getElementById('save-status'), keep = dirty;
+      if (keep) el.innerHTML = '<span class="unsaved">未保存の変更があります。</span> ' + reflectMessage(r);
+      else el.textContent = reflectMessage(r);
+    } catch (e) {
+      console.error(e);
+      alert('納期希望リストへの反映に失敗しました。通信状況を確認してもう一度お試しください。');
+    } finally { btn.disabled = false; btn.textContent = label; }
+  });
+
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this;
     var originalLabel = btn.textContent;
@@ -386,6 +445,10 @@
       });
       if (!res.ok) throw new Error('sync failed');
       markClean('保存しました。');
+      if (document.getElementById('opt-autoreflect').checked) {
+        try { markClean('保存しました。' + reflectMessage(await reflectToLists(rows))); }
+        catch (e3) { console.error(e3); markClean('保存しました。（納期希望リストへの反映は失敗しました。「納期希望リストへ反映」で再度お試しください）'); }
+      }
     } catch (e) {
       console.error(e);
       var blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });

@@ -231,6 +231,14 @@
 
   document.getElementById('f-search').addEventListener('input', function (e) { term = e.target.value.trim().toLowerCase(); render(); });
 
+  // 入口ページの検索から来たときは、その言葉で絞り込んだ状態で開く
+  (function () {
+    var m = /[?&]q=([^&]*)/.exec(location.search), v = m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
+    if (!v) return;
+    document.getElementById('f-search').value = v;
+    term = v.trim().toLowerCase();
+  })();
+
   fetch(SYNC_API + '/paint?_=' + Date.now())
     .then(function (r) { if (!r.ok) throw new Error('not ready'); return r.json(); })
     .then(function (data) { specs = data.filter(isDoc).reverse(); render(); })

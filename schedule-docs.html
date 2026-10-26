@@ -32,6 +32,16 @@
   .recent a:hover { border-color: var(--red); }
   .recent .n { font-weight: 700; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .recent .d { font-size: 0.72rem; color: var(--sub); white-space: nowrap; }
+  .search-box { margin-bottom: 1rem; }
+  .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.75rem 1rem; border-radius: 0; -webkit-appearance: none; }
+  .search-box input:focus { outline: none; border-color: var(--red); }
+  .results h3 { font-size: 0.72rem; font-weight: 900; letter-spacing: 0.14em; color: var(--sub); margin: 1rem 0 0.5rem; }
+  .results a { display: flex; gap: 0.7rem; align-items: center; background: var(--paper); border: 1px solid var(--line); padding: 0.65rem 0.9rem; margin-bottom: 0.4rem; text-decoration: none; color: inherit; font-size: 0.88rem; }
+  .results a:hover { border-color: var(--red); }
+  .results .n { font-weight: 700; flex: 1; min-width: 0; }
+  .results .m { font-size: 0.72rem; color: var(--sub); white-space: nowrap; }
+  .results .none { font-size: 0.86rem; color: var(--sub); padding: 1rem 0; }
+  .results .done { opacity: 0.5; }
   @media (max-width: 560px) { .choices { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -43,6 +53,9 @@
     <a href="delivery-schedule-history.html">📋 納期希望リストの保存一覧</a>
   </header>
   <p class="lead">見たい・作りたいスケジュールを選んでください。</p>
+  <div class="search-box"><input type="search" id="f-search" placeholder="顧客名・日付・メモなどで検索（生産スケジュールと納期希望リストをまとめて探します）" enterkeyhint="search"></div>
+  <div class="results" id="results" style="display:none"></div>
+  <div id="browse">
   <div class="choices">
     <a class="choice" href="production-schedule.html">
       <span class="icon">📅</span>
@@ -59,11 +72,45 @@
   </div>
   <p class="note">🔗 この2つはつながっています。納期希望リストの「生産スケジュールから取り込む／へ反映」で、顧客名・本数・希望納期・返答納期をおたがいに更新できます。</p>
   <div class="recent" id="recent" style="display:none"><h3>最近保存した納期希望リスト</h3><div id="recent-list"></div></div>
+  </div>
 </div>
 <script>
-  fetch('https://ig-sync.pokugou.workers.dev/paint?_=' + Date.now())
+  var API = 'https://ig-sync.pokugou.workers.dev';
+  var prodRows = [], lists = [];
+  fetch(API + '/schedule?_=' + Date.now()).then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (a) { prodRows = a || []; runSearch(); }).catch(function () {});
+  function esc(t) { return String(t == null ? '' : t); }
+  function runSearch() {
+    var term = document.getElementById('f-search').value.trim().toLowerCase();
+    var box = document.getElementById('results'), browse = document.getElementById('browse');
+    if (!term) { box.style.display = 'none'; browse.style.display = ''; return; }
+    browse.style.display = 'none'; box.style.display = ''; box.innerHTML = '';
+    var q = encodeURIComponent(document.getElementById('f-search').value.trim());
+    var prod = prodRows.filter(function (r) { return [r.customer, r.date, r.confirmed, r.note, r.paint].join(' ').toLowerCase().indexOf(term) !== -1; });
+    var del = lists.filter(function (r) { return [r.title, r.author, r.date, JSON.stringify(r.rows || [])].join(' ').toLowerCase().indexOf(term) !== -1; });
+    var h = document.createElement('h3'); h.textContent = '生産スケジュール（' + prod.length + '件）'; box.appendChild(h);
+    prod.slice(0, 30).forEach(function (r) {
+      var a = document.createElement('a'); a.href = 'production-schedule.html?q=' + q; if (r.done) a.className = 'done';
+      var n = document.createElement('span'); n.className = 'n'; n.textContent = esc(r.customer) || '（顧客名なし）';
+      var m = document.createElement('span'); m.className = 'm'; m.textContent = esc(r.date) + '　' + esc(r.qty) + '本　' + (r.done ? '完了' : esc(r.paint));
+      a.appendChild(n); a.appendChild(m); box.appendChild(a);
+    });
+    if (prod.length > 30) { var more = document.createElement('a'); more.href = 'production-schedule.html?q=' + q; more.textContent = '他 ' + (prod.length - 30) + ' 件は生産スケジュールで見る →'; box.appendChild(more); }
+    if (!prod.length) { var z = document.createElement('p'); z.className = 'none'; z.textContent = '一致する行はありません'; box.appendChild(z); }
+    var h2 = document.createElement('h3'); h2.textContent = '納期希望リスト（' + del.length + '件）'; box.appendChild(h2);
+    del.forEach(function (r) {
+      var a = document.createElement('a'); a.href = 'delivery-schedule-history.html?q=' + q;
+      var n = document.createElement('span'); n.className = 'n'; n.textContent = (r.title || '納期希望リスト') + (r.date ? '　' + r.date.replace(/-/g, '/') : '');
+      var m = document.createElement('span'); m.className = 'm'; m.textContent = (r.savedAt || '').slice(0, 10).replace(/-/g, '/');
+      a.appendChild(n); a.appendChild(m); box.appendChild(a);
+    });
+    if (!del.length) { var z2 = document.createElement('p'); z2.className = 'none'; z2.textContent = '一致する保存リストはありません'; box.appendChild(z2); }
+  }
+  document.getElementById('f-search').addEventListener('input', runSearch);
+  fetch(API + '/paint?_=' + Date.now())
     .then(function (r) { return r.ok ? r.json() : []; })
     .then(function (all) {
+      lists = all.filter(function (r) { return r.__delivery; }); runSearch();
       var rows = all.filter(function (r) { return r.__delivery; }).sort(function (a, b) { return String(b.savedAt || '').localeCompare(String(a.savedAt || '')); }).slice(0, 4);
       if (!rows.length) return;
       var box = document.getElementById('recent-list');
