@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>スケジュール | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #666; --line: #d8d8d4; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 1.6rem 1.2rem 4rem; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  .back { display: inline-block; margin-bottom: 0.6rem; font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .back:hover { color: var(--red); }
+  header { border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1.4rem; display: flex; justify-content: space-between; align-items: flex-end; gap: 0.8rem; flex-wrap: wrap; }
+  header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
+  header a { font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; border: 1px solid var(--ink); background: #fff; padding: 0.55rem 1rem; }
+  header a:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .lead { font-size: 0.86rem; color: var(--sub); margin-bottom: 1rem; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .choice { display: flex; flex-direction: column; gap: 0.5rem; background: var(--paper); border: 2px solid var(--line); padding: 1.6rem 1.4rem; text-decoration: none; color: inherit; transition: border-color 0.15s, transform 0.15s; }
+  .choice:hover { border-color: var(--red); transform: translateY(-2px); }
+  .choice .icon { font-size: 2.2rem; line-height: 1; }
+  .choice h2 { font-size: 1.25rem; font-weight: 900; letter-spacing: 0.03em; }
+  .choice p { font-size: 0.8rem; color: var(--sub); line-height: 1.7; }
+  .choice .go { margin-top: auto; font-size: 0.78rem; font-weight: 700; color: var(--red); }
+  .note { margin-top: 1.2rem; font-size: 0.76rem; color: var(--sub); background: #fff; border: 1px dashed #bbb; padding: 0.7rem 0.9rem; line-height: 1.7; }
+  .recent { margin-top: 1.6rem; }
+  .recent h3 { font-size: 0.72rem; font-weight: 900; letter-spacing: 0.14em; color: var(--sub); margin-bottom: 0.5rem; }
+  .recent a { display: flex; gap: 0.7rem; align-items: center; background: var(--paper); border: 1px solid var(--line); padding: 0.65rem 0.9rem; margin-bottom: 0.4rem; text-decoration: none; color: inherit; font-size: 0.88rem; }
+  .recent a:hover { border-color: var(--red); }
+  .recent .n { font-weight: 700; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .recent .d { font-size: 0.72rem; color: var(--sub); white-space: nowrap; }
+  @media (max-width: 560px) { .choices { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="tools.html">← ツール一覧</a>
+  <header>
+    <h1>スケジュール</h1>
+    <a href="delivery-schedule-history.html">📋 納期スケジュールの保存一覧</a>
+  </header>
+  <p class="lead">見たい・作りたいスケジュールを選んでください。</p>
+  <div class="choices">
+    <a class="choice" href="production-schedule.html">
+      <span class="icon">📅</span>
+      <h2>生産スケジュール</h2>
+      <p>納期・本数・塗装状況をまとめて管理する一覧表です。受注シートを保存すると、ここにも入ります。</p>
+      <span class="go">開く →</span>
+    </a>
+    <a class="choice" href="delivery-schedule.html">
+      <span class="icon">🗓️</span>
+      <h2>納期スケジュール</h2>
+      <p>顧客ごとの希望納期・返答納期の一覧表（希望納期リスト）。PDFで共有でき、保存一覧にも残ります。</p>
+      <span class="go">開く →</span>
+    </a>
+  </div>
+  <p class="note">🔗 この2つはつながっています。納期スケジュールの「生産スケジュールから取り込む／へ反映」で、顧客名・本数・希望納期・返答納期をおたがいに更新できます。</p>
+  <div class="recent" id="recent" style="display:none"><h3>最近保存した納期スケジュール</h3><div id="recent-list"></div></div>
+</div>
+<script>
+  fetch('https://ig-sync.pokugou.workers.dev/paint?_=' + Date.now())
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (all) {
+      var rows = all.filter(function (r) { return r.__delivery; }).sort(function (a, b) { return String(b.savedAt || '').localeCompare(String(a.savedAt || '')); }).slice(0, 4);
+      if (!rows.length) return;
+      var box = document.getElementById('recent-list');
+      rows.forEach(function (r) {
+        var a = document.createElement('a'); a.href = 'delivery-schedule-history.html';
+        var n = document.createElement('span'); n.className = 'n'; n.textContent = (r.title || '希望納期リスト') + (r.date ? '　' + r.date.replace(/-/g, '/') : '');
+        var d = document.createElement('span'); d.className = 'd'; d.textContent = (r.savedAt || '').slice(0, 10).replace(/-/g, '/');
+        a.appendChild(n); a.appendChild(d); box.appendChild(a);
+      });
+      document.getElementById('recent').style.display = '';
+    }).catch(function () {});
+</script>
+</body>
+</html>
