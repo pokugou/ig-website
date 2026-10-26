@@ -59,7 +59,7 @@
   td input[type="text"] { width: 100%; border: 1px solid transparent; background: transparent; font-family: inherit; font-size: 0.84rem; padding: 0.35rem 0.4rem; color: inherit; }
   td input[type="text"]:hover { border-color: var(--line); }
   td input[type="text"]:focus { outline: none; border-color: var(--red); background: #fff8e0; }
-  td.col-date { width: 10%; } td.col-customer { width: 14%; } td.col-confirmed { width: 10%; }
+  td.col-date { width: 10%; } td.col-customer { width: 12%; } td.col-item { width: 14%; } td.col-confirmed { width: 10%; }
   td.col-qty { width: 5%; } td.col-qty input { text-align: center; } td.col-note { width: auto; }
   td.col-paint { width: 11%; } td.col-done { width: 4%; text-align: center; } td.col-del { width: 3%; text-align: center; }
   td.col-done input { width: 16px; height: 16px; cursor: pointer; }
@@ -131,6 +131,10 @@
           <input type="text" id="f-customer" placeholder="顧客名">
         </div>
         <div>
+          <label>アイテム</label>
+          <input type="text" id="f-item" placeholder="モデル名など">
+        </div>
+        <div>
           <label>本数</label>
           <input type="text" id="f-qty" value="1">
         </div>
@@ -152,6 +156,7 @@
           <tr>
             <th class="col-date">出荷希望日</th>
             <th class="col-customer">顧客名</th>
+            <th class="col-item">アイテム</th>
             <th class="col-confirmed">返答納期</th>
             <th class="col-qty">本数</th>
             <th class="col-note">概要</th>
@@ -161,7 +166,7 @@
           </tr>
         </thead>
         <tbody id="rows-body">
-          <tr class="empty-row"><td colspan="8">読み込み中…</td></tr>
+          <tr class="empty-row"><td colspan="9">読み込み中…</td></tr>
         </tbody>
       </table>
     </div>
@@ -209,6 +214,7 @@
 
     tr.appendChild(makeCell('col-date', 'date'));
     tr.appendChild(makeCell('col-customer', 'customer'));
+    tr.appendChild(makeCell('col-item', 'item'));
     tr.appendChild(makeCell('col-confirmed', 'confirmed'));
     tr.appendChild(makeCell('col-qty', 'qty'));
     tr.appendChild(makeCell('col-note', 'note'));
@@ -274,7 +280,7 @@
 
   function matchesSearch(row) {
     if (!searchTerm) return true;
-    return ['date', 'customer', 'confirmed', 'qty', 'note', 'paint'].some(function (f) {
+    return ['date', 'customer', 'item', 'confirmed', 'qty', 'note', 'paint'].some(function (f) {
       return (row[f] || '').toString().toLowerCase().indexOf(searchTerm) !== -1;
     });
   }
@@ -282,7 +288,7 @@
   function render() {
     var visible = rows.filter(function (r) { return !(hideDone && r.done) && matchesSearch(r); });
     if (visible.length === 0) {
-      rowsBody.innerHTML = '<tr class="empty-row"><td colspan="8">' + (searchTerm ? '一致する行がありません' : 'まだ登録がありません') + '</td></tr>';
+      rowsBody.innerHTML = '<tr class="empty-row"><td colspan="9">' + (searchTerm ? '一致する行がありません' : 'まだ登録がありません') + '</td></tr>';
       return;
     }
     rowsBody.innerHTML = '';
@@ -312,6 +318,7 @@
     var customerEl = document.getElementById('f-customer');
     var qtyEl = document.getElementById('f-qty');
     var noteEl = document.getElementById('f-note');
+    var itemEl = document.getElementById('f-item');
     var customer = customerEl.value.trim();
     var date = dateEl.value.trim();
     if (!customer && !date) {
@@ -322,6 +329,7 @@
       id: 'new-' + Date.now() + '-' + (nextTempId++),
       date: date,
       customer: customer,
+      item: itemEl.value.trim(),
       confirmed: '',
       qty: qtyEl.value.trim() || '1',
       note: noteEl.value.trim(),
@@ -330,6 +338,7 @@
     });
     dateEl.value = '';
     customerEl.value = '';
+    itemEl.value = '';
     qtyEl.value = '1';
     noteEl.value = '';
     customerEl.focus();
@@ -386,7 +395,7 @@
     }
   });
 
-  // 保存済みの納期希望リストのうち、この表の行とつながっている行（sid が一致）の顧客名・概要・本数・希望納期・返答納期を更新する
+  // 保存済みの納期希望リストのうち、この表の行とつながっている行（sid が一致）の顧客名・アイテム・本数・希望納期・返答納期・備考（概要）を更新する
   async function reflectToLists(sourceRows) {
     var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
     if (!res.ok) throw new Error('load failed');
@@ -398,7 +407,7 @@
       rec.sids.forEach(function (sid, i) {
         var s = sid ? byId[sid] : null, cells = rec.rows[i];
         if (!s || !cells) return;
-        var vals = [s.customer || '', s.note || '', s.qty == null ? '' : String(s.qty), s.date || '', s.confirmed || ''];
+        var vals = [s.customer || '', s.item || '', s.qty == null ? '' : String(s.qty), s.date || '', s.confirmed || '', s.note || ''];
         var diff = vals.some(function (v, k) { return String(cells[k] == null ? '' : cells[k]) !== v; });
         if (!diff) return;
         vals.forEach(function (v, k) { cells[k] = v; });
@@ -410,7 +419,7 @@
     var linked = {}, added = 0, removed = 0;
     all.forEach(function (rec) { if (rec.__delivery && rec.sids && rec.id !== 'dl-auto') rec.sids.forEach(function (sid) { if (sid) linked[sid] = true; }); });
     var auto = all.filter(function (rec) { return rec.__delivery && rec.id === 'dl-auto'; })[0];
-    var cellsOf = function (r) { return [r.customer || '', r.note || '', r.qty == null ? '' : String(r.qty), r.date || '', r.confirmed || '', '']; };
+    var cellsOf = function (r) { return [r.customer || '', r.item || '', r.qty == null ? '' : String(r.qty), r.date || '', r.confirmed || '', r.note || '']; };
     var keepRows = [], keepSids = [];
     if (auto) (auto.sids || []).forEach(function (sid, i) {
       var s = sid ? byId[sid] : null;

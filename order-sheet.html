@@ -672,6 +672,8 @@
       var orderDate = sheet.querySelector('.order-date').value;
       var qty = sheet.querySelector('.qty').value;
       var note = sheet.querySelector('.memo-box textarea').value.trim();
+      var modelSel = sheet.querySelector('.model-select').value;
+      var item = (modelSel === '入力' ? sheet.querySelector('.model-custom').value : modelSel).trim();
       if (!name && !due) return;
       var dueFmt;
       if (due) {
@@ -686,6 +688,7 @@
         date: dueFmt,
         customer: name,
         confirmed: '',
+        item: item,
         qty: qty ? Number(qty) : 1,
         note: note,
         paint: '未着手',
@@ -708,7 +711,7 @@
           }
           if (idx >= 0) {
             var old = all[idx];
-            all[idx] = Object.assign({}, old, { id: r.id, date: r.date, customer: r.customer, qty: r.qty, note: r.note });
+            all[idx] = Object.assign({}, old, { id: r.id, date: r.date, customer: r.customer, item: r.item, qty: r.qty, note: r.note });
             editName = r.customer;
           } else {
             all.push(r);

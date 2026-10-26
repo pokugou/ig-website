@@ -225,10 +225,10 @@
   wireSaveOnly($('btn-save-only'), function () { return saveToHistory(true); });
 
   /* ---------- 生産スケジュールとの連動 ---------- */
-  // 対応：顧客名＝顧客名／アイテム＝概要／本数＝本数／希望納期＝出荷希望日／返答納期＝返答納期（備考は連動しません）
+  // 対応：顧客名＝顧客名／アイテム＝アイテム／本数＝本数／希望納期＝出荷希望日／返答納期＝返答納期／備考＝概要
   function rowVals(tr) { return Array.prototype.map.call(tr.querySelectorAll('td:not(.ctl-cell) textarea'), function (t) { return t.value; }); }
-  function setVals(tr, v) { var ta = tr.querySelectorAll('td:not(.ctl-cell) textarea'); [0, 1, 2, 3, 4].forEach(function (i) { ta[i].value = v[i]; grow(ta[i]); }); }
-  function fromSchedule(s) { return [s.customer || '', s.note || '', s.qty == null ? '' : String(s.qty), s.date || '', s.confirmed || '']; }
+  function setVals(tr, v) { var ta = tr.querySelectorAll('td:not(.ctl-cell) textarea'); [0, 1, 2, 3, 4, 5].forEach(function (i) { ta[i].value = v[i]; grow(ta[i]); }); }
+  function fromSchedule(s) { return [s.customer || '', s.item || '', s.qty == null ? '' : String(s.qty), s.date || '', s.confirmed || '', s.note || '']; }
   function isBlankRow(tr) { return rowVals(tr).every(function (c) { return !String(c).trim(); }) && !tr.dataset.sid; }
   async function loadSchedule() {
     var res = await fetch(SYNC_API + '/schedule?_=' + Date.now());
@@ -248,18 +248,18 @@
         var s = byId[sid];
         if (!s || s.done) { gone.push(tr); return; }
         linked[sid] = true;
-        var nv = fromSchedule(s), cur = rowVals(tr).slice(0, 5);
+        var nv = fromSchedule(s), cur = rowVals(tr).slice(0, 6);
         if (nv.join('\u0001') !== cur.join('\u0001')) upd.push([tr, nv]);
       });
       var fresh = all.filter(function (r) { return !r.done && !linked[r.id] && (String(r.customer || '').trim() || String(r.note || '').trim()); });
       if (!fresh.length && !upd.length && !gone.length) { toast('生産スケジュールとすでに同じ内容です'); return; }
-      var msg = '生産スケジュールから取り込みます。\n・新しく追加：' + fresh.length + '件\n・内容を更新：' + upd.length + '件\n・完了または削除済みのため一覧から外す：' + gone.length + '件\n（備考は変わりません）\nよろしいですか？';
+      var msg = '生産スケジュールから取り込みます。\n・新しく追加：' + fresh.length + '件\n・内容を更新：' + upd.length + '件\n・完了または削除済みのため一覧から外す：' + gone.length + '件\nよろしいですか？';
       if (!confirm(msg)) return;
       upd.forEach(function (u) { setVals(u[0], u[1]); });
       gone.forEach(function (tr) { tr.remove(); });
       // 空の行は取り除いてから、新しい行を足す
       Array.prototype.slice.call(rowsEl.querySelectorAll('tr')).forEach(function (tr) { if (isBlankRow(tr)) tr.remove(); });
-      fresh.forEach(function (s) { addRow(fromSchedule(s).concat(['']), null, s.id); });
+      fresh.forEach(function (s) { addRow(fromSchedule(s), null, s.id); });
       while (rowsEl.children.length < DEFAULT_ROWS) addRow();
       saveDraft();
       toast('取り込みました（追加 ' + fresh.length + '・更新 ' + upd.length + '・外した ' + gone.length + '）');
@@ -276,8 +276,9 @@
       var stamp = Date.now(), added = 0, changed = 0, news = [];
       trs.forEach(function (tr, i) {
         var v = rowVals(tr), q = String(v[2]).trim(), sid = tr.dataset.sid;
-        var fields = { customer: v[0], note: v[1], qty: /^\d+$/.test(q) ? Number(q) : v[2], date: v[3], confirmed: v[4] };
+        var fields = { customer: v[0], item: v[1], qty: /^\d+$/.test(q) ? Number(q) : v[2], date: v[3], confirmed: v[4], note: v[5] };
         var s = sid ? byId[sid] : null;
+        if (s && !String(v[5]).trim()) delete fields.note; // 備考が空のまま、生産スケジュール側の概要を消さない
         if (s) {
           var diff = Object.keys(fields).some(function (k) { return String(s[k] == null ? '' : s[k]) !== String(fields[k]); });
           if (diff) { Object.assign(s, fields); changed++; }
