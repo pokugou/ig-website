@@ -59,6 +59,12 @@
   table.tbl td.k { background: #111; }
   table.tbl td.k textarea { color: #fff; }
   table.tbl td.k textarea:focus { background: #333; }
+  /* 色背景のマス：背景色はtdに直接入れる。濃い色は白文字 */
+  table.tbl td.fill-dark textarea { color: #fff; }
+  table.tbl td.filled textarea:focus { background: rgba(255, 255, 255, 0.35); }
+  .sw-btn { width: 1.45rem; height: 1.45rem; padding: 0 !important; border: 1px solid #999 !important; cursor: pointer; vertical-align: middle; }
+  .sw-btn:hover { outline: 2px solid #2a6df4; outline-offset: 1px; }
+  .sw-none { background: #fff linear-gradient(to top right, transparent 46%, #cc2200 46%, #cc2200 54%, transparent 54%) !important; }
   table.tbl td.kb textarea { font-weight: 700; }
   table.tbl tr.align-row td { border: none; padding: 0 0 0.2rem; }
   table.tbl tr.align-row select { width: 100%; font-family: inherit; font-size: 0.68rem; color: var(--sub); border: 1px solid var(--line2); background: #fafafa; padding: 0.15rem 0.1rem; }
@@ -327,10 +333,21 @@
     sel = { b: b, r1: keepAnchor && sel && sel.b === b ? sel.r1 : r1, c1: keepAnchor && sel && sel.b === b ? sel.c1 : c1, r2: r2, c2: c2 };
     paintSel();
   }
-  function isBlack(b, ri, ci) {
+  // マスの背景色。'black' と既存データの互換を保ちつつ色を追加
+  var FILLS = {
+    black:  { label: '黒',           bg: '#111111', dark: true },
+    red:    { label: '赤',           bg: '#e53935', dark: true },
+    yellow: { label: '黄色',         bg: '#ffe14d' },
+    gray:   { label: 'グレー',       bg: '#d4d4d4' },
+    lime:   { label: '黄緑',         bg: '#b8e35c' },
+    orange: { label: '明るいオレンジ', bg: '#ffc078' }
+  };
+  function fillOf(b, ri, ci) {
     var v = b.fill && b.fill[ri + ',' + ci];
-    return v ? v === 'black' : !!(b.header && ri === 0);
+    if (v) return FILLS[v] ? v : '';
+    return b.header && ri === 0 ? 'black' : '';
   }
+  function isBlack(b, ri, ci) { return fillOf(b, ri, ci) === 'black'; }
   function applyFill(b, val) {
     if (!b.fill) b.fill = {};
     var nr = b.rows.length, nc = b.rows[0].length;
@@ -478,11 +495,17 @@
           vb.title = v[2] + '（選択したマス・行。選択なしなら表全体）';
           bar.appendChild(vb);
         });
-        [['black', '黒背景', '選択したマス・行を白文字の黒背景にする（選択なしなら表全体）'], ['none', '背景なし', '選択したマス・行の黒背景を外す（選択なしなら表全体）']].forEach(function (f) {
-          var fb = barBtn(f[1], function () { applyFill(b, f[0]); }, 'al-btn');
-          fb.title = f[2];
+        var fl = document.createElement('span'); fl.className = 'hdr-opt'; fl.textContent = '背景'; bar.appendChild(fl);
+        Object.keys(FILLS).forEach(function (k) {
+          var fb = barBtn('', function () { applyFill(b, k); }, 'sw-btn');
+          fb.style.background = FILLS[k].bg;
+          fb.title = '背景を' + FILLS[k].label + 'にする（選択したマス・行。選択なしなら表全体）';
+          fb.setAttribute('aria-label', '背景 ' + FILLS[k].label);
           bar.appendChild(fb);
         });
+        var nb = barBtn('', function () { applyFill(b, 'none'); }, 'sw-btn sw-none');
+        nb.title = '背景なしにする（選択したマス・行。選択なしなら表全体）'; nb.setAttribute('aria-label', '背景なし');
+        bar.appendChild(nb);
         var tb = barBtn('太字', function () { applyBold(b, 'toggle'); }, 'al-btn'); tb.style.fontWeight = '900'; tb.title = '選択したマス・行の太字を切り替え（選択なしなら表全体）';
         bar.appendChild(tb);
         var cl = document.createElement('label'); cl.className = 'hdr-opt'; cl.title = '選択したマス・行の文字色（選択なしなら表全体）';
@@ -552,7 +575,9 @@
           r.forEach(function (cell, ci) {
             var td = document.createElement('td'); td.dataset.r = ri; td.dataset.c = ci;
             td.style.verticalAlign = cellVAlign(b, ri, ci);
-            if (isBlack(b, ri, ci)) { td.className = 'k'; }
+            var fk = fillOf(b, ri, ci);
+            if (fk === 'black') { td.className = 'k'; }
+            else if (fk) { td.className = 'filled' + (FILLS[fk].dark ? ' fill-dark' : ''); td.style.background = FILLS[fk].bg; }
             var cta = document.createElement('textarea'); cta.rows = 1; cta.value = cell || '';
             cta.style.textAlign = cellAlign(b, ri, ci);
             var colv = b.col && b.col[ri + ',' + ci];
