@@ -47,6 +47,12 @@
   .ctl-cell button { font-family: inherit; width: 24px; height: 22px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--line); background: #fff; color: var(--sub); cursor: pointer; line-height: 1; padding: 0; }
   .ctl-cell button:hover { color: #fff; background: var(--ink); border-color: var(--ink); }
   .ctl-cell button.del:hover { background: var(--red); border-color: var(--red); }
+  .link-bar { max-width: 794px; margin: 0 auto 0.8rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; background: #fff; border: 1px solid #ddd; padding: 0.55rem 0.8rem; font-size: 0.78rem; }
+  .link-bar b { font-weight: 900; letter-spacing: 0.06em; margin-right: 0.2rem; }
+  .link-bar button { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.85rem; border: 1px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; }
+  .link-bar button:hover { background: var(--ink); color: #fff; }
+  .link-bar label { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--sub); cursor: pointer; margin-left: auto; }
+  .ctl-cell .lnk { position: absolute; left: -20px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; opacity: 0.8; }
   .add-row { margin-top: 0.7rem; }
   .add-row button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.65rem 1rem; width: 100%; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
   .add-row button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
@@ -60,7 +66,7 @@
     .ctl-cell .box { left: 2px; }
   }
 
-  .pdf-capture .toolbar, .pdf-capture .hint, .pdf-capture .editing-badge, .pdf-capture .add-row, .pdf-capture .ctl-cell { display: none !important; }
+  .pdf-capture .toolbar, .pdf-capture .link-bar, .pdf-capture .hint, .pdf-capture .editing-badge, .pdf-capture .add-row, .pdf-capture .ctl-cell { display: none !important; }
   .pdf-capture .sheet { width: 794px; max-width: none; border: none; padding: 2.6rem 3rem 2.4rem; }
   .pdf-capture .t-head h1 input, .pdf-capture .t-head h1 div { font-size: 2.1rem; }
   .pdf-capture table.dl th { font-size: 1.05rem; padding: 0.7rem 0.3rem; }
@@ -68,7 +74,7 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .hint, .editing-badge, .add-row, .ctl-cell { display: none !important; }
+    .toolbar, .hint, .link-bar, .editing-badge, .add-row, .ctl-cell { display: none !important; }
     .sheet { width: 100%; border: none; padding: 0; }
     table.dl tr { break-inside: avoid; }
     table.dl thead { display: table-header-group; }
@@ -88,6 +94,13 @@
   </div>
   <div class="editing-badge" id="editing-badge">✎ 保存済みの納期スケジュールを編集中（保存すると上書きされます）</div>
   <p class="hint">各マスにそのまま入力できます（↑↓←→キーで移動）。行の左の「＋」で下に行を足し、「×」で削除します。内容が長いときは、PDFが自動で複数ページになり、各ページに見出しが付きます。</p>
+
+  <div class="link-bar" id="link-bar">
+    <b>🔗 生産スケジュールと連動</b>
+    <button type="button" id="btn-pull">⇩ 生産スケジュールから取り込む</button>
+    <button type="button" id="btn-push">⇧ 生産スケジュールへ反映</button>
+    <label><input type="checkbox" id="opt-autopush" checked> 保存するとき、生産スケジュールにも自動で反映</label>
+  </div>
 
   <div class="sheet" id="sheet">
     <div class="t-head" id="t-head">
@@ -123,9 +136,10 @@
   function jpDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '/' + Number(p[1]) + '/' + Number(p[2]); }
   function grow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
 
-  function addRow(vals, afterTr) {
+  function addRow(vals, afterTr, sid) {
     vals = vals || [];
     var tr = document.createElement('tr');
+    if (sid) tr.dataset.sid = sid;
     for (var i = 0; i < COLS; i++) {
       var td = document.createElement('td');
       var ta = document.createElement('textarea'); ta.rows = 1; ta.value = vals[i] || '';
@@ -139,6 +153,7 @@
     var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = '×'; del.title = 'この行を削除';
     del.addEventListener('click', function () { if (rowsEl.children.length <= 1) { tr.querySelectorAll('textarea').forEach(function (t) { t.value = ''; grow(t); }); } else { tr.remove(); } saveDraft(); });
     box.appendChild(ins); box.appendChild(del); ctl.appendChild(box); tr.appendChild(ctl);
+    if (sid) { var lk = document.createElement('span'); lk.className = 'lnk'; lk.textContent = '🔗'; lk.title = '生産スケジュールと連動している行'; ctl.appendChild(lk); }
     if (afterTr && afterTr.parentNode === rowsEl) rowsEl.insertBefore(tr, afterTr.nextSibling); else rowsEl.appendChild(tr);
     tr.querySelectorAll('textarea').forEach(grow);
     return tr;
@@ -147,7 +162,8 @@
   function collect() {
     var rows = [];
     rowsEl.querySelectorAll('tr').forEach(function (tr) { rows.push(Array.prototype.map.call(tr.querySelectorAll('textarea'), function (t) { return t.value; })); });
-    return { id: currentId, title: $('f-title').value, date: $('f-date').value, author: $('f-author').value, rows: rows };
+    var sids = Array.prototype.map.call(rowsEl.querySelectorAll('tr'), function (tr) { return tr.dataset.sid || ''; });
+    return { id: currentId, title: $('f-title').value, date: $('f-date').value, author: $('f-author').value, rows: rows, sids: sids };
   }
   function populate(d, isCopy) {
     currentId = isCopy ? null : (d.id || null);
@@ -155,7 +171,7 @@
     $('f-date').value = isCopy ? todayIso() : (d.date || todayIso());
     $('f-author').value = d.author != null ? d.author : '石谷 豪';
     rowsEl.innerHTML = '';
-    (d.rows || []).forEach(function (r) { addRow(r); });
+    (d.rows || []).forEach(function (r, i) { addRow(r, null, d.sids && d.sids[i]); });
     while (rowsEl.children.length < DEFAULT_ROWS) addRow();
     document.body.classList.toggle('editing', !!currentId);
     rowsEl.querySelectorAll('textarea').forEach(grow);
@@ -182,6 +198,8 @@
   })();
 
   async function saveToHistory(saveOnly) {
+    // 先に生産スケジュールへ反映して、新しい行に連動の印（sid）を付けてから一覧に保存する
+    if (autoEl.checked && !/[?&]embed=1/.test(location.search)) await pushSchedule(true);
     var rec = collect();
     var has = rec.rows.some(function (r) { return r.some(function (c) { return String(c).trim(); }); });
     if (!has) { if (saveOnly) alert('保存する内容がありません。'); return false; }
@@ -204,6 +222,97 @@
     }
   }
   wireSaveOnly($('btn-save-only'), function () { return saveToHistory(true); });
+
+  /* ---------- 生産スケジュールとの連動 ---------- */
+  // 対応：顧客名＝顧客名／アイテム＝概要／本数＝本数／希望納期＝出荷希望日／返答納期＝返答納期（備考は連動しません）
+  function rowVals(tr) { return Array.prototype.map.call(tr.querySelectorAll('td:not(.ctl-cell) textarea'), function (t) { return t.value; }); }
+  function setVals(tr, v) { var ta = tr.querySelectorAll('td:not(.ctl-cell) textarea'); [0, 1, 2, 3, 4].forEach(function (i) { ta[i].value = v[i]; grow(ta[i]); }); }
+  function fromSchedule(s) { return [s.customer || '', s.note || '', s.qty == null ? '' : String(s.qty), s.date || '', s.confirmed || '']; }
+  function isBlankRow(tr) { return rowVals(tr).every(function (c) { return !String(c).trim(); }) && !tr.dataset.sid; }
+  async function loadSchedule() {
+    var res = await fetch(SYNC_API + '/schedule?_=' + Date.now());
+    if (!res.ok) throw new Error('load failed');
+    return res.json();
+  }
+  async function pullSchedule() {
+    var btn = $('btn-pull'), label = btn.textContent;
+    btn.disabled = true; btn.textContent = '取り込み中…';
+    try {
+      var all = await loadSchedule(), byId = {};
+      all.forEach(function (r) { byId[r.id] = r; });
+      var trs = Array.prototype.slice.call(rowsEl.querySelectorAll('tr'));
+      var upd = [], gone = [], linked = {};
+      trs.forEach(function (tr) {
+        var sid = tr.dataset.sid; if (!sid) return;
+        var s = byId[sid];
+        if (!s || s.done) { gone.push(tr); return; }
+        linked[sid] = true;
+        var nv = fromSchedule(s), cur = rowVals(tr).slice(0, 5);
+        if (nv.join('\u0001') !== cur.join('\u0001')) upd.push([tr, nv]);
+      });
+      var fresh = all.filter(function (r) { return !r.done && !linked[r.id] && (String(r.customer || '').trim() || String(r.note || '').trim()); });
+      if (!fresh.length && !upd.length && !gone.length) { toast('生産スケジュールとすでに同じ内容です'); return; }
+      var msg = '生産スケジュールから取り込みます。\n・新しく追加：' + fresh.length + '件\n・内容を更新：' + upd.length + '件\n・完了または削除済みのため一覧から外す：' + gone.length + '件\n（備考は変わりません）\nよろしいですか？';
+      if (!confirm(msg)) return;
+      upd.forEach(function (u) { setVals(u[0], u[1]); });
+      gone.forEach(function (tr) { tr.remove(); });
+      // 空の行は取り除いてから、新しい行を足す
+      Array.prototype.slice.call(rowsEl.querySelectorAll('tr')).forEach(function (tr) { if (isBlankRow(tr)) tr.remove(); });
+      fresh.forEach(function (s) { addRow(fromSchedule(s).concat(['']), null, s.id); });
+      while (rowsEl.children.length < DEFAULT_ROWS) addRow();
+      saveDraft();
+      toast('取り込みました（追加 ' + fresh.length + '・更新 ' + upd.length + '・外した ' + gone.length + '）');
+    } catch (e) { console.error(e); alert('生産スケジュールを読み込めませんでした。通信状況を確認してもう一度お試しください。'); }
+    finally { btn.disabled = false; btn.textContent = label; }
+  }
+  // 返答納期などの変更を生産スケジュールに書き込む（塗装状況・完了は触りません）
+  async function pushSchedule(silent) {
+    var trs = Array.prototype.slice.call(rowsEl.querySelectorAll('tr')).filter(function (tr) { return rowVals(tr).slice(0, 5).some(function (c) { return String(c).trim(); }); });
+    if (!trs.length) { if (!silent) alert('反映する行がありません。'); return false; }
+    try {
+      var all = await loadSchedule(), byId = {};
+      all.forEach(function (r) { byId[r.id] = r; });
+      var stamp = Date.now(), added = 0, changed = 0, news = [];
+      trs.forEach(function (tr, i) {
+        var v = rowVals(tr), q = String(v[2]).trim(), sid = tr.dataset.sid;
+        var fields = { customer: v[0], note: v[1], qty: /^\d+$/.test(q) ? Number(q) : v[2], date: v[3], confirmed: v[4] };
+        var s = sid ? byId[sid] : null;
+        if (s) {
+          var diff = Object.keys(fields).some(function (k) { return String(s[k] == null ? '' : s[k]) !== String(fields[k]); });
+          if (diff) { Object.assign(s, fields); changed++; }
+        } else {
+          var id = sid || ('dl-' + stamp + '-' + i);
+          var row = Object.assign({ id: id, paint: '未着手', done: false }, fields);
+          all.push(row); byId[id] = row; tr.dataset.sid = id; news.push(tr); added++;
+        }
+      });
+      if (added || changed) {
+        var put = await fetch(SYNC_API + '/schedule', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+        if (!put.ok) throw new Error('save failed');
+      }
+      news.forEach(function (tr) {
+        var ctl = tr.querySelector('.ctl-cell');
+        if (ctl && !ctl.querySelector('.lnk')) { var lk = document.createElement('span'); lk.className = 'lnk'; lk.textContent = '🔗'; lk.title = '生産スケジュールと連動している行'; ctl.appendChild(lk); }
+      });
+      saveDraft();
+      if (!silent) toast(added || changed ? '生産スケジュールに反映しました（追加 ' + added + '・更新 ' + changed + '）' : '生産スケジュールとすでに同じ内容です');
+      else if (added || changed) toast('生産スケジュールにも反映しました（追加 ' + added + '・更新 ' + changed + '）');
+      return true;
+    } catch (e) {
+      console.error(e);
+      alert('生産スケジュールへの反映に失敗しました。通信状況を確認してもう一度お試しください。');
+      return false;
+    }
+  }
+  var autoEl = $('opt-autopush');
+  try { autoEl.checked = localStorage.getItem('delivery-autopush') !== '0'; } catch (e) {}
+  autoEl.addEventListener('change', function () { try { localStorage.setItem('delivery-autopush', autoEl.checked ? '1' : '0'); } catch (e) {} });
+  $('btn-pull').addEventListener('click', pullSchedule);
+  $('btn-push').addEventListener('click', function () { var b = this, l = b.textContent; b.disabled = true; b.textContent = '反映中…'; pushSchedule(false).then(function () { b.disabled = false; b.textContent = l; }); });
+  function toast(m) {
+    var t = $('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.style.cssText = 'position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);background:#111;color:#fff;padding:0.6rem 1.1rem;border-radius:40px;font-size:0.82rem;font-weight:700;z-index:9999;transition:opacity .2s;opacity:0;pointer-events:none'; document.body.appendChild(t); }
+    t.textContent = m; t.style.opacity = '1'; clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.opacity = '0'; }, 2600);
+  }
 
   /* ---------- PDF（A4縦。長いときは複数ページ、各ページに見出し） ---------- */
   function swapFields() {
