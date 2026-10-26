@@ -144,6 +144,10 @@
     .prod-card-en { font-family: 'DM Sans',sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red2); margin-bottom: 0.25rem; }
     .prod-card-name { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.2rem; color: var(--fg); }
     .prod-card-sub { font-size: 0.72rem; color: var(--fg3); }
+    .prod-cat-group { margin-top: 2.5rem; scroll-margin-top: 96px; }
+    .prod-cat-label { display: flex; align-items: baseline; gap: 0.7rem; padding: 0.55rem 0; border-bottom: 2px solid var(--wborder); margin-bottom: 0; }
+    .prod-cat-label-en { font-family: 'DM Sans',sans-serif; font-size: 1rem; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg); }
+    .prod-cat-label-ja { font-size: 0.78rem; color: var(--fg3); letter-spacing: 0.05em; }
 
     /* ─── QUICK NAV ─── */
     .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
@@ -538,6 +542,51 @@
   </div>
 </section>
 
+<!-- CATEGORY -->
+<section class="category">
+  <div class="inner">
+    <div class="sec-head">
+      <div class="sec-head-en">CATEGORY</div>
+      <div class="sec-head-ja">カテゴリーから探す</div>
+    </div>
+    <div class="sec-divider"></div>
+    <div class="cat-grid">
+      <a href="#cat-offshore" class="cat-card">
+        <div class="cat-card-bg" style="background-image: url('offshore-bg.jpg');"></div>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <div class="cat-card-en">Offshore</div>
+          <div class="cat-card-ja">オフショア</div>
+        </div>
+      </a>
+      <a href="#cat-shore" class="cat-card">
+        <div class="cat-card-bg" style="background-image: url('shore-bg.jpg');"></div>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <div class="cat-card-en">Shore</div>
+          <div class="cat-card-ja">ショア</div>
+        </div>
+      </a>
+      <a href="#cat-boat" class="cat-card">
+        <div class="cat-card-bg" style="background-image: url('boatrod-bg.jpg');"></div>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <div class="cat-card-en">Boat Rod</div>
+          <div class="cat-card-ja">船竿</div>
+        </div>
+      </a>
+      <a href="#cat-bottom" class="cat-card">
+        <div class="cat-card-bg" style="background-image: url('bottom-bg.jpg');"></div>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <div class="cat-card-en">Bottom</div>
+          <div class="cat-card-ja">底物</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- PRODUCTS -->
 <section class="products" id="products">
   <div class="inner">
@@ -550,142 +599,147 @@
       <p class="color-order-sub">※当社商品に定番カラーはございません。アングラーそれぞれのカラーカスタムになります。</p>
     </div>
     <div class="sec-divider"></div>
-    <div class="products-grid">
 
-      <a href="strixedge" class="prod-card">
-        <div class="prod-card-img">
-          <img src="strixedge-banner-e.webp" alt="STRIX EDGE" loading="lazy" />
-        </div>
-        <div class="prod-card-body">
-          <div class="prod-card-en">イカメタル / ティップラン</div>
-          <div class="prod-card-name">STRIX EDGE</div>
-          <div class="prod-card-sub">チタントップ搭載 高感度モデル</div>
-        </div>
-      </a>
-
-      <a href="gtlj" class="prod-card">
-        <div class="prod-card-img">
-          <img src="gtlj-banner-b.webp" alt="GTLJ" loading="lazy" />
-        </div>
-        <div class="prod-card-body">
-          <div class="prod-card-en">ライトジギング</div>
-          <div class="prod-card-name">GTLJ</div>
-          <div class="prod-card-sub">超万能ライトジギングロッド</div>
-        </div>
-      </a>
-
-      <a href="gtslj" class="prod-card">
-        <div class="prod-card-img">
-          <img src="gtslj-banner-a.webp" alt="GTSLJ" loading="lazy" />
-        </div>
-        <div class="prod-card-body">
-          <div class="prod-card-en">ライトオフショア</div>
-          <div class="prod-card-name">GTSLJ</div>
-          <div class="prod-card-sub">超万能ライトオフショアロッド</div>
-        </div>
-      </a>
-
-      <a href="gtj" class="prod-card">
-        <div class="prod-card-img">
-          <img src="gtj-banner.png" alt="GT-J" loading="lazy" />
-        </div>
-        <div class="prod-card-body">
-          <div class="prod-card-en">ジギング</div>
-          <div class="prod-card-name">GT-J</div>
-          <div class="prod-card-sub">ジギング専用モデル</div>
-        </div>
-      </a>
-
-      <a href="gts" class="prod-card">
-        <div class="prod-card-img">
-          <img src="gts-banner.png" alt="GTS" loading="lazy" />
-        </div>
-        <div class="prod-card-body">
-          <div class="prod-card-en">スロージギング</div>
-          <div class="prod-card-name">GTS</div>
-          <div class="prod-card-sub">スロージギング対応モデル</div>
-        </div>
-      </a>
-
-      <a href="gtr" class="prod-card">
-        <div class="prod-card-img">
-          <img src="gtr-banner.png" alt="GTR" loading="lazy" />
-        </div>
-        <div class="prod-card-body">
-          <div class="prod-card-en">タイラバ</div>
-          <div class="prod-card-name">GTR</div>
-          <div class="prod-card-sub">タイラバ専用設計</div>
-        </div>
-      </a>
-
-      <a href="gtx" class="prod-card">
-        <div class="prod-card-img" style="background:var(--card-bg);display:flex;align-items:center;justify-content:center;">
-          <span style="font-family:'DM Sans',sans-serif;font-size:2rem;font-weight:900;color:rgba(0,0,0,0.07);">GTX</span>
-        </div>
-        <div class="prod-card-body">
-          <div class="prod-card-en">ロックショア</div>
-          <div class="prod-card-name">GTX</div>
-          <div class="prod-card-sub">ロックショア対応モデル</div>
-        </div>
-      </a>
-
-      <a href="ika" class="prod-card">
-        <div class="prod-card-img" style="background:var(--card-bg);display:flex;align-items:center;justify-content:center;">
-          <span style="font-family:'DM Sans',sans-serif;font-size:1.5rem;font-weight:900;color:rgba(0,0,0,0.07);">イカ竿</span>
-        </div>
-        <div class="prod-card-body">
-          <div class="prod-card-en">船竿</div>
-          <div class="prod-card-name">イカ竿</div>
-          <div class="prod-card-sub">船からのイカ釣り専用</div>
-        </div>
-      </a>
-
+    <!-- offshore -->
+    <div id="cat-offshore" class="prod-cat-group">
+      <div class="prod-cat-label">
+        <span class="prod-cat-label-en">Offshore</span>
+        <span class="prod-cat-label-ja">オフショア</span>
+      </div>
+      <div class="products-grid">
+        <a href="strixedge" class="prod-card">
+          <div class="prod-card-img">
+            <img src="strixedge-banner-e.webp" alt="STRIX EDGE" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">イカメタル / ティップラン</div>
+            <div class="prod-card-name">STRIX EDGE</div>
+            <div class="prod-card-sub">チタントップ搭載 高感度モデル</div>
+          </div>
+        </a>
+        <a href="gtlj" class="prod-card">
+          <div class="prod-card-img">
+            <img src="gtlj-banner-b.webp" alt="GTLJ" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">ライトジギング</div>
+            <div class="prod-card-name">GTLJ</div>
+            <div class="prod-card-sub">超万能ライトジギングロッド</div>
+          </div>
+        </a>
+        <a href="gtslj" class="prod-card">
+          <div class="prod-card-img">
+            <img src="gtslj-banner-a.webp" alt="GTSLJ" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">ライトオフショア</div>
+            <div class="prod-card-name">GTSLJ</div>
+            <div class="prod-card-sub">超万能ライトオフショアロッド</div>
+          </div>
+        </a>
+        <a href="gtj" class="prod-card">
+          <div class="prod-card-img">
+            <img src="gtj-banner.png" alt="GT-J" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">ジギング</div>
+            <div class="prod-card-name">GT-J</div>
+            <div class="prod-card-sub">ジギング専用モデル</div>
+          </div>
+        </a>
+        <a href="gts" class="prod-card">
+          <div class="prod-card-img">
+            <img src="gts-banner.png" alt="GTS" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">スロージギング</div>
+            <div class="prod-card-name">GTS</div>
+            <div class="prod-card-sub">スロージギング対応モデル</div>
+          </div>
+        </a>
+        <a href="gtr" class="prod-card">
+          <div class="prod-card-img">
+            <img src="gtr-banner.png" alt="GTR" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">タイラバ</div>
+            <div class="prod-card-name">GTR</div>
+            <div class="prod-card-sub">タイラバ専用設計</div>
+          </div>
+        </a>
+      </div>
     </div>
-  </div>
-</section>
 
-<!-- CATEGORY -->
-<section class="category">
-  <div class="inner">
-    <div class="sec-head">
-      <div class="sec-head-en">CATEGORY</div>
-      <div class="sec-head-ja">カテゴリーから探す</div>
+    <!-- shore -->
+    <div id="cat-shore" class="prod-cat-group">
+      <div class="prod-cat-label">
+        <span class="prod-cat-label-en">Shore</span>
+        <span class="prod-cat-label-ja">ショア</span>
+      </div>
+      <div class="products-grid">
+        <a href="gtx" class="prod-card">
+          <div class="prod-card-img">
+            <img src="gtx-banner.webp" alt="GTX" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">ロックショア</div>
+            <div class="prod-card-name">GTX</div>
+            <div class="prod-card-sub">ロックショア対応モデル</div>
+          </div>
+        </a>
+      </div>
     </div>
-    <div class="sec-divider"></div>
-    <div class="cat-grid">
-      <a href="products?cat=offshore" class="cat-card">
-        <div class="cat-card-bg" style="background-image: url('offshore-bg.jpg');"></div>
-        <div class="cat-card-overlay"></div>
-        <div class="cat-card-content">
-          <div class="cat-card-en">Offshore</div>
-          <div class="cat-card-ja">オフショア</div>
-        </div>
-      </a>
-      <a href="products?cat=shore" class="cat-card">
-        <div class="cat-card-bg" style="background-image: url('shore-bg.jpg');"></div>
-        <div class="cat-card-overlay"></div>
-        <div class="cat-card-content">
-          <div class="cat-card-en">Shore</div>
-          <div class="cat-card-ja">ショア</div>
-        </div>
-      </a>
-      <a href="products?cat=boat" class="cat-card">
-        <div class="cat-card-bg" style="background-image: url('boatrod-bg.jpg');"></div>
-        <div class="cat-card-overlay"></div>
-        <div class="cat-card-content">
-          <div class="cat-card-en">Boat Rod</div>
-          <div class="cat-card-ja">船竿</div>
-        </div>
-      </a>
-      <a href="products?cat=bottom" class="cat-card">
-        <div class="cat-card-bg" style="background-image: url('bottom-bg.jpg');"></div>
-        <div class="cat-card-overlay"></div>
-        <div class="cat-card-content">
-          <div class="cat-card-en">Bottom</div>
-          <div class="cat-card-ja">底物</div>
-        </div>
-      </a>
+
+    <!-- boat -->
+    <div id="cat-boat" class="prod-cat-group">
+      <div class="prod-cat-label">
+        <span class="prod-cat-label-en">Boat Rod</span>
+        <span class="prod-cat-label-ja">船竿</span>
+      </div>
+      <div class="products-grid">
+        <a href="ika" class="prod-card">
+          <div class="prod-card-img" style="background:var(--card-bg);display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'DM Sans',sans-serif;font-size:1.5rem;font-weight:900;color:rgba(0,0,0,0.07);">イカ竿</span>
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">船竿</div>
+            <div class="prod-card-name">イカ竿</div>
+            <div class="prod-card-sub">船からのイカ釣り専用</div>
+          </div>
+        </a>
+      </div>
     </div>
+
+    <!-- bottom -->
+    <div id="cat-bottom" class="prod-cat-group">
+      <div class="prod-cat-label">
+        <span class="prod-cat-label-en">Bottom</span>
+        <span class="prod-cat-label-ja">底物</span>
+      </div>
+      <div class="products-grid">
+        <a href="ishidai" class="prod-card">
+          <div class="prod-card-img">
+            <img src="ishidai-banner.png" alt="VS石鯛" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">底物</div>
+            <div class="prod-card-name">VS石鯛</div>
+            <div class="prod-card-sub">石鯛専用設計</div>
+          </div>
+        </a>
+        <a href="vskue" class="prod-card">
+          <div class="prod-card-img">
+            <img src="vskue-banner2.webp" alt="VS九絵" loading="lazy" />
+          </div>
+          <div class="prod-card-body">
+            <div class="prod-card-en">底物</div>
+            <div class="prod-card-name">VS九絵</div>
+            <div class="prod-card-sub">クエ専用設計</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -863,6 +917,15 @@
       });
     });
   }
+
+  // Category smooth scroll (offset for fixed nav)
+  document.querySelectorAll('a[href^="#cat-"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var el = document.querySelector(a.getAttribute('href'));
+      if(el){ window.scrollTo({top: el.getBoundingClientRect().top + window.pageYOffset - 96, behavior:'smooth'}); }
+    });
+  });
 
   // Hero slider
   var hIdx = 0, hTotal = 10;
