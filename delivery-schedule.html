@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>納期スケジュール（希望納期リスト）| IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #999; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
+
+  .toolbar { max-width: 794px; margin: 0 auto 0.8rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .toolbar .back { margin-right: auto; font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .toolbar .back:hover { color: var(--red); }
+  .toolbar .hist { font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; border: 1px solid var(--ink); padding: 0.6rem 1rem; background: #fff; }
+  .toolbar .hist:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
+  .editing-badge { display: none; max-width: 794px; margin: 0 auto 0.6rem; font-size: 0.76rem; font-weight: 700; color: var(--red); }
+  .editing .editing-badge { display: block; }
+  .hint { max-width: 794px; margin: 0 auto 0.9rem; font-size: 0.72rem; color: var(--sub); }
+
+  .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2.6rem 2.8rem 2.4rem; }
+  .sheet input, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; font-size: inherit; }
+  .sheet input:focus, .sheet textarea:focus { outline: none; background: #fff8e0; }
+  .sheet textarea { resize: none; overflow: hidden; display: block; }
+
+  .t-head h1 { text-align: center; }
+  .t-head h1 input { text-align: center; font-size: 2.1rem; font-weight: 900; letter-spacing: 0.03em; padding: 0.1rem 0; }
+  .t-meta { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0.4rem 1.6rem; margin: 0.5rem 0 1.4rem; font-size: 0.95rem; color: var(--sub); }
+  .t-meta label { display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
+  .t-meta input { width: auto; font-size: 0.95rem; }
+  .t-meta input.author { width: 7rem; }
+
+  .tbl-wrap { position: relative; }
+  table.dl { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.dl th { background: var(--ink); color: #fff; font-weight: 900; font-size: 1.05rem; letter-spacing: 0.04em; padding: 0.7rem 0.3rem; text-align: center; border: 2px solid var(--ink); }
+  table.dl td { border: 2px solid var(--ink); padding: 0; vertical-align: middle; }
+  table.dl td textarea { text-align: center; font-size: 1rem; line-height: 1.45; padding: 0.55rem 0.4rem; min-height: 2.6rem; }
+  table.dl th.ctl-cell { background: transparent; border: none; padding: 0; width: 0; }
+  .ctl-cell { position: relative; border: none !important; width: 0; }
+  .ctl-cell .box { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; }
+  .ctl-cell button { font-family: inherit; width: 24px; height: 22px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--line); background: #fff; color: var(--sub); cursor: pointer; line-height: 1; padding: 0; }
+  .ctl-cell button:hover { color: #fff; background: var(--ink); border-color: var(--ink); }
+  .ctl-cell button.del:hover { background: var(--red); border-color: var(--red); }
+  .add-row { margin-top: 0.7rem; }
+  .add-row button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.65rem 1rem; width: 100%; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
+  .add-row button:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+
+  @media screen and (max-width: 800px) {
+    body { padding: 1rem 0.4rem 3rem; }
+    .sheet { padding: 1.2rem 0.7rem 1.4rem; }
+    .t-head h1 input { font-size: 1.5rem; }
+    table.dl th { font-size: 0.78rem; padding: 0.5rem 0.1rem; }
+    table.dl td textarea { font-size: 0.82rem; padding: 0.4rem 0.15rem; }
+    .ctl-cell .box { left: 2px; }
+  }
+
+  .pdf-capture .toolbar, .pdf-capture .hint, .pdf-capture .editing-badge, .pdf-capture .add-row, .pdf-capture .ctl-cell { display: none !important; }
+  .pdf-capture .sheet { width: 794px; max-width: none; border: none; padding: 2.6rem 3rem 2.4rem; }
+  .pdf-capture .t-head h1 input, .pdf-capture .t-head h1 div { font-size: 2.1rem; }
+  .pdf-capture table.dl th { font-size: 1.05rem; padding: 0.7rem 0.3rem; }
+  .pdf-capture table.dl td textarea, .pdf-capture table.dl td div { font-size: 1rem; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .hint, .editing-badge, .add-row, .ctl-cell { display: none !important; }
+    .sheet { width: 100%; border: none; padding: 0; }
+    table.dl tr { break-inside: avoid; }
+    table.dl thead { display: table-header-group; }
+    @page { size: A4; margin: 1.2cm; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a class="back" href="tools.html">← ツール一覧</a>
+    <a class="hist" href="delivery-schedule-history.html">📋 保存一覧</a>
+    <button type="button" class="secondary" id="btn-reset">新規</button>
+    <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
+    <button type="button" id="btn-save">PDFとして保存</button>
+  </div>
+  <div class="editing-badge" id="editing-badge">✎ 保存済みの納期スケジュールを編集中（保存すると上書きされます）</div>
+  <p class="hint">各マスにそのまま入力できます（↑↓←→キーで移動）。行の左の「＋」で下に行を足し、「×」で削除します。内容が長いときは、PDFが自動で複数ページになり、各ページに見出しが付きます。</p>
+
+  <div class="sheet" id="sheet">
+    <div class="t-head" id="t-head">
+      <h1><input type="text" id="f-title" value="希望納期リスト"></h1>
+      <div class="t-meta">
+        <label>日付<input type="date" id="f-date"></label>
+        <label>作成者<input type="text" class="author" id="f-author" value="石谷 豪"></label>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="dl" id="dl">
+        <thead><tr><th>顧客名</th><th>アイテム</th><th>本数</th><th>希望納期</th><th>返答納期</th><th>備考</th><th class="ctl-cell"></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="add-row"><button type="button" id="btn-add">＋ 行を追加（一番下）</button></div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var STORE_KEY = 'delivery-schedule-draft';
+  var TAG = '__delivery';
+  var COLS = 6;
+  var DEFAULT_ROWS = 12;
+  var currentId = null;
+  var rowsEl = document.getElementById('rows');
+
+  function $(id) { return document.getElementById(id); }
+  function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function jpDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '/' + Number(p[1]) + '/' + Number(p[2]); }
+  function grow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+
+  function addRow(vals, afterTr) {
+    vals = vals || [];
+    var tr = document.createElement('tr');
+    for (var i = 0; i < COLS; i++) {
+      var td = document.createElement('td');
+      var ta = document.createElement('textarea'); ta.rows = 1; ta.value = vals[i] || '';
+      ta.addEventListener('input', function () { grow(this); saveDraft(); });
+      td.appendChild(ta); tr.appendChild(td);
+    }
+    var ctl = document.createElement('td'); ctl.className = 'ctl-cell';
+    var box = document.createElement('div'); box.className = 'box';
+    var ins = document.createElement('button'); ins.type = 'button'; ins.textContent = '＋'; ins.title = 'この下に行を追加';
+    ins.addEventListener('click', function () { var n = addRow([], tr); n.querySelector('textarea').focus(); saveDraft(); });
+    var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = '×'; del.title = 'この行を削除';
+    del.addEventListener('click', function () { if (rowsEl.children.length <= 1) { tr.querySelectorAll('textarea').forEach(function (t) { t.value = ''; grow(t); }); } else { tr.remove(); } saveDraft(); });
+    box.appendChild(ins); box.appendChild(del); ctl.appendChild(box); tr.appendChild(ctl);
+    if (afterTr && afterTr.parentNode === rowsEl) rowsEl.insertBefore(tr, afterTr.nextSibling); else rowsEl.appendChild(tr);
+    tr.querySelectorAll('textarea').forEach(grow);
+    return tr;
+  }
+
+  function collect() {
+    var rows = [];
+    rowsEl.querySelectorAll('tr').forEach(function (tr) { rows.push(Array.prototype.map.call(tr.querySelectorAll('textarea'), function (t) { return t.value; })); });
+    return { id: currentId, title: $('f-title').value, date: $('f-date').value, author: $('f-author').value, rows: rows };
+  }
+  function populate(d, isCopy) {
+    currentId = isCopy ? null : (d.id || null);
+    $('f-title').value = d.title != null ? d.title : '希望納期リスト';
+    $('f-date').value = isCopy ? todayIso() : (d.date || todayIso());
+    $('f-author').value = d.author != null ? d.author : '石谷 豪';
+    rowsEl.innerHTML = '';
+    (d.rows || []).forEach(function (r) { addRow(r); });
+    while (rowsEl.children.length < DEFAULT_ROWS) addRow();
+    document.body.classList.toggle('editing', !!currentId);
+    rowsEl.querySelectorAll('textarea').forEach(grow);
+  }
+  function saveDraft() { try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+  ['f-title', 'f-date', 'f-author'].forEach(function (id) { $(id).addEventListener('input', saveDraft); });
+  $('btn-add').addEventListener('click', function () { addRow().querySelector('textarea').focus(); saveDraft(); });
+  $('btn-print').addEventListener('click', function () { window.print(); });
+  $('btn-reset').addEventListener('click', function () {
+    if (!confirm('新しい納期スケジュールを始めますか？今の入力内容は消えます（保存一覧の記録は消えません）。')) return;
+    populate({ author: $('f-author').value }); saveDraft();
+  });
+  window.addEventListener('resize', function () { rowsEl.querySelectorAll('textarea').forEach(grow); });
+
+  (function init() {
+    var data = null, isCopy = false;
+    try {
+      var raw = localStorage.getItem('delivery-reload');
+      if (raw) { localStorage.removeItem('delivery-reload'); data = JSON.parse(raw); isCopy = !!data.__copy; }
+    } catch (e) {}
+    if (!data) { try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (data) data.date = todayIso(); } catch (e) {} }
+    populate(data || {}, isCopy);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { rowsEl.querySelectorAll('textarea').forEach(grow); });
+  })();
+
+  async function saveToHistory(saveOnly) {
+    var rec = collect();
+    var has = rec.rows.some(function (r) { return r.some(function (c) { return String(c).trim(); }); });
+    if (!has) { if (saveOnly) alert('保存する内容がありません。'); return false; }
+    if (!rec.id) rec.id = 'dl-' + Date.now();
+    rec[TAG] = true; rec.savedAt = new Date().toISOString();
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var idx = all.findIndex(function (x) { return x[TAG] && x.id === rec.id; });
+      if (idx >= 0) all[idx] = rec; else all.push(rec);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      if (!put.ok) throw new Error('save failed');
+      currentId = rec.id; document.body.classList.add('editing'); saveDraft();
+      return true;
+    } catch (e) {
+      console.error(e);
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '納期スケジュールの保存一覧への保存に失敗しました。');
+      return false;
+    }
+  }
+  wireSaveOnly($('btn-save-only'), function () { return saveToHistory(true); });
+
+  /* ---------- PDF（A4縦。長いときは複数ページ、各ページに見出し） ---------- */
+  function swapFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet input[type="text"], .sheet input[type="date"], .sheet textarea').forEach(function (el) {
+      var text = el.value;
+      if (el.type === 'date') text = jpDate(el.value);
+      var cs = getComputedStyle(el), o = document.createElement('div');
+      o.textContent = text || ' ';
+      var inline = el.type === 'date' || el.closest('.t-meta');
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.45' : '1.3') + ';white-space:pre-wrap;word-break:break-word;' + (inline ? 'display:inline-block;width:auto;' : 'width:100%;') + (el.tagName === 'TEXTAREA' ? 'min-height:2.6rem;' : '');
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+
+  async function renderPageCanvases() {
+    document.body.classList.add('pdf-capture');
+    var swaps = swapFields();
+    var wrappers = [];
+    try {
+      var sheet = $('sheet'), W = 794, PAGE_H = Math.round(W * 297 / 210);
+      var head = $('t-head'), table = $('dl'), thead = table.querySelector('thead');
+      var padV = parseFloat(getComputedStyle(sheet).paddingTop) + parseFloat(getComputedStyle(sheet).paddingBottom);
+      var headH = head.getBoundingClientRect().height, theadH = thead.getBoundingClientRect().height;
+      var trs = Array.prototype.slice.call(rowsEl.querySelectorAll('tr'));
+      // 中身が空の行は、後ろにまとめて出てきた分は省く（途中の空行は残す）
+      var lastFilled = -1;
+      trs.forEach(function (tr, i) { if (Array.prototype.some.call(tr.querySelectorAll('td:not(.ctl-cell) div'), function (d) { return d.textContent.trim(); })) lastFilled = i; });
+      var use = trs.slice(0, Math.max(lastFilled + 1, 1));
+      var pages = [], cur = [], used = headH + theadH, cap = PAGE_H - padV - 6;
+      use.forEach(function (tr) {
+        var h = tr.getBoundingClientRect().height;
+        if (cur.length && used + h > cap) { pages.push(cur); cur = []; used = theadH; }
+        cur.push(tr); used += h;
+      });
+      if (cur.length) pages.push(cur);
+      var out = [];
+      for (var p = 0; p < pages.length; p++) {
+        var w = document.createElement('div');
+        w.className = 'sheet';
+        w.style.cssText = 'position:fixed;left:-10000px;top:0;width:' + W + 'px;height:' + PAGE_H + 'px;max-width:none;border:none;margin:0;overflow:hidden;background:#fff;';
+        if (p === 0) w.appendChild(head.cloneNode(true));
+        var t = document.createElement('table'); t.className = 'dl';
+        t.appendChild(thead.cloneNode(true));
+        var tb = document.createElement('tbody');
+        pages[p].forEach(function (tr) { var c = tr.cloneNode(true); tb.appendChild(c); });
+        t.appendChild(tb); w.appendChild(t);
+        document.body.appendChild(w); wrappers.push(w);
+        out.push(await html2canvas(w, { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 }));
+      }
+      return out;
+    } finally {
+      wrappers.forEach(function (w) { w.remove(); });
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      document.body.classList.remove('pdf-capture');
+      rowsEl.querySelectorAll('textarea').forEach(grow);
+    }
+  }
+  window.captureForBulk = renderPageCanvases;
+
+  $('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    try {
+      var canvases = await renderPageCanvases();
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      canvases.forEach(function (c, i) { if (i > 0) pdf.addPage(); pdf.addImage(c.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297); });
+      var name = ($('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || '納期スケジュール') + '_' + $('f-date').value.replace(/-/g, '') + '.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
+      btn.textContent = '一覧に保存中…';
+      await saveToHistory(false);
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+</script>
+<script src="arrow-nav.js"></script>
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        if (t[0] !== t[1]) { sessionStorage.setItem(k, '1'); fetch(p, { cache: 'reload' }).then(function () { location.reload(); }); }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>

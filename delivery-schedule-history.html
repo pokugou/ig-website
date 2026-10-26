@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>納期スケジュール一覧 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #ccc; --line2: #e2e2e2; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 1.6rem 1.2rem 4rem; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .back-link { display: inline-block; margin-bottom: 0.6rem; font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; }
+  .back-link:hover { color: var(--red); }
+  header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.6rem; }
+  header h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
+  header .brand { font-size: 0.75rem; font-weight: 700; color: var(--sub); }
+  .search-box { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+  .search-box input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.75rem 1rem; }
+  .search-box input:focus { outline: none; border-color: var(--red); }
+  .status-line { font-size: 0.74rem; color: var(--sub); margin-bottom: 1.2rem; }
+  .card { background: var(--paper); border: 1px solid var(--line); margin-bottom: 0.3rem; }
+  .summary { display: flex; align-items: center; gap: 0.7rem; padding: 0.45rem 0.9rem; line-height: 1.35; cursor: pointer; flex-wrap: wrap; }
+  .summary:hover { background: #fafafa; }
+  .summary .who { font-weight: 700; font-size: 0.95rem; flex: 1 1 8rem; }
+  .summary .total { font-weight: 900; font-size: 0.95rem; white-space: nowrap; }
+  .summary .when { font-size: 0.75rem; color: var(--sub); white-space: nowrap; }
+  .summary .arrow { font-size: 0.7rem; color: var(--sub); transition: transform 0.15s; }
+  .card.open .arrow { transform: rotate(90deg); }
+  .detail { display: none; border-top: 1px solid var(--line2); padding: 1rem 1.1rem 1.2rem; }
+  .card.open .detail { display: block; }
+  .actions { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .edit-btn { flex: 1; font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.7rem 1rem; cursor: pointer; }
+  .edit-btn:hover { background: var(--red); border-color: var(--red); }
+  .again-btn { background: var(--red); border-color: var(--red); }
+  .again-btn:hover { background: #a01a00; border-color: #a01a00; }
+  .delete-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--sub); background: #fff; border: 1px solid var(--line); padding: 0.7rem 1rem; cursor: pointer; white-space: nowrap; }
+  .delete-btn:hover { color: #fff; background: var(--red); border-color: var(--red); }
+  .row { display: grid; grid-template-columns: 140px 1fr; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px dotted var(--line2); font-size: 0.86rem; }
+  .row .dl { font-weight: 700; color: var(--sub); }
+  .row .dv { white-space: pre-wrap; }
+  .thumbs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+  .thumbs img { width: 110px; height: auto; border: 1px solid var(--line); }
+  .select-bar { display: none; background: var(--paper); border: 1px solid var(--line); padding: 0.7rem 1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .select-bar.active { display: flex; }
+  .select-bar span { font-size: 0.8rem; color: var(--sub); }
+  .select-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .select-bar button { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.5rem 0.9rem; cursor: pointer; white-space: nowrap; }
+  .select-bar button:disabled { opacity: 0.6; cursor: default; }
+  .select-bar button:hover { background: var(--red); border-color: var(--red); }
+  .summary .pick { width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
+  .summary .printed-badge { font-size: 0.68rem; font-weight: 700; color: #1a7a3c; background: #e4f5e9; border: 1px solid #1a7a3c; padding: 0.15rem 0.5rem; white-space: nowrap; flex-shrink: 0; }
+  .print-toggle-btn { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink); background: #fff; border: 1px solid var(--line); padding: 0.7rem 1rem; cursor: pointer; white-space: nowrap; }
+  .print-toggle-btn:hover { border-color: var(--ink); }
+  .kind-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+  .kind-chip { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.95rem; border: 1px solid var(--line); background: #fff; border-radius: 40px; cursor: pointer; color: var(--sub); }
+  .kind-chip span { font-size: 0.68rem; opacity: 0.75; margin-left: 0.3rem; }
+  .kind-chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .empty { text-align: center; color: var(--sub); padding: 3rem 1rem; font-size: 0.85rem; }
+  @media screen and (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 0.1rem; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back-link" href="delivery-schedule.html">← 納期スケジュールに戻る</a>
+    <header>
+      <h1>納期スケジュール一覧</h1>
+      <div class="brand">IG Rod Planning ／ 社内共有用</div>
+    </header>
+    <div class="search-box"><input type="text" id="f-search" placeholder="顧客名・アイテムなどで検索"></div>
+    <p class="status-line" id="status-line">読み込み中…</p>
+    <div class="select-bar" id="select-bar">
+      <span id="select-count">0件選択中</span>
+      <div class="select-bar-actions">
+        <button type="button" id="btn-pdf">選択したものをまとめてPDF保存</button>
+        <button type="button" id="btn-bulk-printed">印刷済みにする</button>
+        <button type="button" id="btn-bulk-unprinted">印刷済みを解除</button>
+        <button type="button" id="btn-bulk-delete">削除</button>
+        <button type="button" id="btn-bulk-clear">選択解除</button>
+      </div>
+    </div>
+
+    <div id="list"></div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script src="bulk-pdf.js"></script>
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var specs = [];
+  function isDoc(r) { return r.__delivery; }
+  var term = '';
+  var selected = {};
+
+  // 一覧の1件だけをPDF保存する（「選択したものをまとめてPDF保存」の仕組みを、その1件だけ選んだ状態で使う）
+  function pdfOne(key, btn) {
+    var keep = selected; selected = {}; selected[key] = true;
+    try { document.getElementById('btn-pdf').click(); } finally { selected = keep; }
+    if (btn) { var l = btn.textContent; btn.disabled = true; btn.textContent = '作成中…'; setTimeout(function () { btn.disabled = false; btn.textContent = l; }, 2500); }
+  }
+  function pdfBtn(key, cls) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = 'PDF保存';
+    b.addEventListener('click', function (e) { e.stopPropagation(); pdfOne(key, b); });
+    return b;
+  }
+
+  function fmtDate(iso) {
+    var p = iso ? iso.split('-') : null;
+    return p && p.length === 3 ? p[0] + '/' + Number(p[1]) + '/' + Number(p[2]) : '';
+  }
+  function matches(o) {
+    if (!term) return true;
+    var hay = [o.title, o.author].concat((o.rows || []).map(function (r) { return (r || []).join(' '); })).join(' ').toLowerCase();
+    return hay.indexOf(term) !== -1;
+  }
+  function row(l, v) {
+    var r = document.createElement('div'); r.className = 'row';
+    var a = document.createElement('span'); a.className = 'dl'; a.textContent = l;
+    var b = document.createElement('span'); b.className = 'dv'; b.textContent = v;
+    r.appendChild(a); r.appendChild(b); return r;
+  }
+
+  // Re-reads the latest data and changes only the chosen records, so anything saved from another
+  // tab or device after this page was opened is never overwritten.
+  async function mutate(ids, op, flag) {
+    var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+    if (!res.ok) throw new Error('load failed');
+    var all = await res.json();
+    var out = [];
+    all.forEach(function (r) {
+      if (isDoc(r) && ids.indexOf(r.id) !== -1) {
+        if (op === 'delete') return;
+        r = Object.assign({}, r, { printed: flag });
+      }
+      out.push(r);
+    });
+    var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(out) });
+    if (!put.ok) throw new Error('save failed');
+    specs = out.filter(isDoc).reverse();
+  }
+
+
+  function updateSelectBar() {
+    var count = Object.keys(selected).length;
+    document.getElementById('select-bar').classList.toggle('active', count > 0);
+    document.getElementById('select-count').textContent = count + '件選択中';
+  }
+  async function bulkSetPrinted(flag) {
+    try { await mutate(Object.keys(selected), 'printed', flag); } catch (e) { alert('反映に失敗しました。'); }
+    render();
+  }
+  document.getElementById('btn-bulk-printed').addEventListener('click', function () { bulkSetPrinted(true); });
+  document.getElementById('btn-bulk-unprinted').addEventListener('click', function () { bulkSetPrinted(false); });
+  document.getElementById('btn-bulk-clear').addEventListener('click', function () { selected = {}; updateSelectBar(); render(); });
+  document.getElementById('btn-bulk-delete').addEventListener('click', async function () {
+    var n = Object.keys(selected).length;
+    if (!n || !confirm(n + '件を本当に削除しますか？')) return;
+    var ids = Object.keys(selected);
+    selected = {};
+    try { await mutate(ids, 'delete'); } catch (e) { alert('削除の反映に失敗しました。'); }
+    updateSelectBar(); render();
+  });
+
+  document.getElementById('btn-pdf').addEventListener('click', function () {
+    BulkPdf.run({
+      btn: this, format: 'a4', margin: 0,
+      items: specs.filter(function (o) { return selected[o.id]; }),
+      renderOne: function (o) { return BulkPdf.viaFrame('delivery-schedule.html?embed=1', 'delivery-reload', JSON.stringify(o), function (w) { return w.captureForBulk(); }); },
+      name: function (items) { return items.length === 1 ? (items[0].title || '納期スケジュール') + '_' + (items[0].date || '').replace(/-/g, '') + '.pdf' : '納期スケジュール_' + items.length + '件_' + bulkStamp() + '.pdf'; }
+    });
+  });
+
+  function render() {
+    var list = document.getElementById('list');
+    var visible = specs.filter(matches);
+    document.getElementById('status-line').textContent = term ? visible.length + '件 / 全' + specs.length + '件' : specs.length + '件';
+    list.innerHTML = '';
+    if (!visible.length) { list.innerHTML = '<p class="empty">' + (term ? '一致する納期スケジュールがありません' : 'まだ保存した納期スケジュールがありません') + '</p>'; return; }
+    visible.forEach(function (o) {
+      var filled = (o.rows || []).filter(function (r) { return (r || []).some(function (c) { return String(c).trim(); }); });
+      var RK = 'delivery-reload', RP = 'delivery-schedule.html';
+      var card = document.createElement('div'); card.className = 'card';
+      var s = document.createElement('div'); s.className = 'summary';
+      s.innerHTML = '<span class="who"></span><span class="total"></span><span class="when"></span><span class="arrow">▶</span>';
+      s.querySelector('.who').textContent = (o.title || '希望納期リスト') + (o.date ? '　' + fmtDate(o.date) : '');
+      s.querySelector('.total').textContent = filled.length + '件';
+      s.querySelector('.when').textContent = (o.savedAt || '').slice(0, 10).replace(/-/g, '/');
+      s.addEventListener('click', function () { card.classList.toggle('open'); });
+      var pick = document.createElement('input'); pick.type = 'checkbox'; pick.className = 'pick'; pick.checked = !!selected[o.id];
+      pick.addEventListener('click', function (e) { e.stopPropagation(); });
+      pick.addEventListener('change', function () { if (pick.checked) selected[o.id] = true; else delete selected[o.id]; updateSelectBar(); });
+      s.insertBefore(pick, s.firstChild);
+      if (o.printed) {
+        var badge = document.createElement('span'); badge.className = 'printed-badge'; badge.textContent = '印刷済';
+        s.insertBefore(badge, s.querySelector('.when'));
+      }
+
+      var d = document.createElement('div'); d.className = 'detail';
+      var acts = document.createElement('div'); acts.className = 'actions';
+      var edit = document.createElement('button'); edit.type = 'button'; edit.className = 'edit-btn'; edit.textContent = 'この内容を編集する →';
+      edit.addEventListener('click', function () { localStorage.setItem(RK, JSON.stringify(o)); location.href = RP; });
+      var copy = document.createElement('button'); copy.type = 'button'; copy.className = 'edit-btn again-btn'; copy.textContent = 'コピーして新しく作る →';
+      copy.addEventListener('click', function () {
+        var c = JSON.parse(JSON.stringify(o)); c.__copy = true;
+        localStorage.setItem(RK, JSON.stringify(c)); location.href = RP;
+      });
+      var pt = document.createElement('button'); pt.type = 'button'; pt.className = 'print-toggle-btn'; pt.textContent = o.printed ? '印刷済みを解除' : '印刷済みにする';
+      pt.addEventListener('click', async function () {
+        try { await mutate([o.id], 'printed', !o.printed); } catch (e) { alert('反映に失敗しました。'); }
+        render();
+      });
+      var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この納期スケジュールを削除';
+      del.addEventListener('click', async function () {
+        if (!confirm((o.title || 'この納期スケジュール') + 'を本当に削除しますか？')) return;
+        try { await mutate([o.id], 'delete'); } catch (e) { alert('削除の反映に失敗しました。'); }
+        render();
+      });
+      acts.appendChild(edit); acts.appendChild(copy); acts.appendChild(pt); acts.appendChild(pdfBtn(o.id, 'print-toggle-btn')); acts.appendChild(del); d.appendChild(acts);
+      d.appendChild(row('日付', fmtDate(o.date)));
+      d.appendChild(row('作成者', o.author || ''));
+      filled.forEach(function (r) {
+        d.appendChild(row((r[0] || '（顧客名なし）'), [r[1], r[2] ? '本数 ' + r[2] : '', r[3] ? '希望 ' + r[3].replace(/\n/g, ' ') : '', r[4] ? '返答 ' + r[4] : '', r[5]].filter(Boolean).join('　')));
+      });
+      card.appendChild(s); card.appendChild(d); list.appendChild(card);
+    });
+  }
+
+  document.getElementById('f-search').addEventListener('input', function (e) { term = e.target.value.trim().toLowerCase(); render(); });
+
+  fetch(SYNC_API + '/paint?_=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('not ready'); return r.json(); })
+    .then(function (data) { specs = data.filter(isDoc).reverse(); render(); })
+    .catch(function () { document.getElementById('status-line').textContent = '読み込めませんでした。通信状況を確認して再読み込みしてください'; });
+</script>
+
+</body>
+</html>
