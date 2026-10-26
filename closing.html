@@ -23,6 +23,15 @@
   .controls label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--sub); margin-bottom: 0.25rem; }
   .controls select, .controls input { width: 100%; border: 2px solid var(--ink); background: var(--paper); font-family: inherit; font-size: 1rem; padding: 0.65rem 0.8rem; }
   .controls select:focus, .controls input:focus { outline: none; border-color: var(--red); }
+  .terms-row { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; background: var(--paper); border: 1px solid var(--line); padding: 0.6rem 0.9rem; margin-bottom: 1rem; font-size: 0.86rem; font-weight: 700; }
+  .terms-row[hidden] { display: none; }
+  .terms-row .k { font-size: 0.72rem; color: var(--sub); margin-right: 0.5rem; }
+  .terms-row input, .terms-row select { font-family: inherit; font-size: 0.95rem; font-weight: 700; border: none; border-bottom: 1px solid var(--line); background: transparent; padding: 0.15rem 0.2rem; }
+  .terms-row input { width: 2.6em; text-align: center; }
+  .terms-row input:focus, .terms-row select:focus { outline: none; border-bottom-color: var(--red); background: #fff8e0; }
+  .terms-row button { margin-left: auto; font-family: inherit; font-size: 0.8rem; font-weight: 700; color: var(--ink); background: #fff; border: 1px solid var(--ink); padding: 0.45rem 0.9rem; cursor: pointer; }
+  .terms-row button:hover { background: var(--ink); color: #fff; }
+  .terms-row .note { width: 100%; font-size: 0.72rem; font-weight: 400; color: var(--sub); }
 
   .panel { background: var(--paper); border: 1px solid var(--line); margin-bottom: 1rem; }
   .panel h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line2); display: flex; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; }
@@ -84,6 +93,15 @@
       </div>
     </div>
 
+    <div class="terms-row" id="terms-row" hidden>
+      <span class="k">お支払条件</span>
+      <input type="text" id="t-close" value="末">日締め
+      <select id="t-paymonth"><option>当月</option><option selected>翌月</option><option>翌々月</option></select>
+      <input type="text" id="t-payday" value="末">日払い
+      <button type="button" id="btn-save-terms">この取引先の条件として保存</button>
+      <span class="note" id="terms-note"></span>
+    </div>
+
     <div class="panel">
       <h2><span>今回請求する納品書</span><span class="sub" id="sel-count"></span></h2>
       <div id="dn-list"><p class="empty">取引先を選んでください</p></div>
@@ -109,7 +127,7 @@
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var TAX_RATE = 0.1;
-  var deliveries = [], invoices = [];
+  var deliveries = [], invoices = [], registered = {};   // registered: 取引先ごとに登録したお支払条件（__client）
 
   function $(id) { return document.getElementById(id); }
   // 全角の数字・記号（日本語入力オンのまま入力した場合）も半角にして読む
@@ -138,9 +156,14 @@
     // 項目ごとに、値が入っている一番新しい書類から取る
     function pick(k) { for (var i = 0; i < docs.length; i++) { if (docs[i][k]) return docs[i][k]; } return ''; }
     var lastInv = invoices.filter(function (r) { return r.customer === name; }).sort(byLatest)[0];
+    var reg = registered[name];
     return {
       honor: pick('honor'), zip: pick('zip'), address: pick('address'), address2: (docs[0] || {}).address2 || '',
-      closeDay: lastInv && lastInv.closeDay || '末', payMonth: lastInv && lastInv.payMonth || '翌月', payDay: lastInv && lastInv.payDay || '末',
+      // お支払条件：登録した条件 → 前回の請求書 → 末日締め翌月末日払い
+      closeDay: reg && reg.closeDay || lastInv && lastInv.closeDay || '末',
+      payMonth: reg && reg.payMonth || lastInv && lastInv.payMonth || '翌月',
+      payDay: reg && reg.payDay || lastInv && lastInv.payDay || '末',
+      termsFrom: reg ? 'registered' : lastInv && lastInv.closeDay ? 'invoice' : 'default',
       lastInvoice: lastInv
     };
   }
@@ -180,8 +203,11 @@
 
   function onClient() {
     var name = $('f-client').value;
-    if (!name) { $('dn-list').innerHTML = '<p class="empty">取引先を選んでください</p>'; recalc(); return; }
+    if (!name) { $('terms-row').hidden = true; $('dn-list').innerHTML = '<p class="empty">取引先を選んでください</p>'; recalc(); return; }
     var info = clientInfo(name);
+    $('t-close').value = info.closeDay; $('t-paymonth').value = info.payMonth; $('t-payday').value = info.payDay;
+    $('terms-row').hidden = false;
+    $('terms-note').textContent = { registered: 'この取引先に登録したお支払条件です。', invoice: '前回の請求書の条件です。違う場合は直して「保存」すると、次回から使われます。', default: 'まだ条件が登録されていません。違う場合は直して「保存」すると、次回から使われます。' }[info.termsFrom];
     $('f-close').value = recentClosing(info.closeDay);
     var li = info.lastInvoice;
     $('f-prev').value = li ? commas(invTotal(li)) : '';
@@ -233,6 +259,41 @@
   }
 
   $('f-client').addEventListener('change', onClient);
+
+  // お支払条件を変えたら締め日を計算し直す
+  function onTermsChange() {
+    $('f-close').value = recentClosing($('t-close').value.trim() || '末');
+    $('terms-note').textContent = '条件を変更しました（「この取引先の条件として保存」で次回からも使えます）';
+    renderList();
+  }
+  $('t-close').addEventListener('input', onTermsChange);
+  $('t-paymonth').addEventListener('change', onTermsChange);
+  $('t-payday').addEventListener('input', function () { $('terms-note').textContent = '条件を変更しました（「この取引先の条件として保存」で次回からも使えます）'; });
+
+  // 取引先の条件を保存（最新データを読み直して、この取引先の分だけ差し替える）
+  $('btn-save-terms').addEventListener('click', async function () {
+    var name = $('f-client').value;
+    if (!name) return;
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '保存中…';
+    var rec = { __client: true, id: (registered[name] && registered[name].id) || ('cl-' + Date.now()), name: name,
+      closeDay: $('t-close').value.trim() || '末', payMonth: $('t-paymonth').value, payDay: $('t-payday').value.trim() || '末', savedAt: new Date().toISOString() };
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = (await res.json()).filter(function (r) { return !(r.__client && r.name === name); });
+      all.push(rec);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      if (!put.ok) throw new Error('save failed');
+      registered[name] = rec;
+      $('terms-note').textContent = '保存しました。次回からこの条件（' + rec.closeDay + '日締め ' + rec.payMonth + rec.payDay + '日払い）で締め日が入ります。';
+    } catch (e) {
+      console.error(e);
+      alert('保存に失敗しました。通信状況を確認してもう一度お試しください。');
+    } finally {
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
   $('f-close').addEventListener('change', renderList);
   ['f-prev', 'f-paid'].forEach(function (id) {
     $(id).addEventListener('input', recalc);
@@ -245,7 +306,7 @@
     var info = clientInfo(name);
     var inv = {
       customer: name, honor: info.honor || '御中', zip: info.zip || '', address: info.address || '', address2: info.address2 || '',
-      closeDay: info.closeDay, payMonth: info.payMonth, payDay: info.payDay,
+      closeDay: $('t-close').value.trim() || '末', payMonth: $('t-paymonth').value, payDay: $('t-payday').value.trim() || '末',
       date: $('f-close').value, number: '', due: '',
       prev: $('f-prev').value, paid: $('f-paid').value, showCarry: true,
       notes: '',
@@ -262,6 +323,7 @@
     .then(function (r) { if (!r.ok) throw new Error('load failed'); return r.json(); })
     .then(function (all) {
       deliveries = all.filter(function (r) { return r.__delivery; });
+      all.filter(function (r) { return r.__client && r.name; }).forEach(function (r) { registered[r.name] = r; });
       invoices = all.filter(function (r) { return r.__invoice; });
       buildClientMenu();
     })

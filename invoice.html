@@ -496,6 +496,11 @@
         });
         c.lastAt = r.savedAt || '';
       });
+    // 締め請求の画面で登録したお支払条件があれば、それを優先する
+    all.filter(function (r) { return r.__client && r.name && clients[r.name]; }).forEach(function (r) {
+      var c = clients[r.name];
+      ['closeDay', 'payMonth', 'payDay'].forEach(function (k) { if (r[k]) c[k] = r[k]; });
+    });
     var names = Object.keys(clients).sort(function (a, b) { return a.localeCompare(b, 'ja'); });
     var sel = $('f-client');
     sel.innerHTML = '<option value="">（保存済みの取引先を選ぶ）</option>';
