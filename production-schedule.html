@@ -164,6 +164,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var rowsBody = document.getElementById('rows-body');
@@ -330,6 +331,8 @@
     var originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>生産スケジュール</title><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
     try {
       var target = document.querySelector('.table-wrap');
       var canvas = await html2canvas(target, { scale: 2, backgroundColor: '#ffffff', windowWidth: 1100 });
@@ -357,9 +360,12 @@
         first = false;
       }
       var d = new Date();
-      pdf.save('生産スケジュール_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.pdf');
+      var name = '生産スケジュール_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
     } catch (e) {
       console.error(e);
+      try { if (win) win.close(); } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
       btn.disabled = false;
