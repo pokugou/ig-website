@@ -406,13 +406,39 @@
       });
       if (hit) changedLists++;
     });
-    if (changedRows) {
+    // まだどの納期希望リストにも入っていない未完了の行は、自動で作る「納期希望リスト」（dl-auto）にまとめる。完了した行・消した行はそこから外す
+    var linked = {}, added = 0, removed = 0;
+    all.forEach(function (rec) { if (rec.__delivery && rec.sids && rec.id !== 'dl-auto') rec.sids.forEach(function (sid) { if (sid) linked[sid] = true; }); });
+    var auto = all.filter(function (rec) { return rec.__delivery && rec.id === 'dl-auto'; })[0];
+    var cellsOf = function (r) { return [r.customer || '', r.note || '', r.qty == null ? '' : String(r.qty), r.date || '', r.confirmed || '', '']; };
+    var keepRows = [], keepSids = [];
+    if (auto) (auto.sids || []).forEach(function (sid, i) {
+      var s = sid ? byId[sid] : null;
+      if (sid && (!s || s.done || linked[sid])) { removed++; return; }
+      keepRows.push(auto.rows[i]); keepSids.push(sid);
+    });
+    var have = {}; keepSids.forEach(function (sid) { if (sid) have[sid] = true; });
+    sourceRows.forEach(function (r) {
+      if (r.done || linked[r.id] || have[r.id] || !String(r.customer || '').trim() && !String(r.note || '').trim()) return;
+      keepRows.push(cellsOf(r)); keepSids.push(r.id); added++;
+    });
+    if (added || removed) {
+      if (!auto) { auto = { id: 'dl-auto', title: '納期希望リスト', date: new Date().toISOString().slice(0, 10), author: '' }; auto.__delivery = true; all.push(auto); }
+      auto.rows = keepRows; auto.sids = keepSids; auto.savedAt = new Date().toISOString();
+    }
+    if (changedRows || added || removed) {
       var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
       if (!put.ok) throw new Error('save failed');
     }
-    return { rows: changedRows, lists: changedLists };
+    return { rows: changedRows, lists: changedLists, added: added, removed: removed };
   }
-  function reflectMessage(r) { return r.rows ? '納期希望リスト ' + r.lists + ' 件（' + r.rows + ' 行）にも反映しました。' : '納期希望リストは反映済みの内容と同じでした。'; }
+  function reflectMessage(r) {
+    var parts = [];
+    if (r.rows) parts.push('保存済みのリスト ' + r.lists + ' 件（' + r.rows + ' 行）を更新');
+    if (r.added) parts.push('未完了 ' + r.added + ' 行を追加');
+    if (r.removed) parts.push('完了・削除した ' + r.removed + ' 行を外した');
+    return parts.length ? '納期希望リストにも反映しました（' + parts.join('、') + '）。' : '納期希望リストは反映済みの内容と同じでした。';
+  }
 
   try { document.getElementById('opt-autoreflect').checked = localStorage.getItem('schedule-autoreflect') !== '0'; } catch (e) {}
   document.getElementById('opt-autoreflect').addEventListener('change', function (e) { try { localStorage.setItem('schedule-autoreflect', e.target.checked ? '1' : '0'); } catch (x) {} });
