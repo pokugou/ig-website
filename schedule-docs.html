@@ -40,7 +40,7 @@
   <a class="back" href="tools.html">← ツール一覧</a>
   <header>
     <h1>スケジュール</h1>
-    <a href="delivery-schedule-history.html">📋 納期スケジュールの保存一覧</a>
+    <a href="delivery-schedule-history.html">📋 納期希望リストの保存一覧</a>
   </header>
   <p class="lead">見たい・作りたいスケジュールを選んでください。</p>
   <div class="choices">
@@ -52,13 +52,13 @@
     </a>
     <a class="choice" href="delivery-schedule.html">
       <span class="icon">🗓️</span>
-      <h2>納期スケジュール</h2>
-      <p>顧客ごとの希望納期・返答納期の一覧表（希望納期リスト）。PDFで共有でき、保存一覧にも残ります。</p>
+      <h2>納期希望リスト</h2>
+      <p>顧客ごとの希望納期・返答納期の一覧表。PDFで共有でき、保存一覧にも残ります。</p>
       <span class="go">開く →</span>
     </a>
   </div>
-  <p class="note">🔗 この2つはつながっています。納期スケジュールの「生産スケジュールから取り込む／へ反映」で、顧客名・本数・希望納期・返答納期をおたがいに更新できます。</p>
-  <div class="recent" id="recent" style="display:none"><h3>最近保存した納期スケジュール</h3><div id="recent-list"></div></div>
+  <p class="note">🔗 この2つはつながっています。納期希望リストの「生産スケジュールから取り込む／へ反映」で、顧客名・本数・希望納期・返答納期をおたがいに更新できます。</p>
+  <div class="recent" id="recent" style="display:none"><h3>最近保存した納期希望リスト</h3><div id="recent-list"></div></div>
 </div>
 <script>
   fetch('https://ig-sync.pokugou.workers.dev/paint?_=' + Date.now())
@@ -69,7 +69,7 @@
       var box = document.getElementById('recent-list');
       rows.forEach(function (r) {
         var a = document.createElement('a'); a.href = 'delivery-schedule-history.html';
-        var n = document.createElement('span'); n.className = 'n'; n.textContent = (r.title || '希望納期リスト') + (r.date ? '　' + r.date.replace(/-/g, '/') : '');
+        var n = document.createElement('span'); n.className = 'n'; n.textContent = (r.title || '納期希望リスト') + (r.date ? '　' + r.date.replace(/-/g, '/') : '');
         var d = document.createElement('span'); d.className = 'd'; d.textContent = (r.savedAt || '').slice(0, 10).replace(/-/g, '/');
         a.appendChild(n); a.appendChild(d); box.appendChild(a);
       });

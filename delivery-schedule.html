@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>納期スケジュール（希望納期リスト）| IG Rod Planning</title>
+<title>納期希望リスト | IG Rod Planning</title>
 <meta name="robots" content="noindex, nofollow" />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -92,7 +92,7 @@
     <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
-  <div class="editing-badge" id="editing-badge">✎ 保存済みの納期スケジュールを編集中（保存すると上書きされます）</div>
+  <div class="editing-badge" id="editing-badge">✎ 保存済みの納期希望リストを編集中（保存すると上書きされます）</div>
   <p class="hint">各マスにそのまま入力できます（↑↓←→キーで移動）。行の左の「＋」で下に行を足し、「×」で削除します。内容が長いときは、PDFが自動で複数ページになり、各ページに見出しが付きます。</p>
 
   <div class="link-bar" id="link-bar">
@@ -104,7 +104,7 @@
 
   <div class="sheet" id="sheet">
     <div class="t-head" id="t-head">
-      <h1><input type="text" id="f-title" value="希望納期リスト"></h1>
+      <h1><input type="text" id="f-title" value="納期希望リスト"></h1>
       <div class="t-meta">
         <label>日付<input type="date" id="f-date"></label>
         <label>作成者<input type="text" class="author" id="f-author" value="石谷 豪"></label>
@@ -167,7 +167,7 @@
   }
   function populate(d, isCopy) {
     currentId = isCopy ? null : (d.id || null);
-    $('f-title').value = d.title != null ? d.title : '希望納期リスト';
+    $('f-title').value = d.title != null ? d.title : '納期希望リスト';
     $('f-date').value = isCopy ? todayIso() : (d.date || todayIso());
     $('f-author').value = d.author != null ? d.author : '石谷 豪';
     rowsEl.innerHTML = '';
@@ -181,7 +181,7 @@
   $('btn-add').addEventListener('click', function () { addRow().querySelector('textarea').focus(); saveDraft(); });
   $('btn-print').addEventListener('click', function () { window.print(); });
   $('btn-reset').addEventListener('click', function () {
-    if (!confirm('新しい納期スケジュールを始めますか？今の入力内容は消えます（保存一覧の記録は消えません）。')) return;
+    if (!confirm('新しい納期希望リストを始めますか？今の入力内容は消えます（保存一覧の記録は消えません）。')) return;
     populate({ author: $('f-author').value }); saveDraft();
   });
   window.addEventListener('resize', function () { rowsEl.querySelectorAll('textarea').forEach(grow); });
@@ -193,6 +193,7 @@
       if (raw) { localStorage.removeItem('delivery-reload'); data = JSON.parse(raw); isCopy = !!data.__copy; }
     } catch (e) {}
     if (!data) { try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (data) data.date = todayIso(); } catch (e) {} }
+    if (data && data.title === '希望納期' + 'リスト') data.title = '納期希望リスト'; // 以前の初期タイトルは新しい名前に更新
     populate(data || {}, isCopy);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { rowsEl.querySelectorAll('textarea').forEach(grow); });
   })();
@@ -217,7 +218,7 @@
       return true;
     } catch (e) {
       console.error(e);
-      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '納期スケジュールの保存一覧への保存に失敗しました。');
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '納期希望リストの保存一覧への保存に失敗しました。');
       return false;
     }
   }
@@ -386,7 +387,7 @@
       var canvases = await renderPageCanvases();
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       canvases.forEach(function (c, i) { if (i > 0) pdf.addPage(); pdf.addImage(c.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297); });
-      var name = ($('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || '納期スケジュール') + '_' + $('f-date').value.replace(/-/g, '') + '.pdf';
+      var name = ($('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || '納期希望リスト') + '_' + $('f-date').value.replace(/-/g, '') + '.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       btn.textContent = '一覧に保存中…';

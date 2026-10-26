@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>納期スケジュール一覧 | IG Rod Planning</title>
+<title>納期希望リスト一覧 | IG Rod Planning</title>
 <meta name="robots" content="noindex, nofollow" />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -65,9 +65,9 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="back-link" href="delivery-schedule.html">← 納期スケジュールに戻る</a>
+    <a class="back-link" href="delivery-schedule.html">← 納期希望リストに戻る</a>
     <header>
-      <h1>納期スケジュール一覧</h1>
+      <h1>納期希望リスト一覧</h1>
       <div class="brand">IG Rod Planning ／ 社内共有用</div>
     </header>
     <div class="search-box"><input type="text" id="f-search" placeholder="顧客名・アイテムなどで検索"></div>
@@ -170,7 +170,7 @@
       btn: this, format: 'a4', margin: 0,
       items: specs.filter(function (o) { return selected[o.id]; }),
       renderOne: function (o) { return BulkPdf.viaFrame('delivery-schedule.html?embed=1', 'delivery-reload', JSON.stringify(o), function (w) { return w.captureForBulk(); }); },
-      name: function (items) { return items.length === 1 ? (items[0].title || '納期スケジュール') + '_' + (items[0].date || '').replace(/-/g, '') + '.pdf' : '納期スケジュール_' + items.length + '件_' + bulkStamp() + '.pdf'; }
+      name: function (items) { return items.length === 1 ? (items[0].title || '納期希望リスト') + '_' + (items[0].date || '').replace(/-/g, '') + '.pdf' : '納期希望リスト_' + items.length + '件_' + bulkStamp() + '.pdf'; }
     });
   });
 
@@ -179,14 +179,14 @@
     var visible = specs.filter(matches);
     document.getElementById('status-line').textContent = term ? visible.length + '件 / 全' + specs.length + '件' : specs.length + '件';
     list.innerHTML = '';
-    if (!visible.length) { list.innerHTML = '<p class="empty">' + (term ? '一致する納期スケジュールがありません' : 'まだ保存した納期スケジュールがありません') + '</p>'; return; }
+    if (!visible.length) { list.innerHTML = '<p class="empty">' + (term ? '一致する納期希望リストがありません' : 'まだ保存した納期希望リストがありません') + '</p>'; return; }
     visible.forEach(function (o) {
       var filled = (o.rows || []).filter(function (r) { return (r || []).some(function (c) { return String(c).trim(); }); });
       var RK = 'delivery-reload', RP = 'delivery-schedule.html';
       var card = document.createElement('div'); card.className = 'card';
       var s = document.createElement('div'); s.className = 'summary';
       s.innerHTML = '<span class="who"></span><span class="total"></span><span class="when"></span><span class="arrow">▶</span>';
-      s.querySelector('.who').textContent = (o.title || '希望納期リスト') + (o.date ? '　' + fmtDate(o.date) : '');
+      s.querySelector('.who').textContent = (o.title || '納期希望リスト') + (o.date ? '　' + fmtDate(o.date) : '');
       s.querySelector('.total').textContent = filled.length + '件';
       s.querySelector('.when').textContent = (o.savedAt || '').slice(0, 10).replace(/-/g, '/');
       s.addEventListener('click', function () { card.classList.toggle('open'); });
@@ -213,9 +213,9 @@
         try { await mutate([o.id], 'printed', !o.printed); } catch (e) { alert('反映に失敗しました。'); }
         render();
       });
-      var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この納期スケジュールを削除';
+      var del = document.createElement('button'); del.type = 'button'; del.className = 'delete-btn'; del.textContent = 'この納期希望リストを削除';
       del.addEventListener('click', async function () {
-        if (!confirm((o.title || 'この納期スケジュール') + 'を本当に削除しますか？')) return;
+        if (!confirm((o.title || 'この納期希望リスト') + 'を本当に削除しますか？')) return;
         try { await mutate([o.id], 'delete'); } catch (e) { alert('削除の反映に失敗しました。'); }
         render();
       });
