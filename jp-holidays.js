@@ -47,10 +47,18 @@
     return all;
   }
   window.isJpHoliday = function (d) { return !!yearTable(d.getFullYear())[(d.getMonth() + 1) * 100 + d.getDate()]; };
-  // 土日・祝日にあたるときは、前（過去）へ戻って最初の営業日（平日で祝日でない日）を返す
+  // 会社が一般的に休みになる期間（月, 日 〜 月, 日）。変えたいときはここを直す
+  //   年末年始：12/29〜1/3　　お盆休み：8/13〜8/16
+  var CLOSED = [[12, 29, 12, 31], [1, 1, 1, 3], [8, 13, 8, 16]];
+  window.isCompanyClosed = function (d) {
+    var v = (d.getMonth() + 1) * 100 + d.getDate();
+    return CLOSED.some(function (r) { return v >= r[0] * 100 + r[1] && v <= r[2] * 100 + r[3]; });
+  };
+  // 土日・祝日・会社の休み（年末年始・お盆）にあたるときは、前（過去）へ戻って最初の営業日を返す
+  window.isBusinessDay = function (d) { return d.getDay() !== 0 && d.getDay() !== 6 && !window.isJpHoliday(d) && !window.isCompanyClosed(d); };
   window.prevBusinessDay = function (d) {
     var t = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-    while (t.getDay() === 0 || t.getDay() === 6 || window.isJpHoliday(t)) t.setDate(t.getDate() - 1);
+    while (!window.isBusinessDay(t)) t.setDate(t.getDate() - 1);
     return t;
   };
 })();

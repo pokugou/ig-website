@@ -654,13 +654,13 @@
     }
   }
 
-  // 希望納期が未記入のときの納期：受注日の2か月後。土日・祝日にあたるときは、前倒しで直前の営業日（平日で祝日でない日）にする
+  // 希望納期が未記入のときの納期：受注日の2か月後。土日・祝日・年末年始・お盆休みにあたるときは、前倒しで直前の営業日にする
   function defaultDueFromOrderDate(orderDateStr) {
     var parts = (orderDateStr || todayISO()).split('-');
     var y = Number(parts[0]), m = Number(parts[1]) - 1, day = Number(parts[2]);
     var lastDay = new Date(y, m + 3, 0).getDate();            // 2か月後の月末（31日→28日などの丸め用）
     var d = new Date(y, m + 2, Math.min(day, lastDay));
-    d = window.prevBusinessDay ? window.prevBusinessDay(d) : d;   // 土日・祝日は前倒しで直前の営業日へ
+    d = window.prevBusinessDay ? window.prevBusinessDay(d) : d;   // 土日・祝日・年末年始・お盆は前倒しで直前の営業日へ
     return fmtDate(d);
   }
 
