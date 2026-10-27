@@ -86,6 +86,12 @@
     .lightbox video { max-width: 95vw; max-height: 92vh; box-shadow: 0 8px 40px rgba(0,0,0,0.6); }
     .hero-slide-video { cursor: pointer; }
     .video-expand-hint { position: absolute; bottom: 0.8rem; right: 0.8rem; background: rgba(0,0,0,0.55); color: #fff; font-size: 0.65rem; letter-spacing: 0.06em; padding: 0.25rem 0.5rem; border-radius: 3px; pointer-events: none; }
+    .logo-wrap { text-align: center; padding: 0; overflow: hidden; }
+    .logo-wrap-inner { display: inline-block; margin: -5.5rem 0 -5rem; }
+    @media (min-width: 769px) {
+      .logo-wrap { text-align: left; max-width: 1200px; margin-left: auto; margin-right: auto; padding-left: 3rem; }
+      .logo-wrap-inner { display: block; }
+    }
     .lightbox-close { position: absolute; top: 1rem; right: 1.2rem; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; opacity: 0.7; background: none; border: none; transition: opacity 0.2s; }
     .lightbox-close:hover { opacity: 1; }
     .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
@@ -316,8 +322,8 @@
   </div>
 </section>
 
-<div style="text-align:center; padding: 0; overflow: hidden;">
-  <div style="display:inline-block; margin: -5.5rem 0 -5rem;">
+<div class="logo-wrap">
+  <div class="logo-wrap-inner">
     <img src="vskue-logo.png" alt="VS 九絵" style="max-width: 500px; width: 90%; display: block;" />
     <div style="font-size: 0.75rem; letter-spacing: 0.25em; color: var(--fg2); margin-top: 0.1rem;">- ブイエス クエ -</div>
   </div>
