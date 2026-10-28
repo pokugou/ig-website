@@ -153,8 +153,10 @@
     .quick-nav { background: var(--bg); border-bottom: 1px solid var(--wborder); padding: 1rem 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
     .quick-nav::-webkit-scrollbar { display: none; }
     .quick-nav-scroll { display: flex; gap: 0.6rem; padding: 0 1.5rem; width: max-content; min-width: 100%; justify-content: center; box-sizing: border-box; }
-    .qn-card { flex-shrink: 0; display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100px; border: 1px solid var(--wborder); border-radius: 5px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+    .qn-card { flex-shrink: 0; display: flex; flex-direction: column; text-decoration: none; color: inherit; width: 100px; border: 1px solid var(--wborder); border-radius: 5px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; cursor: pointer; padding: 0; font: inherit; text-align: left; }
     .qn-card:hover { border-color: var(--red); box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+    .qn-card.qn-selected { border-color: var(--red); box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+    .qn-card.qn-selected .qn-card-en { color: var(--red); }
     .qn-card-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
     .qn-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; }
     .qn-card:hover .qn-card-img img { transform: scale(1.06); }
@@ -503,42 +505,42 @@
 <!-- QUICK NAV (スライダーに追加したらここにカードを追加) -->
 <section class="quick-nav">
   <div class="quick-nav-scroll">
-    <a href="strixedge" class="qn-card">
+    <button class="qn-card" data-slide="1" data-href="strixedge">
       <div class="qn-card-img"><img src="strixedge-banner-e.webp" alt="STRIX EDGE" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">Strix Edge</div><div class="qn-card-ja">イカメタルロッド</div></div>
-    </a>
-    <a href="gtslj" class="qn-card">
+    </button>
+    <button class="qn-card" data-slide="2" data-href="gtslj">
       <div class="qn-card-img"><img src="gtslj-banner-a.webp" alt="GTSLJ" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">GTSLJ</div><div class="qn-card-ja">スーパーライトジギング</div></div>
-    </a>
-    <a href="gtlj" class="qn-card">
+    </button>
+    <button class="qn-card" data-slide="3" data-href="gtlj">
       <div class="qn-card-img"><img src="gtlj-banner2.webp" alt="GTLJ" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">GTLJ</div><div class="qn-card-ja">ライトジギング</div></div>
-    </a>
-    <a href="gtj" class="qn-card">
+    </button>
+    <button class="qn-card" data-slide="4" data-href="gtj">
       <div class="qn-card-img"><img src="gtj-banner2.webp" alt="GTJ" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">GT-J</div><div class="qn-card-ja">ジギング</div></div>
-    </a>
-    <a href="gts" class="qn-card">
+    </button>
+    <button class="qn-card" data-slide="5" data-href="gts">
       <div class="qn-card-img"><img src="gts-banner.png" alt="GTS" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">GTS</div><div class="qn-card-ja">スロージギング</div></div>
-    </a>
-    <a href="gtr" class="qn-card">
+    </button>
+    <button class="qn-card" data-slide="6" data-href="gtr">
       <div class="qn-card-img"><img src="gtr-banner.png" alt="GTR" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">GTR</div><div class="qn-card-ja">タイラバ</div></div>
-    </a>
-    <a href="ishidai" class="qn-card">
+    </button>
+    <button class="qn-card" data-slide="7" data-href="ishidai">
       <div class="qn-card-img"><img src="ishidai-banner.png" alt="VS石鯛" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">VS石鯛</div><div class="qn-card-ja">石鯛竿</div></div>
-    </a>
-    <a href="vskue" class="qn-card">
+    </button>
+    <button class="qn-card" data-slide="8" data-href="vskue">
       <div class="qn-card-img"><img src="vskue-banner2.webp" alt="VS-KUE" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">VS九絵</div><div class="qn-card-ja">クエ竿</div></div>
-    </a>
-    <a href="gtx" class="qn-card">
+    </button>
+    <button class="qn-card" data-slide="9" data-href="gtx">
       <div class="qn-card-img"><img src="gtx-banner.webp" alt="GTX" loading="lazy" /></div>
       <div class="qn-card-body"><div class="qn-card-en">GTX</div><div class="qn-card-ja">ロックショア</div></div>
-    </a>
+    </button>
   </div>
 </section>
 
@@ -930,14 +932,35 @@
   // Hero slider
   var hIdx = 0, hTotal = 10;
   var slides = document.getElementById('heroSlides');
+  var hAutoplay;
   function hUpdate() {
     slides.style.transform = 'translateX(-' + (hIdx * 100) + '%)';
     document.querySelectorAll('.hero-dot').forEach(function(d,i){ d.classList.toggle('active', i===hIdx); });
+    // カード選択状態をスライドに合わせて更新
+    document.querySelectorAll('.qn-card[data-slide]').forEach(function(c){
+      c.classList.toggle('qn-selected', parseInt(c.dataset.slide) === hIdx);
+    });
   }
-  document.getElementById('heroPrev').addEventListener('click', function(){ hIdx = (hIdx-1+hTotal)%hTotal; hUpdate(); });
-  document.getElementById('heroNext').addEventListener('click', function(){ hIdx = (hIdx+1)%hTotal; hUpdate(); });
-  document.querySelectorAll('.hero-dot').forEach(function(d){ d.addEventListener('click', function(){ hIdx = parseInt(this.dataset.idx); hUpdate(); }); });
-  setInterval(function(){ hIdx = (hIdx+1)%hTotal; hUpdate(); }, 5500);
+  function hStartAutoplay() {
+    clearInterval(hAutoplay);
+    hAutoplay = setInterval(function(){ hIdx = (hIdx+1)%hTotal; hUpdate(); }, 5500);
+  }
+  document.getElementById('heroPrev').addEventListener('click', function(){ hIdx = (hIdx-1+hTotal)%hTotal; hUpdate(); hStartAutoplay(); });
+  document.getElementById('heroNext').addEventListener('click', function(){ hIdx = (hIdx+1)%hTotal; hUpdate(); hStartAutoplay(); });
+  document.querySelectorAll('.hero-dot').forEach(function(d){ d.addEventListener('click', function(){ hIdx = parseInt(this.dataset.idx); hUpdate(); hStartAutoplay(); }); });
+  // クイックナビカード：1回目→スライド切替、2回目→商品ページへ
+  document.querySelectorAll('.qn-card[data-slide]').forEach(function(card){
+    card.addEventListener('click', function(){
+      var slideIdx = parseInt(card.dataset.slide);
+      var href = card.dataset.href;
+      if(hIdx === slideIdx){
+        location.href = href;
+      } else {
+        hIdx = slideIdx; hUpdate(); clearInterval(hAutoplay);
+      }
+    });
+  });
+  hStartAutoplay();
 </script>
 </body>
 </html>
