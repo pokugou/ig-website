@@ -84,6 +84,9 @@
     .main-wrap { max-width: 1200px; margin: 0 auto; padding: 6rem 3rem; }
 
     /* SECTION HEAD */
+    .gallery-nav { display: flex; gap: 0; border-bottom: 2px solid var(--wborder); margin-bottom: 0; background: var(--bg); position: sticky; top: 56px; z-index: 10; }
+    .gnav-btn { flex: 1; background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; padding: 0.85rem 0; font: 700 0.88rem/1 'Noto Sans JP', sans-serif; letter-spacing: 0.08em; color: var(--fg3); cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+    .gnav-btn.active { color: var(--red2); border-bottom-color: var(--red2); }
     .section-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--wborder); }
     .section-head h2 { font-size: 1rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg); }
     .section-head-en { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.16em; color: var(--fg3); text-transform: uppercase; }
@@ -277,10 +280,15 @@
   </div>
 </div>
 
+<div class="gallery-nav">
+  <button class="gnav-btn active" data-target="section-build">制作実績</button>
+  <button class="gnav-btn" data-target="section-photo">釣果写真</button>
+</div>
+
 <div class="main-wrap">
 
   <!-- BUILD HISTORY -->
-  <div class="section-head">
+  <div class="section-head" id="section-build">
     <h2>制作実績</h2>
     <span class="section-head-en">Production History</span>
   </div>
@@ -291,9 +299,9 @@
   </div>
 
   <!-- PHOTO GALLERY -->
-  <div class="section-head">
-    <h2>フォトギャラリー</h2>
-    <span class="section-head-en">Photo Gallery</span>
+  <div class="section-head" id="section-photo">
+    <h2>釣果写真</h2>
+    <span class="section-head-en">Fishing Photos</span>
   </div>
 
   <div class="gallery-grid">
@@ -413,6 +421,20 @@
     lbImg.src = lbItems[lbIdx].src;
   });
   lb.addEventListener('click', function(e) { if (e.target === lb) lb.classList.remove('is-open'); });
+
+  // ギャラリーナビ
+  document.querySelectorAll('.gnav-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.gnav-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var target = document.getElementById(btn.dataset.target);
+      if (target) {
+        var navH = document.querySelector('.gallery-nav').offsetHeight;
+        var top = target.getBoundingClientRect().top + window.pageYOffset - 56 - navH - 16;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    });
+  });
 </script>
 </body>
 </html>

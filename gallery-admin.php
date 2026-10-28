@@ -235,7 +235,7 @@ input[type=file]{display:none}
 
       <label>掲載セクション</label>
       <div class="type-row two-col">
-        <div class="type-opt"><input type="radio" name="section" value="gallery" id="s1" checked><label for="s1">📸 フォトギャラリー</label></div>
+        <div class="type-opt"><input type="radio" name="section" value="gallery" id="s1" checked><label for="s1">📸 釣果写真</label></div>
         <div class="type-opt"><input type="radio" name="section" value="build"   id="s2"><label for="s2">🏆 制作実績</label></div>
       </div>
 
@@ -263,7 +263,7 @@ input[type=file]{display:none}
         <div class="gitem-info">
           <div class="gitem-caption"><?= htmlspecialchars($item['caption'] ?: '（キャプションなし）') ?></div>
           <div class="gitem-tag">
-            <?php $sec = ($item['section'] ?? 'gallery') === 'build' ? '🏆制作実績' : '📸フォト'; ?>
+            <?php $sec = ($item['section'] ?? 'gallery') === 'build' ? '🏆制作実績' : '📸釣果写真'; ?>
             <span style="color:<?= ($item['section'] ?? '') === 'build' ? '#fa0' : '#8cf' ?>"><?= $sec ?></span>
             · <?= htmlspecialchars($item['tag'] ?? '') ?>
           </div>
