@@ -1,1 +1,44 @@
-[]
+[
+    {
+        "file": "gallery-photo-90.png",
+        "caption": "tesi",
+        "tag": "カラーカスタム",
+        "type": "normal",
+        "section": "gallery"
+    },
+    {
+        "file": "gallery-photo-91.png",
+        "caption": "最高！",
+        "tag": "カラーカスタム",
+        "type": "normal",
+        "section": "build"
+    },
+    {
+        "file": "gallery-photo-92.png",
+        "caption": "クエ竿",
+        "tag": "カラーカスタム",
+        "type": "tall",
+        "section": "build"
+    },
+    {
+        "file": "gallery-photo-93.png",
+        "caption": "クエ竿",
+        "tag": "カラーカスタム",
+        "type": "tall",
+        "section": "build"
+    },
+    {
+        "file": "gallery-photo-94.png",
+        "caption": "",
+        "tag": "カラーカスタム",
+        "type": "tall",
+        "section": "gallery"
+    },
+    {
+        "file": "gallery-photo-95.png",
+        "caption": "テスト",
+        "tag": "カラーカスタム",
+        "type": "normal",
+        "section": "gallery"
+    }
+]
