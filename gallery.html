@@ -395,22 +395,41 @@
     });
   }
 
-  // Lightbox for gallery images
+  // Lightbox
   var lbItems = [];
   var lbIdx = 0;
   var lb = document.getElementById('lightbox');
   var lbImg = document.getElementById('lbImg');
+
+  function openLb(items, idx) {
+    lbItems = items;
+    lbIdx = idx;
+    lbImg.src = lbItems[lbIdx].src;
+    lbImg.alt = lbItems[lbIdx].alt || '';
+    lb.classList.add('is-open');
+  }
+
+  // 釣果写真
+  var galleryImgs = [];
   document.querySelectorAll('.gallery-item').forEach(function(item, i) {
     var img = item.querySelector('.gallery-img');
     if (!img) return;
-    lbItems.push({ src: img.src, alt: img.alt });
-    item.addEventListener('click', function() {
-      lbIdx = i;
-      lbImg.src = lbItems[lbIdx].src;
-      lbImg.alt = lbItems[lbIdx].alt;
-      lb.classList.add('is-open');
-    });
+    var idx = galleryImgs.length;
+    galleryImgs.push({ src: img.src, alt: img.alt });
+    item.addEventListener('click', function() { openLb(galleryImgs, idx); });
   });
+
+  // 制作実績
+  var buildImgs = [];
+  document.querySelectorAll('.build-card').forEach(function(item) {
+    var img = item.querySelector('.build-photo img');
+    if (!img) return;
+    var idx = buildImgs.length;
+    buildImgs.push({ src: img.src, alt: img.alt });
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', function() { openLb(buildImgs, idx); });
+  });
+
   document.getElementById('lbClose').addEventListener('click', function() { lb.classList.remove('is-open'); });
   document.getElementById('lbPrev').addEventListener('click', function() {
     lbIdx = (lbIdx - 1 + lbItems.length) % lbItems.length;
