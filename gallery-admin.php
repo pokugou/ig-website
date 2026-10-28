@@ -26,11 +26,12 @@ function regenerateGallery($data) {
         $cls = 'gallery-item';
         if (($item['type'] ?? '') === 'tall') $cls .= ' tall';
         if (($item['type'] ?? '') === 'wide') $cls .= ' wide';
-        $f = htmlspecialchars($item['file']);
-        $c = htmlspecialchars($item['caption'] ?? '');
-        $t = htmlspecialchars($item['tag'] ?? '');
+        $f  = htmlspecialchars($item['file']);
+        $ca = htmlspecialchars($item['caption'] ?? '');
+        $c  = nl2br($ca);
+        $t  = htmlspecialchars($item['tag'] ?? '');
         $galleryGrid .= "    <div class=\"{$cls}\">\n";
-        $galleryGrid .= "      <img class=\"gallery-img\" src=\"{$f}\" alt=\"{$c}\" loading=\"lazy\">\n";
+        $galleryGrid .= "      <img class=\"gallery-img\" src=\"{$f}\" alt=\"{$ca}\" loading=\"lazy\">\n";
         $galleryGrid .= "      <div class=\"gallery-overlay\"><div class=\"gallery-tag\">{$t}</div><div class=\"gallery-caption\">{$c}</div></div>\n";
         $galleryGrid .= "    </div>\n";
     }
@@ -47,11 +48,12 @@ function regenerateGallery($data) {
         if (($item['section'] ?? 'gallery') !== 'build') continue;
         $cat  = $tagCatMap[$item['tag'] ?? ''] ?? 'other';
         $f    = htmlspecialchars($item['file']);
-        $c    = htmlspecialchars($item['caption'] ?? '');
+        $ca   = htmlspecialchars($item['caption'] ?? '');
+        $c    = nl2br($ca);
         $t    = htmlspecialchars($item['tag'] ?? '');
         $buildGrid .= "    <div class=\"build-card\" data-cat=\"{$cat}\">\n";
         $buildGrid .= "      <div class=\"build-card-line\"></div>\n";
-        $buildGrid .= "      <div class=\"build-photo\"><img src=\"{$f}\" alt=\"{$c}\" loading=\"lazy\"></div>\n";
+        $buildGrid .= "      <div class=\"build-photo\"><img src=\"{$f}\" alt=\"{$ca}\" loading=\"lazy\"></div>\n";
         $cu   = rawurlencode($item['caption'] ?? '');
         $buildGrid .= "      <div class=\"build-info\">\n";
         $buildGrid .= "        <div class=\"build-model\">{$c}</div>\n";
@@ -179,7 +181,8 @@ h1 span{font-size:1.4rem}
 .card{background:#1c1c1c;border:1px solid #333;border-radius:10px;padding:1.2rem;margin-bottom:1.2rem}
 label{display:block;font-size:0.72rem;color:#aaa;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.35rem;margin-top:0.9rem}
 label:first-child{margin-top:0}
-input[type=text],select{width:100%;background:#111;border:1px solid #444;color:#eee;padding:0.6rem 0.75rem;border-radius:6px;font-size:0.9rem;font-family:inherit}
+input[type=text],select,textarea{width:100%;background:#111;border:1px solid #444;color:#eee;padding:0.6rem 0.75rem;border-radius:6px;font-size:0.9rem;font-family:inherit}
+textarea{resize:vertical;min-height:4.5rem;line-height:1.55}
 input[type=file]{display:none}
 .file-btn{display:block;width:100%;padding:0.9rem;background:#222;border:2px dashed #555;border-radius:8px;text-align:center;cursor:pointer;font-size:0.9rem;color:#aaa;transition:border-color 0.2s}
 .file-btn.selected{border-color:#e33;color:#eee}
@@ -264,7 +267,7 @@ input[type=file]{display:none}
       <img class="preview" id="preview">
 
       <label>キャプション（説明文）</label>
-      <input type="text" name="caption" placeholder="例：レッド × ゴールドスレッド">
+      <textarea name="caption" placeholder="例：レッド × ゴールドスレッド&#10;改行できます"></textarea>
 
       <label>タグ</label>
       <select name="tag">
@@ -340,7 +343,7 @@ input[type=file]{display:none}
       <input type="hidden" name="edit_save" value="1">
       <input type="hidden" name="edit_idx" id="editIdx">
       <label>キャプション</label>
-      <input type="text" name="edit_caption" id="editCaption" placeholder="例：レッド × ゴールドスレッド">
+      <textarea name="edit_caption" id="editCaption" placeholder="例：レッド × ゴールドスレッド&#10;改行できます"></textarea>
       <label>タグ</label>
       <select name="edit_tag" id="editTag">
         <?php foreach ($TAGS as $t): ?>
