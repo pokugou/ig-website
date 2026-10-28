@@ -176,7 +176,10 @@ input[type=file]{display:none}
 .icon-btn:active{background:#333}
 .empty{text-align:center;color:#555;padding:2.5rem 0;font-size:0.9rem}
 .logout{font-size:0.72rem;color:#666;text-decoration:none;float:right;margin-top:0.2rem}
-.msg-continue{display:block;margin-top:0.6rem;background:#c00;color:#fff;text-align:center;padding:0.7rem;border-radius:7px;text-decoration:none;font-size:0.9rem;font-weight:900;letter-spacing:0.03em}
+.after-upload-btns{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1.2rem}
+.au-btn{display:block;padding:0.9rem 0.5rem;border-radius:8px;text-align:center;text-decoration:none;font-size:0.88rem;font-weight:900;letter-spacing:0.03em}
+.au-btn-new{background:#c00;color:#fff}
+.au-btn-list{background:#222;border:1px solid #444;color:#eee}
 .type-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem}
 .type-row.two-col{grid-template-columns:repeat(2,1fr)}
 .type-opt{position:relative}
@@ -202,12 +205,14 @@ input[type=file]{display:none}
   <h1><span>🖼️</span> ギャラリー管理 <a class="logout" href="?logout=1">ログアウト</a></h1>
 
   <?php if ($msg): ?>
-  <div class="msg<?= str_contains($msg,'失敗') || str_contains($msg,'対応') ? ' err' : '' ?>">
-    <?= htmlspecialchars($msg) ?>
-    <?php if (!str_contains($msg,'失敗') && !str_contains($msg,'対応')): ?>
-    <a href="#uploadForm" class="msg-continue">＋ 続けてアップロード</a>
-    <?php endif ?>
+  <?php $isErr = str_contains($msg,'失敗') || str_contains($msg,'対応'); ?>
+  <div class="msg<?= $isErr ? ' err' : '' ?>"><?= htmlspecialchars($msg) ?></div>
+  <?php if (!$isErr): ?>
+  <div class="after-upload-btns">
+    <a href="#uploadForm" class="au-btn au-btn-new">📷 新規アップロード</a>
+    <a href="#photoList" class="au-btn au-btn-list">📋 掲載中の写真</a>
   </div>
+  <?php endif ?>
   <?php endif ?>
 
   <!-- アップロードフォーム -->
@@ -246,7 +251,7 @@ input[type=file]{display:none}
   </div>
 
   <!-- 現在の画像一覧 -->
-  <div class="card">
+  <div class="card" id="photoList">
     <label style="margin-top:0">掲載中の写真（<?= count($data) ?>枚）</label>
     <?php if (empty($data)): ?>
     <div class="empty">まだ写真がありません</div>
