@@ -147,6 +147,7 @@ input[type=file]{display:none}
 .icon-btn:active{background:#333}
 .empty{text-align:center;color:#555;padding:2.5rem 0;font-size:0.9rem}
 .logout{font-size:0.72rem;color:#666;text-decoration:none;float:right;margin-top:0.2rem}
+.msg-continue{display:block;margin-top:0.6rem;background:#c00;color:#fff;text-align:center;padding:0.7rem;border-radius:7px;text-decoration:none;font-size:0.9rem;font-weight:900;letter-spacing:0.03em}
 .type-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem}
 .type-opt{position:relative}
 .type-opt input{position:absolute;opacity:0;width:0;height:0}
@@ -170,11 +171,18 @@ input[type=file]{display:none}
 <div class="wrap">
   <h1><span>🖼️</span> ギャラリー管理 <a class="logout" href="?logout=1">ログアウト</a></h1>
 
-  <?php if ($msg): ?><div class="msg<?= str_contains($msg,'失敗') || str_contains($msg,'対応') ? ' err' : '' ?>"><?= htmlspecialchars($msg) ?></div><?php endif ?>
+  <?php if ($msg): ?>
+  <div class="msg<?= str_contains($msg,'失敗') || str_contains($msg,'対応') ? ' err' : '' ?>">
+    <?= htmlspecialchars($msg) ?>
+    <?php if (!str_contains($msg,'失敗') && !str_contains($msg,'対応')): ?>
+    <a href="#uploadForm" class="msg-continue">＋ 続けてアップロード</a>
+    <?php endif ?>
+  </div>
+  <?php endif ?>
 
   <!-- アップロードフォーム -->
-  <div class="card">
-    <form method="post" enctype="multipart/form-data" id="uploadForm">
+  <div class="card" id="uploadForm">
+    <form method="post" enctype="multipart/form-data">
       <label for="fileInput">写真を選ぶ</label>
       <label class="file-btn" id="fileLabel" for="fileInput">📷 タップして写真を選択</label>
       <input type="file" id="fileInput" name="image" accept="image/*" onchange="onFileChange(this)">
