@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHIRASAGI | 白鷺 — 高級釣具ブランド</title>
+  <meta name="description" content="釣り竿・エビ竿・仕掛け・釣り糸を手がける高級釣具ブランド。石谷行雄監修、日本製。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white:  #ffffff;
+      --bg:     #F7F7F5;
+      --bg2:    #EFEFED;
+      --ink:    #111111;
+      --ink2:   #333333;
+      --ink3:   #888888;
+      --cyan:   #3BBBD8;
+      --cyan2:  #1A9ABF;
+      --red:    #D94F3D;
+      --border: rgba(0,0,0,0.09);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans JP', 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--ink);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    img { display: block; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; height: 64px;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { display: flex; align-items: center; text-decoration: none; gap: 0.7rem; }
+    .logo-img-wrap { background: var(--ink); padding: 3px 6px; border-radius: 3px; display:flex; align-items:center; }
+    .logo img { height: 30px; width: auto; mix-blend-mode: screen; }
+    .logo-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.15rem; font-weight: 600;
+      letter-spacing: 0.18em; color: var(--ink);
+      text-transform: uppercase;
+    }
+    nav ul { list-style: none; display: flex; align-items: center; gap: 0; }
+    nav ul li a {
+      display: flex; align-items: center; height: 64px; padding: 0 1.1rem;
+      color: var(--ink3); text-decoration: none;
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; transition: color 0.2s; white-space: nowrap;
+    }
+    nav ul li a:hover { color: var(--ink); }
+    .nav-cta {
+      display: inline-flex; align-items: center;
+      height: 36px; padding: 0 1.4rem; margin-left: 1rem;
+      background: var(--ink); color: var(--white) !important;
+      font-size: 0.7rem !important; font-weight: 600 !important;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; transition: background 0.22s;
+    }
+    .nav-cta:hover { background: var(--cyan) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      margin-top: 64px;
+      position: relative;
+      height: calc(100vh - 64px);
+      min-height: 500px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+    .hero-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      padding: 0 3rem 4rem;
+      max-width: 700px;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--cyan2); margin-bottom: 1.2rem;
+    }
+    .hero-eyebrow::before { content:''; display:block; width:20px; height:1px; background:var(--cyan2); }
+    .hero-heading {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      writing-mode: horizontal-tb;
+    }
+    .hero-sub {
+      font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+      color: var(--ink2);
+      line-height: 1.9;
+      max-width: 380px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+    .hero-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center;
+      padding: 0.8rem 1.8rem; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.22s; font-family: inherit;
+    }
+    .btn-dark  { background: var(--ink); color: var(--white); }
+    .btn-dark:hover { background: var(--cyan2); }
+    .btn-out   { background: transparent; border: 1px solid var(--ink); color: var(--ink); }
+    .btn-out:hover { border-color: var(--cyan2); color: var(--cyan2); }
+    .btn-cyan  { background: var(--cyan); color: var(--white); }
+    .btn-cyan:hover { background: var(--cyan2); }
+
+    /* Mobile hero overlay */
+    @media (max-width: 768px) {
+      .hero-overlay { background: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.80) 40%, rgba(255,255,255,0.3) 100%); }
+      .hero-content { justify-content: flex-end; }
+    }
+    /* Hero scroll indicator */
+    .hero-scroll {
+      position: absolute; bottom: 2rem; right: 3rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: var(--ink3); font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase;
+      z-index: 1;
+    }
+    .hero-scroll-line { width:1px; height:36px; background: linear-gradient(to bottom, var(--ink3), transparent); }
+
+    /* ── SECTION COMMON ── */
+    .inner { max-width: 1200px; margin: 0 auto; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.28em;
+      text-transform: uppercase; margin-bottom: 1rem; color: var(--cyan2);
+    }
+    .eyebrow::before { content:''; display:block; width:18px; height:1px; background:var(--cyan2); }
+
+    /* ── TICKER ── */
+    .ticker {
+      background: var(--ink); padding: 0.75rem 0;
+      overflow: hidden; white-space: nowrap;
+    }
+    .ticker-track { display: inline-flex; gap: 3rem; animation: tick 20s linear infinite; }
+    @keyframes tick { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      font-size: 0.62rem; font-weight: 500; letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.45); text-transform: uppercase;
+    }
+    .ticker-dot { width:3px; height:3px; background:var(--cyan); border-radius:50%; flex-shrink:0; }
+
+    /* ── PRODUCTS ── */
+    .sec-products { padding: 6rem 3rem; background: var(--white); }
+    .sec-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 3rem; gap: 2rem;
+    }
+    .sec-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 700; line-height: 1.15; color: var(--ink);
+    }
+    .sec-sub { font-size: 0.85rem; color: var(--ink3); line-height: 1.9; max-width: 400px; font-weight: 300; }
+
+    /* Rod grid: 2 col */
+    .rod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .rod-card {
+      display: flex; flex-direction: column;
+      text-decoration: none; color: inherit;
+      background: var(--bg); overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s;
+      position: relative;
+    }
+    .rod-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.1); }
+    .rod-img-wrap { overflow: hidden; aspect-ratio: 3/4; position: relative; }
+    .rod-img { width:100%; height:100%; object-fit:cover; object-position:center top; transition:transform 0.6s ease; }
+    .rod-card:hover .rod-img { transform: scale(1.04); }
+    .rod-badge {
+      position:absolute; top:1rem; left:1rem;
+      font-size:0.56rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+      padding:0.25rem 0.7rem; background:var(--ink); color:var(--white);
+    }
+    .rod-body { padding: 1.6rem 2rem 2rem; }
+    .rod-cat { font-size:0.58rem; font-weight:600; letter-spacing:0.22em; color:var(--ink3); margin-bottom:0.4rem; text-transform:uppercase; }
+    .rod-name {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight:700;
+      color:var(--ink); line-height:1; margin-bottom:0.3rem;
+    }
+    .rod-name-en { font-size:0.7rem; color:var(--ink3); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:1.2rem; font-family:'DM Sans',sans-serif; }
+    .rod-specs { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.2rem; }
+    .rod-spec { font-size:0.6rem; color:var(--ink2); border:1px solid var(--border); padding:0.2rem 0.6rem; letter-spacing:0.05em; }
+    .rod-spec-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-bottom:1.2rem; }
+    .rod-spec-item { padding:0.7rem 0.8rem; background:var(--white); }
+    .rod-spec-label { font-size:0.52rem; font-weight:600; letter-spacing:0.16em; color:var(--cyan2); margin-bottom:0.15rem; text-transform:uppercase; }
+    .rod-spec-val { font-size:0.85rem; font-weight:600; color:var(--ink); }
+    .rod-link {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      font-size:0.7rem; font-weight:600; color:var(--ink); letter-spacing:0.1em;
+      text-transform:uppercase; text-decoration:none;
+      border-bottom: 1px solid var(--ink); padding-bottom:1px;
+      transition:color 0.2s, border-color 0.2s;
+    }
+    .rod-card:hover .rod-link { color:var(--cyan2); border-color:var(--cyan2); }
+
+    /* Tackle: 3 col */
+    .tackle-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .tackle-card {
+      display:flex; flex-direction:column;
+      text-decoration:none; color:inherit; background:var(--bg);
+      overflow:hidden; transition:transform 0.3s, box-shadow 0.3s;
+    }
+    .tackle-card:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.1); }
+    .tackle-img-wrap { overflow:hidden; aspect-ratio:3/4; }
+    .tackle-img { width:100%; height:100%; object-fit:cover; object-position:center top; transition:transform 0.6s; }
+    .tackle-card:hover .tackle-img { transform:scale(1.04); }
+    .tackle-body { padding:1.2rem 1.4rem 1.6rem; flex:1; display:flex; flex-direction:column; }
+    .tackle-cat { font-size:0.56rem; font-weight:600; letter-spacing:0.2em; color:var(--ink3); margin-bottom:0.4rem; text-transform:uppercase; }
+    .tackle-name { font-family:'Noto Serif JP',serif; font-size:1.25rem; font-weight:700; color:var(--ink); line-height:1.2; margin-bottom:0.2rem; }
+    .tackle-name-ja { font-size:0.64rem; color:var(--ink3); letter-spacing:0.12em; margin-bottom:0.8rem; }
+    .tackle-tags { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:auto; }
+    .tackle-tag { font-size:0.56rem; color:var(--ink3); border:1px solid var(--border); padding:0.16rem 0.5rem; }
+
+    /* ── STATEMENT ── */
+    .sec-statement { padding: 7rem 3rem; background: var(--bg); }
+    .statement-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .statement-label {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--cyan2); margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.7rem;
+    }
+    .statement-label::before { content:''; display:block; width:18px; height:1px; background:var(--cyan2); }
+    .statement-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 700; line-height: 1.5; color: var(--ink);
+      margin-bottom: 2rem;
+    }
+    .statement-body { font-size: 0.9rem; color: var(--ink2); line-height: 2.1; font-weight: 300; margin-bottom: 2.5rem; }
+    .pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
+    .pillar { padding: 1.4rem 0; border-bottom: 1px solid var(--border); padding-right: 1.5rem; }
+    .pillar:nth-child(even) { padding-right: 0; padding-left: 1.5rem; border-left: 1px solid var(--border); }
+    .pillar-num { font-family:'DM Sans',sans-serif; font-size:0.52rem; font-weight:600; letter-spacing:0.22em; color:var(--cyan2); margin-bottom:0.3rem; }
+    .pillar-title { font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:0.25rem; }
+    .pillar-desc { font-size:0.74rem; color:var(--ink3); line-height:1.7; }
+
+    .statement-visual {
+      position: relative;
+    }
+    .statement-img-main {
+      width: 100%; aspect-ratio: 4/5; object-fit: cover; object-position: center top;
+    }
+    .statement-accent {
+      position: absolute; bottom: -1.5rem; left: -1.5rem;
+      width: 45%; aspect-ratio: 1/1; background: var(--cyan); opacity: 0.12;
+      pointer-events: none;
+    }
+
+    /* ── CTA ── */
+    .sec-cta {
+      padding: 5rem 3rem;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+    }
+    .cta-inner { max-width: 600px; }
+    .cta-inner h2 {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 700;
+      color: var(--white); margin-bottom: 0.75rem; line-height: 1.4;
+    }
+    .cta-inner p { font-size: 0.87rem; color: rgba(255,255,255,0.45); line-height: 1.9; margin-bottom: 2.5rem; font-weight: 300; }
+    .cta-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .btn-white { background: var(--white); color: var(--ink); }
+    .btn-white:hover { background: var(--cyan); color: var(--white); }
+    .btn-out-w { background:transparent; border:1px solid rgba(255,255,255,0.3); color:rgba(255,255,255,0.7); }
+    .btn-out-w:hover { border-color:var(--cyan); color:var(--cyan); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--bg); padding: 4rem 3rem 2.5rem; border-top: 1px solid var(--border); }
+    .foot-inner { max-width: 1200px; margin: 0 auto; }
+    .foot-top { display: grid; grid-template-columns: 1.8fr 1fr 1fr; gap: 3rem; margin-bottom: 2.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
+    .foot-logo { font-family:'DM Sans',sans-serif; font-size:1.15rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink); margin-bottom:0.25rem; }
+    .foot-logo-ja { font-size:0.55rem; color:var(--ink3); letter-spacing:0.2em; margin-bottom:1rem; }
+    .foot-body { font-size:0.78rem; color:var(--ink3); line-height:1.8; font-weight:300; }
+    .foot-col h4 { font-size:0.58rem; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--ink); margin-bottom:1.1rem; }
+    .foot-col ul { list-style:none; display:flex; flex-direction:column; gap:0.6rem; }
+    .foot-col ul a { font-size:0.8rem; color:var(--ink3); text-decoration:none; transition:color 0.2s; }
+    .foot-col ul a:hover { color:var(--cyan2); }
+    .foot-bottom { display:flex; justify-content:space-between; font-size:0.68rem; color:var(--ink3); }
+
+    /* ── REVEAL ── */
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.vis { opacity:1; transform:none; }
+    .stagger>* { opacity:0; transform:translateY(16px); transition:opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1); }
+    .stagger.vis>*:nth-child(1){opacity:1;transform:none;transition-delay:0.04s}
+    .stagger.vis>*:nth-child(2){opacity:1;transform:none;transition-delay:0.13s}
+    .stagger.vis>*:nth-child(3){opacity:1;transform:none;transition-delay:0.22s}
+
+    /* Hero animation */
+    .hero-content { animation: heroIn 1s cubic-bezier(0.22,1,0.36,1) forwards; }
+    @keyframes heroIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .statement-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .statement-visual { display: none; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 0 1.2rem; }
+      nav ul { display: none; }
+      .hero-content { padding: 0 1.5rem 3rem; }
+      .sec-products { padding: 4rem 1.5rem; }
+      .sec-statement { padding: 4rem 1.5rem; }
+      .sec-cta { padding: 4rem 1.5rem; }
+      footer { padding: 3rem 1.5rem 2rem; }
+      .rod-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .rod-img-wrap { aspect-ratio: 4/3; }
+      .tackle-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .pillars { grid-template-columns: 1fr; }
+      .pillar:nth-child(even) { padding-left: 0; border-left: none; }
+      .foot-top { grid-template-columns: 1fr; gap: 1.5rem; }
+      .foot-bottom { flex-direction: column; gap: 0.4rem; }
+      .cta-btns { flex-direction: column; align-items: center; }
+      .sec-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    }
+    @media (max-width: 480px) {
+      .tackle-grid { grid-template-columns: 1fr; }
+      .hero-heading { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-img-wrap"><img src="logo_cropped.png" alt="SHIRASAGI" /></div>
+    <span class="logo-name">SHIRASAGI</span>
+  </a>
+  <ul>
+    <li><a href="#products">製品</a></li>
+    <li><a href="#brand">ブランド</a></li>
+    <li><a href="#contact" class="nav-cta">お問い合わせ</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <img src="prod_rod_gokujo.jpg" class="hero-img" alt="SHIRASAGI 極上" />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Fishing Rod — 石谷行雄 監修</div>
+    <h1 class="hero-heading">
+      釣りの<br>本質を<br>極める。
+    </h1>
+    <p class="hero-sub">
+      白鷺が水辺に佇み、刹那に獲物を仕留めるように。<br>
+      SHIRASAGIは感度と精度を一本に宿す、日本製の高級釣具ブランドです。
+    </p>
+    <div class="hero-btns">
+      <a href="#products" class="btn btn-dark">製品を見る &rarr;</a>
+      <a href="#brand" class="btn btn-out">ブランドについて</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="ticker-dot"></span>極上 — FISHING ROD</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>虹弓翔エビ — SHRIMP ROD</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>PE×9 スーパーライン</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>石谷行雄 監修</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>MADE IN JAPAN</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>極上 — FISHING ROD</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>虹弓翔エビ — SHRIMP ROD</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>PE×9 スーパーライン</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>石谷行雄 監修</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>MADE IN JAPAN</span>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="sec-products" id="products">
+  <div class="inner">
+    <div class="sec-header reveal">
+      <div>
+        <div class="eyebrow">Products</div>
+        <h2 class="sec-title">製品ラインナップ</h2>
+      </div>
+      <p class="sec-sub">釣り竿・エビ竿・仕掛け・ラインの全ラインナップ。すべて石谷行雄監修、素材は日本製。</p>
+    </div>
+
+    <!-- Rods -->
+    <div class="rod-grid stagger">
+      <a href="#contact" class="rod-card">
+        <div class="rod-img-wrap">
+          <img src="prod_rod_gokujo.jpg" class="rod-img" alt="極上" />
+          <span class="rod-badge">Made in Japan</span>
+        </div>
+        <div class="rod-body">
+          <div class="rod-cat">Fishing Rod</div>
+          <div class="rod-name">極上</div>
+          <div class="rod-name-en">GOKUJO — しらさぎシリーズ</div>
+          <div class="rod-specs">
+            <span class="rod-spec">石谷行雄 監修</span>
+            <span class="rod-spec">高弾性カーボン</span>
+            <span class="rod-spec">CFRT認証</span>
+          </div>
+          <span class="rod-link">詳しく見る &rarr;</span>
+        </div>
+      </a>
+      <a href="#contact" class="rod-card">
+        <div class="rod-img-wrap">
+          <img src="prod_rod_ebi.jpg" class="rod-img" alt="虹弓翔エビ" />
+          <span class="rod-badge">Made in Japan</span>
+        </div>
+        <div class="rod-body">
+          <div class="rod-cat">Shrimp Rod</div>
+          <div class="rod-name">虹弓翔エビ</div>
+          <div class="rod-name-en">H3 210 — にじばねしょうえび</div>
+          <div class="rod-spec-grid">
+            <div class="rod-spec-item"><div class="rod-spec-label">全長</div><div class="rod-spec-val">210cm</div></div>
+            <div class="rod-spec-item"><div class="rod-spec-label">自重</div><div class="rod-spec-val">35g</div></div>
+            <div class="rod-spec-item"><div class="rod-spec-label">仕舞</div><div class="rod-spec-val">44cm</div></div>
+            <div class="rod-spec-item"><div class="rod-spec-label">継數</div><div class="rod-spec-val">7本</div></div>
+            <div class="rod-spec-item"><div class="rod-spec-label">先径</div><div class="rod-spec-val">0.9mm</div></div>
+            <div class="rod-spec-item"><div class="rod-spec-label">元径</div><div class="rod-spec-val">17.3mm</div></div>
+          </div>
+          <span class="rod-link">詳しく見る &rarr;</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Tackle -->
+    <div class="tackle-grid stagger" style="margin-top:1.5rem;">
+      <a href="#contact" class="tackle-card">
+        <div class="tackle-img-wrap">
+          <img src="prod_rig_ebi.jpg" class="tackle-img" alt="釣蝦精靈環仕掛" />
+        </div>
+        <div class="tackle-body">
+          <div class="tackle-cat">Shrimp Rig</div>
+          <div class="tackle-name">釣蝦精靈環仕掛</div>
+          <div class="tackle-name-ja">DS管付チラシヤナギ</div>
+          <div class="tackle-tags">
+            <span class="tackle-tag">APEX鉤</span>
+            <span class="tackle-tag">Oリング</span>
+            <span class="tackle-tag">Material: JAPAN</span>
+          </div>
+        </div>
+      </a>
+      <a href="#contact" class="tackle-card">
+        <div class="tackle-img-wrap">
+          <img src="prod_hook_ds.jpg" class="tackle-img" alt="DS管付チラシヤナギ 9号" />
+        </div>
+        <div class="tackle-body">
+          <div class="tackle-cat">Power Fishhook</div>
+          <div class="tackle-name">DS管付チラシヤナギ</div>
+          <div class="tackle-name-ja">9号 — 60本入</div>
+          <div class="tackle-tags">
+            <span class="tackle-tag">ハイカーボン鋼</span>
+            <span class="tackle-tag">60本入</span>
+            <span class="tackle-tag">Material: JAPAN</span>
+          </div>
+        </div>
+      </a>
+      <a href="#contact" class="tackle-card">
+        <div class="tackle-img-wrap">
+          <img src="prod_line_pe9.jpg" class="tackle-img" alt="スーパーライン PE×9" />
+        </div>
+        <div class="tackle-body">
+          <div class="tackle-cat">Braided Line</div>
+          <div class="tackle-name">スーパーライン PE×9</div>
+          <div class="tackle-name-ja">150M — Ultra Dyneema</div>
+          <div class="tackle-tags">
+            <span class="tackle-tag">0.6〜5.0号</span>
+            <span class="tackle-tag">3カラー</span>
+            <span class="tackle-tag">Material: JAPAN</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATEMENT -->
+<section class="sec-statement" id="brand">
+  <div class="statement-inner">
+    <div class="reveal">
+      <div class="statement-label">Brand Philosophy</div>
+      <h2 class="statement-title">水辺に佇む白鷺のように、<br>静寂と精度を纏う。</h2>
+      <p class="statement-body">
+        白鷺は水面をじっと見つめ、微動だにせず、そして刹那に正確な動作で獲物を仕留める。SHIRASAGIはその姿に、釣りの本質を見出しました。<br><br>
+        感度・軽さ・強度・美しさ。その四つが交わる場所にこそ、本物の道具は宿ります。
+      </p>
+      <div class="pillars">
+        <div class="pillar"><div class="pillar-num">01 — Sensitivity</div><div class="pillar-title">感度</div><div class="pillar-desc">微かなアタリも見逃さない極限の感度設計</div></div>
+        <div class="pillar"><div class="pillar-num">02 — Lightness</div><div class="pillar-title">軽さ</div><div class="pillar-desc">終日使えても疲れない超軽量設計</div></div>
+        <div class="pillar"><div class="pillar-num">03 — Strength</div><div class="pillar-title">強度</div><div class="pillar-desc">大物との格闘にも屈しない剛性と耐久性</div></div>
+        <div class="pillar"><div class="pillar-num">04 — Beauty</div><div class="pillar-title">美しさ</div><div class="pillar-desc">日本の美意識が宿る洗練されたデザイン</div></div>
+      </div>
+    </div>
+    <div class="statement-visual">
+      <img src="prod_rod_ebi.jpg" class="statement-img-main" alt="虹弓翔エビ" />
+      <div class="statement-accent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="sec-cta" id="contact">
+  <div class="cta-inner reveal">
+    <h2>ご質問・お問い合わせ</h2>
+    <p>取り扱い店舗のご案内、製品の詳細仕様、OEM・卸販売のご相談はこちらから。専任スタッフが丁寧にご対応いたします。</p>
+    <div class="cta-btns">
+      <a href="#" class="btn btn-white">お問い合わせ &rarr;</a>
+      <a href="#" class="btn btn-out-w">カタログ請求</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">SHIRASAGI</div>
+        <div class="foot-logo-ja">白鷺フィッシング / SHIRASAGI株式会社</div>
+        <p class="foot-body">釣り竿・エビ竿・仕掛け・ラインの高級釣具ブランド。<br>山口県下関市小月南町1223-1</p>
+      </div>
+      <div class="foot-col">
+        <h4>製品</h4>
+        <ul>
+          <li><a href="#products">釣り竿 — 極上</a></li>
+          <li><a href="#products">エビ竿 — 虹弓翔エビ</a></li>
+          <li><a href="#products">釣蝦精靈環仕掛</a></li>
+          <li><a href="#products">DS管付チラシヤナギ</a></li>
+          <li><a href="#products">スーパーライン PE×9</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>会社情報</h4>
+        <ul>
+          <li><a href="#brand">ブランド哲学</a></li>
+          <li><a href="#contact">お問い合わせ</a></li>
+          <li><a href="#">OEM・卸販売</a></li>
+          <li><a href="#">取り扱い店舗</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2024 SHIRASAGI株式会社 All rights reserved.</span>
+      <span>プライバシーポリシー</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('vis'); }), { threshold: 0.07 });
+  document.querySelectorAll('.reveal, .stagger').forEach(el => obs.observe(el));
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const h = a.getAttribute('href');
+      if(h==='#') return;
+      e.preventDefault();
+      const t = document.querySelector(h);
+      if(t) t.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+</script>
+</body>
+</html>
