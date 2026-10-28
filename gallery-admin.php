@@ -136,6 +136,21 @@ if ($isAdmin && isset($_POST['bulk_delete']) && !empty($_POST['sel'])) {
     $msg = count($indices) . '枚削除しました';
 }
 
+// 編集保存
+if ($isAdmin && isset($_POST['edit_save'])) {
+    $idx = (int)$_POST['edit_idx'];
+    $data = loadData();
+    if (isset($data[$idx])) {
+        $data[$idx]['caption'] = trim($_POST['edit_caption'] ?? '');
+        $data[$idx]['tag']     = in_array($_POST['edit_tag'] ?? '', $TAGS) ? $_POST['edit_tag'] : 'カラーカスタム';
+        $data[$idx]['section'] = ($_POST['edit_section'] ?? '') === 'build' ? 'build' : 'gallery';
+        $data[$idx]['type']    = in_array($_POST['edit_type'] ?? '', ['normal','tall','wide']) ? $_POST['edit_type'] : 'normal';
+        saveData($data);
+        regenerateGallery($data);
+        $msg = '編集を保存しました';
+    }
+}
+
 // 順番入れ替え（上へ）
 if ($isAdmin && isset($_POST['move_up'])) {
     $idx = (int)$_POST['move_up'];
@@ -206,6 +221,11 @@ input[type=file]{display:none}
 .type-opt input{position:absolute;opacity:0;width:0;height:0}
 .type-opt label{display:block;text-align:center;padding:0.5rem 0.3rem;background:#111;border:1px solid #444;border-radius:6px;cursor:pointer;font-size:0.78rem;color:#aaa;margin:0}
 .type-opt input:checked + label{border-color:#e33;color:#fff;background:#2a0a0a}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:100;align-items:flex-end}
+.modal-bg.open{display:flex}
+.modal-inner{background:#1c1c1c;border:1px solid #444;border-radius:14px 14px 0 0;padding:1.5rem 1.2rem calc(1.5rem + env(safe-area-inset-bottom,0px));width:100%;max-height:92vh;overflow-y:auto}
+.modal-title{font-size:1rem;font-weight:900;margin-bottom:1.1rem}
+.icon-btn.edit{border-color:#4466aa;color:#88aaff}
 </style>
 </head>
 <body>
@@ -295,6 +315,7 @@ input[type=file]{display:none}
             </div>
           </div>
           <div class="gitem-actions">
+            <button type="button" class="icon-btn edit" onclick="openEdit(<?= $i ?>,<?= json_encode($item['caption'] ?? '') ?>,<?= json_encode($item['tag'] ?? 'カラーカスタム') ?>,<?= json_encode($item['section'] ?? 'gallery') ?>,<?= json_encode($item['type'] ?? 'normal') ?>)">✏️</button>
             <?php if ($i > 0): ?>
             <button type="button" class="icon-btn" onclick="moveUp(<?= $i ?>)">↑</button>
             <?php endif ?>
@@ -310,6 +331,39 @@ input[type=file]{display:none}
     <?php endif ?>
   </div>
 </div>
+
+<!-- 編集モーダル -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeEdit()">
+  <div class="modal-inner">
+    <div class="modal-title">✏️ 写真を編集</div>
+    <form method="post">
+      <input type="hidden" name="edit_save" value="1">
+      <input type="hidden" name="edit_idx" id="editIdx">
+      <label>キャプション</label>
+      <input type="text" name="edit_caption" id="editCaption" placeholder="例：レッド × ゴールドスレッド">
+      <label>タグ</label>
+      <select name="edit_tag" id="editTag">
+        <?php foreach ($TAGS as $t): ?>
+        <option value="<?= htmlspecialchars($t) ?>"><?= htmlspecialchars($t) ?></option>
+        <?php endforeach ?>
+      </select>
+      <label>掲載セクション</label>
+      <div class="type-row two-col" style="margin-bottom:0.5rem">
+        <div class="type-opt"><input type="radio" name="edit_section" value="gallery" id="es1"><label for="es1">📸 釣果写真</label></div>
+        <div class="type-opt"><input type="radio" name="edit_section" value="build" id="es2"><label for="es2">🏆 制作実績</label></div>
+      </div>
+      <label>表示サイズ <span style="font-size:0.65rem;color:#666">（制作実績では無効）</span></label>
+      <div class="type-row" style="margin-bottom:0.5rem">
+        <div class="type-opt"><input type="radio" name="edit_type" value="normal" id="et1"><label for="et1">普通</label></div>
+        <div class="type-opt"><input type="radio" name="edit_type" value="tall" id="et2"><label for="et2">縦長</label></div>
+        <div class="type-opt"><input type="radio" name="edit_type" value="wide" id="et3"><label for="et3">横長</label></div>
+      </div>
+      <button class="btn" type="submit">保存する</button>
+      <button class="btn btn-outline" type="button" onclick="closeEdit()">キャンセル</button>
+    </form>
+  </div>
+</div>
+
 <script>
 function toggleAll(cb) {
   document.querySelectorAll('.gitem-cb').forEach(function(c){ c.checked = cb.checked; });
@@ -322,6 +376,17 @@ function confirmBulk() {
 function moveUp(idx) {
   document.getElementById('moveIdx').value = idx;
   document.getElementById('moveForm').submit();
+}
+function openEdit(idx, caption, tag, section, type) {
+  document.getElementById('editIdx').value = idx;
+  document.getElementById('editCaption').value = caption;
+  document.getElementById('editTag').value = tag;
+  document.querySelectorAll('input[name="edit_section"]').forEach(function(r){ r.checked = r.value === section; });
+  document.querySelectorAll('input[name="edit_type"]').forEach(function(r){ r.checked = r.value === type; });
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeEdit() {
+  document.getElementById('modalBg').classList.remove('open');
 }
 function onFileChange(input) {
   const label = document.getElementById('fileLabel');
