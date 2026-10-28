@@ -205,7 +205,7 @@ input[type=file]{display:none}
   <h1><span>🖼️</span> ギャラリー管理 <a class="logout" href="?logout=1">ログアウト</a></h1>
 
   <?php if ($msg): ?>
-  <?php $isErr = str_contains($msg,'失敗') || str_contains($msg,'対応'); ?>
+  <?php $isErr = (strpos($msg,'失敗') !== false) || (strpos($msg,'対応') !== false); ?>
   <div class="msg<?= $isErr ? ' err' : '' ?>"><?= htmlspecialchars($msg) ?></div>
   <?php if (!$isErr): ?>
   <div class="after-upload-btns">
