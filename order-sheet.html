@@ -288,7 +288,7 @@
 
     <div class="section">
       <div class="section-title">カラーカスタム</div>
-      <div class="row"><label>ブランクスカラー</label><input type="text" placeholder="番号・カラー名"></div>
+      <div class="row"><label>ブランクスカラー</label><input type="text" placeholder="番号・カラー名" class="blanks-color-inp"></div>
       <div class="row"><label>ティップカラー</label><input type="text" placeholder="番号・カラー名"></div>
       <div class="cols2">
         <div>
@@ -478,6 +478,14 @@
     bindGuideSelect(sheet);
   });
   updateRemoveVisibility();
+
+  (function() {
+    var color = new URLSearchParams(window.location.search).get('color');
+    if (color) {
+      var inp = document.querySelector('.sheet .blanks-color-inp');
+      if (inp) inp.value = color;
+    }
+  })();
 
   function slashToIso(s) {
     var parts = (s || '').split('/');

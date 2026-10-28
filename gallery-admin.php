@@ -52,9 +52,11 @@ function regenerateGallery($data) {
         $buildGrid .= "    <div class=\"build-card\" data-cat=\"{$cat}\">\n";
         $buildGrid .= "      <div class=\"build-card-line\"></div>\n";
         $buildGrid .= "      <div class=\"build-photo\"><img src=\"{$f}\" alt=\"{$c}\" loading=\"lazy\"></div>\n";
+        $cu   = rawurlencode($item['caption'] ?? '');
         $buildGrid .= "      <div class=\"build-info\">\n";
         $buildGrid .= "        <div class=\"build-model\">{$c}</div>\n";
         $buildGrid .= "        <div class=\"build-tags\"><span class=\"build-tag build-tag-genre\">{$t}</span></div>\n";
+        $buildGrid .= "        <a href=\"order-sheet.html?color={$cu}\" class=\"build-order-btn\" onclick=\"event.stopPropagation()\">このカラーでオーダーする</a>\n";
         $buildGrid .= "      </div>\n";
         $buildGrid .= "    </div>\n";
     }
