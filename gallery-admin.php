@@ -18,25 +18,53 @@ function saveData($data) {
 }
 function regenerateGallery($data) {
     $html = file_get_contents(GALLERY_HTML);
-    $grid = '';
+
+    // フォトギャラリー
+    $galleryGrid = '';
     foreach ($data as $item) {
+        if (($item['section'] ?? 'gallery') !== 'gallery') continue;
         $cls = 'gallery-item';
         if (($item['type'] ?? '') === 'tall') $cls .= ' tall';
         if (($item['type'] ?? '') === 'wide') $cls .= ' wide';
         $f = htmlspecialchars($item['file']);
         $c = htmlspecialchars($item['caption'] ?? '');
         $t = htmlspecialchars($item['tag'] ?? '');
-        $grid .= "    <div class=\"{$cls}\">\n";
-        $grid .= "      <img class=\"gallery-img\" src=\"{$f}\" alt=\"{$c}\" loading=\"lazy\">\n";
-        $grid .= "      <div class=\"gallery-overlay\"><div class=\"gallery-tag\">{$t}</div><div class=\"gallery-caption\">{$c}</div></div>\n";
-        $grid .= "    </div>\n";
+        $galleryGrid .= "    <div class=\"{$cls}\">\n";
+        $galleryGrid .= "      <img class=\"gallery-img\" src=\"{$f}\" alt=\"{$c}\" loading=\"lazy\">\n";
+        $galleryGrid .= "      <div class=\"gallery-overlay\"><div class=\"gallery-tag\">{$t}</div><div class=\"gallery-caption\">{$c}</div></div>\n";
+        $galleryGrid .= "    </div>\n";
     }
-    $new = preg_replace(
+    $html = preg_replace(
         '/<!-- GALLERY_START -->.*?<!-- GALLERY_END -->/s',
-        "<!-- GALLERY_START -->\n{$grid}<!-- GALLERY_END -->",
+        "<!-- GALLERY_START -->\n{$galleryGrid}<!-- GALLERY_END -->",
         $html
     );
-    file_put_contents(GALLERY_HTML, $new);
+
+    // 制作実績
+    $tagCatMap = ['カラーカスタム'=>'color','釣果'=>'catch','ロッド'=>'rod','その他'=>'other'];
+    $buildGrid = '';
+    foreach ($data as $item) {
+        if (($item['section'] ?? 'gallery') !== 'build') continue;
+        $cat  = $tagCatMap[$item['tag'] ?? ''] ?? 'other';
+        $f    = htmlspecialchars($item['file']);
+        $c    = htmlspecialchars($item['caption'] ?? '');
+        $t    = htmlspecialchars($item['tag'] ?? '');
+        $buildGrid .= "    <div class=\"build-card\" data-cat=\"{$cat}\">\n";
+        $buildGrid .= "      <div class=\"build-card-line\"></div>\n";
+        $buildGrid .= "      <div class=\"build-photo\"><img src=\"{$f}\" alt=\"{$c}\" loading=\"lazy\"></div>\n";
+        $buildGrid .= "      <div class=\"build-info\">\n";
+        $buildGrid .= "        <div class=\"build-model\">{$c}</div>\n";
+        $buildGrid .= "        <div class=\"build-tags\"><span class=\"build-tag build-tag-genre\">{$t}</span></div>\n";
+        $buildGrid .= "      </div>\n";
+        $buildGrid .= "    </div>\n";
+    }
+    $html = preg_replace(
+        '/<!-- BUILD_START -->.*?<!-- BUILD_END -->/s',
+        "<!-- BUILD_START -->\n{$buildGrid}<!-- BUILD_END -->",
+        $html
+    );
+
+    file_put_contents(GALLERY_HTML, $html);
 }
 
 // ログアウト
@@ -72,6 +100,7 @@ if ($isAdmin && $_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_FILES['image']
                 'caption' => trim($_POST['caption'] ?? ''),
                 'tag'     => $_POST['tag'] ?? 'カラーカスタム',
                 'type'    => $_POST['type'] ?? 'normal',
+                'section' => $_POST['section'] === 'build' ? 'build' : 'gallery',
             ];
             saveData($data);
             regenerateGallery($data);
@@ -149,6 +178,7 @@ input[type=file]{display:none}
 .logout{font-size:0.72rem;color:#666;text-decoration:none;float:right;margin-top:0.2rem}
 .msg-continue{display:block;margin-top:0.6rem;background:#c00;color:#fff;text-align:center;padding:0.7rem;border-radius:7px;text-decoration:none;font-size:0.9rem;font-weight:900;letter-spacing:0.03em}
 .type-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem}
+.type-row.two-col{grid-template-columns:repeat(2,1fr)}
 .type-opt{position:relative}
 .type-opt input{position:absolute;opacity:0;width:0;height:0}
 .type-opt label{display:block;text-align:center;padding:0.5rem 0.3rem;background:#111;border:1px solid #444;border-radius:6px;cursor:pointer;font-size:0.78rem;color:#aaa;margin:0}
@@ -198,7 +228,13 @@ input[type=file]{display:none}
         <?php endforeach ?>
       </select>
 
-      <label>表示サイズ</label>
+      <label>掲載セクション</label>
+      <div class="type-row two-col">
+        <div class="type-opt"><input type="radio" name="section" value="gallery" id="s1" checked><label for="s1">📸 フォトギャラリー</label></div>
+        <div class="type-opt"><input type="radio" name="section" value="build"   id="s2"><label for="s2">🏆 制作実績</label></div>
+      </div>
+
+      <label>表示サイズ <span style="font-size:0.65rem;color:#666">（制作実績では無効）</span></label>
       <div class="type-row">
         <div class="type-opt"><input type="radio" name="type" value="normal" id="t1" checked><label for="t1">普通</label></div>
         <div class="type-opt"><input type="radio" name="type" value="tall"   id="t2"><label for="t2">縦長</label></div>
@@ -221,7 +257,11 @@ input[type=file]{display:none}
         <img src="<?= htmlspecialchars($item['file']) ?>" alt="">
         <div class="gitem-info">
           <div class="gitem-caption"><?= htmlspecialchars($item['caption'] ?: '（キャプションなし）') ?></div>
-          <div class="gitem-tag"><?= htmlspecialchars($item['tag'] ?? '') ?> · <?= htmlspecialchars($item['type'] ?? 'normal') ?></div>
+          <div class="gitem-tag">
+            <?php $sec = ($item['section'] ?? 'gallery') === 'build' ? '🏆制作実績' : '📸フォト'; ?>
+            <span style="color:<?= ($item['section'] ?? '') === 'build' ? '#fa0' : '#8cf' ?>"><?= $sec ?></span>
+            · <?= htmlspecialchars($item['tag'] ?? '') ?>
+          </div>
         </div>
         <div class="gitem-actions">
           <?php if ($i > 0): ?>
