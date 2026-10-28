@@ -121,6 +121,19 @@ if ($isAdmin && isset($_POST['delete_idx'])) {
     }
 }
 
+// まとめ削除
+if ($isAdmin && isset($_POST['bulk_delete']) && !empty($_POST['sel'])) {
+    $data = loadData();
+    $indices = array_map('intval', $_POST['sel']);
+    rsort($indices);
+    foreach ($indices as $idx) {
+        if (isset($data[$idx])) array_splice($data, $idx, 1);
+    }
+    saveData($data);
+    regenerateGallery($data);
+    $msg = count($indices) . '枚削除しました';
+}
+
 // 順番入れ替え（上へ）
 if ($isAdmin && isset($_POST['move_up'])) {
     $idx = (int)$_POST['move_up'];
@@ -174,6 +187,11 @@ input[type=file]{display:none}
 .icon-btn{background:#222;border:1px solid #444;color:#ccc;padding:0.3rem 0.5rem;border-radius:5px;cursor:pointer;font-size:0.75rem;font-family:inherit}
 .icon-btn.del{border-color:#6a2a2a;color:#f88}
 .icon-btn:active{background:#333}
+.bulk-bar{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;margin-bottom:0.3rem}
+.cb-all-wrap{display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:#aaa;cursor:pointer}
+.bulk-del-btn{padding:0.35rem 0.75rem;font-size:0.78rem}
+.gitem-cb{width:18px;height:18px;accent-color:#c00;flex-shrink:0;cursor:pointer}
+.gitem:has(.gitem-cb:checked){background:#2a0a0a;border-color:#6a2a2a}
 .empty{text-align:center;color:#555;padding:2.5rem 0;font-size:0.9rem}
 .logout{font-size:0.72rem;color:#666;text-decoration:none;float:right;margin-top:0.2rem}
 .after-upload-btns{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1.2rem}
@@ -256,37 +274,53 @@ input[type=file]{display:none}
     <?php if (empty($data)): ?>
     <div class="empty">まだ写真がありません</div>
     <?php else: ?>
-    <div class="glist" style="margin-top:0.8rem">
-      <?php foreach ($data as $i => $item): ?>
-      <div class="gitem">
-        <img src="<?= htmlspecialchars($item['file']) ?>" alt="">
-        <div class="gitem-info">
-          <div class="gitem-caption"><?= htmlspecialchars($item['caption'] ?: '（キャプションなし）') ?></div>
-          <div class="gitem-tag">
-            <?php $sec = ($item['section'] ?? 'gallery') === 'build' ? '🏆制作実績' : '📸釣果写真'; ?>
-            <span style="color:<?= ($item['section'] ?? '') === 'build' ? '#fa0' : '#8cf' ?>"><?= $sec ?></span>
-            · <?= htmlspecialchars($item['tag'] ?? '') ?>
+    <form method="post" id="bulkForm">
+      <div class="bulk-bar">
+        <label class="cb-all-wrap"><input type="checkbox" id="cbAll" onchange="toggleAll(this)"> すべて選択</label>
+        <button type="submit" name="bulk_delete" value="1" class="icon-btn del bulk-del-btn" onclick="return confirmBulk()">まとめて削除</button>
+      </div>
+      <div class="glist" style="margin-top:0.5rem">
+        <?php foreach ($data as $i => $item): ?>
+        <div class="gitem">
+          <input type="checkbox" name="sel[]" value="<?= $i ?>" class="gitem-cb">
+          <img src="<?= htmlspecialchars($item['file']) ?>" alt="">
+          <div class="gitem-info">
+            <div class="gitem-caption"><?= htmlspecialchars($item['caption'] ?: '（キャプションなし）') ?></div>
+            <div class="gitem-tag">
+              <?php $sec = ($item['section'] ?? 'gallery') === 'build' ? '🏆制作実績' : '📸釣果写真'; ?>
+              <span style="color:<?= ($item['section'] ?? '') === 'build' ? '#fa0' : '#8cf' ?>"><?= $sec ?></span>
+              · <?= htmlspecialchars($item['tag'] ?? '') ?>
+            </div>
+          </div>
+          <div class="gitem-actions">
+            <?php if ($i > 0): ?>
+            <button type="button" class="icon-btn" onclick="moveUp(<?= $i ?>)">↑</button>
+            <?php endif ?>
           </div>
         </div>
-        <div class="gitem-actions">
-          <?php if ($i > 0): ?>
-          <form method="post" style="display:inline">
-            <input type="hidden" name="move_up" value="<?= $i ?>">
-            <button class="icon-btn" type="submit">↑</button>
-          </form>
-          <?php endif ?>
-          <form method="post" style="display:inline" onsubmit="return confirm('削除しますか？')">
-            <input type="hidden" name="delete_idx" value="<?= $i ?>">
-            <button class="icon-btn del" type="submit">削除</button>
-          </form>
-        </div>
+        <?php endforeach ?>
       </div>
-      <?php endforeach ?>
-    </div>
+    </form>
+    <!-- 順番入れ替え用フォーム（hidden） -->
+    <form method="post" id="moveForm" style="display:none">
+      <input type="hidden" name="move_up" id="moveIdx">
+    </form>
     <?php endif ?>
   </div>
 </div>
 <script>
+function toggleAll(cb) {
+  document.querySelectorAll('.gitem-cb').forEach(function(c){ c.checked = cb.checked; });
+}
+function confirmBulk() {
+  var checked = document.querySelectorAll('.gitem-cb:checked').length;
+  if (checked === 0) { alert('写真を選択してください'); return false; }
+  return confirm(checked + '枚削除しますか？');
+}
+function moveUp(idx) {
+  document.getElementById('moveIdx').value = idx;
+  document.getElementById('moveForm').submit();
+}
 function onFileChange(input) {
   const label = document.getElementById('fileLabel');
   const preview = document.getElementById('preview');
