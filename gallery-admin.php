@@ -315,7 +315,7 @@ input[type=file]{display:none}
             </div>
           </div>
           <div class="gitem-actions">
-            <button type="button" class="icon-btn edit" onclick="openEdit(<?= $i ?>,<?= json_encode($item['caption'] ?? '') ?>,<?= json_encode($item['tag'] ?? 'カラーカスタム') ?>,<?= json_encode($item['section'] ?? 'gallery') ?>,<?= json_encode($item['type'] ?? 'normal') ?>)">✏️</button>
+            <button type="button" class="icon-btn edit" onclick="openEdit(<?= $i ?>,<?= htmlspecialchars(json_encode($item['caption'] ?? ''), ENT_QUOTES) ?>,<?= htmlspecialchars(json_encode($item['tag'] ?? 'カラーカスタム'), ENT_QUOTES) ?>,<?= htmlspecialchars(json_encode($item['section'] ?? 'gallery'), ENT_QUOTES) ?>,<?= htmlspecialchars(json_encode($item['type'] ?? 'normal'), ENT_QUOTES) ?>)">✏️</button>
             <?php if ($i > 0): ?>
             <button type="button" class="icon-btn" onclick="moveUp(<?= $i ?>)">↑</button>
             <?php endif ?>
