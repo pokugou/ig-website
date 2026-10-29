@@ -97,7 +97,7 @@
   .carry th.hl { background: var(--ink); color: #fff; border-color: var(--ink); }
   .carry td.hl { border: 2px solid var(--ink); font-weight: 900; }
   .no-carry .carry { display: none; }
-  .is-delivery .carry, .is-delivery .bank, .is-delivery #opt-carry-label, .is-delivery #opt-terms-label, .is-delivery #r-carry { display: none !important; }
+  .is-delivery .carry, .is-delivery .bank, .is-delivery #opt-bank-label, .is-delivery #opt-carry-label, .is-delivery #opt-terms-label, .is-delivery #r-carry { display: none !important; }
 
   /* ---- 明細 ---- */
   .items-wrap { overflow-x: auto; }
@@ -184,6 +184,7 @@
     <label><input type="checkbox" id="opt-reg" checked> 登録番号を表示</label>
     <label id="opt-terms-label"><input type="checkbox" id="opt-terms" checked> お支払条件を表示</label>
     <label id="opt-carry-label"><input type="checkbox" id="opt-carry" checked> 前回請求・入金欄を表示</label>
+    <label id="opt-bank-label">お振込先 <select id="opt-bank"></select></label>
     <span class="from-badge" id="from-badge"></span>
     <span class="editing-badge" id="editing-badge">✎ 保存済みの請求書を編集中（保存すると上書きされます）</span>
   </div>
@@ -270,8 +271,8 @@
       <div>
         <div class="bank">
           <div class="box-title">お振込先</div>
-          <div><b>GMOあおぞらネット銀行</b>　法人第二営業部</div>
-          <div>普通　2122694　株式会社IG</div>
+          <div id="bank-l1"><b>GMOあおぞらネット銀行</b>　法人第二営業部</div>
+          <div id="bank-l2">普通　2122694　株式会社IG</div>
         </div>
         <div class="memo" id="memo-box">
           <div class="box-title">備考</div>
@@ -482,7 +483,7 @@
   }
   /* ---------- 取引先（保存済みの請求書・納品書から作る） ---------- */
   var clients = {};
-  var CLIENT_KEYS = ['zip', 'address', 'address2', 'honor', 'closeDay', 'payMonth', 'payDay'];
+  var CLIENT_KEYS = ['zip', 'address', 'address2', 'honor', 'closeDay', 'payMonth', 'payDay', 'bank'];
   function buildClients(all) {
     clients = {};
     all.filter(function (r) { return (r.__invoice || r.__delivery) && r.customer && r.customer.trim(); })
@@ -520,6 +521,8 @@
       if (c[k] != null && c[k] !== '') $(map[k]).value = k === 'zip' ? String(c[k]).replace(/^\s*〒\s*/, '') : c[k];
       else if (k in defaults) $(map[k]).value = defaults[k];
     });
+    $('opt-bank').value = bankOf(c.bank || BANKS[0].id).id;
+    applyBank();
     lastAutoAddress = ''; lastZipLookup = String(c.zip || '').replace(/[^0-9]/g, '');
     updateDue();
     fitAll();
@@ -630,9 +633,28 @@
   /* ---------- 保存データ ---------- */
   var FIELDS = { date: 'f-date', number: 'f-number', due: 'f-due', zip: 'f-zip', address: 'f-address', address2: 'f-address2', closeDay: 'f-close', payMonth: 'f-paymonth', payDay: 'f-payday', customer: 'f-customer', honor: 'f-honor', prev: 'f-prev', paid: 'f-paid', notes: 'f-notes' };
 
+  // お振込先：請求書ごとに選べる。新規はGMO。取引先を選ぶと、その取引先に前回使った振込先が入る
+  var BANKS = [
+    { id: 'gmo', label: 'GMOあおぞらネット銀行', bank: 'GMOあおぞらネット銀行', branch: '法人第二営業部', acct: '普通　2122694　株式会社IG' },
+    { id: 'tokyo-shinkin', label: '東京信用金庫（田無支店）', bank: '東京信用金庫', branch: '田無支店', acct: '普通　4071298　IGロッドプランニング' }
+  ];
+  (function () {
+    var sel = $('opt-bank');
+    BANKS.forEach(function (b) { var o = document.createElement('option'); o.value = b.id; o.textContent = b.label; sel.appendChild(o); });
+  })();
+  function bankOf(id) { return BANKS.filter(function (b) { return b.id === id; })[0] || BANKS[0]; }
+  function applyBank() {
+    var b = bankOf($('opt-bank').value);
+    $('bank-l1').innerHTML = '<b></b>';
+    $('bank-l1').firstChild.textContent = b.bank;
+    $('bank-l1').appendChild(document.createTextNode('　' + b.branch));
+    $('bank-l2').textContent = b.acct;
+  }
+  $('opt-bank').addEventListener('change', applyBank);
+
   function collect() {
     var t = totals();
-    var inv = { id: currentId || (DOC.idPrefix + Date.now()), kind: KIND, savedAt: new Date().toISOString(), seal: $('opt-seal').checked, showReg: $('opt-reg').checked, showTerms: $('opt-terms').checked, showCarry: $('opt-carry').checked, items: [] };
+    var inv = { id: currentId || (DOC.idPrefix + Date.now()), kind: KIND, savedAt: new Date().toISOString(), seal: $('opt-seal').checked, showReg: $('opt-reg').checked, showTerms: $('opt-terms').checked, showCarry: $('opt-carry').checked, bank: $('opt-bank').value, items: [] };
     Object.keys(FIELDS).forEach(function (k) { inv[k] = $(FIELDS[k]).value; });
     rowsBody.querySelectorAll('tr').forEach(function (tr) {
       var it = {};
@@ -657,6 +679,8 @@
     $('opt-reg').checked = inv.showReg != null ? inv.showReg : KIND !== 'delivery';
     $('opt-terms').checked = inv.showTerms !== false;
     $('opt-carry').checked = KIND !== 'delivery' && inv.showCarry !== false;
+    $('opt-bank').value = bankOf(inv.bank || BANKS[0].id).id;
+    applyBank();
     rowsBody.innerHTML = '';
     (inv.items && inv.items.length ? inv.items : [{}]).forEach(addRow);
     document.body.classList.toggle('editing', !!currentId);
@@ -682,6 +706,8 @@
     $('opt-reg').checked = KIND !== 'delivery';
     $('opt-terms').checked = true;
     $('opt-carry').checked = KIND !== 'delivery';
+    $('opt-bank').value = BANKS[0].id;
+    applyBank();
     rowsBody.innerHTML = '';
     addRow();
     document.body.classList.remove('editing');

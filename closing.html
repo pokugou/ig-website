@@ -309,6 +309,7 @@
       closeDay: $('t-close').value.trim() || '末', payMonth: $('t-paymonth').value, payDay: $('t-payday').value.trim() || '末',
       date: $('f-close').value, number: '', due: '',
       prev: $('f-prev').value, paid: $('f-paid').value, showCarry: true,
+      bank: info.lastInvoice && info.lastInvoice.bank || '',
       notes: '',
       items: sel.map(function (r) {
         return { date: md(r.date), name: '納品分（納品番号' + (r.number || '-') + '）', qty: '', unit: '', amt: String(subOf(r)), note: '' };
