@@ -1806,6 +1806,7 @@ function showConfirm() {
       + '<div class="confirm-row"><span class="confirm-row-label">送り先住所</span>'
       + '<span class="confirm-row-val"><span>' + esc(data.get('address') || '—') + '</span></span></div>'
       + row('お支払い方法', payText)
+      + row('納期の目安', 'お支払い確認後 60〜70日前後')
     + '</div>'
     + '<div class="confirm-section full-width"><div class="confirm-section-label">料金確認</div>'
       + '<div class="confirm-price-box">'
@@ -2050,6 +2051,7 @@ function buildOrderCard() {
         + r('電話番号',       data.get('tel') || '—')
         + r('送り先住所',     data.get('address') || '—')
         + r('お支払い方法',   payText)
+        + r('納期の目安',     'お支払い確認後 60〜70日前後')
       + '</div>'
     + '</div>'
     // ── 税込合計 ──
