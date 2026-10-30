@@ -43,8 +43,8 @@
   table.dl td textarea { text-align: center; font-size: 1rem; line-height: 1.45; padding: 0.55rem 0.4rem; min-height: 2.6rem; }
   table.dl th.ctl-cell { background: transparent; border: none; padding: 0; width: 0; }
   .ctl-cell { position: relative; border: none !important; width: 0; }
-  .ctl-cell .box { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; }
-  .ctl-cell button { font-family: inherit; width: 24px; height: 22px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--line); background: #fff; color: var(--sub); cursor: pointer; line-height: 1; padding: 0; }
+  .ctl-cell .box { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); display: grid; grid-template-columns: 22px 22px; gap: 2px; }
+  .ctl-cell button { font-family: inherit; width: 22px; height: 20px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--line); background: #fff; color: var(--sub); cursor: pointer; line-height: 1; padding: 0; }
   .ctl-cell button:hover { color: #fff; background: var(--ink); border-color: var(--ink); }
   .ctl-cell button.del:hover { background: var(--red); border-color: var(--red); }
   .link-bar { max-width: 794px; margin: 0 auto 0.8rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; background: #fff; border: 1px solid #ddd; padding: 0.55rem 0.8rem; font-size: 0.78rem; }
@@ -64,6 +64,7 @@
     table.dl th { font-size: 0.78rem; padding: 0.5rem 0.1rem; }
     table.dl td textarea { font-size: 0.82rem; padding: 0.4rem 0.15rem; }
     .ctl-cell .box { left: 2px; }
+    .sheet { padding-right: 2.9rem; }
   }
 
   .pdf-capture .toolbar, .pdf-capture .link-bar, .pdf-capture .hint, .pdf-capture .editing-badge, .pdf-capture .add-row, .pdf-capture .ctl-cell { display: none !important; }
@@ -152,7 +153,11 @@
     ins.addEventListener('click', function () { var n = addRow([], tr); n.querySelector('textarea').focus(); saveDraft(); });
     var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = '×'; del.title = 'この行を削除';
     del.addEventListener('click', function () { if (rowsEl.children.length <= 1) { tr.querySelectorAll('textarea').forEach(function (t) { t.value = ''; grow(t); }); } else { tr.remove(); } saveDraft(); });
-    box.appendChild(ins); box.appendChild(del); ctl.appendChild(box); tr.appendChild(ctl);
+    var up = document.createElement('button'); up.type = 'button'; up.textContent = '▲'; up.title = 'この行を上へ';
+    up.addEventListener('click', function () { var p = tr.previousElementSibling; if (p) { rowsEl.insertBefore(tr, p); saveDraft(); } });
+    var dn = document.createElement('button'); dn.type = 'button'; dn.textContent = '▼'; dn.title = 'この行を下へ';
+    dn.addEventListener('click', function () { var n = tr.nextElementSibling; if (n) { rowsEl.insertBefore(n, tr); saveDraft(); } });
+    box.appendChild(up); box.appendChild(ins); box.appendChild(dn); box.appendChild(del); ctl.appendChild(box); tr.appendChild(ctl);
     if (sid) { var lk = document.createElement('span'); lk.className = 'lnk'; lk.textContent = '🔗'; lk.title = '生産スケジュールと連動している行'; ctl.appendChild(lk); }
     if (afterTr && afterTr.parentNode === rowsEl) rowsEl.insertBefore(tr, afterTr.nextSibling); else rowsEl.appendChild(tr);
     tr.querySelectorAll('textarea').forEach(grow);
