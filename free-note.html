@@ -371,6 +371,14 @@
     for (var r = g.r1; r <= g.r2; r++) for (var c = g.c1; c <= g.c2; c++) { if (val) b.col[r + ',' + c] = val; else delete b.col[r + ',' + c]; }
     renderBlocks(); saveDraft();
   }
+  function isUnder(b, ri, ci) { return !!(b.und && b.und[ri + ',' + ci]); }
+  function applyUnder(b) {
+    if (!b.und) b.und = {};
+    var g = selRange(b), all = true;
+    for (var r = g.r1; r <= g.r2; r++) for (var c = g.c1; c <= g.c2; c++) if (!isUnder(b, r, c)) all = false;
+    for (var r2 = g.r1; r2 <= g.r2; r2++) for (var c2 = g.c1; c2 <= g.c2; c2++) { if (all) delete b.und[r2 + ',' + c2]; else b.und[r2 + ',' + c2] = true; }
+    renderBlocks(); saveDraft();
+  }
   function applyBold(b, val) { // val: true / false, or 'toggle'
     if (!b.bld) b.bld = {};
     var g = selRange(b), all = true;
@@ -384,7 +392,7 @@
     var ncols = b.rows[0].length;
     if (axis === 'r') b.rows.splice(index, 0, new Array(ncols).fill(''));
     else { b.rows.forEach(function (r) { r.splice(index, 0, ''); }); if (b.align) b.align.splice(index, 0, ''); }
-    ['cal', 'fill', 'col', 'bld', 'va'].forEach(function (m) {
+    ['cal', 'fill', 'col', 'bld', 'und', 'va'].forEach(function (m) {
       if (!b[m]) return;
       var out = {};
       Object.keys(b[m]).forEach(function (k) {
@@ -475,6 +483,12 @@
       bar.appendChild(kind);
 
       if (b.type === 'heading' || b.type === 'text') alignButtons(bar, b, 'ta');
+      if (b.type === 'heading' || b.type === 'text') {
+        var bdOn = b.type === 'heading' ? b.bd !== false : !!b.bd;
+        var bb = barBtn('太字', function () { b.bd = !bdOn; renderBlocks(); saveDraft(); }, 'al-btn' + (bdOn ? ' on' : '')); bb.style.fontWeight = '900'; bb.title = 'この' + (b.type === 'heading' ? '見出し' : '文章') + '全体の太字を切り替え';
+        var ubb = barBtn('下線', function () { b.ul = !b.ul; renderBlocks(); saveDraft(); }, 'al-btn' + (b.ul ? ' on' : '')); ubb.style.textDecoration = 'underline'; ubb.title = 'この' + (b.type === 'heading' ? '見出し' : '文章') + '全体の下線を切り替え';
+        bar.appendChild(bb); bar.appendChild(ubb);
+      }
       if (b.type === 'text') {
         bar.appendChild(barBtn('A−', function () { b.fs = Math.max(0, (b.fs == null ? 1 : b.fs) - 1); renderBlocks(); saveDraft(); }));
         bar.appendChild(barBtn('A＋', function () { b.fs = Math.min(3, (b.fs == null ? 1 : b.fs) + 1); renderBlocks(); saveDraft(); }));
@@ -508,6 +522,8 @@
         bar.appendChild(nb);
         var tb = barBtn('太字', function () { applyBold(b, 'toggle'); }, 'al-btn'); tb.style.fontWeight = '900'; tb.title = '選択したマス・行の太字を切り替え（選択なしなら表全体）';
         bar.appendChild(tb);
+        var ub = barBtn('下線', function () { applyUnder(b); }, 'al-btn'); ub.style.textDecoration = 'underline'; ub.title = '選択したマス・行の下線を切り替え（選択なしなら表全体）';
+        bar.appendChild(ub);
         var cl = document.createElement('label'); cl.className = 'hdr-opt'; cl.title = '選択したマス・行の文字色（選択なしなら表全体）';
         cl.appendChild(document.createTextNode('文字色'));
         var ci_ = document.createElement('input'); ci_.type = 'color'; ci_.value = '#cc2200'; ci_.style.cssText = 'width:2rem;height:1.5rem;padding:0;border:1px solid #999;background:#fff;cursor:pointer';
@@ -524,9 +540,9 @@
           bar.appendChild(ib);
         });
         bar.appendChild(barBtn('＋行', function () { b.rows.push(b.rows[0].map(function () { return ''; })); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.fill[k]; }); ['col', 'bld', 'va'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−行', function () { if (b.rows.length > 1) { b.rows.pop(); if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b.fill[k]; }); ['col', 'bld', 'und', 'va'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[0] >= b.rows.length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
         bar.appendChild(barBtn('＋列', function () { b.rows.forEach(function (r) { r.push(''); }); renderBlocks(); saveDraft(); }));
-        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.fill[k]; }); ['col', 'bld', 'va'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
+        bar.appendChild(barBtn('−列', function () { if (b.rows[0].length > 1) { b.rows.forEach(function (r) { r.pop(); }); if (b.align) b.align.length = b.rows[0].length; if (b.cal) Object.keys(b.cal).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.cal[k]; }); if (b.fill) Object.keys(b.fill).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b.fill[k]; }); ['col', 'bld', 'und', 'va'].forEach(function (m) { if (b[m]) Object.keys(b[m]).forEach(function (k) { if (+k.split(',')[1] >= b.rows[0].length) delete b[m][k]; }); }); sel = null; renderBlocks(); saveDraft(); } }));
       }
       if (b.type === 'image') {
         bar.appendChild(barBtn('＋ この枠に画像を追加', function () { pendingArea = b; document.getElementById('f-img').click(); }));
@@ -538,11 +554,15 @@
 
       if (b.type === 'heading') {
         var hi = document.createElement('input'); hi.type = 'text'; hi.placeholder = '見出し'; hi.value = b.text || ''; if (b.ta) hi.style.textAlign = b.ta;
+        if (b.bd === false) hi.style.fontWeight = '400';
+        if (b.ul) hi.style.textDecoration = 'underline';
         hi.addEventListener('input', function () { b.text = hi.value; saveDraft(); });
         wrap.appendChild(hi);
       } else if (b.type === 'text') {
         wrap.classList.add('fs' + (b.fs == null ? 1 : b.fs));
         var ta = document.createElement('textarea'); ta.placeholder = '自由に書き込めます'; ta.value = b.text || ''; if (b.ta) ta.style.textAlign = b.ta;
+        if (b.bd) ta.style.fontWeight = '700';
+        if (b.ul) ta.style.textDecoration = 'underline';
         ta.addEventListener('input', function () { b.text = ta.value; grow(ta); saveDraft(); });
         wrap.appendChild(ta);
       } else if (b.type === 'table') {
@@ -583,6 +603,7 @@
             var colv = b.col && b.col[ri + ',' + ci];
             if (colv) cta.style.color = colv;
             cta.style.fontWeight = isBold(b, ri, ci) ? '700' : '400';
+            if (isUnder(b, ri, ci)) cta.style.textDecoration = 'underline';
             cta.addEventListener('input', function () { b.rows[ri][ci] = cta.value; grow(cta); saveDraft(); });
             cta.addEventListener('keydown', cellKey);
             cta.addEventListener('focus', function () { setSel(b, ri, ci, ri, ci); });
@@ -704,7 +725,7 @@
       var o = document.createElement('div');
       o.textContent = text || ' ';
       var inline = !!el.closest('.head-meta');
-      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + cs.lineHeight + ';white-space:pre-wrap;word-break:break-word;' + (inline ? 'display:inline-block;width:auto;' : 'width:100%;') + 'min-height:' + (el.tagName === 'TEXTAREA' ? cs.minHeight : '0') + ';';
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';text-decoration:' + (cs.textDecorationLine === 'underline' ? 'underline' : 'none') + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + cs.lineHeight + ';white-space:pre-wrap;word-break:break-word;' + (inline ? 'display:inline-block;width:auto;' : 'width:100%;') + 'min-height:' + (el.tagName === 'TEXTAREA' ? cs.minHeight : '0') + ';';
       var prev = el.style.display;
       el.style.display = 'none';
       el.insertAdjacentElement('afterend', o);
