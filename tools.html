@@ -51,7 +51,7 @@
   .doc .btns a.secondary { background: #fff; color: var(--ink); }
   .doc .btns a.secondary:hover { background: #eee; }
 
-  .closing { background: var(--paper); border: 2px solid var(--ink); padding: 1.2rem 1.3rem; margin-bottom: 1rem; display: grid; grid-template-columns: 1fr auto; gap: 0.6rem 1.2rem; align-items: center; }
+  .closing { background: var(--paper); border: 2px solid var(--ink); padding: 1.2rem 1.3rem; margin-top: 1rem; display: grid; grid-template-columns: 1fr auto; gap: 0.6rem 1.2rem; align-items: center; }
   .closing h2 { font-size: 1.1rem; font-weight: 900; }
   .closing p { font-size: 0.78rem; color: var(--sub); }
   .closing .go { font-size: 0.85rem; font-weight: 700; color: #fff; background: var(--ink); text-decoration: none; padding: 0.7rem 1.2rem; white-space: nowrap; }
@@ -169,16 +169,7 @@
       </a>
     </div>
 
-    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書</span></div>
-
-    <div class="closing">
-      <div>
-        <h2>📅 締め請求</h2>
-        <p>締め日までの未請求の納品書をまとめて、取引先ごとに1枚の請求書を作ります。</p>
-      </div>
-      <a class="go" href="closing.html">締め請求をする →</a>
-      <ul id="unbilled"><li class="none">読み込み中…</li></ul>
-    </div>
+    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書・締め請求</span></div>
 
     <div class="grid">
       <div class="doc">
@@ -213,6 +204,15 @@
           <a class="secondary" href="purchase-order-history.html">保存一覧</a>
         </div>
       </div>
+    </div>
+
+    <div class="closing">
+      <div>
+        <h2>📅 締め請求</h2>
+        <p>締め日までの未請求の納品書をまとめて、取引先ごとに1枚の請求書を作ります。</p>
+      </div>
+      <a class="go" href="closing.html">締め請求をする →</a>
+      <ul id="unbilled"><li class="none">読み込み中…</li></ul>
     </div>
 
     <footer>IG Rod Planning</footer>
