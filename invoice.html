@@ -283,7 +283,7 @@
       </div>
       <div class="totals">
         <div class="r"><span class="k">小計（税抜）</span><span id="v-sub">¥0</span></div>
-        <div class="r"><span class="k">消費税（10%）</span><span id="v-tax">¥0</span></div>
+        <div class="r"><span class="k" id="v-taxlabel">消費税（10%）</span><span id="v-tax">¥0</span></div>
         <div class="r" id="r-carry"><span class="k">繰越金額</span><span id="v-carry2">¥0</span></div>
         <div class="r grand"><span class="k" id="grand-label">ご請求金額</span><span id="v-billed3">¥0</span></div>
         <div class="breakdown" id="v-breakdown">10%対象 ¥0　消費税 ¥0</div>
@@ -342,10 +342,12 @@
 
 
   /* ---------- 計算 ---------- */
+  // 海外の会社（PANU）への請求は消費税なし
+  function taxFree() { return /panu/i.test($('f-customer').value); }
   function totals() {
     var sub = 0;
     rowsBody.querySelectorAll('tr').forEach(function (tr) { sub += num(tr.querySelector('.f-amt').value); });
-    var tax = Math.round(Math.round(sub * TAX_RATE * 1e6) / 1e6);
+    var tax = taxFree() ? 0 : Math.round(Math.round(sub * TAX_RATE * 1e6) / 1e6);
     var carryOn = $('opt-carry').checked;
     var prev = carryOn ? num($('f-prev').value) : 0, paid = carryOn ? num($('f-paid').value) : 0;
     var carry = prev - paid;
@@ -382,7 +384,9 @@
     $('r-carry').style.display = t.carry ? '' : 'none';
     ['v-billed', 'v-billed2', 'v-billed3'].forEach(function (id) { $(id).textContent = yen(t.billed); });
     fitAll();
-    $('v-breakdown').textContent = '10%対象 ' + yen(t.sub) + '　消費税 ' + yen(t.tax);
+    var tf = taxFree();
+    $('v-taxlabel').textContent = tf ? '消費税（海外・非課税）' : '消費税（10%）';
+    $('v-breakdown').textContent = (tf ? '非課税 ' : '10%対象 ') + yen(t.sub) + '　消費税 ' + yen(t.tax);
   }
 
   /* ---------- 明細行 ---------- */
@@ -517,6 +521,7 @@
     var c = clients[name];
     if (!c) return;
     $('f-customer').value = name;
+    recalc();
     var map = { zip: 'f-zip', address: 'f-address', address2: 'f-address2', honor: 'f-honor', closeDay: 'f-close', payMonth: 'f-paymonth', payDay: 'f-payday' };
     var defaults = { address2: '', closeDay: '末', payMonth: '翌月', payDay: '末' };
     Object.keys(map).forEach(function (k) {
@@ -576,6 +581,7 @@
     opts.forEach(function (o, i) { o.classList.toggle('active', i === suggestActive); });
     opts[suggestActive].scrollIntoView({ block: 'nearest' });
   }
+  $('f-customer').addEventListener('input', recalc);
   $('f-customer').addEventListener('input', showSuggest);
   $('f-customer').addEventListener('focus', showSuggest);
   $('f-customer').addEventListener('blur', function () { setTimeout(hideSuggest, 120); });
