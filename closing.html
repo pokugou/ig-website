@@ -310,6 +310,7 @@
       date: $('f-close').value, number: '', due: '',
       prev: $('f-prev').value, paid: $('f-paid').value, showCarry: true,
       bank: info.lastInvoice && info.lastInvoice.bank || '',
+      issuer: info.lastInvoice && info.lastInvoice.issuer || '',
       notes: '',
       items: sel.map(function (r) {
         return { date: md(r.date), name: '納品分（納品番号' + (r.number || '-') + '）', qty: '', unit: '', amt: String(subOf(r)), note: '' };

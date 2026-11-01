@@ -80,6 +80,7 @@
   .seal { position: absolute; right: 0; top: -0.5rem; width: 83px; height: 83px; opacity: 0.85; pointer-events: none; }
   .no-seal .seal { display: none; }
   .no-reg .from .reg { display: none; }
+  .issuer-ayf .from .reg, .issuer-ayf .from #from-tel, .issuer-ayf .from #from-logo, .issuer-ayf .from #from-sub, .issuer-ayf .seal { display: none; }
   .no-terms .terms { display: none; }
 
   /* ---- ご請求金額 ---- */
@@ -184,6 +185,7 @@
     <label><input type="checkbox" id="opt-reg" checked> 登録番号を表示</label>
     <label id="opt-terms-label"><input type="checkbox" id="opt-terms" checked> お支払条件を表示</label>
     <label id="opt-carry-label"><input type="checkbox" id="opt-carry" checked> 前回請求・入金欄を表示</label>
+    <label id="opt-issuer-label">発行元 <select id="opt-issuer"></select></label>
     <label id="opt-bank-label">お振込先 <select id="opt-bank"></select></label>
     <span class="from-badge" id="from-badge"></span>
     <span class="editing-badge" id="editing-badge">✎ 保存済みの請求書を編集中（保存すると上書きされます）</span>
@@ -227,12 +229,12 @@
 
       <div class="from">
         <div class="brand">
-          <img src="logo.png" alt="">
-          <div class="co">株式会社IG<small>IG Rod Planning</small></div>
+          <img src="logo.png" alt="" id="from-logo">
+          <div class="co"><span id="from-name">株式会社IG</span><small id="from-sub">IG Rod Planning</small></div>
         </div>
         <div id="from-zip">〒107-0061</div>
         <div id="from-addr">東京都港区北青山1-3-1<br>アールキューブ3階</div>
-        <div>TEL 090-1798-5613</div>
+        <div id="from-tel">TEL 090-1798-5613</div>
         <div class="reg">登録番号 T4010401187852</div>
         <img class="seal" src="seal.png" alt="">
       </div>
@@ -483,7 +485,7 @@
   }
   /* ---------- 取引先（保存済みの請求書・納品書から作る） ---------- */
   var clients = {};
-  var CLIENT_KEYS = ['zip', 'address', 'address2', 'honor', 'closeDay', 'payMonth', 'payDay', 'bank'];
+  var CLIENT_KEYS = ['zip', 'address', 'address2', 'honor', 'closeDay', 'payMonth', 'payDay', 'bank', 'issuer'];
   function buildClients(all) {
     clients = {};
     all.filter(function (r) { return (r.__invoice || r.__delivery) && r.customer && r.customer.trim(); })
@@ -523,6 +525,8 @@
     });
     $('opt-bank').value = bankOf(c.bank || BANKS[0].id).id;
     applyBank();
+    $('opt-issuer').value = issuerOf(c.issuer || ISSUERS[0].id).id;
+    applyIssuer();
     lastAutoAddress = ''; lastZipLookup = String(c.zip || '').replace(/[^0-9]/g, '');
     updateDue();
     fitAll();
@@ -637,14 +641,37 @@
   var BANKS = [
     { id: 'gmo', label: 'GMOあおぞらネット銀行', bank: 'GMOあおぞらネット銀行', branch: '法人第二営業部', acct: '普通　2122694　株式会社IG' },
     { id: 'tokyo-shinkin', label: '東京信用金庫（田無支店）', bank: '東京信用金庫', branch: '田無支店', acct: '普通　4071298　IGロッドプランニング' },
-    { id: 'ig', label: '株式会社IG', bank: '株式会社IG', branch: '', acct: '' },
-    { id: 'ayf', label: 'AYF釣竿工房石谷', bank: 'AYF釣竿工房石谷', branch: '', acct: '〒750-1137　山口県下関市小月南町1223-1' },
     { id: 'none', label: '（空欄）', blank: true }
   ];
   (function () {
     var sel = $('opt-bank');
     BANKS.forEach(function (b) { var o = document.createElement('option'); o.value = b.id; o.textContent = b.label; sel.appendChild(o); });
   })();
+  // 発行元（請求書の下の住所・電話番号の欄）：IG と AYF から選ぶ
+  var ISSUERS = [
+    { id: 'ig', label: '株式会社IG', name: '株式会社IG', sub: 'IG Rod Planning' },
+    { id: 'ayf', label: 'AYF釣竿工房石谷', name: 'AYF釣竿工房石谷', sub: '', zip: '〒750-1137', addr: '山口県下関市小月南町1223-1' }
+  ];
+  (function () {
+    var sel = $('opt-issuer');
+    ISSUERS.forEach(function (b) { var o = document.createElement('option'); o.value = b.id; o.textContent = b.label; sel.appendChild(o); });
+  })();
+  function issuerOf(id) { return ISSUERS.filter(function (b) { return b.id === id; })[0] || ISSUERS[0]; }
+  function applyIssuer() {
+    var b = issuerOf($('opt-issuer').value);
+    var ig = b.id === 'ig';
+    document.body.classList.toggle('issuer-ayf', !ig);
+    $('from-name').textContent = b.name;
+    $('from-sub').textContent = b.sub || '';
+    if (ig) {
+      $('from-zip').textContent = KIND === 'delivery' ? '〒188-0004' : '〒107-0061';
+      $('from-addr').innerHTML = KIND === 'delivery' ? '東京都西東京市西原町5-3-30-301' : '東京都港区北青山1-3-1<br>アールキューブ3階';
+    } else {
+      $('from-zip').textContent = b.zip;
+      $('from-addr').textContent = b.addr;
+    }
+  }
+  $('opt-issuer').addEventListener('change', applyIssuer);
   function bankOf(id) { return BANKS.filter(function (b) { return b.id === id; })[0] || BANKS[0]; }
   function applyBank() {
     var b = bankOf($('opt-bank').value);
@@ -660,7 +687,7 @@
 
   function collect() {
     var t = totals();
-    var inv = { id: currentId || (DOC.idPrefix + Date.now()), kind: KIND, savedAt: new Date().toISOString(), seal: $('opt-seal').checked, showReg: $('opt-reg').checked, showTerms: $('opt-terms').checked, showCarry: $('opt-carry').checked, bank: $('opt-bank').value, items: [] };
+    var inv = { id: currentId || (DOC.idPrefix + Date.now()), kind: KIND, savedAt: new Date().toISOString(), seal: $('opt-seal').checked, showReg: $('opt-reg').checked, showTerms: $('opt-terms').checked, showCarry: $('opt-carry').checked, bank: $('opt-bank').value, issuer: $('opt-issuer').value, items: [] };
     Object.keys(FIELDS).forEach(function (k) { inv[k] = $(FIELDS[k]).value; });
     rowsBody.querySelectorAll('tr').forEach(function (tr) {
       var it = {};
@@ -687,6 +714,8 @@
     $('opt-carry').checked = KIND !== 'delivery' && inv.showCarry !== false;
     $('opt-bank').value = bankOf(inv.bank || BANKS[0].id).id;
     applyBank();
+    $('opt-issuer').value = issuerOf(inv.issuer || ISSUERS[0].id).id;
+    applyIssuer();
     rowsBody.innerHTML = '';
     (inv.items && inv.items.length ? inv.items : [{}]).forEach(addRow);
     document.body.classList.toggle('editing', !!currentId);
@@ -714,6 +743,8 @@
     $('opt-carry').checked = KIND !== 'delivery';
     $('opt-bank').value = BANKS[0].id;
     applyBank();
+    $('opt-issuer').value = ISSUERS[0].id;
+    applyIssuer();
     rowsBody.innerHTML = '';
     addRow();
     document.body.classList.remove('editing');
@@ -873,6 +904,7 @@
   (function applyKind() {
     // 発行元の住所は請求書だけ北青山。納品書は従来の住所のまま
     if (KIND === 'delivery') { $('from-zip').textContent = '〒188-0004'; $('from-addr').textContent = '東京都西東京市西原町5-3-30-301'; }
+    applyIssuer();
     document.body.classList.toggle('is-delivery', KIND === 'delivery');
     document.title = DOC.title + ' | IG Rod Planning';
     $('title-text').textContent = DOC.title;
