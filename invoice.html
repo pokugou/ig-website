@@ -636,7 +636,10 @@
   // お振込先：請求書ごとに選べる。新規はGMO。取引先を選ぶと、その取引先に前回使った振込先が入る
   var BANKS = [
     { id: 'gmo', label: 'GMOあおぞらネット銀行', bank: 'GMOあおぞらネット銀行', branch: '法人第二営業部', acct: '普通　2122694　株式会社IG' },
-    { id: 'tokyo-shinkin', label: '東京信用金庫（田無支店）', bank: '東京信用金庫', branch: '田無支店', acct: '普通　4071298　IGロッドプランニング' }
+    { id: 'tokyo-shinkin', label: '東京信用金庫（田無支店）', bank: '東京信用金庫', branch: '田無支店', acct: '普通　4071298　IGロッドプランニング' },
+    { id: 'ig', label: '株式会社IG', bank: '株式会社IG', branch: '', acct: '' },
+    { id: 'ayf', label: 'AYF釣竿工房石谷', bank: 'AYF釣竿工房石谷', branch: '', acct: '〒750-1137　山口県下関市小月南町1223-1' },
+    { id: 'none', label: '（空欄）', blank: true }
   ];
   (function () {
     var sel = $('opt-bank');
@@ -645,10 +648,13 @@
   function bankOf(id) { return BANKS.filter(function (b) { return b.id === id; })[0] || BANKS[0]; }
   function applyBank() {
     var b = bankOf($('opt-bank').value);
+    document.querySelector('.bank').style.display = b.blank ? 'none' : '';
+    if (b.blank) return;
     $('bank-l1').innerHTML = '<b></b>';
     $('bank-l1').firstChild.textContent = b.bank;
-    $('bank-l1').appendChild(document.createTextNode('　' + b.branch));
+    if (b.branch) $('bank-l1').appendChild(document.createTextNode('　' + b.branch));
     $('bank-l2').textContent = b.acct;
+    $('bank-l2').style.display = b.acct ? '' : 'none';
   }
   $('opt-bank').addEventListener('change', applyBank);
 
