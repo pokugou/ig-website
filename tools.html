@@ -38,6 +38,35 @@
   .card p { font-size: 0.78rem; color: var(--sub); line-height: 1.6; }
   .card .go { margin-top: auto; font-size: 0.72rem; font-weight: 700; color: var(--red); letter-spacing: 0.03em; }
 
+  .doc { background: var(--paper); border: 1px solid var(--line); padding: 1.4rem 1.3rem 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .doc .icon { font-size: 1.8rem; line-height: 1; }
+  .doc h2 { font-size: 1.1rem; font-weight: 900; letter-spacing: 0.02em; }
+  .doc p { font-size: 0.78rem; color: var(--sub); line-height: 1.6; }
+  .doc .recent { font-size: 0.74rem; color: var(--sub); border-top: 1px dotted var(--line2); padding-top: 0.5rem; margin-top: 0.2rem; min-height: 1.6rem; }
+  .doc .recent b { color: var(--ink); }
+  .doc .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: auto; padding-top: 0.6rem; }
+  .doc .btns a { text-align: center; font-size: 0.82rem; font-weight: 700; text-decoration: none; padding: 0.65rem 0.5rem; border: 1px solid var(--ink); }
+  .doc .btns a.primary { background: var(--ink); color: #fff; }
+  .doc .btns a.primary:hover { background: var(--red); border-color: var(--red); }
+  .doc .btns a.secondary { background: #fff; color: var(--ink); }
+  .doc .btns a.secondary:hover { background: #eee; }
+
+  .closing { background: var(--paper); border: 2px solid var(--ink); padding: 1.2rem 1.3rem; margin-bottom: 1rem; display: grid; grid-template-columns: 1fr auto; gap: 0.6rem 1.2rem; align-items: center; }
+  .closing h2 { font-size: 1.1rem; font-weight: 900; }
+  .closing p { font-size: 0.78rem; color: var(--sub); }
+  .closing .go { font-size: 0.85rem; font-weight: 700; color: #fff; background: var(--ink); text-decoration: none; padding: 0.7rem 1.2rem; white-space: nowrap; }
+  .closing .go:hover { background: var(--red); }
+  .closing ul { grid-column: 1 / -1; list-style: none; border-top: 1px dotted var(--line2); padding-top: 0.5rem; font-size: 0.8rem; }
+  .closing li { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.25rem 0; }
+  .closing li a { color: var(--ink); font-weight: 700; text-decoration: none; }
+  .closing li a:hover { color: var(--red); }
+  .closing li .amt { color: var(--red); font-weight: 700; white-space: nowrap; }
+  .closing li.none { color: var(--sub); }
+  .sec { display: flex; align-items: baseline; gap: 0.7rem; margin: 2.2rem 0 0.9rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--ink); }
+  .sec h2 { font-size: 1.15rem; font-weight: 900; letter-spacing: 0.06em; }
+  .sec span { font-size: 0.72rem; font-weight: 700; color: var(--sub); }
+  .sec.first { margin-top: 0; }
+
   footer { margin-top: 2rem; font-size: 0.72rem; color: var(--sub); text-align: center; }
 
   /* 最後のカード（ディープカバー）は、枚数が奇数でも右下に置く */
@@ -57,6 +86,7 @@
       <div class="brand">IG Rod Planning ／ 社内共有用</div>
     </header>
 
+    <div class="sec first"><h2>社内ツール</h2></div>
     <div class="grid">
       <a class="card" href="order-sheet.html">
         <span class="icon">📝</span>
@@ -129,8 +159,103 @@
       </a>
     </div>
 
+    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書</span></div>
+
+    <div class="closing">
+      <div>
+        <h2>📅 締め請求</h2>
+        <p>締め日までの未請求の納品書をまとめて、取引先ごとに1枚の請求書を作ります。</p>
+      </div>
+      <a class="go" href="closing.html">締め請求をする →</a>
+      <ul id="unbilled"><li class="none">読み込み中…</li></ul>
+    </div>
+
+    <div class="grid">
+      <div class="doc">
+        <span class="icon">🧾</span>
+        <h2>請求書</h2>
+        <p>お客様向けの請求書。明細を入力してPDF保存すると一覧に残ります。</p>
+        <div class="recent" id="recent-invoice">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="invoice.html">新しく作る</a>
+          <a class="secondary" href="invoice-history.html">保存一覧</a>
+        </div>
+      </div>
+
+      <div class="doc">
+        <span class="icon">🚚</span>
+        <h2>納品書</h2>
+        <p>商品と一緒にお渡しする納品書。保存した納品書からそのまま請求書も作れます。</p>
+        <div class="recent" id="recent-delivery">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="invoice.html?type=delivery">新しく作る</a>
+          <a class="secondary" href="invoice-history.html?type=delivery">保存一覧</a>
+        </div>
+      </div>
+
+      <div class="doc">
+        <span class="icon">📦</span>
+        <h2>注文書（発注書）</h2>
+        <p>仕入先への発注書。品名・数量を入力してPDF保存。おかわり注文もできます。</p>
+        <div class="recent" id="recent-po">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="purchase-order.html">新しく作る</a>
+          <a class="secondary" href="purchase-order-history.html">保存一覧</a>
+        </div>
+      </div>
+    </div>
+
     <footer>IG Rod Planning</footer>
   </div>
 
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+
+  function fmtDate(s) {
+    var m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? m[1] + '/' + Number(m[2]) + '/' + Number(m[3]) : String(s || '');
+  }
+
+  function showRecent(id, list, who) {
+    var box = document.getElementById(id);
+    if (!list.length) { box.textContent = 'まだ保存された書類はありません'; return; }
+    list.sort(function (a, b) { return String(b.date || b.savedAt || '').localeCompare(String(a.date || a.savedAt || '')); });
+    var latest = list[0];
+    box.innerHTML = '保存 <b></b> 件　／　最新：<span></span>';
+    box.querySelector('b').textContent = list.length;
+    box.querySelector('span').textContent = fmtDate(latest.date) + ' ' + (who(latest) || '');
+  }
+
+  // 取引先ごとの未請求（納品書の税抜合計）
+  function showUnbilled(list) {
+    var ul = document.getElementById('unbilled'), by = {};
+    list.forEach(function (r) {
+      var sub = r.subtotal != null ? Number(r.subtotal) : (r.items || []).reduce(function (s, it) { return s + (parseFloat(String(it.amt || '').replace(/[^0-9.-]/g, '')) || 0); }, 0);
+      by[r.customer] = by[r.customer] || { n: 0, sum: 0 };
+      by[r.customer].n++; by[r.customer].sum += sub;
+    });
+    var names = Object.keys(by).sort(function (a, b) { return by[b].sum - by[a].sum; });
+    ul.innerHTML = '';
+    if (!names.length) { ul.innerHTML = '<li class="none">未請求の納品書はありません</li>'; return; }
+    names.forEach(function (n) {
+      var li = document.createElement('li');
+      var a = document.createElement('a'); a.href = 'closing.html?client=' + encodeURIComponent(n); a.textContent = n + '　未請求' + by[n].n + '件';
+      var amt = document.createElement('span'); amt.className = 'amt'; amt.textContent = '¥' + Math.round(by[n].sum).toLocaleString('ja-JP') + '（税抜）';
+      li.appendChild(a); li.appendChild(amt); ul.appendChild(li);
+    });
+  }
+
+  fetch(SYNC_API + '/paint?_=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('load failed'); return r.json(); })
+    .then(function (all) {
+      showRecent('recent-invoice', all.filter(function (r) { return r.__invoice; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
+      showRecent('recent-delivery', all.filter(function (r) { return r.__delivery; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
+      showRecent('recent-po', all.filter(function (r) { return r.__po; }), function (r) { return r.to || ''; });
+      showUnbilled(all.filter(function (r) { return r.__delivery && !r.billedBy && r.customer; }));
+    })
+    .catch(function () {
+      ['recent-invoice', 'recent-delivery', 'recent-po', 'unbilled'].forEach(function (id) { document.getElementById(id).textContent = ''; });
+    });
+</script>
 </body>
 </html>
