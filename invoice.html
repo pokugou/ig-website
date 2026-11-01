@@ -173,6 +173,7 @@
     <a class="history-link" id="history-link" href="invoice-history.html">📋 請求書一覧を見る →</a>
     <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
     <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-store">保存（一覧に入れる）</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
   <div class="client-pick">
@@ -883,6 +884,24 @@
     }
     try { await saveToHistory(); }
     catch (e) { console.error(e); alert('PDFは作成しましたが、' + DOC.title + '一覧への保存に失敗しました。通信状況を確認してもう一度「PDFとして保存」を押してください。'); }
+  });
+
+  // PDFは作らず一覧に保存だけ。あとで一覧からまとめてPDF保存・編集できる
+  $('btn-store').addEventListener('click', async function () {
+    if (!$('f-customer').value.trim()) { alert('お客様名を入力してください。'); $('f-customer').focus(); return; }
+    var btn = this, originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '保存中…';
+    try {
+      await saveToHistory();
+      btn.textContent = '保存しました ✓';
+      setTimeout(function () { btn.textContent = originalLabel; btn.disabled = false; }, 1800);
+    } catch (e) {
+      console.error(e);
+      alert(DOC.title + '一覧への保存に失敗しました。通信状況を確認してもう一度お試しください。');
+      btn.textContent = originalLabel;
+      btn.disabled = false;
+    }
   });
 
   // 一覧ページの「PDF保存」用：読み込んだ書類をこのページで描いて画像にする（編集画面で保存したPDFと同じ見た目）
