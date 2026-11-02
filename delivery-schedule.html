@@ -135,7 +135,20 @@
   function $(id) { return document.getElementById(id); }
   function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function jpDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '/' + Number(p[1]) + '/' + Number(p[2]); }
-  function grow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+  // 文字が多くても2行に折り返さず、文字サイズを縮めて1行に収める（改行を入れた欄はそのまま）
+  var fitCanvas = document.createElement('canvas').getContext('2d');
+  function fitText(ta) {
+    ta.style.fontSize = '';
+    if (!ta.value || ta.value.indexOf('\n') !== -1) return;
+    var cs = getComputedStyle(ta);
+    var base = parseFloat(cs.fontSize);
+    var avail = ta.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+    if (avail <= 0) return;
+    fitCanvas.font = cs.fontWeight + ' ' + base + 'px ' + cs.fontFamily;
+    var w = fitCanvas.measureText(ta.value).width;
+    if (w > avail) ta.style.fontSize = Math.max(base * 0.45, Math.floor(base * avail / w * 10) / 10) + 'px';
+  }
+  function grow(ta) { fitText(ta); ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
 
   function addRow(vals, afterTr, sid) {
     vals = vals || [];
@@ -326,6 +339,7 @@
     var swaps = [];
     document.querySelectorAll('.sheet input[type="text"], .sheet input[type="date"], .sheet textarea').forEach(function (el) {
       var text = el.value;
+      if (el.tagName === 'TEXTAREA') fitText(el);
       if (el.type === 'date') text = jpDate(el.value);
       var cs = getComputedStyle(el), o = document.createElement('div');
       o.textContent = text || ' ';
