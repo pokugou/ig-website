@@ -41,7 +41,14 @@
   table.dl th { background: var(--ink); color: #fff; font-weight: 900; font-size: 1.05rem; letter-spacing: 0.04em; padding: 0.7rem 0.3rem; text-align: center; border: 2px solid var(--ink); }
   table.dl td { border: 2px solid var(--ink); padding: 0; vertical-align: middle; }
   table.dl td textarea { text-align: center; font-size: 1rem; line-height: 1.45; padding: 0.55rem 0.4rem; min-height: 2.6rem; }
-  table.dl th.ctl-cell { background: transparent; border: none; padding: 0; width: 0; }
+  table.dl th.ctl-cell, table.dl th.sel-cell { background: transparent; border: none; padding: 0; width: 0; }
+  .sel-cell { position: relative; border: none !important; width: 0; padding: 0; }
+  .sheet .sel-cell input { position: absolute; left: -26px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; margin: 0; cursor: pointer; }
+  .sel-bar { display: flex; align-items: center; gap: 0.7rem; margin: 0 0 0.5rem; font-size: 0.78rem; color: var(--sub); }
+  .sel-bar button { font-family: inherit; font-size: 0.78rem; font-weight: 700; padding: 0.4rem 0.9rem; border: 1px solid var(--red); background: #fff; color: var(--red); cursor: pointer; }
+  .sel-bar button:disabled { border-color: var(--line); color: #aaa; cursor: default; }
+  .sel-bar button:not(:disabled):hover { background: var(--red); color: #fff; }
+  tr.picked td textarea { background: #fdecea; }
   .ctl-cell { position: relative; border: none !important; width: 0; }
   .ctl-cell .box { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); display: grid; grid-template-columns: 22px 22px; gap: 2px; }
   .ctl-cell button { font-family: inherit; width: 22px; height: 20px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--line); background: #fff; color: var(--sub); cursor: pointer; line-height: 1; padding: 0; }
@@ -64,10 +71,10 @@
     table.dl th { font-size: 0.78rem; padding: 0.5rem 0.1rem; }
     table.dl td textarea { font-size: 0.82rem; padding: 0.4rem 0.15rem; }
     .ctl-cell .box { left: 2px; }
-    .sheet { padding-right: 2.9rem; }
+    .sheet { padding-right: 2.9rem; padding-left: 1.9rem; }
   }
 
-  .pdf-capture .toolbar, .pdf-capture .link-bar, .pdf-capture .hint, .pdf-capture .editing-badge, .pdf-capture .add-row, .pdf-capture .ctl-cell { display: none !important; }
+  .pdf-capture .toolbar, .pdf-capture .link-bar, .pdf-capture .hint, .pdf-capture .editing-badge, .pdf-capture .add-row, .pdf-capture .ctl-cell, .pdf-capture .sel-cell, .pdf-capture .sel-bar { display: none !important; }
   .pdf-capture .sheet { width: 794px; max-width: none; border: none; padding: 2.6rem 3rem 2.4rem; }
   .pdf-capture .t-head h1 input, .pdf-capture .t-head h1 div { font-size: 2.1rem; }
   .pdf-capture table.dl th { font-size: 1.05rem; padding: 0.7rem 0.3rem; }
@@ -75,7 +82,7 @@
 
   @media print {
     body { background: #fff; padding: 0; }
-    .toolbar, .hint, .link-bar, .editing-badge, .add-row, .ctl-cell { display: none !important; }
+    .toolbar, .hint, .link-bar, .editing-badge, .add-row, .ctl-cell, .sel-cell, .sel-bar { display: none !important; }
     .sheet { width: 100%; border: none; padding: 0; }
     table.dl tr { break-inside: avoid; }
     table.dl thead { display: table-header-group; }
@@ -111,9 +118,10 @@
         <label>作成者<input type="text" class="author" id="f-author" value="石谷 豪"></label>
       </div>
     </div>
+    <div class="sel-bar"><button type="button" id="btn-del-sel" disabled>選択した行を削除</button><span id="sel-count">左のチェックで行を選べます</span></div>
     <div class="tbl-wrap">
       <table class="dl" id="dl">
-        <thead><tr><th>顧客名</th><th>アイテム</th><th>本数</th><th>希望納期</th><th>返答納期</th><th>備考</th><th class="ctl-cell"></th></tr></thead>
+        <thead><tr><th class="sel-cell"><input type="checkbox" id="sel-all" title="すべて選ぶ"></th><th>顧客名</th><th>アイテム</th><th>本数</th><th>希望納期</th><th>返答納期</th><th>備考</th><th class="ctl-cell"></th></tr></thead>
         <tbody id="rows"></tbody>
       </table>
     </div>
@@ -150,10 +158,37 @@
   }
   function grow(ta) { fitText(ta); ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
 
+  // チェックした行をまとめて削除
+  function updateSel() {
+    var boxes = rowsEl.querySelectorAll('input.sel'), n = rowsEl.querySelectorAll('input.sel:checked').length;
+    $('btn-del-sel').disabled = !n;
+    $('btn-del-sel').textContent = n ? '選択した' + n + '行を削除' : '選択した行を削除';
+    $('sel-count').textContent = n ? '' : '左のチェックで行を選べます';
+    $('sel-all').checked = boxes.length > 0 && n === boxes.length;
+    $('sel-all').indeterminate = n > 0 && n < boxes.length;
+  }
+  $('sel-all').addEventListener('change', function () {
+    var on = this.checked;
+    rowsEl.querySelectorAll('input.sel').forEach(function (b) { b.checked = on; b.closest('tr').classList.toggle('picked', on); });
+    updateSel();
+  });
+  $('btn-del-sel').addEventListener('click', function () {
+    var picked = rowsEl.querySelectorAll('input.sel:checked');
+    if (!picked.length) return;
+    if (!confirm(picked.length + '行を削除しますか？')) return;
+    picked.forEach(function (b) { b.closest('tr').remove(); });
+    if (!rowsEl.children.length) addRow();
+    updateSel(); saveDraft();
+  });
+
   function addRow(vals, afterTr, sid) {
     vals = vals || [];
     var tr = document.createElement('tr');
     if (sid) tr.dataset.sid = sid;
+    var selTd = document.createElement('td'); selTd.className = 'sel-cell';
+    var selBox = document.createElement('input'); selBox.type = 'checkbox'; selBox.className = 'sel'; selBox.title = 'この行を選ぶ';
+    selBox.addEventListener('change', function () { tr.classList.toggle('picked', selBox.checked); updateSel(); });
+    selTd.appendChild(selBox); tr.appendChild(selTd);
     for (var i = 0; i < COLS; i++) {
       var td = document.createElement('td');
       var ta = document.createElement('textarea'); ta.rows = 1; ta.value = vals[i] || '';
@@ -165,7 +200,7 @@
     var ins = document.createElement('button'); ins.type = 'button'; ins.textContent = '＋'; ins.title = 'この下に行を追加';
     ins.addEventListener('click', function () { var n = addRow([], tr); n.querySelector('textarea').focus(); saveDraft(); });
     var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = '×'; del.title = 'この行を削除';
-    del.addEventListener('click', function () { if (rowsEl.children.length <= 1) { tr.querySelectorAll('textarea').forEach(function (t) { t.value = ''; grow(t); }); } else { tr.remove(); } saveDraft(); });
+    del.addEventListener('click', function () { if (rowsEl.children.length <= 1) { tr.querySelectorAll('textarea').forEach(function (t) { t.value = ''; grow(t); }); } else { tr.remove(); } updateSel(); saveDraft(); });
     var up = document.createElement('button'); up.type = 'button'; up.textContent = '▲'; up.title = 'この行を上へ';
     up.addEventListener('click', function () { var p = tr.previousElementSibling; if (p) { rowsEl.insertBefore(tr, p); saveDraft(); } });
     var dn = document.createElement('button'); dn.type = 'button'; dn.textContent = '▼'; dn.title = 'この行を下へ';
@@ -193,6 +228,7 @@
     while (rowsEl.children.length < DEFAULT_ROWS) addRow();
     document.body.classList.toggle('editing', !!currentId);
     rowsEl.querySelectorAll('textarea').forEach(grow);
+    updateSel();
   }
   function saveDraft() { try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
   ['f-title', 'f-date', 'f-author'].forEach(function (id) { $(id).addEventListener('input', saveDraft); });
