@@ -159,7 +159,8 @@
     var xs = X1 - Math.max(str / len, 0.22) * (X1 - X0);
     if (!(str > 0)) xs = X1;
     function h(dia) { return maxD > 0 ? Math.max(dia, 0) / maxD * THICK : 0; }
-    var ht = h(tip), hm = h(mid), hb = h(butt);
+    // 径・元径は表示の太さを半分にする（先径はそのまま。ただし径より太くは描かない）
+    var hm = h(mid) * 0.5, hb = h(butt) * 0.5, ht = Math.min(h(tip), hm || h(tip));
     // 竿の外形
     svg.appendChild(el('polygon', { points: [[X0, CY - ht / 2], [xs, CY - hm / 2], [X1, CY - hb / 2], [X1, CY + hb / 2], [xs, CY + hm / 2], [X0, CY + ht / 2]].map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '), fill: 'none', stroke: INK, 'stroke-width': 1.4, 'stroke-linejoin': 'round' }));
     function line(x1, y1, x2, y2) { svg.appendChild(el('line', { x1: x1, y1: y1, x2: x2, y2: y2, stroke: INK, 'stroke-width': 1 })); }
