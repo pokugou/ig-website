@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ソリッド発注図 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #999; --line2: #d6d6d6; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
+
+  .toolbar { max-width: 1050px; margin: 0 auto 0.6rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .toolbar .back { font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; margin-right: auto; }
+  .toolbar .back:hover { color: var(--red); }
+  .toolbar .history-link { display: inline-flex; align-items: center; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: #fff; }
+  .toolbar .history-link:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
+  .hint { max-width: 1050px; margin: 0 auto 0.8rem; font-size: 0.75rem; color: var(--sub); }
+  .editing-badge { display: none; font-weight: 700; color: var(--red); margin-left: 0.6rem; }
+  .editing .editing-badge { display: inline; }
+
+  .sheet { width: 1050px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 1.8rem 2.4rem 1.8rem; }
+  .sheet input, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; font-size: inherit; }
+  .sheet input:focus, .sheet textarea:focus { outline: none; background: #fff8e0; }
+  .sheet ::placeholder { color: #bbb; }
+  .sheet textarea { resize: none; display: block; }
+
+  .head { display: grid; grid-template-columns: 1fr 17rem; gap: 1.5rem; align-items: end; }
+  .head .title input { font-size: 2.1rem; font-weight: 400; padding: 0.1rem 0.2rem; letter-spacing: 0.02em; }
+  .head .meta { font-size: 0.8rem; }
+  .head .meta .r { display: flex; gap: 0.6rem; align-items: baseline; border-bottom: 1px solid var(--line); padding: 0.1rem 0.1rem; }
+  .head .meta .k { color: var(--sub); white-space: nowrap; flex: none; font-size: 0.72rem; }
+  .head .meta input { padding: 0.1rem 0.2rem; text-align: right; }
+
+  /* 1本ぶんの図面（上：入力欄＝PDFには出ない、下：図面） */
+  .rod { margin-top: 0.6rem; }
+  .ctl { border: 1px solid var(--line2); background: #fafaf8; padding: 0.4rem 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; align-items: flex-end; }
+  .ctl .no { font-size: 1.3rem; font-weight: 700; width: 2rem; text-align: center; align-self: center; }
+  .ctl label { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: 700; color: var(--sub); gap: 0.1rem; }
+  .ctl label input { width: 5.4rem; font-size: 0.95rem; font-weight: 700; padding: 0.3rem 0.35rem; border: 1px solid var(--line2); background: #fff; color: var(--ink); text-align: right; }
+  .ctl label.wide input { width: 8.5rem; text-align: left; font-weight: 500; }
+  .ctl .tools { margin-left: auto; display: flex; gap: 0.25rem; }
+  .ctl .tools button { font-family: inherit; font-size: 0.75rem; font-weight: 700; height: 1.9rem; min-width: 1.9rem; padding: 0 0.5rem; border: 1px solid var(--line); background: #fff; color: var(--sub); cursor: pointer; }
+  .ctl .tools button:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .ctl .tools button.del:hover { background: var(--red); border-color: var(--red); }
+  .fig { display: block; width: 100%; height: auto; margin-top: 0.2rem; }
+  .fig text { font-family: 'Noto Sans JP', sans-serif; fill: #222; }
+  .add-rod { margin-top: 0.7rem; width: 100%; font-family: inherit; font-size: 0.82rem; font-weight: 700; padding: 0.6rem; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
+  .add-rod:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
+
+  .foot { display: grid; grid-template-columns: 14rem 1fr; gap: 1.5rem; margin-top: 0.8rem; align-items: start; }
+  .foot .qty { font-size: 0.9rem; line-height: 1.9; padding-left: 0.4rem; }
+  .foot textarea { font-size: 0.9rem; line-height: 1.8; height: 3.7rem; }
+  .notes { margin-top: 0.6rem; border: 1px solid var(--line2); padding: 0.4rem 0.6rem; }
+  .notes .k { font-size: 0.65rem; font-weight: 700; color: var(--sub); letter-spacing: 0.1em; }
+  .notes textarea { font-size: 0.85rem; line-height: 1.7; min-height: 3rem; resize: vertical; }
+
+  @media screen and (max-width: 800px) {
+    body { padding: 1rem 0.5rem 3rem; }
+    .sheet { padding: 1.1rem 0.7rem 1.3rem; }
+    .head { grid-template-columns: 1fr; }
+    .head .title input { font-size: 1.5rem; }
+    .ctl label input { width: 4.4rem; }
+    .ctl label.wide input { width: 6.5rem; }
+    .foot { grid-template-columns: 1fr; gap: 0.4rem; }
+  }
+
+  .pdf-capture .toolbar, .pdf-capture .hint { visibility: hidden; }
+  .pdf-capture .sheet { width: 1050px; max-width: none; margin: 0; border: none; padding: 1.8rem 2.4rem 1.8rem; }
+  .pdf-capture .ctl, .pdf-capture .add-rod, .pdf-capture .noprint { display: none !important; }
+  .pdf-capture .head { grid-template-columns: 1fr 17rem; }
+  .pdf-capture .foot { grid-template-columns: 14rem 1fr; gap: 1.5rem; }
+  .pdf-capture .notes.empty { display: none; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .hint, .ctl, .add-rod, .noprint { display: none !important; }
+    .sheet { width: 100%; border: none; padding: 0; }
+    @page { size: A4 landscape; margin: 1cm; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a class="back" href="tools.html#documents">← 書類トップ</a>
+    <a class="history-link" href="solid-order-history.html">📋 ソリッド発注図の一覧を見る →</a>
+    <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
+    <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
+    <button type="button" id="btn-save">PDFとして保存</button>
+  </div>
+  <div class="hint">各図面の上の欄に数字（mm）を入れると、図面と寸法が自動で描き直されます。入力欄はPDFには出ません。<span class="editing-badge" id="editing-badge">✎ 保存済みを編集中（保存すると上書きされます）</span></div>
+
+  <div class="sheet" id="sheet">
+    <div class="head">
+      <div class="title"><input type="text" id="f-title" placeholder="例：24t カーボンソリッド"></div>
+      <div class="meta">
+        <div class="r"><span class="k">日付</span><input type="date" id="f-date"></div>
+        <div class="r"><span class="k">発注先</span><input type="text" id="f-to" placeholder="例：○○様"></div>
+      </div>
+    </div>
+
+    <div id="rods"></div>
+    <button type="button" class="add-rod" id="btn-add">＋ 図面を追加</button>
+
+    <div class="foot">
+      <div class="qty" id="qty-lines"></div>
+      <textarea id="f-contact" rows="2"></textarea>
+    </div>
+    <div class="notes" id="notes-box"><div class="k">備考</div><textarea id="f-notes" placeholder="例：納期・梱包・曲がり確認など"></textarea></div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var STORE_KEY = 'solid-order-draft';
+  var TAG = '__solid';
+  var CONTACT = 'IG RodPlanning　石谷\nTEL：09017985613';
+  var rodsEl = document.getElementById('rods');
+  var currentId = null;
+  var NS = 'http://www.w3.org/2000/svg';
+
+  function $(id) { return document.getElementById(id); }
+  function toHalf(s) { return String(s == null ? '' : s).replace(/[０-９．，－]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[ー−‐]/g, '-'); }
+  function num(s) { var v = parseFloat(toHalf(s).replace(/[^0-9.\-]/g, '')); return isNaN(v) ? 0 : v; }
+  function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function slashDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '/' + Number(p[1]) + '/' + Number(p[2]); }
+  function circled(i) { return i < 20 ? String.fromCharCode(0x2460 + i) : '(' + (i + 1) + ')'; }
+  function mm(v) { return String(toHalf(v)).trim() === '' ? '' : toHalf(v).trim() + 'mm'; }
+
+  /* ---------- 図面を描く（全長はそのまま、太さは見やすいよう太い所を一定の太さに（ストレートは最低でも図の幅の22%）） ---------- */
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function drawFigure(svg, d, idx) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var X0 = 120, X1 = 955, CY = 112, THICK = 34, INK = '#222';
+    var len = num(d.len), str = Math.min(num(d.straight), len), tip = num(d.tip), butt = num(d.butt);
+    var mid = String(d.mid).trim() === '' ? butt : num(d.mid);
+    var maxD = Math.max(tip, mid, butt);
+    // 番号
+    svg.appendChild(el('circle', { cx: 52, cy: CY, r: 25, fill: 'none', stroke: INK, 'stroke-width': 1.6 }));
+    svg.appendChild(el('text', { x: 52, y: CY + 11, 'text-anchor': 'middle', 'font-size': 30 }, String(idx + 1)));
+    if (!(len > 0)) { return; }
+    // 全長は実寸の比率。ストレートは短くても寸法が読めるよう、図の幅の22%を下限にして描く
+    var xs = X1 - Math.max(str / len, 0.22) * (X1 - X0);
+    if (!(str > 0)) xs = X1;
+    function h(dia) { return maxD > 0 ? Math.max(dia, 0) / maxD * THICK : 0; }
+    var ht = h(tip), hm = h(mid), hb = h(butt);
+    // 竿の外形
+    svg.appendChild(el('polygon', { points: [[X0, CY - ht / 2], [xs, CY - hm / 2], [X1, CY - hb / 2], [X1, CY + hb / 2], [xs, CY + hm / 2], [X0, CY + ht / 2]].map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '), fill: 'none', stroke: INK, 'stroke-width': 1.4, 'stroke-linejoin': 'round' }));
+    function line(x1, y1, x2, y2) { svg.appendChild(el('line', { x1: x1, y1: y1, x2: x2, y2: y2, stroke: INK, 'stroke-width': 1 })); }
+    // 全長（上）
+    line(X0, 18, X0, 84); line(X1, 18, X1, 84); line(X0, 46, X1, 46);
+    svg.appendChild(el('text', { x: (X0 + X1) / 2, y: 34, 'text-anchor': 'middle', 'font-size': 22 }, '全長 ' + mm(d.len)));
+    // 下の寸法線と目印
+    line(X0, 132, X0, 176); line(X1, 132, X1, 176);
+    if (str > 0) {
+      line(xs, 132, xs, 176); line(xs, 154, X1, 154);
+      svg.appendChild(el('text', { x: (xs + X1) / 2, y: 148, 'text-anchor': 'middle', 'font-size': 22 }, 'ストレート ' + mm(d.straight)));
+    }
+    // 各部の太さ
+    if (String(d.tip).trim() !== '') svg.appendChild(el('text', { x: X0 - 70, y: 204, 'font-size': 20 }, '先径 ' + mm(d.tip) + (d.tipNote || '')));
+    if (str > 0 && String(d.mid).trim() !== '') svg.appendChild(el('text', { x: xs, y: 204, 'text-anchor': 'middle', 'font-size': 24 }, '径 ' + mm(d.mid)));
+    if (String(d.butt).trim() !== '') svg.appendChild(el('text', { x: X1 + 38, y: 204, 'text-anchor': 'end', 'font-size': 20 }, '元径 ' + mm(d.butt)));
+  }
+
+  /* ---------- 図面ブロック ---------- */
+  var PARTS = [['len', '全長'], ['straight', 'ストレート'], ['tip', '先径'], ['mid', '径'], ['butt', '元径']];
+  function renumber() {
+    rodsEl.querySelectorAll('.rod').forEach(function (r, i) {
+      r.querySelector('.no').textContent = circled(i);
+      drawFigure(r.querySelector('svg'), readRod(r), i);
+    });
+    var lines = [];
+    rodsEl.querySelectorAll('.rod').forEach(function (r, i) {
+      var q = r.querySelector('.f-qty').value.trim();
+      if (q) lines.push(circled(i) + 'を' + toHalf(q) + ' 本');
+    });
+    $('qty-lines').innerHTML = '';
+    lines.forEach(function (t) { var d = document.createElement('div'); d.textContent = t; $('qty-lines').appendChild(d); });
+  }
+  function readRod(r) {
+    var d = {};
+    PARTS.forEach(function (p) { d[p[0]] = r.querySelector('.f-' + p[0]).value; });
+    d.tipNote = r.querySelector('.f-tipNote').value;
+    d.qty = r.querySelector('.f-qty').value;
+    return d;
+  }
+  function addRod(d, afterEl) {
+    d = d || {};
+    var r = document.createElement('div'); r.className = 'rod';
+    r.innerHTML =
+      '<div class="ctl"><span class="no"></span>' +
+      PARTS.map(function (p) { return '<label>' + p[1] + '（mm）<input type="text" class="f-' + p[0] + '" inputmode="decimal"></label>'; }).join('') +
+      '<label class="wide">先径のメモ<input type="text" class="f-tipNote" placeholder="例：（変更なし）"></label>' +
+      '<label>本数<input type="text" class="f-qty" inputmode="numeric"></label>' +
+      '<span class="tools"><button type="button" class="up" title="上へ">▲</button><button type="button" class="dn" title="下へ">▼</button><button type="button" class="dup" title="複製">複製</button><button type="button" class="del" title="削除">✕</button></span></div>' +
+      '<svg class="fig" viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg"></svg>';
+    PARTS.forEach(function (p) { r.querySelector('.f-' + p[0]).value = d[p[0]] || ''; });
+    r.querySelector('.f-tipNote').value = d.tipNote || '';
+    r.querySelector('.f-qty').value = d.qty || '';
+    r.addEventListener('input', renumber);
+    r.querySelector('.up').addEventListener('click', function () { var p = r.previousElementSibling; if (p) { rodsEl.insertBefore(r, p); renumber(); saveDraft(); } });
+    r.querySelector('.dn').addEventListener('click', function () { var n = r.nextElementSibling; if (n) { rodsEl.insertBefore(n, r); renumber(); saveDraft(); } });
+    r.querySelector('.dup').addEventListener('click', function () { addRod(readRod(r), r); saveDraft(); });
+    r.querySelector('.del').addEventListener('click', function () {
+      if (rodsEl.children.length <= 1) { PARTS.concat([['tipNote'], ['qty']]).forEach(function (p) { r.querySelector('.f-' + p[0]).value = ''; }); }
+      else { r.remove(); }
+      renumber(); saveDraft();
+    });
+    if (afterEl && afterEl.parentNode === rodsEl) rodsEl.insertBefore(r, afterEl.nextSibling); else rodsEl.appendChild(r);
+    renumber();
+    return r;
+  }
+  $('btn-add').addEventListener('click', function () { addRod().querySelector('.f-len').focus(); });
+
+  /* ---------- 保存データ ---------- */
+  function collect() {
+    var q = { id: currentId || ('so-' + Date.now()), savedAt: new Date().toISOString(), title: $('f-title').value, date: $('f-date').value, to: $('f-to').value, contact: $('f-contact').value, notes: $('f-notes').value, drawings: [] };
+    rodsEl.querySelectorAll('.rod').forEach(function (r) { q.drawings.push(readRod(r)); });
+    q[TAG] = true;
+    return q;
+  }
+  function populate(q) {
+    currentId = q.id || null;
+    $('f-title').value = q.title || ''; $('f-date').value = q.date || todayIso(); $('f-to').value = q.to || '';
+    $('f-contact').value = q.contact != null ? q.contact : CONTACT; $('f-notes').value = q.notes || '';
+    rodsEl.innerHTML = '';
+    (q.drawings && q.drawings.length ? q.drawings : [{}]).forEach(function (d) { addRod(d); });
+    document.body.classList.toggle('editing', !!currentId);
+    renumber();
+  }
+  function saveDraft() { try { var d = collect(); d.id = currentId; localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch (e) {} }
+  document.addEventListener('input', saveDraft);
+
+  function resetForm() {
+    populate({ title: '', date: todayIso(), to: '', contact: CONTACT, notes: '', drawings: [{}] });
+    currentId = null;
+    document.body.classList.remove('editing');
+  }
+
+  (function init() {
+    var data = null, isCopy = false;
+    try {
+      var raw = localStorage.getItem('solid-reload');
+      if (raw) { localStorage.removeItem('solid-reload'); data = JSON.parse(raw); isCopy = !!data.__copy; }
+    } catch (e) {}
+    if (!data) { try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (data) data.date = todayIso(); } catch (e) {} }
+    if (data) { if (isCopy) { delete data.id; data.date = todayIso(); } populate(data); } else { resetForm(); }
+  })();
+
+  $('btn-reset').addEventListener('click', function () {
+    if (!confirm('入力内容をすべてクリアしますか？')) return;
+    resetForm(); saveDraft();
+  });
+  $('btn-print').addEventListener('click', function () { window.print(); });
+
+  async function saveToHistory(saveOnly) {
+    var q = collect();
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var idx = all.findIndex(function (r) { return r[TAG] && r.id === q.id; });
+      if (idx >= 0) all[idx] = q; else all.push(q);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      if (!put.ok) throw new Error('save failed');
+      currentId = q.id;
+      document.body.classList.add('editing');
+      saveDraft();
+      return true;
+    } catch (e) {
+      console.error(e);
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + 'ソリッド発注図の一覧への保存に失敗しました。');
+      return false;
+    }
+  }
+
+  /* ---------- PDF（A4横） ---------- */
+  function swapFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet .head input, .sheet .foot textarea, .sheet .notes textarea').forEach(function (el) {
+      var text = el.value;
+      if (el.type === 'date') text = slashDate(el.value);
+      var cs = getComputedStyle(el), o = document.createElement('div');
+      o.textContent = text || ' ';
+      var meta = !!el.closest('.meta');
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.8' : '1.3') + ';white-space:pre-wrap;word-break:break-word;width:100%;' + (meta ? '' : '');
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+  function beginCapture() {
+    document.body.classList.add('pdf-capture');
+    $('notes-box').classList.toggle('empty', !$('f-notes').value.trim());
+    return swapFields();
+  }
+  function endCapture(sw) {
+    sw.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+    document.body.classList.remove('pdf-capture');
+  }
+
+  window.captureForBulk = async function () {
+    var sw = beginCapture();
+    try { return await html2canvas($('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1200 }); }
+    finally { endCapture(sw); }
+  };
+
+  wireSaveOnly($('btn-save-only'), function () { return saveToHistory(true); });
+
+  $('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    var swaps = beginCapture(), undone = false;
+    function undo() { if (undone) return; undone = true; endCapture(swaps); }
+    try {
+      var canvas = await html2canvas($('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1200 });
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
+      var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+      if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      var t = $('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || 'ソリッド発注図';
+      var name = ($('f-date').value || todayIso()).replace(/-/g, '') + t + '.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
+      undo();
+      btn.textContent = '一覧に保存中…';
+      await saveToHistory();
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      undo();
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+</script>
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        if (t[0] !== t[1]) {
+          sessionStorage.setItem(k, '1');
+          fetch(p, { cache: 'reload' }).then(function () { location.reload(); });
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+<script src="arrow-nav.js"></script>
+</body>
+</html>

@@ -169,7 +169,7 @@
       </a>
     </div>
 
-    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書・御見積書・締め請求</span></div>
+    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書・御見積書・ソリッド発注図・締め請求</span></div>
 
     <div class="grid">
       <div class="doc">
@@ -213,6 +213,17 @@
         <div class="btns">
           <a class="primary" href="estimate.html">新しく作る</a>
           <a class="secondary" href="estimate-history.html">保存一覧</a>
+        </div>
+      </div>
+
+      <div class="doc">
+        <span class="icon">📐</span>
+        <h2>ソリッド発注図</h2>
+        <p>ソリッドロッドの発注用図面。全長・太さなどの数字を入れると寸法つきの図が描かれ、本数も書いて保存・管理できます。</p>
+        <div class="recent" id="recent-solid">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="solid-order.html">新しく作る</a>
+          <a class="secondary" href="solid-order-history.html">保存一覧</a>
         </div>
       </div>
     </div>
@@ -272,11 +283,12 @@
       showRecent('recent-invoice', all.filter(function (r) { return r.__invoice; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
       showRecent('recent-delivery', all.filter(function (r) { return r.__delivery; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
       showRecent('recent-estimate', all.filter(function (r) { return r.__estimate; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '御中') : ''; });
+      showRecent('recent-solid', all.filter(function (r) { return r.__solid; }), function (r) { return r.title || ''; });
       showRecent('recent-po', all.filter(function (r) { return r.__po; }), function (r) { return r.to || ''; });
       showUnbilled(all.filter(function (r) { return r.__delivery && !r.billedBy && r.customer; }));
     })
     .catch(function () {
-      ['recent-invoice', 'recent-delivery', 'recent-po', 'recent-estimate', 'unbilled'].forEach(function (id) { document.getElementById(id).textContent = ''; });
+      ['recent-invoice', 'recent-delivery', 'recent-po', 'recent-estimate', 'recent-solid', 'unbilled'].forEach(function (id) { document.getElementById(id).textContent = ''; });
     });
 </script>
 </body>
