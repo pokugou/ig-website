@@ -169,7 +169,7 @@
       </a>
     </div>
 
-    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書・締め請求</span></div>
+    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書・御見積書・締め請求</span></div>
 
     <div class="grid">
       <div class="doc">
@@ -202,6 +202,17 @@
         <div class="btns">
           <a class="primary" href="invoice.html">新しく作る</a>
           <a class="secondary" href="invoice-history.html">保存一覧</a>
+        </div>
+      </div>
+
+      <div class="doc">
+        <span class="icon">📋</span>
+        <h2>御見積書</h2>
+        <p>A4横の見積書。内容と税抜単価を並べ、仕様等の備考欄もつけてPDF保存できます。</p>
+        <div class="recent" id="recent-estimate">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="estimate.html">新しく作る</a>
+          <a class="secondary" href="estimate-history.html">保存一覧</a>
         </div>
       </div>
     </div>
@@ -260,11 +271,12 @@
     .then(function (all) {
       showRecent('recent-invoice', all.filter(function (r) { return r.__invoice; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
       showRecent('recent-delivery', all.filter(function (r) { return r.__delivery; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
+      showRecent('recent-estimate', all.filter(function (r) { return r.__estimate; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '御中') : ''; });
       showRecent('recent-po', all.filter(function (r) { return r.__po; }), function (r) { return r.to || ''; });
       showUnbilled(all.filter(function (r) { return r.__delivery && !r.billedBy && r.customer; }));
     })
     .catch(function () {
-      ['recent-invoice', 'recent-delivery', 'recent-po', 'unbilled'].forEach(function (id) { document.getElementById(id).textContent = ''; });
+      ['recent-invoice', 'recent-delivery', 'recent-po', 'recent-estimate', 'unbilled'].forEach(function (id) { document.getElementById(id).textContent = ''; });
     });
 </script>
 </body>

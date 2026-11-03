@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>御見積書 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #999; --line2: #d6d6d6; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; --head: #c4c4c4; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
+
+  .toolbar { max-width: 1050px; margin: 0 auto 0.6rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .toolbar .back { font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; margin-right: auto; }
+  .toolbar .back:hover { color: var(--red); }
+  .toolbar .history-link { display: inline-flex; align-items: center; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: #fff; }
+  .toolbar .history-link:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
+  .options { max-width: 1050px; margin: 0 auto 0.9rem; display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.78rem; color: var(--sub); align-items: center; }
+  .options label { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+  .editing-badge { display: none; font-weight: 700; color: var(--red); }
+  .editing .editing-badge { display: inline; }
+
+  .sheet { width: 1050px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 1.8rem 2.4rem 2rem; }
+  .sheet input, .sheet select, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; font-size: inherit; }
+  .sheet input:focus, .sheet select:focus, .sheet textarea:focus { outline: none; background: #fff8e0; }
+  .sheet ::placeholder { color: #bbb; }
+  .sheet textarea { resize: none; display: block; }
+
+  .title-bar { background: var(--head); text-align: center; font-size: 1.25rem; font-weight: 500; letter-spacing: 0.9em; padding: 0.15rem 0 0.15rem 0.9em; margin-bottom: 0.7rem; }
+
+  .top { display: grid; grid-template-columns: 1fr 22rem; gap: 2.4rem; align-items: start; }
+  .greet textarea { font-size: 0.82rem; line-height: 1.55; padding: 0.1rem 0.2rem; height: 6.3rem; }
+  .field { display: flex; align-items: baseline; gap: 0.9rem; border-bottom: 1.5px solid var(--ink); padding: 0.1rem 0.2rem 0.1rem; margin-top: 0.85rem; }
+  .field .k { font-size: 0.82rem; white-space: nowrap; }
+  .field input { font-size: 1.15rem; font-weight: 700; padding: 0.15rem 0.3rem; }
+  .field select { width: auto; flex: none; font-size: 1.05rem; font-weight: 700; cursor: pointer; }
+  .field.half { width: 58%; }
+  .field.ctr input { text-align: center; font-weight: 500; font-size: 1.1rem; }
+  .field.plain input { font-weight: 500; }
+
+  .side { position: relative; font-size: 0.82rem; line-height: 1.7; }
+  .side .date input { text-align: center; font-size: 0.85rem; padding: 0.15rem 0; border-bottom: 1.5px solid var(--ink); margin-bottom: 0.9rem; }
+  .side .line { display: flex; gap: 0.7rem; align-items: baseline; }
+  .side .line input { padding: 0.02rem 0; }
+  .side .co input { font-size: 1.45rem; font-weight: 700; padding: 0.2rem 0; }
+  .side .who { display: flex; gap: 1rem; align-items: baseline; padding-left: 0.2rem; }
+  .side .who input { width: 7rem; }
+  .side .valid { display: flex; gap: 0.2rem; align-items: baseline; margin-top: 0.4rem; }
+  .side .valid input { width: 7rem; }
+  .side span { white-space: nowrap; flex: none; }
+  .seal { position: absolute; right: 0.3rem; top: 8.6rem; width: 62px; height: 62px; opacity: 0.88; pointer-events: none; }
+  .no-seal .seal { display: none; }
+
+  .sec-title { text-align: center; margin: 1.5rem 0 0.5rem; }
+  .sec-title span { display: inline-block; font-size: 0.95rem; border-bottom: 1.5px solid var(--ink); padding: 0 0.3rem 0.05rem; }
+
+  .items-wrap { overflow-x: auto; }
+  table.items { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 0.82rem; }
+  table.items th, table.items td { border: 1px solid var(--ink); padding: 0; }
+  table.items th { background: var(--head); font-weight: 500; padding: 0.15rem 0.2rem; font-size: 0.82rem; }
+  table.items td input { padding: 0.28rem 0.5rem; font-size: 0.85rem; }
+  table.items .c-no { width: 2.2rem; text-align: center; font-size: 0.8rem; padding: 0; }
+  table.items td.c-no { background: var(--head); }
+  table.items td.c-name input { text-align: center; }
+  table.items .c-price { width: 9rem; }
+  table.items td.c-price input { text-align: right; }
+  table.items .c-qty { width: 6.5rem; }
+  table.items td.c-qty input { text-align: center; }
+  table.items .c-note { width: 13rem; }
+  table.items .c-del { width: 1.9rem; border: none !important; background: none !important; text-align: center; }
+  .del-row-btn { font-family: inherit; font-size: 0.75rem; width: 1.5rem; height: 1.5rem; border: 1px solid var(--line2); background: #fff; color: var(--sub); cursor: pointer; padding: 0; }
+  .del-row-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .add-row-btn { margin-top: 0.5rem; font-family: inherit; font-size: 0.78rem; font-weight: 700; color: var(--sub); background: none; border: 1px dashed var(--line); padding: 0.45rem 0.9rem; cursor: pointer; width: 100%; }
+  .add-row-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+  .memo-title { font-size: 0.85rem; margin: 0.3rem 0.2rem 0.15rem; }
+  .memo { border: 2.5px solid var(--ink); padding: 0.6rem 0.8rem; }
+  .memo textarea { font-size: 0.85rem; line-height: 1.7; min-height: 11rem; resize: vertical; }
+
+  @media screen and (max-width: 800px) {
+    body { padding: 1rem 0.5rem 3rem; }
+    .sheet { padding: 1.2rem 0.8rem 1.4rem; }
+    .top { grid-template-columns: 1fr; gap: 1.2rem; }
+    .side { order: -1; }
+    .seal { top: 7.6rem; }
+    .field.half { width: 100%; }
+    table.items .c-price { width: 6.2rem; }
+    table.items .c-qty { width: 4.6rem; }
+    table.items .c-note { width: 6rem; }
+    .title-bar { letter-spacing: 0.5em; padding-left: 0.5em; }
+  }
+
+  .pdf-capture .toolbar, .pdf-capture .options { visibility: hidden; }
+  .pdf-capture .sheet { width: 1050px; max-width: none; margin: 0; border: none; padding: 1.8rem 2.4rem 2rem; }
+  .pdf-capture .add-row-btn, .pdf-capture .c-del { display: none; }
+  .pdf-capture .items-wrap { overflow: visible; }
+  .pdf-capture .top { grid-template-columns: 1fr 22rem; gap: 2.4rem; }
+  .pdf-capture .side { order: 0; }
+  .pdf-capture .seal { top: 8.6rem; }
+  .pdf-capture .field.half { width: 58%; }
+  .pdf-capture table.items .c-price { width: 9rem; }
+  .pdf-capture table.items .c-qty { width: 6.5rem; }
+  .pdf-capture table.items .c-note { width: 13rem; }
+  .pdf-capture tr.spare { display: none; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .options, .add-row-btn, .c-del { display: none !important; }
+    .sheet { width: 100%; border: none; padding: 0; }
+    @page { size: A4 landscape; margin: 1cm; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a class="back" href="tools.html#documents">← 書類トップ</a>
+    <a class="history-link" href="estimate-history.html">📋 御見積書一覧を見る →</a>
+    <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
+    <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
+    <button type="button" id="btn-save">PDFとして保存</button>
+  </div>
+  <div class="options" id="options">
+    <label><input type="checkbox" id="opt-seal" checked> 社印を表示</label>
+    <span class="editing-badge" id="editing-badge">✎ 保存済みの御見積書を編集中（保存すると上書きされます）</span>
+  </div>
+
+  <div class="sheet" id="sheet">
+
+    <div class="title-bar">御見積書</div>
+
+    <div class="top">
+      <div class="left">
+        <div class="greet"><textarea id="f-greet" rows="4"></textarea></div>
+        <div class="field">
+          <span class="k">お客様名</span>
+          <input type="text" id="f-customer" placeholder="お客様名・会社名" autocomplete="off" list="client-list">
+          <datalist id="client-list"></datalist>
+          <select id="f-honor"><option>御中</option><option>様</option></select>
+        </div>
+        <div class="field half plain">
+          <span class="k">見積元</span>
+          <input type="text" id="f-from" value="IG Rod Planning">
+        </div>
+        <div class="field ctr">
+          <span class="k">御依頼内容</span>
+          <input type="text" id="f-subject" placeholder="例：○○様オリジナルロッド">
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="date"><input type="date" id="f-date"></div>
+        <div class="line"><input type="text" id="f-address" value="東京都西東京市西原町5-3-30-301"></div>
+        <div class="line"><span>TEL</span><input type="text" id="f-tel" value="090-1798-5613"></div>
+        <div class="co"><input type="text" id="f-co" value="IG Rod Planning"></div>
+        <div class="who"><span>担当</span><input type="text" id="f-person" value="石谷"></div>
+        <div class="valid"><span>見積金額有効期限:</span><input type="text" id="f-valid" value="2カ月"></div>
+        <img class="seal" src="seal.png" alt="">
+      </div>
+    </div>
+
+    <div class="sec-title"><span>内訳</span></div>
+    <div class="items-wrap">
+      <table class="items">
+        <thead><tr>
+          <th class="c-no"></th><th>内容</th><th class="c-price">税抜単価</th><th class="c-qty">発注単位</th><th class="c-note">備考</th><th class="c-del"></th>
+        </tr></thead>
+        <tbody id="item-rows"></tbody>
+      </table>
+    </div>
+    <button type="button" class="add-row-btn" id="btn-add-row">＋ 行を追加</button>
+
+    <div class="memo-title">仕様等備考欄</div>
+    <div class="memo" id="memo-box"><textarea id="f-notes" placeholder="例：※竿袋代金は入ってません"></textarea></div>
+
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js"></script>
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var DEFAULT_ROWS = 6;
+  var STORE_KEY = 'estimate-draft';
+  var TAG = '__estimate';
+  var GREET = '毎度格別の御引立て誠に有難う御座います。\n下記の内容にて御見積を致しましたので御検討の程よろしくお願いします。\nなにか不明な点などあれば連絡ください。\nよろしくお願いします。';
+  var rowsBody = document.getElementById('item-rows');
+  var currentId = null;
+  var clients = {};
+
+  function $(id) { return document.getElementById(id); }
+  function toHalf(s) { return String(s == null ? '' : s).replace(/[０-９．，－]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[ー−‐]/g, '-'); }
+  function num(s) { var v = parseFloat(toHalf(s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
+  function commas(s) { if (String(s).trim() === '') return ''; return Math.round(num(s)).toLocaleString('ja-JP'); }
+  function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function slashDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '/' + Number(p[1]) + '/' + Number(p[2]); }
+
+  // 1行の入力欄は、文字があふれる場合に折り返さず文字サイズを縮めて1行に収める
+  var fitCanvas = document.createElement('canvas').getContext('2d');
+  function fitOneLine(el) {
+    if (!el || el.tagName !== 'INPUT' || el.type !== 'text' || !el.closest('.sheet')) return;
+    el.style.fontSize = '';
+    var cs = getComputedStyle(el);
+    var base = parseFloat(cs.fontSize);
+    var avail = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+    if (!el.value || avail <= 0) return;
+    fitCanvas.font = cs.fontWeight + ' ' + base + 'px ' + cs.fontFamily;
+    var w = fitCanvas.measureText(el.value).width;
+    if (w > avail) el.style.fontSize = Math.max(base * 0.4, Math.floor(base * avail / w * 10) / 10) + 'px';
+  }
+  function fitAll() { document.querySelectorAll('.sheet input[type="text"]').forEach(fitOneLine); }
+  document.addEventListener('input', function (e) { fitOneLine(e.target); });
+  document.addEventListener('focusout', function (e) { fitOneLine(e.target); });
+  window.addEventListener('resize', fitAll);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+
+  /* ---------- 明細行 ---------- */
+  function renumber() { rowsBody.querySelectorAll('tr').forEach(function (tr, i) { tr.querySelector('.c-no').textContent = i + 1; }); }
+  function addRow(it, afterTr) {
+    it = it || {};
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="c-no"></td>' +
+      '<td class="c-name"><input type="text" class="f-name"></td>' +
+      '<td class="c-price"><input type="text" class="f-price" inputmode="numeric"></td>' +
+      '<td class="c-qty"><input type="text" class="f-qty"></td>' +
+      '<td class="c-note"><input type="text" class="f-note"></td>' +
+      '<td class="c-del"><button type="button" class="del-row-btn" title="この行を削除">✕</button></td>';
+    var f = function (c) { return tr.querySelector('.' + c); };
+    f('f-name').value = it.name || '';
+    f('f-price').value = commas(it.price || '');
+    f('f-qty').value = it.qty || '';
+    f('f-note').value = it.note || '';
+    f('f-price').addEventListener('blur', function () { this.value = commas(this.value); });
+    f('f-qty').addEventListener('blur', function () { this.value = toHalf(this.value); });
+    f('del-row-btn').addEventListener('click', function () { tr.remove(); renumber(); saveDraft(); });
+    if (afterTr && afterTr.parentNode === rowsBody) rowsBody.insertBefore(tr, afterTr.nextSibling); else rowsBody.appendChild(tr);
+    renumber();
+    return tr;
+  }
+  $('btn-add-row').addEventListener('click', function () { addRow().querySelector('.f-name').focus(); });
+
+  $('opt-seal').addEventListener('change', function () { applyOptions(); saveDraft(); });
+  function applyOptions() { document.body.classList.toggle('no-seal', !$('opt-seal').checked); }
+
+  /* ---------- 取引先の候補（保存済みの書類から） ---------- */
+  function buildClients(all) {
+    clients = {};
+    all.filter(function (r) { return (r.__estimate || r.__quotation || r.__invoice || r.__delivery) && r.customer && String(r.customer).trim(); })
+      .sort(function (a, b) { return String(a.savedAt || '').localeCompare(String(b.savedAt || '')); })
+      .forEach(function (r) {
+        var c = clients[String(r.customer).trim()] = clients[String(r.customer).trim()] || {};
+        if (r.honor) c.honor = r.honor;
+      });
+    var dl = $('client-list');
+    dl.innerHTML = '';
+    Object.keys(clients).sort(function (a, b) { return a.localeCompare(b, 'ja'); }).forEach(function (n) {
+      var o = document.createElement('option'); o.value = n; dl.appendChild(o);
+    });
+  }
+  $('f-customer').addEventListener('change', function () {
+    var c = clients[this.value.trim()];
+    if (c && c.honor) $('f-honor').value = c.honor;
+    saveDraft();
+  });
+
+  /* ---------- 保存データ ---------- */
+  var FIELDS = { date: 'f-date', customer: 'f-customer', honor: 'f-honor', from: 'f-from', subject: 'f-subject', greet: 'f-greet', address: 'f-address', tel: 'f-tel', co: 'f-co', person: 'f-person', valid: 'f-valid', notes: 'f-notes' };
+
+  function collect() {
+    var q = { id: currentId || ('es-' + Date.now()), savedAt: new Date().toISOString(), seal: $('opt-seal').checked, items: [] };
+    Object.keys(FIELDS).forEach(function (k) { q[k] = $(FIELDS[k]).value; });
+    rowsBody.querySelectorAll('tr').forEach(function (tr) {
+      var it = {};
+      ['name', 'price', 'qty', 'note'].forEach(function (k) { it[k] = tr.querySelector('.f-' + k).value; });
+      if (it.name || it.price || it.qty || it.note) q.items.push(it);
+    });
+    q[TAG] = true;
+    return q;
+  }
+
+  function populate(q) {
+    currentId = q.id || null;
+    Object.keys(FIELDS).forEach(function (k) { if (q[k] != null) $(FIELDS[k]).value = q[k]; });
+    if (!$('f-greet').value) $('f-greet').value = GREET;
+    $('opt-seal').checked = q.seal !== false;
+    rowsBody.innerHTML = '';
+    (q.items || []).forEach(function (it) { addRow(it); });
+    while (rowsBody.children.length < DEFAULT_ROWS) addRow();
+    document.body.classList.toggle('editing', !!currentId);
+    applyOptions(); fitAll();
+  }
+
+  function saveDraft() {
+    try { var d = collect(); d.id = currentId; localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch (e) {}
+  }
+  document.addEventListener('input', saveDraft);
+
+  function resetForm() {
+    currentId = null;
+    ['f-customer', 'f-subject', 'f-notes'].forEach(function (id) { $(id).value = ''; });
+    $('f-honor').value = '御中'; $('f-greet').value = GREET; $('f-from').value = 'IG Rod Planning';
+    $('f-address').value = '東京都西東京市西原町5-3-30-301'; $('f-tel').value = '090-1798-5613';
+    $('f-co').value = 'IG Rod Planning'; $('f-person').value = '石谷'; $('f-valid').value = '2カ月';
+    $('f-date').value = todayIso();
+    rowsBody.innerHTML = '';
+    for (var i = 0; i < DEFAULT_ROWS; i++) addRow();
+    document.body.classList.remove('editing');
+    fitAll();
+  }
+
+  (function init() {
+    var data = null, isCopy = false;
+    try {
+      var raw = localStorage.getItem('estimate-reload');
+      if (raw) { localStorage.removeItem('estimate-reload'); data = JSON.parse(raw); isCopy = !!data.__copy; }
+    } catch (e) {}
+    if (!data) { try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (data) data.date = todayIso(); } catch (e) {} }
+    if (data) {
+      if (isCopy) { delete data.id; data.date = todayIso(); }
+      populate(data);
+    } else { resetForm(); }
+    if (!$('f-date').value) $('f-date').value = todayIso();
+    fetch(SYNC_API + '/paint?_=' + Date.now()).then(function (r) { return r.ok ? r.json() : []; }).then(buildClients).catch(function () {});
+  })();
+
+  $('btn-reset').addEventListener('click', function () {
+    if (!confirm('入力内容をすべてクリアしますか？')) return;
+    resetForm(); saveDraft();
+  });
+  $('btn-print').addEventListener('click', function () { window.print(); });
+
+  async function saveToHistory(saveOnly) {
+    var q = collect();
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var idx = all.findIndex(function (r) { return r[TAG] && r.id === q.id; });
+      if (idx >= 0) all[idx] = q; else all.push(q);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      if (!put.ok) throw new Error('save failed');
+      currentId = q.id;
+      document.body.classList.add('editing');
+      saveDraft();
+      return true;
+    } catch (e) {
+      console.error(e);
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '御見積書一覧への保存に失敗しました。');
+      return false;
+    }
+  }
+
+  /* ---------- PDF（A4横） ---------- */
+  function swapFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet input[type="text"], .sheet input[type="date"], .sheet select, .sheet textarea').forEach(function (el) {
+      var text = el.value;
+      if (el.type === 'date') text = slashDate(el.value);
+      if (el.tagName === 'SELECT') text = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+      if (el.classList.contains('f-price')) text = commas(text);
+      var cs = getComputedStyle(el);
+      var o = document.createElement('div');
+      o.textContent = text || ' ';
+      var isSel = el.tagName === 'SELECT';
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.55' : '1.4') + ';white-space:' + (isSel ? 'nowrap' : 'pre-wrap') + ';word-break:break-word;' + (isSel ? 'display:inline-block;width:auto;flex:none;' : 'width:100%;') + 'min-height:' + (el.tagName === 'TEXTAREA' && el.id === 'f-notes' ? cs.height : '0') + ';';
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+  // 内容のない行は、最後の入力行の次の1行だけ残して省く
+  function markSpareRows() {
+    var trs = Array.prototype.slice.call(rowsBody.querySelectorAll('tr')), last = -1;
+    trs.forEach(function (tr, i) { if (['f-name', 'f-price', 'f-qty', 'f-note'].some(function (c) { return tr.querySelector('.' + c).value.trim(); })) last = i; });
+    trs.forEach(function (tr, i) { if (i > last + 1) tr.classList.add('spare'); });
+  }
+  function clearSpareRows() { rowsBody.querySelectorAll('tr.spare').forEach(function (tr) { tr.classList.remove('spare'); }); }
+
+  // 一覧の「PDF保存」用：保存済みの御見積書をこのページで描く
+  window.captureForBulk = async function () {
+    document.body.classList.add('pdf-capture');
+    markSpareRows();
+    var sw = swapFields();
+    try {
+      return await html2canvas($('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1200 });
+    } finally {
+      sw.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      clearSpareRows();
+      document.body.classList.remove('pdf-capture');
+    }
+  };
+
+  wireSaveOnly($('btn-save-only'), function () { return saveToHistory(true); });
+
+  $('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    document.body.classList.add('pdf-capture');
+    markSpareRows();
+    var swaps = swapFields();
+    var undone = false;
+    function undo() {
+      if (undone) return; undone = true;
+      swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      clearSpareRows();
+      document.body.classList.remove('pdf-capture');
+    }
+    try {
+      var canvas = await html2canvas($('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1200 });
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
+      var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+      if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      var cust = $('f-customer').value.trim().replace(/[\\/:*?"<>|]/g, '') || '御見積書';
+      var name = $('f-date').value.replace(/-/g, '') + cust + '_御見積書.pdf';
+      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
+      undo();
+      btn.textContent = '一覧に保存中…';
+      await saveToHistory();
+    } catch (e) {
+      console.error(e);
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      undo();
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+</script>
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        if (t[0] !== t[1]) {
+          sessionStorage.setItem(k, '1');
+          fetch(p, { cache: 'reload' }).then(function () { location.reload(); });
+        }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+<script src="arrow-nav.js"></script>
+</body>
+</html>
