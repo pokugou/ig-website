@@ -124,6 +124,10 @@
         <option value="none">並び順（通常）</option>
         <option value="asc">No. 昇順</option>
         <option value="desc">No. 降順</option>
+        <option value="date-desc">受注日 新しい順</option>
+        <option value="date-asc">受注日 古い順</option>
+        <option value="due-asc">希望納期 早い順</option>
+        <option value="due-desc">希望納期 遅い順</option>
       </select>
       <input type="text" id="f-search" placeholder="顧客名などで検索（納期問い合わせの時に）">
     </div>
@@ -370,6 +374,20 @@
     return sortOrder === 'desc' ? -cmp : cmp;
   }
 
+  // 受注日・希望納期（2026/10/16 の形）で並べる。日付のないものは、どの順でも最後
+  function dateKey(v) {
+    var m = String(v || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+    return m ? Number(m[1]) * 10000 + Number(m[2]) * 100 + Number(m[3]) : null;
+  }
+  function compareByDate(a, b) {
+    var f = sortOrder.indexOf('date-') === 0 ? '受注日' : '希望納期';
+    var av = dateKey(a[f]), bv = dateKey(b[f]);
+    if (av === null && bv === null) return 0;
+    if (av === null) return 1;
+    if (bv === null) return -1;
+    return /-desc$/.test(sortOrder) ? bv - av : av - bv;
+  }
+
   var SECTIONS = [
     { title: '基本情報', fields: ['No.', '受注日', '希望納期', '受付方法', '受付担当'] },
     { title: 'お客様情報', fields: ['お名前', 'お客様名', '電話番号', '発送方法', '送り先住所'] },
@@ -439,7 +457,7 @@
   function render() {
     var list = document.getElementById('list');
     var visible = allRecords.filter(matchesSearch);
-    if (sortOrder !== 'none') visible = visible.slice().sort(compareByNo);
+    if (sortOrder !== 'none') visible = visible.slice().sort(/^(date|due)-/.test(sortOrder) ? compareByDate : compareByNo);
     var statusText;
     if (allRecords.length === 0) {
       statusText = 'まだ記録がありません';
