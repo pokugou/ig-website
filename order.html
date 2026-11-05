@@ -1719,7 +1719,12 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
     '<option value="lc-stainless" data-price="0">LCガイドステンレス（＋¥0）</option>' +
     '<option value="lc-titanium"  data-price="9500">LCガイドチタン（＋¥9,500）</option>';
 
+  var gripEl    = document.getElementById('sel-grip');
+  var gripOrig  = gripEl.innerHTML;
+  var gripNoCorHTML = gripOrig.replace(/<option[^>]*value="cork"[^>]*>.*?<\/option>\s*/s, '');
+
   function applyVsGuide(val) {
+    var isVs = vskModels.indexOf(val) !== -1 || vsiModels.indexOf(val) !== -1;
     if (vskModels.indexOf(val) !== -1) {
       guideEl.innerHTML = vskHTML;
     } else if (vsiModels.indexOf(val) !== -1) {
@@ -1727,6 +1732,8 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
     } else {
       guideEl.innerHTML = origHTML;
     }
+    gripEl.innerHTML = isVs ? gripNoCorHTML : gripOrig;
+    if (isVs && gripEl.value === 'cork') gripEl.value = 'eva';
     document.getElementById('torzite-layout-field').style.display = 'none';
     calcPrice();
   }
