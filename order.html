@@ -1719,9 +1719,11 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
     '<option value="lc-stainless" data-price="0">LCガイドステンレス（＋¥0）</option>' +
     '<option value="lc-titanium"  data-price="9500">LCガイドチタン（＋¥9,500）</option>';
 
-  var gripEl    = document.getElementById('sel-grip');
-  var gripOrig  = gripEl.innerHTML;
-  var gripNoCorHTML = gripOrig.replace(/<option[^>]*value="cork"[^>]*>.*?<\/option>\s*/s, '');
+  var gripEl   = document.getElementById('sel-grip');
+  var gripOrig = gripEl.innerHTML;
+  var vsGripHTML =
+    '<option value="rubber" data-price="0">ラバーグリップ（＋¥0）</option>' +
+    '<option value="reel"   data-price="6000">リールシート塗装（＋¥6,000）</option>';
 
   function applyVsGuide(val) {
     var isVs = vskModels.indexOf(val) !== -1 || vsiModels.indexOf(val) !== -1;
@@ -1732,8 +1734,7 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
     } else {
       guideEl.innerHTML = origHTML;
     }
-    gripEl.innerHTML = isVs ? gripNoCorHTML : gripOrig;
-    if (isVs && gripEl.value === 'cork') gripEl.value = 'eva';
+    gripEl.innerHTML = isVs ? vsGripHTML : gripOrig;
     document.getElementById('torzite-layout-field').style.display = 'none';
     calcPrice();
   }
