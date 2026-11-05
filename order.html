@@ -1705,6 +1705,27 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
     applyVsBlankPrices(vsModels.indexOf(this.value) !== -1);
   });
 })();
+
+// VS九絵選択時のガイド選択肢を切り替え
+(function() {
+  var vskModels = ['VSK4804M','VSK4804H','VSK5104XH'];
+  var guideEl   = document.getElementById('sel-guide');
+  var origHTML  = guideEl.innerHTML;
+  var vskHTML   =
+    '<option value="hb"      data-price="0">HB（＋¥0）</option>' +
+    '<option value="hb-gold" data-price="12000">HBゴールドガイド（＋¥12,000）</option>';
+
+  function applyVskGuide(isVsk) {
+    guideEl.innerHTML = isVsk ? vskHTML : origHTML;
+    document.getElementById('torzite-layout-field').style.display = 'none';
+    calcPrice();
+  }
+
+  document.getElementById('sel-model').addEventListener('change', function() {
+    applyVskGuide(vskModels.indexOf(this.value) !== -1);
+  });
+})();
+
 document.getElementById('sel-guide').addEventListener('change', function() {
   var layoutField = document.getElementById('torzite-layout-field');
   var layoutSel   = document.getElementById('sel-guide-layout');
