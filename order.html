@@ -1928,9 +1928,12 @@ function showConfirm() {
   var tcp = cmPrices['tip-color'] || 0;
   var rcp = cmPrices['reel-color'] || 0;
 
+  var contactMethodLabel = data.get('contact-method') === 'line' ? 'LINE公式' : 'メール';
+
   var html = ''
     + '<div class="confirm-section"><div class="confirm-section-label">基本情報</div>'
       + row('お客様名',      data.get('name') || '—')
+      + row('連絡方法',      contactMethodLabel)
       + row('メールアドレス', data.get('email') || '—')
       + row('電話番号',      data.get('tel') || '—')
     + '</div>'
@@ -2194,6 +2197,8 @@ function buildOrderCard() {
       + '<div style="'+s.sec+'">'
         + '<div style="'+s.stitle+'">お客様情報</div>'
         + r('お客様名', data.get('name') || '—')
+        + r('連絡方法', data.get('contact-method') === 'line' ? 'LINE公式' : 'メール')
+        + r('メールアドレス', data.get('email') || '—')
         + r('モデル', modelText)
       + '</div>'
       // カラーカスタム
@@ -2201,6 +2206,7 @@ function buildOrderCard() {
         + '<div style="'+s.stitle+'">カラーカスタム</div>'
         + r('ブランクスカラー', bc.val, bc.img, false)
         + r('ティップカラー',   tc.val, tc.img, false)
+        + (gripEl.value === 'reel' ? r('リールシートカラー', rc2.val, rc2.img, false) : '')
         + r('メインスレッド',   tm.val, tm.img, true)
         + r('ティップスレッド', tt.val, tt.img, true)
         + r('ピンライン',       tp.val, tp.img, true)
