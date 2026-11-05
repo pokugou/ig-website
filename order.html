@@ -817,7 +817,7 @@
         <select name="grip" id="sel-grip" required>
           <option value="eva"    data-price="0">EVA（＋¥0）</option>
           <option value="cork"   data-price="3800">コルクグリップ（＋¥3,800）</option>
-          <option value="reel"   data-price="6000">リールシート塗装（＋¥6,000）</option>
+          <option value="reel"   data-price="6000">アルミリールシート（＋¥6,000）</option>
         </select>
       </div>
 
@@ -1719,23 +1719,28 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
     '<option value="lc-stainless" data-price="0">LCガイドステンレス（＋¥0）</option>' +
     '<option value="lc-titanium"  data-price="9500">LCガイドチタン（＋¥9,500）</option>';
 
-  var gripEl   = document.getElementById('sel-grip');
-  var gripOrig = gripEl.innerHTML;
-  var vsGripHTML =
+  var gripEl      = document.getElementById('sel-grip');
+  var gripOrig    = gripEl.innerHTML;
+  var vsiGripHTML =
     '<option value="rubber" data-price="0">ラバーグリップ（＋¥0）</option>' +
-    '<option value="reel"   data-price="6000">リールシート塗装（＋¥6,000）</option>';
+    '<option value="reel"   data-price="6000">アルミリールシート（＋¥6,000）</option>';
+  var vskGripHTML =
+    '<option value="rubber"          data-price="0">ラバーグリップ（＋¥0）</option>' +
+    '<option value="stainless-reel"  data-price="12000">ステンレスリールシート（＋¥12,000）</option>';
 
   function applyVsGuide(val) {
-    var isVs = vskModels.indexOf(val) !== -1 || vsiModels.indexOf(val) !== -1;
     if (vskModels.indexOf(val) !== -1) {
       guideEl.innerHTML = vskHTML;
+      gripEl.innerHTML  = vskGripHTML;
     } else if (vsiModels.indexOf(val) !== -1) {
       guideEl.innerHTML = vsiHTML;
+      gripEl.innerHTML  = vsiGripHTML;
     } else {
       guideEl.innerHTML = origHTML;
+      gripEl.innerHTML  = gripOrig;
     }
-    gripEl.innerHTML = isVs ? vsGripHTML : gripOrig;
     document.getElementById('torzite-layout-field').style.display = 'none';
+    document.getElementById('reel-color-field').style.display = 'none';
     calcPrice();
   }
 
