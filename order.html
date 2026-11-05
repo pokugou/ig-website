@@ -1673,6 +1673,9 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
   blankOverlay.querySelectorAll('.cm-color-btn, .cm-omakase-btn').forEach(function(btn) {
     btn.dataset.priceOrig = btn.dataset.price;
   });
+  blankOverlay.querySelectorAll('.cm-section-title').forEach(function(h) {
+    h.dataset.titleOrig = h.textContent;
+  });
 
   function applyVsBlankPrices(isVs) {
     blankOverlay.querySelectorAll('.cm-color-btn, .cm-omakase-btn').forEach(function(btn) {
@@ -1682,6 +1685,13 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
       var priceLabel = btn.querySelector('.cm-omakase-price');
       if (priceLabel) {
         priceLabel.textContent = '＋¥' + parseInt(btn.dataset.price).toLocaleString('ja-JP');
+      }
+    });
+    blankOverlay.querySelectorAll('.cm-section-title').forEach(function(h) {
+      if (isVs) {
+        h.textContent = h.dataset.titleOrig.replace(/¥[\d,]+UP?/, '¥23,800UP');
+      } else {
+        h.textContent = h.dataset.titleOrig;
       }
     });
     var selectedBtn = blankOverlay.querySelector('.cm-color-btn.selected, .cm-omakase-btn.selected');
