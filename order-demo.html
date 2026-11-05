@@ -1736,7 +1736,17 @@ function showConfirm() {
   var shippEl   = form.querySelector('[name="shipping"]');
   var payEl     = form.querySelector('[name="payment"]');
 
-  var modelText = modelEl.selectedIndex > 0 ? modelEl.options[modelEl.selectedIndex].text.split('　')[0].trim() : '—';
+  var modelText = (function() {
+    if (modelEl.selectedIndex <= 0) return '—';
+    var opt = modelEl.options[modelEl.selectedIndex];
+    var optName = opt.text.split('　')[0].trim();
+    var grp = opt.parentElement;
+    if (grp && grp.tagName === 'OPTGROUP') {
+      var grpName = grp.label.replace(/^[─\s　]+|[─\s　]+$/g, '').split('　')[0].trim();
+      if (grpName) return grpName + '　' + optName;
+    }
+    return optName;
+  })();
   var guideText = guideEl.options[guideEl.selectedIndex].text;
   if (guideEl.value === 'torzite') {
     var layoutVal = document.getElementById('sel-guide-layout').value;
@@ -1968,7 +1978,17 @@ function buildOrderCard() {
   var guideEl  = document.getElementById('sel-guide');
   var gripEl   = document.getElementById('sel-grip');
 
-  var modelText = modelEl.selectedIndex > 0 ? modelEl.options[modelEl.selectedIndex].text.split('　')[0].trim() : '—';
+  var modelText = (function() {
+    if (modelEl.selectedIndex <= 0) return '—';
+    var opt = modelEl.options[modelEl.selectedIndex];
+    var optName = opt.text.split('　')[0].trim();
+    var grp = opt.parentElement;
+    if (grp && grp.tagName === 'OPTGROUP') {
+      var grpName = grp.label.replace(/^[─\s　]+|[─\s　]+$/g, '').split('　')[0].trim();
+      if (grpName) return grpName + '　' + optName;
+    }
+    return optName;
+  })();
   var guideText = guideEl.options[guideEl.selectedIndex].text;
   if (guideEl.value === 'torzite') {
     var layoutVal = document.getElementById('sel-guide-layout').value;
@@ -2050,6 +2070,7 @@ function buildOrderCard() {
         + '<div style="'+s.stitle+'">配送・お支払い</div>'
         + r('電話番号',       data.get('tel') || '—')
         + r('送り先住所',     data.get('address') || '—')
+        + r('発送方法',       shipText)
         + r('お支払い方法',   payText)
         + r('納期の目安',     'お支払い確認後 60〜70日前後')
       + '</div>'
