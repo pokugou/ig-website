@@ -1706,23 +1706,33 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
   });
 })();
 
-// VS九絵選択時のガイド選択肢を切り替え
+// VS九絵・VS石鯛選択時のガイド選択肢を切り替え
 (function() {
   var vskModels = ['VSK4804M','VSK4804H','VSK5104XH'];
+  var vsiModels = ['VSI450MH','VSI500MH','VSI530MH','VSI535MH'];
   var guideEl   = document.getElementById('sel-guide');
   var origHTML  = guideEl.innerHTML;
   var vskHTML   =
     '<option value="hb"      data-price="0">HB（＋¥0）</option>' +
     '<option value="hb-gold" data-price="12000">HBゴールドガイド（＋¥12,000）</option>';
+  var vsiHTML   =
+    '<option value="lc-stainless" data-price="0">LCガイドステンレス（＋¥0）</option>' +
+    '<option value="lc-titanium"  data-price="9500">LCガイドチタン（＋¥9,500）</option>';
 
-  function applyVskGuide(isVsk) {
-    guideEl.innerHTML = isVsk ? vskHTML : origHTML;
+  function applyVsGuide(val) {
+    if (vskModels.indexOf(val) !== -1) {
+      guideEl.innerHTML = vskHTML;
+    } else if (vsiModels.indexOf(val) !== -1) {
+      guideEl.innerHTML = vsiHTML;
+    } else {
+      guideEl.innerHTML = origHTML;
+    }
     document.getElementById('torzite-layout-field').style.display = 'none';
     calcPrice();
   }
 
   document.getElementById('sel-model').addEventListener('change', function() {
-    applyVskGuide(vskModels.indexOf(this.value) !== -1);
+    applyVsGuide(this.value);
   });
 })();
 
