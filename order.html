@@ -819,6 +819,7 @@
           <option value="cork"   data-price="3800">コルクグリップ（＋¥3,800）</option>
           <option value="reel"   data-price="6000">アルミリールシート（＋¥6,000）</option>
         </select>
+        <p id="grip-vsk-note" style="display:none;margin:6px 0 0;font-size:0.75rem;color:var(--red2,#cc2200);">※通常はアルミリールシート</p>
       </div>
 
       <!-- リールシートカラー（リールシート塗装選択時のみ表示） -->
@@ -1729,7 +1730,8 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
     '<option value="stainless-reel"  data-price="12000">ステンレスリールシート（＋¥12,000）</option>';
 
   function applyVsGuide(val) {
-    if (vskModels.indexOf(val) !== -1) {
+    var isVsk = vskModels.indexOf(val) !== -1;
+    if (isVsk) {
       guideEl.innerHTML = vskHTML;
       gripEl.innerHTML  = vskGripHTML;
     } else if (vsiModels.indexOf(val) !== -1) {
@@ -1739,6 +1741,7 @@ document.getElementById('sel-model').addEventListener('change', calcPrice);
       guideEl.innerHTML = origHTML;
       gripEl.innerHTML  = gripOrig;
     }
+    document.getElementById('grip-vsk-note').style.display = isVsk ? '' : 'none';
     document.getElementById('torzite-layout-field').style.display = 'none';
     document.getElementById('reel-color-field').style.display = 'none';
     calcPrice();
