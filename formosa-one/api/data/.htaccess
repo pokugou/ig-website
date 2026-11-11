@@ -1,0 +1,2 @@
+# Order records contain customer addresses. Never serve them.
+Require all denied

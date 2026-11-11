@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formosa One｜台湾グルメ・雑貨の公式通販</title>
+<meta name="description" content="Formosa One（フォルモサワン）は台湾の食品・お茶・雑貨・コスメを現地で選んでお届けする公式通販サイトです。">
+<style>
+:root{
+  --red:#c8102e;
+  --red-dark:#9e0b23;
+  --gold:#f5b400;
+  --jade:#0f8a6d;
+  --text:#222;
+  --sub:#666;
+  --line:#e5e5e5;
+  --bg:#f5f5f5;
+  --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--text);background:var(--bg);font-size:14px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:none;background:none}
+img{max-width:100%;display:block}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+
+/* ===== utility bar ===== */
+.util{background:#333;color:#ddd;font-size:12px}
+.util .wrap{display:flex;justify-content:space-between;align-items:center;height:30px;gap:12px}
+.util nav{display:flex;gap:16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.util nav::-webkit-scrollbar{display:none}
+.util a:hover{color:#fff}
+.util .right{display:flex;gap:16px;white-space:nowrap}
+
+/* ===== header ===== */
+header.main{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+header.main .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.logo-mark{width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:900;font-size:18px;font-family:Georgia,serif;position:relative}
+.logo-mark::after{content:"";position:absolute;width:10px;height:10px;background:var(--gold);border-radius:50%;top:-2px;right:-2px;border:2px solid #fff}
+.logo-text{font-weight:900;font-size:22px;letter-spacing:-.5px;color:var(--red);font-family:"Helvetica Neue",Arial,sans-serif}
+.logo-text span{color:var(--text)}
+.search{flex:1;display:flex;max-width:640px}
+.search select{border:2px solid var(--red);border-right:none;border-radius:4px 0 0 4px;padding:0 8px;background:#fafafa;font-size:12px;color:var(--sub)}
+.search input{flex:1;border:2px solid var(--red);border-left:1px solid var(--line);padding:0 12px;height:40px;font-size:14px;outline:none;min-width:0}
+.search button{background:var(--red);color:#fff;width:52px;border-radius:0 4px 4px 0;display:grid;place-items:center}
+.search button:hover{background:var(--red-dark)}
+.hicons{display:flex;gap:4px;flex-shrink:0}
+.hicon{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--sub);padding:4px 8px;border-radius:4px;position:relative}
+.hicon:hover{background:#f3f3f3}
+.hicon svg{width:22px;height:22px;stroke:var(--text);fill:none;stroke-width:1.8}
+.badge{position:absolute;top:0;right:4px;background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;padding:0 4px}
+.badge[data-n="0"]{display:none}
+
+/* welcome bar */
+.welcome{background:var(--white);border-bottom:1px solid var(--line);font-size:13px}
+.welcome .wrap{display:flex;justify-content:space-between;align-items:center;height:44px;gap:12px}
+.welcome b{color:var(--red)}
+.welcome .acts{display:flex;gap:10px;align-items:center;white-space:nowrap}
+.btn-login{background:var(--red);color:#fff;padding:6px 16px;border-radius:4px;font-weight:700;font-size:12px}
+.btn-login:hover{background:var(--red-dark)}
+.link-reg{color:var(--red);font-size:12px}
+
+/* ===== hero ===== */
+.hero{background:var(--white);padding:16px 0}
+.promo-strip{border-radius:6px;background:linear-gradient(90deg,#fff5f6,#ffe1e6 60%,#ffd1d9);display:flex;align-items:center;justify-content:space-between;padding:14px 24px;margin-bottom:16px;gap:16px;border:1px solid #ffd0d8}
+.promo-strip .l{font-weight:900;color:var(--red);font-size:18px}
+.promo-strip .r{font-weight:900;font-size:15px}
+.promo-strip .r em{font-style:normal;color:var(--red);font-size:32px;margin:0 2px}
+.carousel{position:relative;overflow:hidden;border-radius:6px}
+.slides{display:flex;transition:transform .5s ease}
+.slide{min-width:100%;height:300px;display:flex;align-items:center;justify-content:center;position:relative;color:#fff;text-align:center;overflow:hidden}
+.slide .inner{position:relative;z-index:2;padding:0 20px}
+.slide .tag{display:inline-block;background:#fff;color:var(--red);font-weight:900;padding:4px 14px;border-radius:2px;font-size:14px;margin-bottom:10px}
+.slide h2{font-size:44px;font-weight:900;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,.25);line-height:1.2}
+.slide p{font-size:18px;font-weight:700;margin-top:8px}
+.slide .big{font-size:64px;color:var(--gold);font-weight:900;line-height:1}
+.slide .deco{position:absolute;font-size:120px;opacity:.9;z-index:1}
+.s1{background:linear-gradient(135deg,#7a0a17,#c8102e)}
+.s2{background:linear-gradient(135deg,#0b5c49,#16a383)}
+.s3{background:linear-gradient(135deg,#d97a00,#f5b400)}
+.s4{background:linear-gradient(135deg,#1d2b64,#3a5bbf)}
+.cbtn{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.9);z-index:3;display:grid;place-items:center;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.cbtn.prev{left:12px}.cbtn.next{right:12px}
+.dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3}
+.dots button{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5)}
+.dots button.on{background:#fff;width:22px;border-radius:4px}
+
+.minibanners{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.mb{border-radius:6px;padding:14px;min-height:96px;display:flex;flex-direction:column;justify-content:center;border:1px solid var(--line);background:#fff;transition:box-shadow .2s}
+.mb:hover{box-shadow:0 3px 10px rgba(0,0,0,.1)}
+.mb small{font-size:11px;color:var(--sub)}
+.mb strong{font-size:16px;font-weight:900;line-height:1.3}
+.mb .num{color:var(--red);font-size:26px;font-weight:900}
+.mb.g{background:#eefaf5;border-color:#bfe8d8}
+.mb.y{background:#fff9e6;border-color:#f6e2a4}
+.mb.r{background:#fff1f3;border-color:#ffcfd7}
+.mb.b{background:#eef3ff;border-color:#c9d6fb}
+
+/* ===== layout ===== */
+.layout{display:grid;grid-template-columns:200px 1fr;gap:20px;padding:20px 16px;max-width:1200px;margin:0 auto}
+aside.side{background:#fff;border-radius:6px;border:1px solid var(--line);align-self:start;position:sticky;top:80px}
+aside.side h3{font-size:13px;padding:12px 14px;border-bottom:1px solid var(--line);background:#fafafa;border-radius:6px 6px 0 0}
+aside.side ul{list-style:none}
+aside.side li button{width:100%;text-align:left;padding:9px 14px;font-size:13px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f2f2f2}
+aside.side li button:hover{background:#fff5f6;color:var(--red)}
+aside.side li button.on{color:var(--red);font-weight:700;background:#fff5f6}
+aside.side li:last-child button{border-bottom:none}
+
+section.block{background:#fff;border-radius:6px;border:1px solid var(--line);padding:18px;margin-bottom:20px}
+.bhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;gap:12px}
+.bhead h2{font-size:18px;font-weight:900;display:flex;align-items:center;gap:8px}
+.bhead h2::before{content:"";width:4px;height:18px;background:var(--red);border-radius:2px}
+.bhead a,.bhead .more{font-size:12px;color:#0066c0}
+.bhead a:hover{text-decoration:underline}
+
+/* time sale */
+.sale-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.timer{background:var(--text);color:#fff;font-family:Menlo,monospace;font-weight:700;padding:3px 10px;border-radius:3px;font-size:14px}
+
+/* product grid */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.card{position:relative;display:flex;flex-direction:column;cursor:pointer}
+.thumb{aspect-ratio:1;border-radius:4px;display:grid;place-items:center;font-size:64px;position:relative;overflow:hidden;border:1px solid #eee}
+.card:hover .thumb{opacity:.88}
+.card:hover .pname{color:#0066c0;text-decoration:underline}
+.off{position:absolute;top:6px;left:6px;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:2px}
+.free{position:absolute;bottom:6px;left:6px;background:#fff;color:var(--jade);border:1px solid var(--jade);font-size:10px;font-weight:700;padding:1px 5px;border-radius:2px}
+.fav{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.fav svg{width:16px;height:16px;stroke:#999;fill:none;stroke-width:2}
+.fav.on svg{stroke:var(--red);fill:var(--red)}
+.pname{font-size:13px;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:39px}
+.price{font-size:18px;font-weight:700;color:var(--red);margin-top:4px}
+.price small{font-size:11px;color:var(--sub);font-weight:400;margin-left:2px}
+.was{font-size:11px;color:#999;text-decoration:line-through}
+.pt{font-size:11px;color:#b36b00;margin-top:2px}
+.stars{font-size:12px;color:#f0a500;margin-top:2px}
+.stars span{color:#0066c0;margin-left:4px}
+.shop{font-size:11px;color:var(--sub);margin-top:2px}
+.add{margin-top:8px;border:1px solid var(--red);color:var(--red);border-radius:4px;padding:6px 0;font-size:12px;font-weight:700}
+.add:hover{background:var(--red);color:#fff}
+
+/* ranking */
+.rank-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.rank-tabs::-webkit-scrollbar{display:none}
+.rank-tabs button{padding:6px 14px;border:1px solid var(--line);border-radius:16px;font-size:12px;white-space:nowrap;background:#fff}
+.rank-tabs button.on{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+.rank .card .thumb::before{content:attr(data-rank);position:absolute;top:0;left:0;width:30px;height:30px;display:grid;place-items:center;font-weight:900;font-size:14px;color:#fff;background:#999;z-index:2;border-radius:4px 0 4px 0}
+.rank .card:nth-child(1) .thumb::before{background:#d4a017}
+.rank .card:nth-child(2) .thumb::before{background:#9aa3ad}
+.rank .card:nth-child(3) .thumb::before{background:#b8733c}
+.rank .off{display:none}
+
+/* shops */
+.shops{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.shopcard{border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;gap:12px;align-items:center}
+.shopcard:hover{border-color:var(--red)}
+.shopicon{width:52px;height:52px;border-radius:6px;display:grid;place-items:center;font-size:28px;flex-shrink:0}
+.shopcard b{font-size:13px;display:block}
+.shopcard small{font-size:11px;color:var(--sub)}
+
+/* feature cards */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.feature{border-radius:6px;padding:20px;color:#fff;min-height:130px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.feature .emo{position:absolute;right:10px;top:6px;font-size:64px;opacity:.85}
+.feature small{font-size:11px;opacity:.9}
+.feature strong{font-size:18px;font-weight:900}
+
+.empty{padding:40px;text-align:center;color:var(--sub)}
+
+/* ===== footer ===== */
+.guide{background:#fff;border-top:1px solid var(--line);padding:24px 0}
+.guide .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.gitem{display:flex;gap:10px;align-items:center}
+.gitem .ic{width:40px;height:40px;border-radius:50%;background:#fff1f3;display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.gitem b{font-size:13px;display:block}
+.gitem small{font-size:11px;color:var(--sub)}
+footer{background:#333;color:#ccc;font-size:12px;padding:30px 0 20px}
+footer .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:24px}
+footer h4{color:#fff;font-size:13px;margin-bottom:10px}
+footer li{list-style:none;margin-bottom:6px}
+footer a:hover{color:#fff;text-decoration:underline}
+footer .copy{border-top:1px solid #555;padding-top:16px;text-align:center;color:#999}
+
+/* ===== cart drawer ===== */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:380px;max-width:100%;background:#fff;z-index:100;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer header{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--line)}
+.drawer header h3{font-size:16px}
+.drawer .x{font-size:22px;line-height:1;padding:4px 8px}
+.citems{flex:1;overflow-y:auto;padding:8px 16px}
+.citem{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #f0f0f0}
+.citem .t{width:60px;height:60px;border-radius:4px;display:grid;place-items:center;font-size:30px;flex-shrink:0}
+.citem .info{flex:1;min-width:0}
+.citem .n{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.citem .p{color:var(--red);font-weight:700;margin-top:2px}
+.qty{display:flex;align-items:center;gap:0;margin-top:6px}
+.qty button{width:26px;height:26px;border:1px solid var(--line);font-size:14px}
+.qty span{width:34px;text-align:center;font-size:13px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);height:26px;line-height:24px}
+.qty .del{margin-left:auto;border:none;color:#0066c0;font-size:12px;width:auto}
+.cfoot{border-top:1px solid var(--line);padding:16px}
+.cfoot .row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.cfoot .total{font-size:18px;font-weight:900}
+.cfoot .total span:last-child{color:var(--red)}
+.cfoot .note{font-size:11px;color:var(--jade);margin:6px 0 12px}
+.checkout{width:100%;background:var(--red);color:#fff;font-weight:700;padding:14px;border-radius:4px;font-size:15px}
+.checkout:hover{background:var(--red-dark)}
+.checkout:disabled{background:#ccc;cursor:default}
+
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.92);color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;z-index:200;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+/* ===== modal ===== */
+.modal{position:fixed;inset:0;display:grid;place-items:center;z-index:110;padding:16px;pointer-events:none;opacity:0;transition:opacity .2s}
+.modal.on{opacity:1;pointer-events:auto}
+.mbox{background:#fff;border-radius:8px;max-width:760px;width:100%;max-height:90vh;overflow:auto;display:grid;grid-template-columns:1fr 1fr;position:relative}
+.mbox .mthumb{aspect-ratio:1;display:grid;place-items:center;font-size:140px;border-radius:8px 0 0 8px}
+.mbox .mbody{padding:24px}
+.mbox .x{position:absolute;top:8px;right:10px;font-size:24px;z-index:2;padding:4px 8px}
+.mbody h3{font-size:17px;line-height:1.4;margin:4px 0 8px}
+.mbody .price{font-size:26px}
+.mbody .desc{font-size:13px;color:#444;margin:12px 0;line-height:1.7}
+.mbody .ship{font-size:12px;background:#f7f7f7;border-radius:4px;padding:10px;margin-bottom:14px}
+.mbody .checkout{margin-top:4px}
+
+@media (max-width:1000px){
+  .grid{grid-template-columns:repeat(4,1fr)}
+  .shops{grid-template-columns:repeat(2,1fr)}
+  .layout{grid-template-columns:1fr}
+  aside.side{position:static}
+  aside.side ul{display:flex;overflow-x:auto;scrollbar-width:none}
+  aside.side ul::-webkit-scrollbar{display:none}
+  aside.side li button{white-space:nowrap;border-bottom:none;border-right:1px solid #f2f2f2}
+  aside.side h3{display:none}
+}
+@media (max-width:720px){
+  .util .right{display:none}
+  header.main .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:10px}
+  .logo{order:1}
+  .hicons{order:2;margin-left:auto}
+  .search{order:3;flex-basis:100%;max-width:none}
+  .search select{display:none}
+  .search input{border-left:2px solid var(--red);border-radius:4px 0 0 4px}
+  .hicon span.lbl{display:none}
+  .welcome .msg{display:none}
+  .welcome .wrap{justify-content:flex-end}
+  .promo-strip{flex-direction:column;align-items:flex-start;gap:4px;padding:12px 16px}
+  .promo-strip .r em{font-size:24px}
+  .slide{height:200px}
+  .slide h2{font-size:26px}
+  .slide p{font-size:13px}
+  .slide .big{font-size:40px}
+  .slide .deco{font-size:70px;opacity:.35}
+  .cbtn{display:none}
+  .minibanners{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .features{grid-template-columns:1fr}
+  .shops{grid-template-columns:1fr}
+  .guide .wrap,footer .cols{grid-template-columns:repeat(2,1fr)}
+  .mbox{grid-template-columns:1fr}
+  .mbox .mthumb{border-radius:8px 8px 0 0;font-size:100px}
+  section.block{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- utility bar -->
+<div class="util">
+  <div class="wrap">
+    <nav>
+      <a href="#ranking">ランキング</a>
+      <a href="#sale">タイムセール</a>
+      <a href="#" data-cat="food">台湾グルメ</a>
+      <a href="#" data-cat="tea">台湾茶</a>
+      <a href="#" data-cat="goods">雑貨</a>
+      <a href="#" data-cat="beauty">コスメ</a>
+      <a href="#about">私たちについて</a>
+    </nav>
+    <div class="right">
+      <a href="#">法人・卸のご相談</a>
+      <a href="#">ヘルプ</a>
+      <a href="#">繁體中文</a>
+    </div>
+  </div>
+</div>
+
+<!-- header -->
+<header class="main">
+  <div class="wrap">
+    <a href="#" class="logo" aria-label="Formosa One トップ">
+      <div class="logo-mark">F</div>
+      <div class="logo-text">Formosa<span>One</span></div>
+    </a>
+    <form class="search" id="searchForm" role="search">
+      <select id="searchCat" aria-label="カテゴリ">
+        <option value="all">すべて</option>
+        <option value="food">グルメ</option>
+        <option value="tea">お茶</option>
+        <option value="goods">雑貨</option>
+        <option value="beauty">コスメ</option>
+      </select>
+      <input id="q" type="search" placeholder="キーワード検索（例：パイナップルケーキ）" autocomplete="off">
+      <button type="submit" aria-label="検索">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      </button>
+    </form>
+    <div class="hicons">
+      <button class="hicon" id="favBtn" aria-label="お気に入り">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9.2C1.2 8.6 3.3 5 6.8 5c2 0 3.5 1.1 5.2 3 1.7-1.9 3.2-3 5.2-3 3.5 0 5.6 3.6 4.1 6.8C19 16.5 12 21 12 21z"/></svg>
+        <span class="lbl">お気に入り</span>
+        <i class="badge" id="favCount" data-n="0">0</i>
+      </button>
+      <button class="hicon" aria-label="購入履歴">
+        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>
+        <span class="lbl">購入履歴</span>
+      </button>
+      <button class="hicon" id="cartBtn" aria-label="買い物かご">
+        <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.4a1 1 0 0 0 1-.8L21 8H6"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
+        <span class="lbl">買い物かご</span>
+        <i class="badge" id="cartCount" data-n="0">0</i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="welcome">
+  <div class="wrap">
+    <div class="msg">ようこそ <b>Formosa One</b> へ　会員登録でワンポイントが貯まる、使える。</div>
+    <div class="acts">
+      <a href="#" class="link-reg">会員登録（無料）</a>
+      <a href="#" class="btn-login">ログイン</a>
+    </div>
+  </div>
+</div>
+
+<!-- hero -->
+<div class="hero">
+  <div class="wrap">
+    <div class="promo-strip">
+      <div class="l">はじめてのお買い物キャンペーン</div>
+      <div class="r">新規会員登録で最大<em>3,000</em>ポイントプレゼント</div>
+    </div>
+
+    <div class="carousel" id="carousel">
+      <div class="slides" id="slides">
+        <div class="slide s1">
+          <div class="deco" style="left:6%;top:18%">🍍</div>
+          <div class="deco" style="right:6%;bottom:8%">🥮</div>
+          <div class="inner">
+            <div class="tag">対象商品限定</div>
+            <h2>冬の台湾スイーツ祭</h2>
+            <p>最大 <span class="big">500</span> 円OFFクーポン</p>
+          </div>
+        </div>
+        <div class="slide s2">
+          <div class="deco" style="left:6%;top:20%">🍵</div>
+          <div class="deco" style="right:6%;bottom:8%">🏔️</div>
+          <div class="inner">
+            <div class="tag">産地直送</div>
+            <h2>阿里山 高山茶フェア</h2>
+            <p>新茶入荷　ポイント <span class="big">5</span> 倍</p>
+          </div>
+        </div>
+        <div class="slide s3">
+          <div class="deco" style="left:6%;top:20%">🧋</div>
+          <div class="deco" style="right:6%;bottom:8%">🥟</div>
+          <div class="inner">
+            <div class="tag" style="color:#d97a00">本日限定</div>
+            <h2>タイムセール開催中</h2>
+            <p>人気グルメが最大 <span class="big" style="color:#fff">50%</span> OFF</p>
+          </div>
+        </div>
+        <div class="slide s4">
+          <div class="deco" style="left:6%;top:20%">🏮</div>
+          <div class="deco" style="right:6%;bottom:8%">🎁</div>
+          <div class="inner">
+            <div class="tag" style="color:#1d2b64">早割受付中</div>
+            <h2>旧正月ギフト特集</h2>
+            <p>3,980円以上で送料無料</p>
+          </div>
+        </div>
+      </div>
+      <button class="cbtn prev" aria-label="前へ">‹</button>
+      <button class="cbtn next" aria-label="次へ">›</button>
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <div class="minibanners">
+      <a href="#" class="mb g"><small>はじめての方限定</small><strong>初回購入で<br><span class="num">1,000</span>pt</strong></a>
+      <a href="#" class="mb y"><small>毎月5と0のつく日</small><strong>ワンポイント<br><span class="num">4</span>倍デー</strong></a>
+      <a href="#" class="mb r"><small>3,980円以上で</small><strong>全商品<br>送料無料</strong></a>
+      <a href="#" class="mb b"><small>アプリ限定</small><strong>毎日もらえる<br><span class="num">100</span>円クーポン</strong></a>
+    </div>
+  </div>
+</div>
+
+<!-- main -->
+<div class="layout">
+  <aside class="side">
+    <h3>ジャンルから探す</h3>
+    <ul id="catList"></ul>
+  </aside>
+
+  <main>
+    <section class="block" id="resultsBlock" hidden>
+      <div class="bhead"><h2 id="resultsTitle">検索結果</h2><button class="more" id="clearSearch">× 条件をクリア</button></div>
+      <div class="grid" id="results"></div>
+    </section>
+
+    <section class="block" id="sale">
+      <div class="bhead">
+        <div class="sale-head"><h2>タイムセール</h2><span style="font-size:12px;color:var(--sub)">終了まで</span><span class="timer" id="timer">--:--:--</span></div>
+        <a href="#">もっと見る ›</a>
+      </div>
+      <div class="grid" id="saleGrid"></div>
+    </section>
+
+    <section class="block rank" id="ranking">
+      <div class="bhead"><h2>リアルタイムランキング</h2><a href="#">すべて見る ›</a></div>
+      <div class="rank-tabs" id="rankTabs"></div>
+      <div class="grid" id="rankGrid"></div>
+    </section>
+
+    <section class="block">
+      <div class="bhead"><h2>特集</h2></div>
+      <div class="features">
+        <a href="#" class="feature" style="background:linear-gradient(135deg,#c8102e,#e8495f)" data-cat="food"><span class="emo">🥟</span><small>夜市の味をおうちで</small><strong>台湾夜市グルメ特集</strong></a>
+        <a href="#" class="feature" style="background:linear-gradient(135deg,#0f8a6d,#3cc39d)" data-cat="tea"><span class="emo">🍵</span><small>茶藝師がセレクト</small><strong>はじめての台湾茶</strong></a>
+        <a href="#" class="feature" style="background:linear-gradient(135deg,#6b3fa0,#a175d6)" data-cat="beauty"><span class="emo">🌸</span><small>MIT（台湾製）コスメ</small><strong>台湾ビューティー</strong></a>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="bhead"><h2>あなたへのおすすめ</h2><a href="#">もっと見る ›</a></div>
+      <div class="grid" id="recGrid"></div>
+    </section>
+
+    <section class="block" id="about">
+      <div class="bhead"><h2>Formosa One のこだわり</h2><a href="#">私たちについて ›</a></div>
+      <div class="shops">
+        <div class="shopcard"><div class="shopicon" style="background:#e6f6ef">🌱</div><div><b>現地で選んだ作り手だけ</b><small>スタッフが台湾の産地と工房を訪ねて仕入れています</small></div></div>
+        <div class="shopcard"><div class="shopicon" style="background:#fff1e0">📋</div><div><b>日本の基準で検査済み</b><small>輸入届出・日本語表示を済ませた正規品のみ販売</small></div></div>
+        <div class="shopcard"><div class="shopicon" style="background:#ffeaea">❄️</div><div><b>国内倉庫から発送</b><small>冷凍品もまとめて最短翌日にお届け</small></div></div>
+        <div class="shopcard"><div class="shopicon" style="background:#f5ecff">💬</div><div><b>台湾出身スタッフが対応</b><small>食べ方・淹れ方のご相談もお気軽に</small></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="guide">
+  <div class="wrap">
+    <div class="gitem"><div class="ic">🚚</div><div><b>送料無料ライン</b><small>3,980円以上（一部除く）</small></div></div>
+    <div class="gitem"><div class="ic">📦</div><div><b>国内倉庫から発送</b><small>最短翌日でお届け</small></div></div>
+    <div class="gitem"><div class="ic">💳</div><div><b>選べるお支払い</b><small>カード・コンビニ・後払い</small></div></div>
+    <div class="gitem"><div class="ic">🛡️</div><div><b>あんしん保証</b><small>未着・破損は全額返金</small></div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><h4>お買い物ガイド</h4><ul><li><a href="#">はじめての方へ</a></li><li><a href="#">お支払い方法</a></li><li><a href="#">配送について</a></li><li><a href="#">返品・交換</a></li></ul></div>
+      <div><h4>サービス</h4><ul><li><a href="#">ワンポイント</a></li><li><a href="#">クーポン</a></li><li><a href="#">ギフトラッピング</a></li><li><a href="#">定期便</a></li></ul></div>
+      <div><h4>会員サービス</h4><ul><li><a href="#">マイページ</a></li><li><a href="#">購入履歴</a></li><li><a href="#">メールマガジン</a></li><li><a href="#">法人・卸のご相談</a></li></ul></div>
+      <div><h4>Formosa One について</h4><ul><li><a href="#">会社概要</a></li><li><a href="#">利用規約</a></li><li><a href="#">プライバシーポリシー</a></li><li><a href="#">特定商取引法に基づく表記</a></li><li><a href="#">お問い合わせ</a></li></ul></div>
+    </div>
+    <div class="copy">© 2026 Formosa One. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<!-- cart drawer -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="買い物かご">
+  <header><h3>買い物かご</h3><button class="x" id="closeCart" aria-label="閉じる">×</button></header>
+  <div class="citems" id="citems"></div>
+  <div class="cfoot">
+    <div class="row"><span>小計</span><span id="subtotal">0円</span></div>
+    <div class="row"><span>送料</span><span id="shipping">0円</span></div>
+    <div class="row total"><span>合計（税込）</span><span id="total">0円</span></div>
+    <div class="note" id="shipNote"></div>
+    <button class="checkout" id="checkout">購入手続きへ</button>
+  </div>
+</aside>
+
+<!-- product modal -->
+<div class="modal" id="modal">
+  <div class="mbox" id="mbox"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS = [
+  {id:"all", name:"すべて", icon:"🏠"},
+  {id:"food", name:"グルメ・スイーツ", icon:"🥮"},
+  {id:"tea", name:"台湾茶・ドリンク", icon:"🍵"},
+  {id:"noodle", name:"麺・調味料", icon:"🍜"},
+  {id:"goods", name:"雑貨・インテリア", icon:"🏮"},
+  {id:"beauty", name:"コスメ・美容", icon:"🌸"},
+  {id:"fashion", name:"ファッション", icon:"👜"},
+  {id:"gift", name:"ギフト", icon:"🎁"},
+];
+
+// product data lives in products.json (the server reads the same file for prices)
+let SHOPS = {}, P = [], FREE_LINE = 3980, SHIP = 590;
+
+const yen = n => n.toLocaleString("ja-JP") + "円";
+const $ = s => document.querySelector(s);
+const byId = id => P.find(p => p.id === id);
+const store = {
+  get(k, d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch{ return d } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch{} }
+};
+let cart = store.get("fo_cart", {});
+let favs = new Set(store.get("fo_favs", []));
+
+function stars(r){ const f = Math.round(r); return "★".repeat(f) + "☆".repeat(5-f); }
+
+function card(p, rank){
+  const off = p.was ? Math.round((1 - p.price/p.was)*100) : 0;
+  return `<div class="card" data-id="${p.id}">
+    <div class="thumb" style="background:${p.bg}" ${rank?`data-rank="${rank}"`:""}>
+      ${p.e}
+      ${off?`<span class="off">${off}%OFF</span>`:""}
+      ${p.price>=FREE_LINE?`<span class="free">送料無料</span>`:""}
+      <button class="fav ${favs.has(p.id)?"on":""}" data-fav="${p.id}" aria-label="お気に入り"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9.2C1.2 8.6 3.3 5 6.8 5c2 0 3.5 1.1 5.2 3 1.7-1.9 3.2-3 5.2-3 3.5 0 5.6 3.6 4.1 6.8C19 16.5 12 21 12 21z"/></svg></button>
+    </div>
+    <div class="pname">${p.name}</div>
+    ${p.was?`<div class="was">${yen(p.was)}</div>`:""}
+    <div class="price">${yen(p.price)}<small>税込</small></div>
+    <div class="pt">${Math.floor(p.price/100)}ポイント（1倍）</div>
+    <div class="stars">${stars(p.rate)}<span>(${p.rev.toLocaleString()})</span></div>
+    <div class="shop">作り手：${SHOPS[p.shop].name}</div>
+    <button class="add" data-add="${p.id}">かごに追加</button>
+  </div>`;
+}
+
+/* --- render sections --- */
+function renderHome(){
+  $("#saleGrid").innerHTML = P.filter(p => p.sale).slice(0,5).map(p => card(p)).join("");
+  $("#recGrid").innerHTML = [...P].sort((a,b) => b.rate - a.rate || b.rev - a.rev).slice(0,10).map(p => card(p)).join("");
+  renderRank("all");
+}
+
+const rankCats = CATS.filter(c => c.id !== "fashion");
+$("#rankTabs").innerHTML = rankCats.map((c,i) => `<button data-rank="${c.id}" class="${i?"":"on"}">${c.name}</button>`).join("");
+function renderRank(cat){
+  const list = P.filter(p => cat === "all" || p.cat === cat).sort((a,b) => b.rev - a.rev).slice(0,5);
+  $("#rankGrid").innerHTML = list.map((p,i) => card(p, i+1)).join("");
+}
+$("#rankTabs").addEventListener("click", e => {
+  const b = e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("#rankTabs button").forEach(x => x.classList.toggle("on", x === b));
+  renderRank(b.dataset.rank);
+});
+
+/* --- category + search --- */
+$("#catList").innerHTML = CATS.map(c => `<li><button data-cat="${c.id}"><span>${c.icon}</span>${c.name}</button></li>`).join("");
+function showResults(cat, q){
+  const words = (q || "").trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const list = P.filter(p => (cat === "all" || p.cat === cat) && words.every(w => p.name.toLowerCase().includes(w)));
+  const catName = CATS.find(c => c.id === cat)?.name || "すべて";
+  $("#resultsTitle").textContent = (q ? `「${q}」の検索結果` : catName) + `（${list.length}件）`;
+  $("#results").innerHTML = list.length ? list.map(p => card(p)).join("") : `<div class="empty" style="grid-column:1/-1">該当する商品が見つかりませんでした。</div>`;
+  $("#resultsBlock").hidden = false;
+  document.querySelectorAll("#catList button").forEach(b => b.classList.toggle("on", b.dataset.cat === cat && !q));
+  $("#resultsBlock").scrollIntoView({behavior:"smooth", block:"start"});
+}
+document.addEventListener("click", e => {
+  const c = e.target.closest("[data-cat]");
+  if(c){ e.preventDefault(); $("#q").value = ""; showResults(c.dataset.cat); }
+});
+$("#searchForm").addEventListener("submit", e => {
+  e.preventDefault();
+  showResults($("#searchCat").value, $("#q").value);
+});
+$("#clearSearch").addEventListener("click", () => {
+  $("#resultsBlock").hidden = true; $("#q").value = "";
+  document.querySelectorAll("#catList button").forEach(b => b.classList.remove("on"));
+});
+
+/* --- carousel --- */
+const slides = $("#slides"), n = slides.children.length;
+let idx = 0, timer;
+$("#dots").innerHTML = Array.from({length:n}, (_,i) => `<button aria-label="スライド${i+1}"></button>`).join("");
+function go(i){
+  idx = (i + n) % n;
+  slides.style.transform = `translateX(-${idx*100}%)`;
+  document.querySelectorAll("#dots button").forEach((d,j) => d.classList.toggle("on", j === idx));
+  clearInterval(timer); timer = setInterval(() => go(idx+1), 5000);
+}
+$(".cbtn.prev").onclick = () => go(idx-1);
+$(".cbtn.next").onclick = () => go(idx+1);
+$("#dots").onclick = e => { const b = e.target.closest("button"); if(b) go([...b.parentNode.children].indexOf(b)); };
+let sx = null;
+$("#carousel").addEventListener("touchstart", e => sx = e.touches[0].clientX, {passive:true});
+$("#carousel").addEventListener("touchend", e => { if(sx === null) return; const dx = e.changedTouches[0].clientX - sx; if(Math.abs(dx) > 40) go(idx + (dx < 0 ? 1 : -1)); sx = null; });
+go(0);
+
+/* --- countdown to midnight --- */
+function tick(){
+  const now = new Date(), end = new Date(now); end.setHours(24,0,0,0);
+  const s = Math.floor((end - now)/1000);
+  const pad = v => String(v).padStart(2,"0");
+  $("#timer").textContent = `${pad(Math.floor(s/3600))}:${pad(Math.floor(s%3600/60))}:${pad(s%60)}`;
+}
+tick(); setInterval(tick, 1000);
+
+/* --- toast --- */
+let tt;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 1800); }
+
+/* --- favorites --- */
+function syncFavs(){
+  store.set("fo_favs", [...favs]);
+  $("#favCount").textContent = favs.size; $("#favCount").dataset.n = favs.size;
+  document.querySelectorAll("[data-fav]").forEach(b => b.classList.toggle("on", favs.has(+b.dataset.fav)));
+}
+$("#favBtn").onclick = () => {
+  if(!favs.size){ toast("お気に入りはまだありません"); return; }
+  $("#q").value = "";
+  const list = P.filter(p => favs.has(p.id));
+  $("#resultsTitle").textContent = `お気に入り（${list.length}件）`;
+  $("#results").innerHTML = list.map(p => card(p)).join("");
+  $("#resultsBlock").hidden = false;
+  $("#resultsBlock").scrollIntoView({behavior:"smooth"});
+};
+
+/* --- cart --- */
+function syncCart(){
+  store.set("fo_cart", cart);
+  const ids = Object.keys(cart).map(Number);
+  const count = ids.reduce((a,id) => a + cart[id], 0);
+  $("#cartCount").textContent = count; $("#cartCount").dataset.n = count;
+  const sub = ids.reduce((a,id) => a + byId(id).price * cart[id], 0);
+  const ship = sub === 0 || sub >= FREE_LINE ? 0 : SHIP;
+  $("#subtotal").textContent = yen(sub);
+  $("#shipping").textContent = ship ? yen(ship) : (sub ? "無料" : "0円");
+  $("#total").textContent = yen(sub + ship);
+  $("#shipNote").textContent = sub && sub < FREE_LINE ? `あと${yen(FREE_LINE - sub)}で送料無料！` : (sub ? "送料無料でお届けします" : "");
+  $("#checkout").disabled = !count;
+  $("#citems").innerHTML = ids.length ? ids.map(id => { const p = byId(id); return `
+    <div class="citem">
+      <div class="t" style="background:${p.bg}">${p.e}</div>
+      <div class="info">
+        <div class="n">${p.name}</div>
+        <div class="p">${yen(p.price)}</div>
+        <div class="qty">
+          <button data-dec="${id}" aria-label="減らす">−</button><span>${cart[id]}</span><button data-inc="${id}" aria-label="増やす">＋</button>
+          <button class="del" data-del="${id}">削除</button>
+        </div>
+      </div>
+    </div>`; }).join("") : `<div class="empty">買い物かごに商品がありません</div>`;
+}
+function openCart(on){ $("#drawer").classList.toggle("on", on); $("#overlay").classList.toggle("on", on); }
+$("#cartBtn").onclick = () => openCart(true);
+$("#closeCart").onclick = () => openCart(false);
+$("#overlay").onclick = () => { openCart(false); openModal(false); };
+$("#checkout").onclick = async () => {
+  const btn = $("#checkout");
+  const items = Object.keys(cart).map(id => ({id: +id, qty: cart[id]}));
+  if(!items.length) return;
+  btn.disabled = true; btn.textContent = "決済画面へ移動中…";
+  try{
+    const r = await fetch("api/checkout.php", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({items})});
+    const d = await r.json().catch(() => ({}));
+    if(r.ok && d.url){ location.href = d.url; return; }
+    toast(d.error || "決済画面を開けませんでした。時間をおいてお試しください");
+  }catch{
+    toast("決済の準備ができていないため、購入手続きはまだご利用いただけません");
+  }
+  btn.disabled = false; btn.textContent = "購入手続きへ";
+};
+$("#citems").addEventListener("click", e => {
+  const t = e.target;
+  if(t.dataset.inc){ if(cart[t.dataset.inc] >= byId(+t.dataset.inc).stock){ toast("在庫数を超えるため追加できません"); return; } cart[t.dataset.inc]++; }
+  else if(t.dataset.dec){ if(--cart[t.dataset.dec] <= 0) delete cart[t.dataset.dec]; }
+  else if(t.dataset.del) delete cart[t.dataset.del];
+  else return;
+  syncCart();
+});
+
+/* --- product modal --- */
+function openModal(on, p){
+  if(on){
+    const off = p.was ? Math.round((1 - p.price/p.was)*100) : 0;
+    $("#mbox").innerHTML = `
+      <button class="x" data-close aria-label="閉じる">×</button>
+      <div class="mthumb" style="background:${p.bg}">${p.e}</div>
+      <div class="mbody">
+        <div class="shop">作り手：${SHOPS[p.shop].name}（${SHOPS[p.shop].desc}）</div>
+        <h3>${p.name}</h3>
+        <div class="stars">${stars(p.rate)} ${p.rate}<span>(${p.rev.toLocaleString()}件)</span></div>
+        ${p.was?`<div class="was" style="margin-top:8px">通常価格 ${yen(p.was)}　<b style="color:var(--red);text-decoration:none">${off}%OFF</b></div>`:""}
+        <div class="price">${yen(p.price)}<small>税込</small></div>
+        <div class="pt">獲得ポイント ${Math.floor(p.price/100)}pt</div>
+        <p class="desc">${p.desc}</p>
+        <div class="ship">🚚 ${p.price >= FREE_LINE ? "送料無料" : `送料${yen(SHIP)}（${yen(FREE_LINE)}以上で無料）`}<br>📦 国内倉庫から発送・最短翌日お届け</div>
+        <button class="checkout" data-add="${p.id}">かごに追加する</button>
+      </div>`;
+  }
+  $("#modal").classList.toggle("on", on);
+  $("#overlay").classList.toggle("on", on || $("#drawer").classList.contains("on"));
+}
+$("#modal").addEventListener("click", e => { if(e.target.id === "modal" || e.target.closest("[data-close]")) openModal(false); });
+document.addEventListener("keydown", e => { if(e.key === "Escape"){ openModal(false); openCart(false); } });
+
+/* --- delegated card actions --- */
+document.addEventListener("click", e => {
+  const fav = e.target.closest("[data-fav]");
+  if(fav){ e.stopPropagation(); const id = +fav.dataset.fav;
+    favs.has(id) ? (favs.delete(id), toast("お気に入りから削除しました")) : (favs.add(id), toast("お気に入りに追加しました"));
+    syncFavs(); return; }
+  const add = e.target.closest("[data-add]");
+  if(add){ e.stopPropagation(); const id = +add.dataset.add;
+    if(byId(id).stock <= 0){ toast("申し訳ありません。この商品は在庫切れです"); return; }
+    if((cart[id] || 0) >= byId(id).stock){ toast("在庫数を超えるため追加できません"); return; }
+    cart[id] = (cart[id] || 0) + 1; syncCart(); toast("かごに追加しました"); if(add.closest("#modal")) openModal(false); return; }
+  const c = e.target.closest(".card");
+  if(c) openModal(true, byId(+c.dataset.id));
+});
+
+fetch("products.json")
+  .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(d => {
+    SHOPS = d.shops; P = d.products;
+    FREE_LINE = d.shipping.freeOver; SHIP = d.shipping.fee;
+    // drop cart/favorite entries for products that no longer exist
+    for(const id of Object.keys(cart)) if(!byId(+id)) delete cart[id];
+    for(const id of [...favs]) if(!byId(id)) favs.delete(id);
+    renderHome(); syncCart(); syncFavs();
+    if(new URLSearchParams(location.search).has("canceled")){
+      history.replaceState(null, "", location.pathname);
+      openCart(true);
+      toast("お支払いをキャンセルしました。かごの中身はそのままです");
+    }
+  })
+  .catch(() => toast("商品情報を読み込めませんでした。ページを再読み込みしてください"));
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Only checkout.php and webhook.php may be requested from the web.
+<FilesMatch "^(config|config\.sample|lib)\.php$">
+  Require all denied
+</FilesMatch>
