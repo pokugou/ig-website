@@ -68,44 +68,55 @@
     /* MAIN */
     .main-wrap { max-width:1200px; margin:0 auto; padding:3rem 3rem 5rem; }
 
-    /* ROD PREVIEW CARD */
-    .rod-card { background:#f2f2f0; border-radius:12px; padding:2rem 1.5rem 1rem; margin-bottom:2rem; overflow:hidden; border:1px solid var(--wborder); }
-    .rod-card-label { font-size:0.62rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#888; margin-bottom:1rem; }
-    #rod-svg { width:100%; height:auto; display:block; overflow:visible; }
+    /* SIM WRAP */
+    .sim-wrap { max-width:1100px; margin:0 auto; padding:2.5rem 1.5rem 5rem; }
 
-    /* PART TABS */
-    .part-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
-    .part-tab { display:inline-flex; align-items:center; gap:0.4rem; padding:0.5rem 1rem; border-radius:4px; border:1px solid var(--wborder2); background:#fff; color:var(--fg3); font-size:0.78rem; font-weight:600; letter-spacing:0.04em; cursor:pointer; transition:all 0.2s; font-family:inherit; }
-    .part-tab:hover { color:var(--fg); border-color:var(--wborder2); background:var(--card-bg); }
-    .part-tab.active { background:var(--red); border-color:var(--red); color:#fff; }
-    .part-tab .tab-dot { width:8px; height:8px; border-radius:50%; border:1.5px solid currentColor; display:inline-block; }
+    /* PREVIEW */
+    .sim-preview { background:#f0f0ee; border-radius:14px; padding:2rem 1.5rem 1.5rem; margin-bottom:2rem; border:1px solid var(--wborder); }
+    .sim-preview-label { font-size:0.6rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#999; margin-bottom:1rem; }
+    #rod-canvas { width:100%; display:block; border-radius:4px; }
 
-    /* SIMULATOR BODY */
-    .sim-body { display:grid; grid-template-columns:1fr 280px; gap:2rem; align-items:start; }
+    /* CUSTOMIZER */
+    .sim-customizer { background:#fff; border:1px solid var(--wborder); border-radius:14px; padding:2rem; }
+    .customizer-heading { text-align:center; margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px solid #f0f0f0; }
+    .customizer-heading h2 { font-size:1rem; font-weight:800; color:#111; letter-spacing:0.04em; margin-bottom:0.3rem; }
+    .customizer-heading p { font-size:0.78rem; color:#999; }
 
-    /* SWATCHES */
-    .swatches-title { font-size:0.7rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--fg3); margin-bottom:1rem; }
-    .thread-cat-label { font-size:0.65rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--fg3); margin:1rem 0 0.5rem; padding-top:0.75rem; border-top:1px solid var(--wborder); }
-    .swatches-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(54px,1fr)); gap:0.5rem; }
+    /* PARTS ROW */
+    .parts-row { display:flex; justify-content:center; gap:clamp(0.75rem,3vw,2.5rem); flex-wrap:wrap; margin-bottom:1.75rem; }
+    .part-card { display:flex; flex-direction:column; align-items:center; gap:0.5rem; }
+    .part-label { font-size:0.65rem; font-weight:700; color:#666; letter-spacing:0.02em; text-align:center; white-space:nowrap; }
+
+    /* COLOR CIRCLES */
+    .color-circle-btn { width:72px; height:72px; border-radius:50%; border:3px solid #e0e0e0; cursor:pointer; transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s; position:relative; overflow:hidden; outline:none; padding:0; box-shadow:0 2px 8px rgba(0,0,0,0.12); }
+    .color-circle-btn:hover { transform:scale(1.07); box-shadow:0 4px 16px rgba(0,0,0,0.18); }
+    .color-circle-btn.active { border-color:var(--red); box-shadow:0 0 0 3px rgba(204,34,0,0.18); transform:scale(1.07); }
+    .circle-inner { display:block; width:100%; height:100%; border-radius:50%; transition:background 0.25s; }
+    .color-name-sm { font-size:0.6rem; color:#888; text-align:center; max-width:72px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+    /* SWATCH PANEL */
+    .swatch-panel { display:none; background:#f8f8f7; border:1px solid #e5e5e0; border-radius:12px; padding:1.5rem; margin-bottom:1.5rem; }
+    .swatch-panel.is-open { display:block; animation:slide-down 0.22s ease; }
+    @keyframes slide-down { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+    .swatch-panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+    .swatch-panel-title { font-size:0.78rem; font-weight:700; color:#333; letter-spacing:0.06em; text-transform:uppercase; }
+    .swatch-close-btn { background:none; border:none; cursor:pointer; color:#aaa; font-size:1rem; line-height:1; padding:0.2rem 0.4rem; border-radius:4px; transition:color 0.2s,background 0.2s; }
+    .swatch-close-btn:hover { color:#333; background:#ece9e9; }
+    .swatch-cat-label { font-size:0.6rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#bbb; margin:0.75rem 0 0.5rem; }
+    .swatches-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(52px,1fr)); gap:0.5rem; }
     .swatch-btn { display:flex; flex-direction:column; align-items:center; gap:0.3rem; background:none; border:none; cursor:pointer; padding:0; }
-    .swatch-color { width:100%; aspect-ratio:1; border-radius:4px; border:2px solid transparent; transition:transform 0.15s,border-color 0.15s; position:relative; }
-    .swatch-btn:hover .swatch-color { transform:scale(1.08); }
-    .swatch-btn.selected .swatch-color { border-color:#fff; box-shadow:0 0 0 2px var(--red); }
-    .swatch-num { font-size:0.58rem; color:var(--fg3); letter-spacing:0.04em; white-space:nowrap; }
+    .swatch-color { width:100%; aspect-ratio:1; border-radius:6px; border:2px solid transparent; transition:transform 0.15s,box-shadow 0.15s; }
+    .swatch-btn:hover .swatch-color { transform:scale(1.1); }
+    .swatch-btn.selected .swatch-color { border-color:#111; box-shadow:0 0 0 2px var(--red); }
+    .swatch-num { font-size:0.56rem; color:#aaa; }
 
-    /* SUMMARY PANEL */
-    .summary-panel { background:#fff; border:1px solid var(--wborder); border-radius:8px; padding:1.5rem; position:sticky; top:88px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
-    .summary-title { font-size:0.65rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--fg3); margin-bottom:1.25rem; }
-    .summary-row { display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0; border-bottom:1px solid var(--wborder); }
-    .summary-row:last-of-type { border-bottom:none; }
-    .summary-dot { width:14px; height:14px; border-radius:3px; flex-shrink:0; border:1px solid var(--wborder); }
-    .summary-part { font-size:0.68rem; color:var(--fg3); letter-spacing:0.06em; flex-shrink:0; width:90px; }
-    .summary-name { font-size:0.78rem; color:var(--fg); font-weight:600; }
-    .btn-order { display:flex; align-items:center; justify-content:center; gap:0.4rem; width:100%; margin-top:1.5rem; padding:0.85rem 1rem; background:var(--red); color:#fff; border:none; border-radius:4px; font-size:0.82rem; font-weight:700; letter-spacing:0.06em; cursor:pointer; text-decoration:none; transition:background 0.2s; font-family:inherit; }
-    .btn-order:hover { background:var(--red2); }
-    .btn-share { display:flex; align-items:center; justify-content:center; gap:0.4rem; width:100%; margin-top:0.5rem; padding:0.7rem 1rem; background:transparent; color:var(--fg3); border:1px solid var(--wborder2); border-radius:4px; font-size:0.78rem; font-weight:600; letter-spacing:0.04em; cursor:pointer; font-family:inherit; transition:all 0.2s; }
-    .btn-share:hover { border-color:var(--fg2); color:var(--fg); }
-    .share-toast { display:none; text-align:center; font-size:0.72rem; color:#4caf50; margin-top:0.5rem; font-weight:600; }
+    /* ACTION BUTTONS */
+    .sim-actions { display:flex; flex-direction:column; gap:0.6rem; margin-top:1.5rem; border-top:1px solid #f0f0f0; padding-top:1.5rem; }
+    .btn-order-main { display:flex; align-items:center; justify-content:center; padding:0.95rem 1.5rem; background:var(--red); color:#fff; border:none; border-radius:6px; font-size:0.88rem; font-weight:700; cursor:pointer; text-decoration:none; font-family:inherit; transition:background 0.2s; letter-spacing:0.06em; }
+    .btn-order-main:hover { background:var(--red2); }
+    .btn-secondary { display:flex; align-items:center; justify-content:center; padding:0.78rem 1.5rem; background:#fff; color:#666; border:1px solid #e0e0e0; border-radius:6px; font-size:0.82rem; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+    .btn-secondary:hover { border-color:#aaa; color:#333; }
+    .share-toast { display:none; text-align:center; font-size:0.72rem; color:#4caf50; font-weight:600; padding:0.3rem 0; }
     .share-toast.show { display:block; }
 
     /* FOOTER */
@@ -123,10 +134,6 @@
     .footer-social a { display:flex; opacity:0.55; transition:opacity 0.2s; }
     .footer-social a:hover { opacity:1; }
 
-    @media(max-width:900px) {
-      .sim-body { grid-template-columns:1fr; }
-      .summary-panel { position:static; }
-    }
     @media(max-width:768px) {
       nav .nav-menu { display:none; position:fixed; top:68px; left:0; right:0; height:calc(100vh - 68px); background:rgba(255,255,255,0.98); backdrop-filter:blur(12px); flex-direction:column; padding:1rem 0 2rem; overflow-y:auto; z-index:299; border-top:1px solid var(--wborder); gap:0; }
       nav .nav-menu.is-open { display:flex; }
@@ -146,7 +153,10 @@
       .nav-social { display:none; }
       .page-header { padding:7rem 1.5rem 3rem; }
       .main-wrap { padding:2rem 1.25rem 4rem; }
-      .part-tab { font-size:0.72rem; padding:0.4rem 0.75rem; }
+      .sim-wrap { padding:1.5rem 1rem 4rem; }
+      .sim-customizer { padding:1.5rem 1rem; }
+      .color-circle-btn { width:58px; height:58px; }
+      .parts-row { gap:0.75rem; }
       .footer-bottom { flex-direction:column; gap:0.5rem; text-align:center; }
       footer { padding:3rem 1.5rem 2rem; }
     }
@@ -225,221 +235,74 @@
   </div>
 </div>
 
-<div class="main-wrap">
+<div class="sim-wrap">
 
-  <!-- ROD PREVIEW -->
-  <div class="rod-card">
-    <div class="rod-card-label">PREVIEW — ロッドカラープレビュー</div>
-    <div style="position:relative;line-height:0;isolation:isolate;">
+  <!-- PREVIEW -->
+  <div class="sim-preview">
+    <div class="sim-preview-label">PREVIEW — ロッドカラープレビュー</div>
     <canvas id="rod-canvas" style="width:100%;display:block;border-radius:4px;"></canvas>
-    </div>
-    <svg id="rod-svg" viewBox="0 0 1400 230" xmlns="http://www.w3.org/2000/svg" style="display:none">
-      <defs>
-        <linearGradient id="cyl-rod" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-          <stop offset="0%"   stop-color="#fff" stop-opacity="0.75"/>
-          <stop offset="6%"   stop-color="#fff" stop-opacity="0.44"/>
-          <stop offset="16%"  stop-color="#fff" stop-opacity="0.08"/>
-          <stop offset="32%"  stop-color="#fff" stop-opacity="0.00"/>
-          <stop offset="62%"  stop-color="#000" stop-opacity="0.06"/>
-          <stop offset="82%"  stop-color="#000" stop-opacity="0.30"/>
-          <stop offset="100%" stop-color="#000" stop-opacity="0.65"/>
-        </linearGradient>
-        <linearGradient id="cyl-grip" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-          <stop offset="0%"   stop-color="#fff" stop-opacity="0.28"/>
-          <stop offset="22%"  stop-color="#fff" stop-opacity="0.06"/>
-          <stop offset="62%"  stop-color="#000" stop-opacity="0.14"/>
-          <stop offset="100%" stop-color="#000" stop-opacity="0.58"/>
-        </linearGradient>
-        <linearGradient id="cyl-metal" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-          <stop offset="0%"   stop-color="#fff" stop-opacity="0.82"/>
-          <stop offset="10%"  stop-color="#fff" stop-opacity="0.50"/>
-          <stop offset="28%"  stop-color="#fff" stop-opacity="0.10"/>
-          <stop offset="58%"  stop-color="#000" stop-opacity="0.04"/>
-          <stop offset="84%"  stop-color="#000" stop-opacity="0.40"/>
-          <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
-        </linearGradient>
-        <pattern id="eva-tex" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(60)">
-          <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,0.07)" stroke-width="2"/>
-        </pattern>
-      </defs>
-      <polygon id="svg-tip" points="20,105 148,101.5 148,108.5" fill="#cfd233"/>
-      <polygon points="20,105 148,101.5 148,108.5" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon points="20,105 148,101.5 148,102.6" fill="rgba(255,255,255,0.55)" style="pointer-events:none"/>
-      <g stroke="#888" fill="none" stroke-linecap="round">
-        <line x1="148" y1="101.5" x2="148" y2="95" stroke-width="1.2"/>
-        <circle cx="148" cy="92.5" r="2.5" stroke-width="2.0" stroke="#aaa"/>
-        <circle cx="148" cy="92.5" r="1.2" stroke-width="1.4" stroke="#ccc"/>
-      </g>
-      <polygon class="svg-thread" points="143,101.5 157,101.2 157,108.8 143,108.5" fill="#f1f3f3"/>
-      <polygon points="143,101.5 157,101.2 157,108.8 143,108.5" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon id="svg-blank" points="145,101.5 900,83 900,127 145,108.5" fill="#ac1d2b"/>
-      <polygon points="145,101.5 900,83 900,127 145,108.5" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon points="145,101.5 900,83 900,85.2 145,103.5" fill="rgba(255,255,255,0.45)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="168,100.9 182,100.6 182,109.4 168,109.1" fill="#f1f3f3"/>
-      <polygon points="168,100.9 182,100.6 182,109.4 168,109.1" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="251,99.0 265,98.7 265,111.3 251,111.0" fill="#f1f3f3"/>
-      <polygon points="251,99.0 265,98.7 265,111.3 251,111.0" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="353,96.9 367,96.6 367,113.4 353,113.1" fill="#f1f3f3"/>
-      <polygon points="353,96.9 367,96.6 367,113.4 353,113.1" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="461,94.5 475,94.2 475,115.8 461,115.5" fill="#f1f3f3"/>
-      <polygon points="461,94.5 475,94.2 475,115.8 461,115.5" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="575,91.7 589,91.4 589,118.6 575,118.3" fill="#f1f3f3"/>
-      <polygon points="575,91.7 589,91.4 589,118.6 575,118.3" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="691,88.7 705,88.4 705,121.6 691,121.3" fill="#f1f3f3"/>
-      <polygon points="691,88.7 705,88.4 705,121.6 691,121.3" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="793,86.1 807,85.8 807,124.2 793,123.9" fill="#f1f3f3"/>
-      <polygon points="793,86.1 807,85.8 807,124.2 793,123.9" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <polygon class="svg-thread" points="871,83.8 885,83.5 885,126.5 871,126.2" fill="#f1f3f3"/>
-      <polygon points="871,83.8 885,83.5 885,126.5 871,126.2" fill="url(#cyl-rod)" style="pointer-events:none"/>
-      <g stroke-linecap="round">
-        <line x1="175" y1="100.9" x2="175" y2="93.9" stroke="#777" stroke-width="1.4" fill="none"/>
-        <circle cx="175" cy="89.9" r="4" fill="rgba(160,160,160,0.18)" stroke="#999" stroke-width="2.2"/>
-        <circle cx="175" cy="89.9" r="2.0" fill="none" stroke="#bbb" stroke-width="1.4"/>
-      </g>
-      <g stroke-linecap="round">
-        <line x1="258" y1="98.9" x2="258" y2="90.9" stroke="#777" stroke-width="1.6" fill="none"/>
-        <circle cx="258" cy="85.4" r="5.5" fill="rgba(160,160,160,0.18)" stroke="#999" stroke-width="2.5"/>
-        <circle cx="258" cy="85.4" r="2.8" fill="none" stroke="#bbb" stroke-width="1.6"/>
-      </g>
-      <g stroke-linecap="round">
-        <line x1="360" y1="96.8" x2="360" y2="87.3" stroke="#777" stroke-width="1.8" fill="none"/>
-        <circle cx="360" cy="79.8" r="7.5" fill="rgba(160,160,160,0.18)" stroke="#999" stroke-width="2.8"/>
-        <circle cx="360" cy="79.8" r="3.8" fill="none" stroke="#bbb" stroke-width="1.8"/>
-      </g>
-      <g stroke-linecap="round">
-        <line x1="468" y1="94.4" x2="468" y2="83.4" stroke="#777" stroke-width="2.0" fill="none"/>
-        <circle cx="468" cy="74.4" r="9" fill="rgba(160,160,160,0.18)" stroke="#999" stroke-width="3.0"/>
-        <circle cx="468" cy="74.4" r="4.5" fill="none" stroke="#bbb" stroke-width="2.0"/>
-      </g>
-      <g stroke-linecap="round">
-        <line x1="582" y1="91.6" x2="582" y2="79.1" stroke="#777" stroke-width="2.2" fill="none"/>
-        <circle cx="582" cy="68.1" r="11" fill="rgba(160,160,160,0.18)" stroke="#999" stroke-width="3.4"/>
-        <circle cx="582" cy="68.1" r="5.5" fill="none" stroke="#bbb" stroke-width="2.2"/>
-      </g>
-      <g stroke-linecap="round">
-        <line x1="698" y1="88.6" x2="698" y2="74.6" stroke="#777" stroke-width="2.5" fill="none"/>
-        <circle cx="698" cy="61.1" r="13.5" fill="rgba(160,160,160,0.18)" stroke="#999" stroke-width="3.8"/>
-        <circle cx="698" cy="61.1" r="6.8" fill="none" stroke="#bbb" stroke-width="2.5"/>
-      </g>
-      <g stroke-linecap="round">
-        <line x1="800" y1="86.0" x2="800" y2="70.0" stroke="#777" stroke-width="2.8" fill="none"/>
-        <circle cx="800" cy="53.0" r="17" fill="rgba(160,160,160,0.18)" stroke="#999" stroke-width="4.2"/>
-        <circle cx="800" cy="53.0" r="8.5" fill="none" stroke="#bbb" stroke-width="2.8"/>
-      </g>
-      <g stroke-linecap="round">
-        <line x1="878" y1="83.7" x2="878" y2="65.7" stroke="#777" stroke-width="3.2" fill="none"/>
-        <circle cx="878" cy="44.7" r="21" fill="rgba(160,160,160,0.18)" stroke="#999" stroke-width="5.0"/>
-        <circle cx="878" cy="44.7" r="10.5" fill="none" stroke="#bbb" stroke-width="3.2"/>
-      </g>
-      <rect x="898" y="82" width="16" height="46" rx="2" fill="#aaa"/>
-      <rect x="898" y="82" width="16" height="46" rx="2" fill="url(#cyl-metal)" style="pointer-events:none"/>
-      <path id="svg-grip-front" d="M914,82 C922,80 928,79 936,79 L1022,79 L1022,131 C928,131 922,130 914,128 Z" fill="#1a1a1a"/>
-      <path d="M914,82 C922,80 928,79 936,79 L1022,79 L1022,131 C928,131 922,130 914,128 Z" fill="url(#cyl-grip)" style="pointer-events:none"/>
-      <line x1="933" y1="79" x2="933" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="952" y1="79" x2="952" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="971" y1="79" x2="971" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="990" y1="79" x2="990" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="1009" y1="79" x2="1009" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <rect class="svg-rs-hood" x="1022" y="77" width="20" height="56" rx="3" fill="#c8c8c8"/>
-      <rect x="1022" y="77" width="20" height="56" rx="3" fill="url(#cyl-metal)" style="pointer-events:none"/>
-      <line x1="1042" y1="77" x2="1042" y2="133" stroke="rgba(0,0,0,0.3)" stroke-width="1"/>
-      <rect id="svg-reelseat" x="1042" y="75" width="120" height="60" fill="#8a8a8a"/>
-      <rect x="1042" y="75" width="120" height="60" fill="url(#cyl-metal)" style="pointer-events:none"/>
-      <line x1="1042" y1="100" x2="1162" y2="100" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
-      <line x1="1042" y1="110" x2="1162" y2="110" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
-      <line x1="1162" y1="77" x2="1162" y2="133" stroke="rgba(0,0,0,0.3)" stroke-width="1"/>
-      <rect class="svg-rs-hood" x="1162" y="77" width="20" height="56" rx="3" fill="#c8c8c8"/>
-      <rect x="1162" y="77" width="20" height="56" rx="3" fill="url(#cyl-metal)" style="pointer-events:none"/>
-      <path id="svg-trigger" d="M1058,135 L1146,135 Q1142,162 1102,174 Q1062,162 1058,135 Z" fill="#6e6e6e"/>
-      <path d="M1058,135 L1146,135 Q1142,162 1102,174 Q1062,162 1058,135 Z" fill="url(#cyl-metal)" style="pointer-events:none"/>
-      <rect x="1182" y="80" width="16" height="50" rx="2" fill="#aaa"/>
-      <rect x="1182" y="80" width="16" height="50" rx="2" fill="url(#cyl-metal)" style="pointer-events:none"/>
-      <rect id="svg-grip-rear" x="1198" y="79" width="185" height="52" rx="7" fill="#1a1a1a"/>
-      <rect x="1198" y="79" width="185" height="52" rx="7" fill="url(#cyl-grip)" style="pointer-events:none"/>
-      <line x1="1222" y1="79" x2="1222" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="1246" y1="79" x2="1246" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="1270" y1="79" x2="1270" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="1294" y1="79" x2="1294" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="1318" y1="79" x2="1318" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="1342" y1="79" x2="1342" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <line x1="1366" y1="79" x2="1366" y2="131" stroke="rgba(255,255,255,0.06)" stroke-width="2.5"/>
-      <ellipse cx="1390" cy="105" rx="18" ry="31" fill="#111"/>
-      <ellipse cx="1390" cy="105" rx="18" ry="31" fill="url(#cyl-grip)" style="pointer-events:none"/>
-      <g font-family="'Noto Sans JP',sans-serif">
-        <line x1="75"  y1="103" x2="75"  y2="175" stroke="#555" stroke-width="0.8" stroke-dasharray="3,3"/>
-        <text x="75"  y="187" text-anchor="middle" font-size="12" fill="#555">▲ティップカラー</text>
-        <line x1="490" y1="88"  x2="490" y2="175" stroke="#555" stroke-width="0.8" stroke-dasharray="3,3"/>
-        <text x="490" y="187" text-anchor="middle" font-size="13" fill="#333" font-weight="700">①ブランクスカラー</text>
-        <line x1="698" y1="87"  x2="760" y2="175" stroke="#555" stroke-width="0.8" stroke-dasharray="3,3"/>
-        <text x="760" y="187" text-anchor="middle" font-size="13" fill="#333" font-weight="700">②〜④スレッド</text>
-        <line x1="1102" y1="165" x2="1102" y2="190" stroke="#555" stroke-width="0.8" stroke-dasharray="3,3"/>
-        <text x="1102" y="202" text-anchor="middle" font-size="13" fill="#333" font-weight="700">⑥リールシート</text>
-        <line x1="1290" y1="79" x2="1290" y2="175" stroke="#555" stroke-width="0.8" stroke-dasharray="3,3"/>
-        <text x="1290" y="187" text-anchor="middle" font-size="13" fill="#333" font-weight="700">⑤EVAグリップ</text>
-      </g>
-    </svg>
   </div>
 
-  <!-- PART TABS -->
-  <div class="part-tabs" id="part-tabs">
-    <button class="part-tab active" data-part="blank">
-      <span class="tab-dot" id="dot-blank" style="background:#ac1d2b;border-color:#ac1d2b;"></span>
-      ①ブランクスカラー
-    </button>
-    <button class="part-tab" data-part="thread">
-      <span class="tab-dot" id="dot-thread" style="background:#f1f3f3;border-color:#ccc;"></span>
-      ②〜④スレッド
-    </button>
-    <button class="part-tab" data-part="tipthread">
-      <span class="tab-dot" id="dot-tipthread" style="background:#f1f3f3;border-color:#ccc;"></span>
-      ▲ティップスレッド
-    </button>
-    <button class="part-tab" data-part="tip">
-      <span class="tab-dot" id="dot-tip" style="background:#cfd233;border-color:#cfd233;"></span>
-      ティップカラー
-    </button>
-    <button class="part-tab" data-part="reelseat">
-      <span class="tab-dot" id="dot-reelseat" style="background:#888;border-color:#888;"></span>
-      ⑥リールシート
-    </button>
-  </div>
-
-  <!-- SIMULATOR BODY -->
-  <div class="sim-body">
-    <div class="swatches-section">
-      <div class="swatches-title" id="swatches-title">ブランクスカラーを選択</div>
-      <div id="swatches-container"></div>
+  <!-- CUSTOMIZER -->
+  <div class="sim-customizer">
+    <div class="customizer-heading">
+      <h2>カラーカスタマイズ</h2>
+      <p>パーツをクリックして色を選択してください</p>
     </div>
-    <div class="summary-panel">
-      <div class="summary-title">選択中の配色</div>
-      <div class="summary-row">
-        <div class="summary-dot" id="sum-dot-blank" style="background:#ac1d2b;"></div>
-        <div class="summary-part">①ブランクス</div>
-        <div class="summary-name" id="sum-name-blank">004 レッド</div>
+
+    <!-- Part circles -->
+    <div class="parts-row" id="parts-row">
+      <div class="part-card">
+        <div class="part-label">①ブランクスカラー</div>
+        <button class="color-circle-btn" data-part="blank" id="circle-blank">
+          <span class="circle-inner" id="ci-blank" style="background:#cc0018"></span>
+        </button>
+        <div class="color-name-sm" id="cname-blank">004 レッド</div>
       </div>
-      <div class="summary-row">
-        <div class="summary-dot" id="sum-dot-thread" style="background:#f1f3f3;"></div>
-        <div class="summary-part">②〜④スレッド</div>
-        <div class="summary-name" id="sum-name-thread">101 ホワイト</div>
+      <div class="part-card">
+        <div class="part-label">②〜④スレッド</div>
+        <button class="color-circle-btn" data-part="thread" id="circle-thread">
+          <span class="circle-inner" id="ci-thread" style="background:#f1f3f3"></span>
+        </button>
+        <div class="color-name-sm" id="cname-thread">101 ホワイト</div>
       </div>
-      <div class="summary-row">
-        <div class="summary-dot" id="sum-dot-tipthread" style="background:#f1f3f3;"></div>
-        <div class="summary-part">▲ティップスレッド</div>
-        <div class="summary-name" id="sum-name-tipthread">101 ホワイト</div>
+      <div class="part-card">
+        <div class="part-label">▲ティップスレッド</div>
+        <button class="color-circle-btn" data-part="tipthread" id="circle-tipthread">
+          <span class="circle-inner" id="ci-tipthread" style="background:#f1f3f3"></span>
+        </button>
+        <div class="color-name-sm" id="cname-tipthread">101 ホワイト</div>
       </div>
-      <div class="summary-row">
-        <div class="summary-dot" id="sum-dot-tip" style="background:#cfd233;"></div>
-        <div class="summary-part">ティップカラー</div>
-        <div class="summary-name" id="sum-name-tip">005 イエロー</div>
+      <div class="part-card">
+        <div class="part-label">ティップカラー</div>
+        <button class="color-circle-btn" data-part="tip" id="circle-tip">
+          <span class="circle-inner" id="ci-tip" style="background:#c8d400"></span>
+        </button>
+        <div class="color-name-sm" id="cname-tip">005 イエロー</div>
       </div>
-      <div class="summary-row">
-        <div class="summary-dot" id="sum-dot-reelseat" style="background:#888;"></div>
-        <div class="summary-part">⑥リールシート</div>
-        <div class="summary-name" id="sum-name-reelseat">シルバー</div>
+      <div class="part-card">
+        <div class="part-label">⑥リールシート</div>
+        <button class="color-circle-btn" data-part="reelseat" id="circle-reelseat">
+          <span class="circle-inner" id="ci-reelseat" style="background:#6a7880"></span>
+        </button>
+        <div class="color-name-sm" id="cname-reelseat">007 シルバー</div>
       </div>
-      <a href="order" class="btn-order" id="btn-order">この配色でオーダー →</a>
-      <button class="btn-share" id="btn-share">配色をコピーする</button>
-      <button class="btn-share" id="btn-save">画像を保存する</button>
+    </div>
+
+    <!-- Swatch panel (shown when a circle is active) -->
+    <div class="swatch-panel" id="swatch-panel">
+      <div class="swatch-panel-header">
+        <div class="swatch-panel-title" id="swatch-panel-title"></div>
+        <button class="swatch-close-btn" id="swatch-close">✕</button>
+      </div>
+      <div id="swatch-panel-content"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="sim-actions">
+      <a href="order" class="btn-order-main" id="btn-order">この配色でオーダー →</a>
+      <button class="btn-secondary" id="btn-save">画像を保存する</button>
+      <button class="btn-secondary" id="btn-share">配色をコピーする</button>
       <div class="share-toast" id="share-toast">✓ クリップボードにコピーしました</div>
     </div>
   </div>
@@ -551,6 +414,9 @@ function partLabel(part) {
   var map = { blank:'ブランクスカラーを選択', thread:'スレッドカラーを選択', tipthread:'ティップスレッドカラーを選択', tip:'ティップカラーを選択', reelseat:'リールシートカラーを選択' };
   return map[part] || '';
 }
+
+var PARTS = ['blank','thread','tipthread','tip','reelseat'];
+var panelOpen = false;
 
 // ===== CANVAS ROD PREVIEW =====
 var rodOrigData = null;
@@ -677,33 +543,7 @@ function renderSVG() {
   rodCtx.putImageData(new ImageData(data, W, H), 0, 0);
 }
 
-function renderSwatches() {
-  var container = document.getElementById('swatches-container');
-  document.getElementById('swatches-title').textContent = partLabel(activePart);
-  var info = getColors(activePart);
-  var selected = state[activePart];
-  var html = '';
-
-  if (info.type === 'cat') {
-    var cats = {};
-    info.colors.forEach(function(c) {
-      if (!cats[c.cat]) cats[c.cat] = [];
-      cats[c.cat].push(c);
-    });
-    Object.keys(cats).forEach(function(cat) {
-      html += '<div class="thread-cat-label">' + cat + '</div><div class="swatches-grid">';
-      cats[cat].forEach(function(c) {
-        html += swatchHTML(c, selected.id === c.id);
-      });
-      html += '</div>';
-    });
-  } else {
-    html += '<div class="swatches-grid">';
-    info.colors.forEach(function(c) { html += swatchHTML(c, selected.id === c.id); });
-    html += '</div>';
-  }
-  container.innerHTML = html;
-}
+// ===== CIRCLE + SWATCH PANEL UI =====
 
 function swatchHTML(c, isSelected) {
   return '<button class="swatch-btn' + (isSelected ? ' selected' : '') + '" onclick="selectColor(\'' + c.id + '\')" title="' + c.name + '">' +
@@ -712,46 +552,85 @@ function swatchHTML(c, isSelected) {
     '</button>';
 }
 
+function renderCircles() {
+  PARTS.forEach(function(p) {
+    var ci = document.getElementById('ci-' + p);
+    var cname = document.getElementById('cname-' + p);
+    if (ci) ci.style.background = state[p].hex;
+    if (cname) cname.textContent = state[p].name;
+  });
+}
+
+function openPanel(part) {
+  activePart = part;
+  panelOpen = true;
+  PARTS.forEach(function(p) {
+    var btn = document.getElementById('circle-' + p);
+    if (btn) btn.classList.toggle('active', p === part);
+  });
+  document.getElementById('swatch-panel-title').textContent = partLabel(part);
+  var info = getColors(part);
+  var selected = state[part];
+  var html = '';
+  if (info.type === 'cat') {
+    var cats = {};
+    info.colors.forEach(function(c) { if (!cats[c.cat]) cats[c.cat]=[]; cats[c.cat].push(c); });
+    Object.keys(cats).forEach(function(cat) {
+      html += '<div class="swatch-cat-label">' + cat + '</div><div class="swatches-grid">';
+      cats[cat].forEach(function(c) { html += swatchHTML(c, selected.id === c.id); });
+      html += '</div>';
+    });
+  } else {
+    html += '<div class="swatches-grid">';
+    info.colors.forEach(function(c) { html += swatchHTML(c, selected.id === c.id); });
+    html += '</div>';
+  }
+  document.getElementById('swatch-panel-content').innerHTML = html;
+  var panel = document.getElementById('swatch-panel');
+  panel.classList.add('is-open');
+  setTimeout(function(){ panel.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 50);
+}
+
+function closePanel() {
+  panelOpen = false;
+  document.getElementById('swatch-panel').classList.remove('is-open');
+  PARTS.forEach(function(p) {
+    var btn = document.getElementById('circle-' + p);
+    if (btn) btn.classList.remove('active');
+  });
+}
+
 function selectColor(colorId) {
   var info = getColors(activePart);
   var color = info.colors.find(function(c){ return c.id === colorId; });
   if (!color) return;
   state[activePart] = color;
   renderSVG();
-  renderSwatches();
-  renderSummary();
-}
-
-function renderSummary() {
-  var parts = ['blank','thread','tipthread','tip','reelseat'];
-  parts.forEach(function(p) {
-    var s = state[p];
-    var dot = document.getElementById('sum-dot-' + p);
-    var name = document.getElementById('sum-name-' + p);
-    if (dot) dot.style.background = s.hex;
-    if (name) name.textContent = s.name;
-  });
-  parts.forEach(function(p) {
-    var dot = document.getElementById('dot-' + p);
-    if (dot) { dot.style.background = state[p].hex; dot.style.borderColor = state[p].hex; }
+  renderCircles();
+  document.querySelectorAll('#swatch-panel-content .swatch-btn').forEach(function(btn) {
+    btn.classList.toggle('selected', btn.getAttribute('onclick').indexOf(colorId) >= 0);
+    var sc = btn.querySelector('.swatch-color');
+    if (sc) sc.style.boxShadow = btn.classList.contains('selected') ? '0 0 0 2px var(--red)' : '';
+    if (sc) sc.style.borderColor = btn.classList.contains('selected') ? '#111' : 'transparent';
   });
 }
 
-document.getElementById('part-tabs').addEventListener('click', function(e) {
-  var tab = e.target.closest('.part-tab');
-  if (!tab) return;
-  activePart = tab.dataset.part;
-  document.querySelectorAll('.part-tab').forEach(function(t) {
-    t.classList.toggle('active', t === tab);
-  });
-  renderSwatches();
+document.getElementById('parts-row').addEventListener('click', function(e) {
+  var btn = e.target.closest('.color-circle-btn');
+  if (!btn) return;
+  var part = btn.dataset.part;
+  if (panelOpen && activePart === part) { closePanel(); }
+  else { openPanel(part); }
 });
+
+document.getElementById('swatch-close').addEventListener('click', closePanel);
 
 document.getElementById('btn-share').addEventListener('click', function() {
   var text = '【IG Rod Planning カラー配色】\n' +
     '①ブランクス: ' + state.blank.name + '\n' +
     '②〜④スレッド: ' + state.thread.name + '\n' +
-    '▲ティップ: ' + state.tip.name + '\n' +
+    '▲ティップスレッド: ' + state.tipthread.name + '\n' +
+    'ティップカラー: ' + state.tip.name + '\n' +
     '⑥リールシート: ' + state.reelseat.name;
   navigator.clipboard.writeText(text).then(function() {
     var toast = document.getElementById('share-toast');
@@ -794,8 +673,7 @@ if (ham && navMenu) {
   });
 }
 
-renderSwatches();
-renderSummary();
+renderCircles();
 initRodCanvas();
 </script>
 </body>
