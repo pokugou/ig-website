@@ -74,7 +74,7 @@
     /* PREVIEW */
     .sim-preview { background:#f0f0ee; border-radius:14px; padding:2rem 1.5rem 1.5rem; margin-bottom:2rem; border:1px solid var(--wborder); }
     .sim-preview-label { font-size:0.6rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#999; margin-bottom:1rem; }
-    #rod-canvas { width:100%; display:block; border-radius:4px; }
+    #rod-svg { width:100%; display:block; }
 
     /* CUSTOMIZER */
     .sim-customizer { background:#fff; border:1px solid var(--wborder); border-radius:14px; padding:2rem; }
@@ -240,7 +240,63 @@
   <!-- PREVIEW -->
   <div class="sim-preview">
     <div class="sim-preview-label">PREVIEW — ロッドカラープレビュー</div>
-    <canvas id="rod-canvas" style="width:100%;display:block;border-radius:4px;"></canvas>
+    <svg id="rod-svg" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+      <defs>
+        <linearGradient id="g-shine" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.60"/>
+          <stop offset="22%"  stop-color="#ffffff" stop-opacity="0.04"/>
+          <stop offset="62%"  stop-color="#000000" stop-opacity="0.00"/>
+          <stop offset="100%" stop-color="#000000" stop-opacity="0.52"/>
+        </linearGradient>
+        <linearGradient id="g-grip" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#000000" stop-opacity="0.60"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Grip (always dark) -->
+      <polygon fill="#1a1a2a" points="950,43 1200,40 1200,80 950,77"/>
+      <polygon fill="url(#g-grip)" points="950,43 1200,40 1200,80 950,77" pointer-events="none"/>
+
+      <!-- Reel seat -->
+      <polygon id="svg-reelseat" fill="#6a7880" points="840,45 950,43 950,77 840,75"/>
+
+      <!-- Blank body -->
+      <polygon id="svg-blank" fill="#cc0018" points="200,54.5 840,45 840,75 200,65.5"/>
+
+      <!-- Thread wraps on blank -->
+      <polygon class="svg-thread" fill="#f1f3f3" points="303,52.97 317,52.76 317,67.24 303,67.03"/>
+      <polygon class="svg-thread" fill="#f1f3f3" points="393,51.64 407,51.43 407,68.57 393,68.36"/>
+      <polygon class="svg-thread" fill="#f1f3f3" points="493,50.15 507,49.94 507,70.06 493,69.85"/>
+      <polygon class="svg-thread" fill="#f1f3f3" points="613,48.37 627,48.16 627,71.84 613,71.63"/>
+      <polygon class="svg-thread" fill="#f1f3f3" points="723,46.74 737,46.53 737,73.47 723,73.26"/>
+
+      <!-- Tip -->
+      <polygon id="svg-tip" fill="#c8d400" points="0,58.5 200,54.5 200,65.5 0,61.5"/>
+
+      <!-- Tip thread wraps -->
+      <polygon class="svg-tipthread" fill="#f1f3f3" points="83,56.84 97,56.56 97,63.44 83,63.16"/>
+      <polygon class="svg-tipthread" fill="#f1f3f3" points="153,55.44 167,55.16 167,64.84 153,64.56"/>
+
+      <!-- Tube shine gradient overlay -->
+      <polygon fill="url(#g-shine)" pointer-events="none" points="0,58.5 1200,40 1200,80 0,61.5"/>
+
+      <!-- Guide ring outlines -->
+      <ellipse cx="90"  cy="60" rx="2" ry="8"  fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
+      <ellipse cx="160" cy="60" rx="2" ry="10" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
+      <ellipse cx="310" cy="60" rx="2" ry="12" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
+      <ellipse cx="400" cy="60" rx="2" ry="14" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
+      <ellipse cx="500" cy="60" rx="2" ry="15" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
+      <ellipse cx="620" cy="60" rx="2" ry="17" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
+      <ellipse cx="730" cy="60" rx="2" ry="19" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
+
+      <!-- Rod outline -->
+      <polygon fill="none" stroke="#000" stroke-width="1" stroke-opacity="0.18"
+        points="0,58.5 1200,40 1200,80 0,61.5"/>
+
+      <!-- Tip cap -->
+      <circle id="svg-tip-cap" cx="1" cy="60" r="2" fill="#c8d400"/>
+    </svg>
   </div>
 
   <!-- CUSTOMIZER -->
@@ -418,129 +474,18 @@ function partLabel(part) {
 var PARTS = ['blank','thread','tipthread','tip','reelseat'];
 var panelOpen = false;
 
-// ===== CANVAS ROD PREVIEW =====
-var rodOrigData = null;
-var rodCanvas, rodCtx;
-
-function initRodCanvas() {
-  rodCanvas = document.getElementById('rod-canvas');
-  rodCtx = rodCanvas.getContext('2d');
-  var img = new Image();
-  img.onload = function() {
-    rodCanvas.width = img.naturalWidth;
-    rodCanvas.height = img.naturalHeight;
-    rodCtx.drawImage(img, 0, 0);
-    try { rodOrigData = rodCtx.getImageData(0, 0, rodCanvas.width, rodCanvas.height); }
-    catch(e) { console.warn('Canvas getImageData blocked:', e); }
-    renderSVG();
-  };
-  img.src = 'rod-diagram.png';
-}
-
+// ===== SVG ROD PREVIEW =====
 function renderSVG() {
-  if (!rodOrigData) return;
-  var W = rodCanvas.width, H = rodCanvas.height;
-  var data = new Uint8ClampedArray(rodOrigData.data);
-  var orig = rodOrigData.data;
-  var visited = new Uint8Array(W * H);
-
-  function flood(seeds, hex, threshold, xMin, xMax, yMin, yMax) {
-    if (threshold === undefined) threshold = 190;
-    if (xMin === undefined) xMin = 0;
-    if (xMax === undefined) xMax = W;
-    if (yMin === undefined) yMin = 0;
-    if (yMax === undefined) yMax = H;
-    var cr=parseInt(hex.slice(1,3),16), cg=parseInt(hex.slice(3,5),16), cb=parseInt(hex.slice(5,7),16);
-    var q = [];
-    seeds.forEach(function(s) {
-      var idx = s[1]*W+s[0];
-      if (!visited[idx]) { visited[idx]=1; q.push(s[0], s[1]); }
-    });
-    for (var qi=0; qi<q.length; ) {
-      var x=q[qi++], y=q[qi++];
-      var i=(y*W+x)*4;
-      var avg=(orig[i]+orig[i+1]+orig[i+2])/3;
-      if (avg <= threshold) continue;
-      data[i]  =Math.round(orig[i]  *cr/255);
-      data[i+1]=Math.round(orig[i+1]*cg/255);
-      data[i+2]=Math.round(orig[i+2]*cb/255);
-      var nx, ny, ni;
-      nx=x-1; ny=y;   ni=ny*W+nx; if(nx>=xMin&&nx<xMax&&!visited[ni]){visited[ni]=1;q.push(nx,ny);}
-      nx=x+1; ny=y;   ni=ny*W+nx; if(nx>=xMin&&nx<xMax&&!visited[ni]){visited[ni]=1;q.push(nx,ny);}
-      nx=x;   ny=y-1; ni=ny*W+nx; if(ny>=yMin&&ny<yMax&&!visited[ni]){visited[ni]=1;q.push(nx,ny);}
-      nx=x;   ny=y+1; ni=ny*W+nx; if(ny>=yMin&&ny<yMax&&!visited[ni]){visited[ni]=1;q.push(nx,ny);}
-    }
-  }
-
-  function scanFill(rects, hex, minT, maxT, skipEdge) {
-    if (minT === undefined) minT = 228;
-    var cr=parseInt(hex.slice(1,3),16), cg=parseInt(hex.slice(3,5),16), cb=parseInt(hex.slice(5,7),16);
-    rects.forEach(function(r) {
-      for (var y=r[1],ey=r[1]+r[3]; y<ey; y++) {
-        for (var x=r[0],ex=r[0]+r[2]; x<ex; x++) {
-          var i=(y*W+x)*4;
-          var oa=orig[i],ob=orig[i+1],oc=orig[i+2];
-          var avg=(oa+ob+oc)/3;
-          var paint = (maxT!==undefined) ? ((avg>minT&&avg<=maxT)||avg>238) : avg>minT;
-          if (paint && skipEdge && avg < 238) {
-            var dirs=[[-1,0],[1,0],[0,-1],[0,1]];
-            for (var d=0;d<dirs.length;d++){
-              var ni=((y+dirs[d][1])*W+(x+dirs[d][0]))*4;
-              if ((orig[ni]+orig[ni+1]+orig[ni+2])/3 < 80){paint=false;break;}
-            }
-          }
-          if (paint) {
-            data[i]  =Math.round(oa*cr/255);
-            data[i+1]=Math.round(ob*cg/255);
-            data[i+2]=Math.round(oc*cb/255);
-          }
-        }
-      }
-    });
-  }
-
-  var TY1=174, TY2=215;
-  var BY1=295, BY2=325;
-  var midY = [183,187,191];
-  function mkSeeds(xs, ys) {
-    var s=[]; xs.forEach(function(x){ ys.forEach(function(y){ s.push([x,y]); }); }); return s;
-  }
-  var topBlankXs = [100, 140, 204, 274, 344, 433, 540, 569, 620, 680, 729, 815];
-  var botLXs = [80,150,210,270], botRXs = [510,560,620,670];
-  var allSeeds = mkSeeds(topBlankXs, midY)
-    .concat(mkSeeds(botLXs, [303,308,313]))
-    .concat(mkSeeds(botRXs, [303,308,313]));
-  flood(allSeeds, state.blank.hex, 190, 0, W, TY1, TY2);
-  flood(mkSeeds(botLXs, [303,308,313]).concat(mkSeeds(botRXs, [303,308,313])),
-        state.blank.hex, 190, 0, W, BY1, BY2);
-
-  visited.fill(0);
-  var tipXs = [40, 70, 100, 140, 180, 220, 250];
-  flood(mkSeeds(tipXs, midY), state.tip.hex, 190, 0, 263, TY1, TY2);
-
-  scanFill([
-    [30,  176, 42, 38],
-    [97,  178, 26, 28],
-    [157, 179, 28, 26],
-    [224, 180, 28, 25]
-  ], state.tipthread.hex);
-
-  scanFill([
-    [296, 181, 28, 22],
-    [365, 181, 30, 22],
-    [471, 179, 22, 24],
-    [645, 177, 26, 28],
-    [787, 175, 24, 30],
-    [60,  285, 40, 45],
-    [160, 285, 40, 45]
-  ], state.thread.hex);
-
-  scanFill([
-    [358, 280, 82, 55],
-    [395, 335, 45, 40]
-  ], state.reelseat.hex, 80, 212, true);
-
-  rodCtx.putImageData(new ImageData(data, W, H), 0, 0);
+  document.getElementById('svg-blank').setAttribute('fill', state.blank.hex);
+  document.getElementById('svg-tip').setAttribute('fill', state.tip.hex);
+  document.getElementById('svg-tip-cap').setAttribute('fill', state.tip.hex);
+  document.querySelectorAll('.svg-thread').forEach(function(el) {
+    el.setAttribute('fill', state.thread.hex);
+  });
+  document.querySelectorAll('.svg-tipthread').forEach(function(el) {
+    el.setAttribute('fill', state.tipthread.hex);
+  });
+  document.getElementById('svg-reelseat').setAttribute('fill', state.reelseat.hex);
 }
 
 // ===== CIRCLE + SWATCH PANEL UI =====
@@ -640,11 +585,25 @@ document.getElementById('btn-share').addEventListener('click', function() {
 });
 
 document.getElementById('btn-save').addEventListener('click', function() {
-  var canvas = document.getElementById('rod-canvas');
-  var link = document.createElement('a');
-  link.download = 'IG_rod_color.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  var svg = document.getElementById('rod-svg');
+  var svgData = new XMLSerializer().serializeToString(svg);
+  var blob = new Blob([svgData], {type:'image/svg+xml;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var canvas = document.createElement('canvas');
+  canvas.width = 1200; canvas.height = 120;
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#f0f0ee';
+  ctx.fillRect(0, 0, 1200, 120);
+  var img = new Image();
+  img.onload = function() {
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
+    var link = document.createElement('a');
+    link.download = 'IG_rod_color.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+  img.src = url;
 });
 
 document.getElementById('btn-order').addEventListener('click', function(e) {
@@ -674,7 +633,7 @@ if (ham && navMenu) {
 }
 
 renderCircles();
-initRodCanvas();
+renderSVG();
 </script>
 </body>
 </html>
