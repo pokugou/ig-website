@@ -71,7 +71,9 @@
     /* ROD PREVIEW CARD */
     .rod-card { background:#f2f2f0; border-radius:12px; padding:2rem 1.5rem 1rem; margin-bottom:2rem; overflow:hidden; border:1px solid var(--wborder); }
     .rod-card-label { font-size:0.62rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#888; margin-bottom:1rem; }
-    #rod-svg { width:100%; height:auto; display:block; overflow:visible; }
+    #rod-diagram-container { width:100%; position:relative; border-radius:4px; overflow:hidden; line-height:0; background:#fff; }
+    #rod-svg { position:absolute; top:0; left:0; width:100%; height:100%; }
+    #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
     /* PART TABS */
     .part-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
@@ -188,7 +190,7 @@
         <li><a href="order-demo.html">オーダーシートはこちらから</a></li>
         <li><a href="custom-demo.html">カスタム内容</a></li>
         <li><a href="color-demo.html">カラーチャート</a></li>
-        <li><a href="simulator-demo.html">カラーシミュレーター</a></li>
+        <li><a href="#" style="opacity:0.5;pointer-events:none;cursor:default;">カラーシミュレーター<span style="font-size:0.65em;background:#999;color:#fff;border-radius:3px;padding:1px 5px;margin-left:5px;letter-spacing:0.05em;vertical-align:middle;">準備中</span></a></li>
       </ul>
     </li>
   </ul>
@@ -221,10 +223,31 @@
   <!-- ROD PREVIEW -->
   <div class="rod-card">
     <div class="rod-card-label">PREVIEW — ロッドカラープレビュー</div>
-    <div style="position:relative;line-height:0;isolation:isolate;">
-    <canvas id="rod-canvas" style="width:100%;display:block;border-radius:4px;"></canvas>
+    <div id="rod-diagram-container">
+      <svg id="rod-svg" viewBox="0 0 842 595" xmlns="http://www.w3.org/2000/svg">
+        <!-- TOP VIEW (y≈162–224) -->
+        <rect class="svg-blank"     fill="#cc0018" x="265" y="162" width="577" height="62"/>
+        <rect class="svg-tip"       fill="#c8d400" x="0"   y="162" width="272" height="62"/>
+        <rect class="svg-thread"    fill="#f1f3f3" x="284" y="162" width="22"  height="62"/>
+        <rect class="svg-thread"    fill="#f1f3f3" x="353" y="162" width="22"  height="62"/>
+        <rect class="svg-thread"    fill="#f1f3f3" x="459" y="162" width="22"  height="62"/>
+        <rect class="svg-thread"    fill="#f1f3f3" x="633" y="162" width="22"  height="62"/>
+        <rect class="svg-thread"    fill="#f1f3f3" x="775" y="162" width="22"  height="62"/>
+        <rect class="svg-tipthread" fill="#f1f3f3" x="19"  y="162" width="22"  height="62"/>
+        <rect class="svg-tipthread" fill="#f1f3f3" x="85"  y="162" width="22"  height="62"/>
+        <rect class="svg-tipthread" fill="#f1f3f3" x="145" y="162" width="22"  height="62"/>
+        <rect class="svg-tipthread" fill="#f1f3f3" x="212" y="162" width="22"  height="62"/>
+        <!-- BOTTOM VIEW (y≈285–329) -->
+        <rect class="svg-blank"    fill="#cc0018" x="0"   y="285" width="275" height="44"/>
+        <rect class="svg-thread"   fill="#f1f3f3" x="47"  y="285" width="24"  height="44"/>
+        <rect class="svg-thread"   fill="#f1f3f3" x="147" y="285" width="24"  height="44"/>
+        <rect class="svg-blank"    fill="#cc0018" x="497" y="285" width="345" height="44"/>
+        <rect class="svg-reelseat" fill="#6a7880" x="345" y="257" width="104" height="123"/>
+        <rect class="svg-reelseat" fill="#6a7880" x="381" y="332" width="60"  height="50"/>
+      </svg>
+      <img src="rod-diagram.png" alt="rod diagram"/>
     </div>
-    <svg id="rod-svg" viewBox="0 0 1400 230" xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <svg style="display:none">
       <defs>
         <linearGradient id="cyl-rod" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
           <stop offset="0%"   stop-color="#fff" stop-opacity="0.75"/>

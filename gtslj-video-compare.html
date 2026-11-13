@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GTSLJ 動画比較</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; color: #fff; font-family: sans-serif; }
+  .header { padding: 1rem 1.5rem; background: #1a1a1a; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 1rem; }
+  h1 { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.08em; color: #ccc; }
+  .badge { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 700; }
+  .badge-hq { background: #cc2200; color: #fff; }
+  .badge-lq { background: #444; color: #ccc; }
+
+  /* ===== タブ切替 ===== */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #333; }
+  .tab { flex: 1; padding: 0.75rem; text-align: center; font-size: 0.8rem; cursor: pointer; color: #888; border-bottom: 2px solid transparent; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; }
+  .tab.active { color: #fff; border-bottom-color: #cc2200; }
+
+  /* ===== デスクトップ表示 ===== */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* スライダーバナー風（デスクトップ） */
+  .desktop-preview { background: #0a0a0a; position: relative; width: 100%; aspect-ratio: 16/3.15; overflow: hidden; display: flex; align-items: center; }
+  @media (max-width: 768px) { .desktop-preview { aspect-ratio: 16/9.4; } }
+  .desktop-preview video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+  .desktop-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 60%); pointer-events: none; }
+
+  /* ===== モバイル表示 ===== */
+  .mobile-preview-wrap { display: flex; justify-content: center; padding: 1.5rem; gap: 2rem; flex-wrap: wrap; }
+  .mobile-frame { width: 200px; }
+  .mobile-frame-label { font-size: 0.7rem; color: #888; text-align: center; margin-bottom: 0.5rem; letter-spacing: 0.08em; }
+  .mobile-screen { width: 200px; aspect-ratio: 9/16; background: #000; overflow: hidden; border-radius: 8px; border: 2px solid #333; position: relative; }
+  .mobile-screen video { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ===== 情報バー ===== */
+  .info-bar { display: flex; gap: 1rem; padding: 0.75rem 1.5rem; background: #1a1a1a; border-top: 1px solid #333; font-size: 0.75rem; color: #888; flex-wrap: wrap; }
+  .info-item { display: flex; align-items: center; gap: 0.4rem; }
+  .info-item b { color: #fff; }
+  .info-sep { color: #444; }
+
+  /* タブコンテンツ */
+  .section-label { font-size: 0.65rem; color: #666; letter-spacing: 0.15em; text-transform: uppercase; padding: 1rem 1.5rem 0.4rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GTSLJ 動画スライダー比較</h1>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('hq')">A — 高画質H.264 <span class="badge badge-hq">34MB · 1080p</span></button>
+  <button class="tab" onclick="switchTab('lq')">B — 軽量H.264 <span class="badge badge-lq">24MB · 720p</span></button>
+  <button class="tab" onclick="switchTab('web')">C — HEVC圧縮 <span class="badge" style="background:#1a6e3c;color:#fff;">28MB · 1080p</span></button>
+</div>
+
+<!-- ===== パターンA（HQ） ===== -->
+<div class="view active" id="view-hq">
+  <div class="section-label">デスクトップ — バナー幅にトリミング</div>
+  <div class="desktop-preview">
+    <video autoplay muted loop playsinline>
+      <source src="gtslj-video-hq.mp4" type="video/mp4">
+    </video>
+    <div class="desktop-overlay"></div>
+  </div>
+
+  <div class="section-label">モバイル — フル縦動画（9:16）</div>
+  <div class="mobile-preview-wrap">
+    <div class="mobile-frame">
+      <div class="mobile-frame-label">MOBILE VIEW</div>
+      <div class="mobile-screen">
+        <video autoplay muted loop playsinline>
+          <source src="gtslj-video-hq.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-bar">
+    <div class="info-item">解像度 <b>1080×1920</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">サイズ <b>34MB</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">形式 <b>H.264 MP4</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">尺 <b>約30秒</b></div>
+  </div>
+</div>
+
+<!-- ===== パターンC（HEVC） ===== -->
+<div class="view" id="view-web">
+  <div class="section-label">デスクトップ — バナー幅にトリミング</div>
+  <div class="desktop-preview">
+    <video autoplay muted loop playsinline>
+      <source src="gtslj-video-web.mp4" type="video/mp4">
+    </video>
+    <div class="desktop-overlay"></div>
+  </div>
+  <div class="section-label">モバイル — フル縦動画（9:16）</div>
+  <div class="mobile-preview-wrap">
+    <div class="mobile-frame">
+      <div class="mobile-frame-label">MOBILE VIEW</div>
+      <div class="mobile-screen">
+        <video autoplay muted loop playsinline>
+          <source src="gtslj-video-web.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+  <div class="info-bar">
+    <div class="info-item">解像度 <b>1080×1920</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">サイズ <b>28MB</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">形式 <b>HEVC (H.265) MP4</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">尺 <b>約30秒</b></div>
+  </div>
+</div>
+
+<!-- ===== パターンB（LQ） ===== -->
+<div class="view" id="view-lq">
+  <div class="section-label">デスクトップ — バナー幅にトリミング</div>
+  <div class="desktop-preview">
+    <video autoplay muted loop playsinline>
+      <source src="gtslj-video-lq.mp4" type="video/mp4">
+    </video>
+    <div class="desktop-overlay"></div>
+  </div>
+
+  <div class="section-label">モバイル — フル縦動画（9:16）</div>
+  <div class="mobile-preview-wrap">
+    <div class="mobile-frame">
+      <div class="mobile-frame-label">MOBILE VIEW</div>
+      <div class="mobile-screen">
+        <video autoplay muted loop playsinline>
+          <source src="gtslj-video-lq.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-bar">
+    <div class="info-item">解像度 <b>720×1280</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">サイズ <b>24MB</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">形式 <b>H.264 MP4</b></div>
+    <span class="info-sep">|</span>
+    <div class="info-item">尺 <b>約30秒</b></div>
+  </div>
+</div>
+
+<script>
+function switchTab(which) {
+  document.querySelectorAll('.tab').forEach(function(t, i) {
+    t.classList.toggle('active', (i === 0 && which === 'hq') || (i === 1 && which === 'web') || (i === 2 && which === 'lq'));
+  });
+  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+  document.getElementById('view-' + which).classList.add('active');
+  // Force play all videos in active view
+  document.getElementById('view-' + which).querySelectorAll('video').forEach(function(v) {
+    v.play().catch(function(){});
+  });
+}
+// Force play all videos on load
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('video').forEach(function(v) { v.play().catch(function(){}); });
+});
+</script>
+</body>
+</html>
