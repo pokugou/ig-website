@@ -246,38 +246,69 @@
       <!-- Colored regions layer (behind the line drawing) -->
       <!-- rod-diagram.png is 842×595px; coordinates match that image -->
       <svg id="rod-svg" viewBox="0 0 842 595" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- TOP VIEW: tip tapers to a near-point at x=0, widens to junction at x=270 -->
+          <clipPath id="clip-tip-top">
+            <polygon points="0,189 270,184 270,194"/>
+          </clipPath>
+          <!-- TOP VIEW: blank section is a trapezoid from junction (x=264) to butt (x=842) -->
+          <clipPath id="clip-blank-top">
+            <polygon points="264,183 842,180.5 842,197.5 264,195"/>
+          </clipPath>
+          <!-- BOTTOM VIEW: left blank before grip (slight taper toward grip) -->
+          <clipPath id="clip-blank-bot">
+            <polygon points="0,303 285,302 285,315 0,316"/>
+          </clipPath>
+          <!-- BOTTOM VIEW: thread area between reel seat and rear grip -->
+          <clipPath id="clip-thread-bot-r">
+            <rect x="495" y="301" width="55" height="15"/>
+          </clipPath>
+        </defs>
 
         <!-- ===== TOP VIEW ===== -->
-        <!-- Rod tapers: y≈185..193 at tip end, y≈182..196 at butt end -->
-        <!-- Blank body -->
-        <rect class="svg-blank"     fill="#cc0018" x="265" y="182" width="577" height="15"/>
-        <!-- Tip -->
-        <rect class="svg-tip"       fill="#c8d400" x="0"   y="184" width="272" height="10"/>
-        <!-- Thread wraps on blank -->
-        <rect class="svg-thread"    fill="#f1f3f3" x="287" y="182" width="16" height="15"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="356" y="182" width="16" height="15"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="462" y="182" width="16" height="15"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="636" y="182" width="16" height="15"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="778" y="182" width="16" height="15"/>
+        <!-- Blank body (clipped to tapered blank outline) -->
+        <g clip-path="url(#clip-blank-top)">
+          <rect class="svg-blank" fill="#cc0018" x="260" y="160" width="590" height="60"/>
+        </g>
+        <!-- Thread wraps on blank (drawn on top, same clip) -->
+        <g clip-path="url(#clip-blank-top)">
+          <rect class="svg-thread" fill="#f1f3f3" x="287" y="160" width="16" height="60"/>
+          <rect class="svg-thread" fill="#f1f3f3" x="356" y="160" width="16" height="60"/>
+          <rect class="svg-thread" fill="#f1f3f3" x="462" y="160" width="16" height="60"/>
+          <rect class="svg-thread" fill="#f1f3f3" x="636" y="160" width="16" height="60"/>
+          <rect class="svg-thread" fill="#f1f3f3" x="778" y="160" width="16" height="60"/>
+        </g>
+        <!-- Tip (clipped to triangular taper outline) -->
+        <g clip-path="url(#clip-tip-top)">
+          <rect class="svg-tip" fill="#c8d400" x="0" y="160" width="275" height="60"/>
+        </g>
         <!-- Tip thread wraps -->
-        <rect class="svg-tipthread" fill="#f1f3f3" x="22"  y="184" width="14" height="10"/>
-        <rect class="svg-tipthread" fill="#f1f3f3" x="88"  y="184" width="14" height="10"/>
-        <rect class="svg-tipthread" fill="#f1f3f3" x="148" y="184" width="14" height="10"/>
-        <rect class="svg-tipthread" fill="#f1f3f3" x="215" y="184" width="14" height="10"/>
+        <g clip-path="url(#clip-tip-top)">
+          <rect class="svg-tipthread" fill="#f1f3f3" x="22"  y="160" width="14" height="60"/>
+          <rect class="svg-tipthread" fill="#f1f3f3" x="88"  y="160" width="14" height="60"/>
+          <rect class="svg-tipthread" fill="#f1f3f3" x="148" y="160" width="14" height="60"/>
+          <rect class="svg-tipthread" fill="#f1f3f3" x="215" y="160" width="14" height="60"/>
+        </g>
 
         <!-- ===== BOTTOM VIEW ===== -->
-        <!-- Left exposed blank sections (rod body before front grip): y≈304..314 -->
-        <rect class="svg-blank"     fill="#cc0018" x="0"   y="304" width="285" height="11"/>
+        <!-- Left blank section -->
+        <g clip-path="url(#clip-blank-bot)">
+          <rect class="svg-blank" fill="#cc0018" x="0" y="295" width="290" height="30"/>
+        </g>
         <!-- Thread wraps on left blank -->
-        <rect class="svg-thread"    fill="#f1f3f3" x="47"  y="304" width="14" height="11"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="145" y="304" width="14" height="11"/>
-        <!-- Thread wraps visible between reel seat and rear grip (right side) -->
-        <rect class="svg-thread"    fill="#f1f3f3" x="502" y="303" width="16" height="13"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="527" y="303" width="16" height="13"/>
+        <g clip-path="url(#clip-blank-bot)">
+          <rect class="svg-thread" fill="#f1f3f3" x="47"  y="295" width="14" height="30"/>
+          <rect class="svg-thread" fill="#f1f3f3" x="145" y="295" width="14" height="30"/>
+        </g>
+        <!-- Right blank + thread wraps between grip sections -->
+        <g clip-path="url(#clip-thread-bot-r)">
+          <rect class="svg-blank"  fill="#cc0018" x="490" y="295" width="70" height="30"/>
+          <rect class="svg-thread" fill="#f1f3f3" x="502" y="295" width="16" height="30"/>
+          <rect class="svg-thread" fill="#f1f3f3" x="527" y="295" width="16" height="30"/>
+        </g>
         <!-- Reel seat hardware -->
-        <rect class="svg-reelseat"  fill="#6a7880" x="340" y="270" width="115" height="100"/>
-        <rect class="svg-reelseat"  fill="#6a7880" x="378" y="332" width="58"  height="40"/>
-
+        <rect class="svg-reelseat" fill="#6a7880" x="340" y="270" width="115" height="100"/>
+        <rect class="svg-reelseat" fill="#6a7880" x="378" y="332" width="58"  height="40"/>
       </svg>
 
       <!-- Rod line drawing on top — multiply blend preserves black outlines perfectly -->
