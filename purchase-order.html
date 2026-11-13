@@ -489,12 +489,76 @@
     }
   }
 
+  // 15行を超えて足した行のうち、空のままの行はPDFに出さない
+  function hideSpareRows() {
+    var hidden = [];
+    Array.prototype.forEach.call(rowsEl.querySelectorAll('tr'), function (tr, i) {
+      if (i < MIN_ROWS) return;
+      var empty = Array.prototype.every.call(tr.querySelectorAll('input'), function (el) {
+        return !el.value.trim() || (el.classList.contains('r-due') && el.value === DEFAULT_DUE);
+      });
+      if (empty) { hidden.push([tr, tr.style.display]); tr.style.display = 'none'; }
+    });
+    return hidden;
+  }
+
+  // 注文書を撮って、A4に収まらないときは行の切れ目でページを分ける（2ページ目以降は表の見出し付き）。
+  // swapFields() と pdf-capture クラスを付けた状態で呼ぶ。canvas の配列を返す。
+  async function captureSheetPages() {
+    var hidden = hideSpareRows();
+    try {
+      var sheet = document.getElementById('sheet');
+      // 切れ目の位置は、撮影用に描き直された側（幅1000pxのレイアウト）で測る
+      var m = null;
+      var canvas = await html2canvas(sheet, { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000, onclone: function (doc) {
+        var cs = doc.getElementById('sheet'), b = cs.getBoundingClientRect();
+        var th = cs.querySelector('thead').getBoundingClientRect(), nt = cs.querySelector('.note');
+        m = { w: b.width, head: [th.top - b.top, th.height], note: nt ? nt.getBoundingClientRect().top - b.top : null, cuts: [] };
+        Array.prototype.forEach.call(cs.querySelectorAll('#rows tr'), function (tr) {
+          if (tr.style.display === 'none') return;
+          m.cuts.push(tr.getBoundingClientRect().bottom - b.top);
+        });
+      } });
+      var k = canvas.width / m.w;
+      var pageMax = Math.floor(canvas.width * 281 / 194); // A4（余白8mm）に収まる高さ
+      if (canvas.height <= pageMax * 1.04) return [canvas];
+      var cuts = m.cuts.map(function (v) { return Math.round(v * k); });
+      if (m.note != null) cuts.push(Math.round(m.note * k));
+      var headTop = Math.round(m.head[0] * k), headH = Math.round(m.head[1] * k);
+      function slice(y0, y1, withHead) {
+        var out = document.createElement('canvas');
+        var hh = withHead ? headH : 0;
+        out.width = canvas.width; out.height = hh + (y1 - y0);
+        var ctx = out.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, out.width, out.height);
+        if (withHead) ctx.drawImage(canvas, 0, headTop, canvas.width, headH, 0, 0, canvas.width, headH);
+        ctx.drawImage(canvas, 0, y0, canvas.width, y1 - y0, 0, hh, canvas.width, y1 - y0);
+        return out;
+      }
+      var pages = [], y = 0, first = true;
+      while (y < canvas.height - 2) {
+        var room = pageMax - (first ? 0 : headH);
+        var end = canvas.height;
+        if (end - y > room) {
+          end = 0;
+          cuts.forEach(function (c) { if (c > y + 10 && c - y <= room && c > end) end = c; });
+          if (!end) end = Math.min(canvas.height, y + room); // 1行がページより高い（ありえない）ときの保険
+        }
+        pages.push(slice(y, end, !first));
+        y = end; first = false;
+      }
+      return pages;
+    } finally {
+      hidden.forEach(function (h) { h[0].style.display = h[1]; });
+    }
+  }
+
   // Used by the saved list to build a combined PDF (draws this page for the loaded record).
   window.captureForBulk = async function () {
     document.body.classList.add('pdf-capture');
     var sw = swapFields();
     try {
-      return await html2canvas(document.getElementById('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
+      return await captureSheetPages();
     } finally {
       sw.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
       document.body.classList.remove('pdf-capture');
@@ -511,13 +575,15 @@
     document.body.classList.add('pdf-capture');
     var swaps = swapFields();
     try {
-      var sheet = document.getElementById('sheet');
-      var canvas = await html2canvas(sheet, { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
+      var pages = await captureSheetPages();
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
-      var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
-      if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
-      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, imgH);
+      pages.forEach(function (canvas, i) {
+        var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+        if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+        if (i > 0) pdf.addPage();
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, imgH);
+      });
       var to = document.getElementById('f-to').value.trim() || '注文書';
       var d = document.getElementById('f-date').value.replace(/-/g, '');
       var name = d + to.replace(/[\\/:*?"<>|]/g, '') + '_注文書.pdf';
