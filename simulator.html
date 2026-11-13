@@ -74,7 +74,9 @@
     /* PREVIEW */
     .sim-preview { background:#f0f0ee; border-radius:14px; padding:2rem 1.5rem 1.5rem; margin-bottom:2rem; border:1px solid var(--wborder); }
     .sim-preview-label { font-size:0.6rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#999; margin-bottom:1rem; }
-    #rod-svg { width:100%; display:block; }
+    #rod-diagram-container { width:100%; position:relative; border-radius:4px; overflow:hidden; line-height:0; background:#fff; }
+    #rod-svg { position:absolute; top:0; left:0; width:100%; height:100%; }
+    #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
     /* CUSTOMIZER */
     .sim-customizer { background:#fff; border:1px solid var(--wborder); border-radius:14px; padding:2rem; }
@@ -207,7 +209,7 @@
         <li><a href="order">オーダーシートはこちらから</a></li>
         <li><a href="custom">カスタム内容</a></li>
         <li><a href="color">カラーチャート</a></li>
-        <li><a href="simulator">カラーシミュレーター</a></li>
+        <li><a href="#" style="opacity:0.5;pointer-events:none;cursor:default;">カラーシミュレーター<span style="font-size:0.65em;background:#999;color:#fff;border-radius:3px;padding:1px 5px;margin-left:5px;letter-spacing:0.05em;vertical-align:middle;">準備中</span></a></li>
       </ul>
     </li>
   </ul>
@@ -240,63 +242,45 @@
   <!-- PREVIEW -->
   <div class="sim-preview">
     <div class="sim-preview-label">PREVIEW — ロッドカラープレビュー</div>
-    <svg id="rod-svg" viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
-      <defs>
-        <linearGradient id="g-shine" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.60"/>
-          <stop offset="22%"  stop-color="#ffffff" stop-opacity="0.04"/>
-          <stop offset="62%"  stop-color="#000000" stop-opacity="0.00"/>
-          <stop offset="100%" stop-color="#000000" stop-opacity="0.52"/>
-        </linearGradient>
-        <linearGradient id="g-grip" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.25"/>
-          <stop offset="100%" stop-color="#000000" stop-opacity="0.60"/>
-        </linearGradient>
-      </defs>
+    <div id="rod-diagram-container">
+      <!-- Colored regions layer (behind the line drawing) -->
+      <!-- rod-diagram.png is 842×595px; coordinates match that image -->
+      <svg id="rod-svg" viewBox="0 0 842 595" xmlns="http://www.w3.org/2000/svg">
 
-      <!-- Grip (always dark) -->
-      <polygon fill="#1a1a2a" points="950,43 1200,40 1200,80 950,77"/>
-      <polygon fill="url(#g-grip)" points="950,43 1200,40 1200,80 950,77" pointer-events="none"/>
+        <!-- ===== TOP VIEW (rod y-band ≈175–215) ===== -->
+        <!-- Blank body (right of tip boundary) -->
+        <rect class="svg-blank" fill="#cc0018" x="265" y="162" width="577" height="62"/>
+        <!-- Tip (overrides blank at left end) -->
+        <rect class="svg-tip"   fill="#c8d400" x="0"   y="162" width="272" height="62"/>
+        <!-- Thread wraps on blank – top view -->
+        <rect class="svg-thread" fill="#f1f3f3" x="284" y="162" width="22" height="62"/>
+        <rect class="svg-thread" fill="#f1f3f3" x="353" y="162" width="22" height="62"/>
+        <rect class="svg-thread" fill="#f1f3f3" x="459" y="162" width="22" height="62"/>
+        <rect class="svg-thread" fill="#f1f3f3" x="633" y="162" width="22" height="62"/>
+        <rect class="svg-thread" fill="#f1f3f3" x="775" y="162" width="22" height="62"/>
+        <!-- Tip thread wraps – top view -->
+        <rect class="svg-tipthread" fill="#f1f3f3" x="19"  y="162" width="22" height="62"/>
+        <rect class="svg-tipthread" fill="#f1f3f3" x="85"  y="162" width="22" height="62"/>
+        <rect class="svg-tipthread" fill="#f1f3f3" x="145" y="162" width="22" height="62"/>
+        <rect class="svg-tipthread" fill="#f1f3f3" x="212" y="162" width="22" height="62"/>
 
-      <!-- Reel seat -->
-      <polygon id="svg-reelseat" fill="#6a7880" points="840,45 950,43 950,77 840,75"/>
+        <!-- ===== BOTTOM VIEW (handle area y≈280–380) ===== -->
+        <!-- Left rod sections (tip side) -->
+        <rect class="svg-blank" fill="#cc0018" x="0"   y="285" width="275" height="44"/>
+        <!-- Left thread wraps -->
+        <rect class="svg-thread"    fill="#f1f3f3" x="47"  y="285" width="24" height="44"/>
+        <rect class="svg-thread"    fill="#f1f3f3" x="147" y="285" width="24" height="44"/>
+        <!-- Right rod section (butt side) -->
+        <rect class="svg-blank" fill="#cc0018" x="497" y="285" width="345" height="44"/>
+        <!-- Reel seat hardware (trigger + hood area) -->
+        <rect class="svg-reelseat" fill="#6a7880" x="345" y="257" width="104" height="123"/>
+        <rect class="svg-reelseat" fill="#6a7880" x="381" y="332" width="60"  height="50"/>
 
-      <!-- Blank body -->
-      <polygon id="svg-blank" fill="#cc0018" points="200,54.5 840,45 840,75 200,65.5"/>
+      </svg>
 
-      <!-- Thread wraps on blank -->
-      <polygon class="svg-thread" fill="#f1f3f3" points="303,52.97 317,52.76 317,67.24 303,67.03"/>
-      <polygon class="svg-thread" fill="#f1f3f3" points="393,51.64 407,51.43 407,68.57 393,68.36"/>
-      <polygon class="svg-thread" fill="#f1f3f3" points="493,50.15 507,49.94 507,70.06 493,69.85"/>
-      <polygon class="svg-thread" fill="#f1f3f3" points="613,48.37 627,48.16 627,71.84 613,71.63"/>
-      <polygon class="svg-thread" fill="#f1f3f3" points="723,46.74 737,46.53 737,73.47 723,73.26"/>
-
-      <!-- Tip -->
-      <polygon id="svg-tip" fill="#c8d400" points="0,58.5 200,54.5 200,65.5 0,61.5"/>
-
-      <!-- Tip thread wraps -->
-      <polygon class="svg-tipthread" fill="#f1f3f3" points="83,56.84 97,56.56 97,63.44 83,63.16"/>
-      <polygon class="svg-tipthread" fill="#f1f3f3" points="153,55.44 167,55.16 167,64.84 153,64.56"/>
-
-      <!-- Tube shine gradient overlay -->
-      <polygon fill="url(#g-shine)" pointer-events="none" points="0,58.5 1200,40 1200,80 0,61.5"/>
-
-      <!-- Guide ring outlines -->
-      <ellipse cx="90"  cy="60" rx="2" ry="8"  fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
-      <ellipse cx="160" cy="60" rx="2" ry="10" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
-      <ellipse cx="310" cy="60" rx="2" ry="12" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
-      <ellipse cx="400" cy="60" rx="2" ry="14" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
-      <ellipse cx="500" cy="60" rx="2" ry="15" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
-      <ellipse cx="620" cy="60" rx="2" ry="17" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
-      <ellipse cx="730" cy="60" rx="2" ry="19" fill="none" stroke="#999" stroke-width="1.5" opacity="0.55"/>
-
-      <!-- Rod outline -->
-      <polygon fill="none" stroke="#000" stroke-width="1" stroke-opacity="0.18"
-        points="0,58.5 1200,40 1200,80 0,61.5"/>
-
-      <!-- Tip cap -->
-      <circle id="svg-tip-cap" cx="1" cy="60" r="2" fill="#c8d400"/>
-    </svg>
+      <!-- Rod line drawing on top — multiply blend preserves black outlines perfectly -->
+      <img src="rod-diagram.png" alt="rod diagram"/>
+    </div>
   </div>
 
   <!-- CUSTOMIZER -->
@@ -476,16 +460,21 @@ var panelOpen = false;
 
 // ===== SVG ROD PREVIEW =====
 function renderSVG() {
-  document.getElementById('svg-blank').setAttribute('fill', state.blank.hex);
-  document.getElementById('svg-tip').setAttribute('fill', state.tip.hex);
-  document.getElementById('svg-tip-cap').setAttribute('fill', state.tip.hex);
+  document.querySelectorAll('.svg-blank').forEach(function(el) {
+    el.setAttribute('fill', state.blank.hex);
+  });
+  document.querySelectorAll('.svg-tip').forEach(function(el) {
+    el.setAttribute('fill', state.tip.hex);
+  });
   document.querySelectorAll('.svg-thread').forEach(function(el) {
     el.setAttribute('fill', state.thread.hex);
   });
   document.querySelectorAll('.svg-tipthread').forEach(function(el) {
     el.setAttribute('fill', state.tipthread.hex);
   });
-  document.getElementById('svg-reelseat').setAttribute('fill', state.reelseat.hex);
+  document.querySelectorAll('.svg-reelseat').forEach(function(el) {
+    el.setAttribute('fill', state.reelseat.hex);
+  });
 }
 
 // ===== CIRCLE + SWATCH PANEL UI =====
@@ -585,25 +574,33 @@ document.getElementById('btn-share').addEventListener('click', function() {
 });
 
 document.getElementById('btn-save').addEventListener('click', function() {
+  var W = 842, H = 595;
   var svg = document.getElementById('rod-svg');
   var svgData = new XMLSerializer().serializeToString(svg);
-  var blob = new Blob([svgData], {type:'image/svg+xml;charset=utf-8'});
-  var url = URL.createObjectURL(blob);
+  var svgBlob = new Blob([svgData], {type:'image/svg+xml;charset=utf-8'});
+  var svgUrl = URL.createObjectURL(svgBlob);
   var canvas = document.createElement('canvas');
-  canvas.width = 1200; canvas.height = 120;
+  canvas.width = W; canvas.height = H;
   var ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#f0f0ee';
-  ctx.fillRect(0, 0, 1200, 120);
-  var img = new Image();
-  img.onload = function() {
-    ctx.drawImage(img, 0, 0);
-    URL.revokeObjectURL(url);
-    var link = document.createElement('a');
-    link.download = 'IG_rod_color.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+  var svgImg = new Image();
+  svgImg.onload = function() {
+    ctx.drawImage(svgImg, 0, 0, W, H);
+    URL.revokeObjectURL(svgUrl);
+    var rodImg = new Image();
+    rodImg.onload = function() {
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.drawImage(rodImg, 0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over';
+      var link = document.createElement('a');
+      link.download = 'IG_rod_color.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+    rodImg.src = 'rod-diagram.png';
   };
-  img.src = url;
+  svgImg.src = svgUrl;
 });
 
 document.getElementById('btn-order').addEventListener('click', function(e) {
