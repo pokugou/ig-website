@@ -468,7 +468,7 @@
       fetch('contact_mail.php', { method: 'POST', body: formData })
         .then(function(res) { return res.json(); })
         .then(function(data) {
-          if (data.status === 'ok') {
+          if (data.ok) {
             formMsg.textContent = 'お問い合わせを受け付けました。2〜3営業日以内にご返信いたします。';
             formMsg.className = 'form-msg success';
             contactForm.reset();
@@ -479,8 +479,6 @@
         .catch(function(err) {
           formMsg.textContent = err.message || '送信エラーが発生しました。時間をおいて再度お試しください。';
           formMsg.className = 'form-msg error';
-        })
-        .finally(function() {
           submitBtn.disabled = false;
           submitBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> 送信する';
         });
