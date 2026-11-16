@@ -259,7 +259,7 @@
         <div class="fx-layer" style="background-image:url(sim-masks/shade.png?v=8);mix-blend-mode:multiply"></div>
         <div class="fx-layer" style="background-image:url(sim-masks/gloss.png?v=8);mix-blend-mode:screen"></div>
       </div>
-      <img src="rod-diagram.png" alt="rod diagram"/>
+      <img src="rod-diagram@4x.png" alt="rod diagram"/>
     </div>
       </div>
       <div class="rod-thumbs" id="rod-thumbs">
@@ -739,31 +739,31 @@ document.getElementById('btn-share').addEventListener('click', function() {
 });
 
 document.getElementById('btn-save').addEventListener('click', function() {
-  var W = 842, H = 595, parts = ['blank','tip','thread','tipthread','reelseat','grip'];
+  var W = 1684, H = 1190, parts = ['blank','tip','thread','tipthread','reelseat','grip'];
   var canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   var ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
-  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=8'; }).concat(['sim-masks/shade.png?v=8','sim-masks/gloss.png?v=8','rod-diagram.png']);
+  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=8'; }).concat(['sim-masks/shade.png?v=8','sim-masks/gloss.png?v=8','rod-diagram@4x.png']);
   var imgs = srcs.map(function(s){ var i = new Image(); i.src = s; return i; });
   Promise.all(imgs.map(function(i){ return i.decode(); })).then(function() {
     parts.forEach(function(p, k) {
       var layer = document.createElement('canvas');
       layer.width = W; layer.height = H;
       var lc = layer.getContext('2d');
-      lc.drawImage(imgs[k], 0, 0);
+      lc.drawImage(imgs[k], 0, 0, W, H);
       lc.globalCompositeOperation = 'source-in';
       lc.fillStyle = state[p].hex;
       lc.fillRect(0, 0, W, H);
-      ctx.drawImage(layer, 0, 0);
+      ctx.drawImage(layer, 0, 0, W, H);
     });
     ctx.globalCompositeOperation = 'multiply';
-    ctx.drawImage(imgs[parts.length], 0, 0);
+    ctx.drawImage(imgs[parts.length], 0, 0, W, H);
     ctx.globalCompositeOperation = 'screen';
-    ctx.drawImage(imgs[parts.length + 1], 0, 0);
+    ctx.drawImage(imgs[parts.length + 1], 0, 0, W, H);
     ctx.globalCompositeOperation = 'multiply';
-    ctx.drawImage(imgs[parts.length + 2], 0, 0);
+    ctx.drawImage(imgs[parts.length + 2], 0, 0, W, H);
     var link = document.createElement('a');
     link.download = 'IG_rod_color.png';
     link.href = canvas.toDataURL('image/png');
