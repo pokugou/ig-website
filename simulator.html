@@ -282,7 +282,7 @@
       </div>
 
       <!-- Rod line drawing on top — multiply blend preserves black outlines perfectly -->
-      <img src="rod-diagram@4x.png" alt="rod diagram"/>
+      <img src="rod-diagram@4x.png?v=2" alt="rod diagram"/>
     </div>
       </div>
       <div class="rod-thumbs" id="rod-thumbs">
@@ -638,7 +638,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
   var ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
-  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=10'; }).concat(['sim-masks/shade.png?v=10','sim-masks/gloss.png?v=10','rod-diagram@4x.png']);
+  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=10'; }).concat(['sim-masks/shade.png?v=10','sim-masks/gloss.png?v=10','rod-diagram@4x.png?v=2']);
   var imgs = srcs.map(function(s){ var i = new Image(); i.src = s; return i; });
   Promise.all(imgs.map(function(i){ return i.decode(); })).then(function() {
     parts.forEach(function(p, k) {
