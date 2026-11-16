@@ -591,6 +591,7 @@ function selectColor(colorId) {
   if (!color) return;
   state[activePart] = color;
   renderSVG();
+  document.getElementById('rod-main').scrollIntoView({ behavior:'smooth', block:'center' });
   renderCircles();
   document.querySelectorAll('#swatch-panel-content .swatch-btn').forEach(function(btn) {
     btn.classList.toggle('selected', btn.getAttribute('onclick').indexOf(colorId) >= 0);

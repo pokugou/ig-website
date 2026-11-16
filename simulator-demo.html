@@ -688,6 +688,7 @@ function selectColor(colorId) {
   if (!color) return;
   state[activePart] = color;
   renderSVG();
+  document.getElementById('rod-main').scrollIntoView({ behavior:'smooth', block:'center' });
   renderSwatches();
   renderSummary();
 }
