@@ -79,6 +79,7 @@
     .part-layer[data-part="thread"] { -webkit-mask-image:url(sim-masks/thread.png); mask-image:url(sim-masks/thread.png); }
     .part-layer[data-part="tipthread"] { -webkit-mask-image:url(sim-masks/tipthread.png); mask-image:url(sim-masks/tipthread.png); }
     .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png); mask-image:url(sim-masks/reelseat.png); }
+    .part-layer[data-part="grip"] { -webkit-mask-image:url(sim-masks/grip.png); mask-image:url(sim-masks/grip.png); }
     #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
     /* PART TABS */
@@ -236,6 +237,7 @@
         <div class="part-layer" data-part="thread"></div>
         <div class="part-layer" data-part="tipthread"></div>
         <div class="part-layer" data-part="reelseat"></div>
+        <div class="part-layer" data-part="grip"></div>
       </div>
       <img src="rod-diagram.png" alt="rod diagram"/>
     </div>
@@ -408,6 +410,10 @@
       <span class="tab-dot" id="dot-reelseat" style="background:#888;border-color:#888;"></span>
       ⑥リールシート
     </button>
+    <button class="part-tab" data-part="grip">
+      <span class="tab-dot" id="dot-grip" style="background:#2b2b2b;border-color:#2b2b2b;"></span>
+      ③グリップ
+    </button>
   </div>
 
   <!-- SIMULATOR BODY -->
@@ -442,6 +448,11 @@
         <div class="summary-dot" id="sum-dot-reelseat" style="background:#888;"></div>
         <div class="summary-part">⑥リールシート</div>
         <div class="summary-name" id="sum-name-reelseat">シルバー</div>
+      </div>
+      <div class="summary-row">
+        <div class="summary-dot" id="sum-dot-grip" style="background:#2b2b2b;"></div>
+        <div class="summary-part">③グリップ</div>
+        <div class="summary-name" id="sum-name-grip">ブラック</div>
       </div>
       <a href="order-demo.html" class="btn-order" id="btn-order">この配色でオーダー →</a>
       <button class="btn-share" id="btn-share">配色をコピーする</button>
@@ -534,6 +545,11 @@ var THREAD_COLORS = [
   { id:'t305',   name:'305 ピンク',        hex:'#d65170', cat:'NCP' },
 ];
 
+var GRIP_COLORS = [
+  { id:'g-black', name:'ブラック', hex:'#2b2b2b', cat:'グリップ' },
+  { id:'g-cork',  name:'コルク',   hex:'#c8a274', cat:'グリップ' },
+];
+
 var REELSEAT_COLORS = BLANK_COLORS;
 
 // ===== STATE =====
@@ -544,17 +560,19 @@ var state = {
   tipthread: { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
   tip:       { id:'c005', name:'005 イエロー',  hex:'#c8d400', cat:'フラット通常色' },
   reelseat:  { id:'c007', name:'007 シルバー',  hex:'#6a7880', cat:'フラットメタリック色' },
+  grip:      { id:'g-black', name:'ブラック', hex:'#2b2b2b', cat:'グリップ' },
 };
 
 function getColors(part) {
   if (part === 'blank' || part === 'tip') return { type:'cat', colors: BLANK_COLORS };
   if (part === 'thread' || part === 'tipthread') return { type:'cat', colors: THREAD_COLORS };
   if (part === 'reelseat') return { type:'cat', colors: REELSEAT_COLORS };
+  if (part === 'grip') return { type:'cat', colors: GRIP_COLORS };
   return { type:'flat', colors: [] };
 }
 
 function partLabel(part) {
-  var map = { blank:'ブランクスカラーを選択', thread:'スレッドカラーを選択', tipthread:'ティップスレッドカラーを選択', tip:'ティップカラーを選択', reelseat:'リールシートカラーを選択' };
+  var map = { blank:'ブランクスカラーを選択', thread:'スレッドカラーを選択', tipthread:'ティップスレッドカラーを選択', tip:'ティップカラーを選択', reelseat:'リールシートカラーを選択', grip:'グリップカラーを選択' };
   return map[part] || '';
 }
 
@@ -610,7 +628,7 @@ function selectColor(colorId) {
 }
 
 function renderSummary() {
-  var parts = ['blank','thread','tipthread','tip','reelseat'];
+  var parts = ['blank','thread','tipthread','tip','reelseat','grip'];
   parts.forEach(function(p) {
     var s = state[p];
     var dot = document.getElementById('sum-dot-' + p);
@@ -639,7 +657,8 @@ document.getElementById('btn-share').addEventListener('click', function() {
     '①ブランクス: ' + state.blank.name + '\n' +
     '②〜④スレッド: ' + state.thread.name + '\n' +
     '▲ティップ: ' + state.tip.name + '\n' +
-    '⑥リールシート: ' + state.reelseat.name;
+    '⑥リールシート: ' + state.reelseat.name + '\n' +
+    '③グリップ: ' + state.grip.name;
   navigator.clipboard.writeText(text).then(function() {
     var toast = document.getElementById('share-toast');
     toast.classList.add('show');
@@ -648,7 +667,7 @@ document.getElementById('btn-share').addEventListener('click', function() {
 });
 
 document.getElementById('btn-save').addEventListener('click', function() {
-  var W = 842, H = 595, parts = ['blank','tip','thread','tipthread','reelseat'];
+  var W = 842, H = 595, parts = ['blank','tip','thread','tipthread','reelseat','grip'];
   var canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   var ctx = canvas.getContext('2d');
@@ -683,6 +702,7 @@ document.getElementById('btn-order').addEventListener('click', function(e) {
     thread: state.thread.name,
     tip: state.tip.name,
     reelseat: state.reelseat.name,
+    grip: state.grip.name,
   });
   window.location.href = 'order-demo.html?' + params.toString();
 });
