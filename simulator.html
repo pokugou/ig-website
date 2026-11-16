@@ -98,6 +98,7 @@
     .part-layer[data-part="thread"] { -webkit-mask-image:url(sim-masks/thread.png); mask-image:url(sim-masks/thread.png); }
     .part-layer[data-part="tipthread"] { -webkit-mask-image:url(sim-masks/tipthread.png); mask-image:url(sim-masks/tipthread.png); }
     .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png?v=10); mask-image:url(sim-masks/reelseat.png?v=10); }
+    .part-layer[data-part="pinline"] { -webkit-mask-image:url(sim-masks/pinline.png?v=1); mask-image:url(sim-masks/pinline.png?v=1); }
     .part-layer[data-part="grip"] { -webkit-mask-image:url(sim-masks/grip.png); mask-image:url(sim-masks/grip.png); }
     #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
@@ -277,6 +278,7 @@
         <div class="part-layer" data-part="tipthread"></div>
         <div class="part-layer" data-part="reelseat"></div>
         <div class="part-layer" data-part="grip"></div>
+        <div class="part-layer" data-part="pinline"></div>
         <div class="fx-layer" style="background-image:url(sim-masks/shade.png?v=10);mix-blend-mode:multiply"></div>
         <div class="fx-layer" style="background-image:url(sim-masks/gloss.png?v=10);mix-blend-mode:screen"></div>
       </div>
@@ -344,6 +346,13 @@
           <span class="circle-inner" id="ci-grip" style="background:#2b2b2b"></span>
         </button>
         <div class="color-name-sm" id="cname-grip">ブラック</div>
+      </div>
+      <div class="part-card">
+        <div class="part-label">ピンライン</div>
+        <button class="color-circle-btn" data-part="pinline" id="circle-pinline">
+          <span class="circle-inner" id="ci-pinline" style="background:#ffffff"></span>
+        </button>
+        <div class="color-name-sm" id="cname-pinline">なし</div>
       </div>
     </div>
 
@@ -451,6 +460,8 @@ var THREAD_COLORS = [
   { id:'t305', name:'305 ピンク', hex:'#d65171', img:'swatches/t305.jpg', cat:'蛍光色' },
 ];
 
+var PINLINE_COLORS = [{ id:'none', name:'なし', hex:'#ffffff', cat:'なし' }].concat(THREAD_COLORS);
+
 var GRIP_COLORS = [
   { id:'g-black', name:'ブラック', hex:'#2b2b2b', cat:'グリップ' },
   { id:'g-cork',  name:'コルク',   hex:'#c8a274', cat:'グリップ' },
@@ -466,6 +477,7 @@ var state = {
   tipthread: { id:'t101', name:'101 ホワイト', hex:'#f2f4f3', img:'swatches/t101.jpg', cat:'ダルスレッド' },
   tip: { id:'c005', name:'005 イエロー', hex:'#d3d524', img:'swatches/b005.jpg', cat:'フラット通常色 ¥9,000' },
   reelseat: { id:'c007', name:'007 シルバー', hex:'#959a9b', img:'swatches/b007.jpg', cat:'フラットメタリック色 ¥9,500UP' },
+  pinline:   PINLINE_COLORS[0],
   grip:      { id:'g-black', name:'ブラック', hex:'#2b2b2b', cat:'グリップ' },
 };
 
@@ -473,22 +485,24 @@ function getColors(part) {
   if (part === 'blank' || part === 'tip') return { type:'cat', colors: BLANK_COLORS };
   if (part === 'thread' || part === 'tipthread') return { type:'cat', colors: THREAD_COLORS };
   if (part === 'reelseat') return { type:'cat', colors: REELSEAT_COLORS };
+  if (part === 'pinline') return { type:'cat', colors: PINLINE_COLORS };
   if (part === 'grip') return { type:'cat', colors: GRIP_COLORS };
   return { type:'flat', colors: [] };
 }
 
 function partLabel(part) {
-  var map = { blank:'ブランクスカラーを選択', thread:'スレッドカラーを選択', tipthread:'ティップスレッドカラーを選択', tip:'ティップカラーを選択', reelseat:'リールシートカラーを選択', grip:'グリップカラーを選択' };
+  var map = { blank:'ブランクスカラーを選択', thread:'スレッドカラーを選択', tipthread:'ティップスレッドカラーを選択', tip:'ティップカラーを選択', reelseat:'リールシートカラーを選択', grip:'グリップカラーを選択', pinline:'ピンラインカラーを選択' };
   return map[part] || '';
 }
 
-var PARTS = ['blank','thread','tipthread','tip','reelseat','grip'];
+var PARTS = ['blank','thread','tipthread','tip','reelseat','grip','pinline'];
 var panelOpen = false;
 
 // ===== SVG ROD PREVIEW =====
 function renderSVG() {
   document.querySelectorAll('.part-layer').forEach(function(el) {
-    el.style.backgroundColor = state[el.dataset.part].hex;
+    var c = state[el.dataset.part];
+    el.style.backgroundColor = c.id === 'none' ? 'transparent' : c.hex;
   });
 }
 
@@ -557,7 +571,7 @@ var VIEWS = {
   blank:  [250, 109, 592, 162],
   handle: [280, 245, 520, 142],
 };
-var PART_VIEW = { tip:'tip', tipthread:'tip', blank:'all', thread:'all', reelseat:'handle', grip:'handle' };
+var PART_VIEW = { pinline:'blank', tip:'tip', tipthread:'tip', blank:'all', thread:'all', reelseat:'handle', grip:'handle' };
 
 function applyView(el, name) {
   var v = VIEWS[name];
@@ -623,7 +637,8 @@ document.getElementById('btn-share').addEventListener('click', function() {
     '▲ティップスレッド: ' + state.tipthread.name + '\n' +
     'ティップカラー: ' + state.tip.name + '\n' +
     '⑥リールシート: ' + state.reelseat.name + '\n' +
-    '③グリップ: ' + state.grip.name;
+    '③グリップ: ' + state.grip.name + '\n' +
+    'ピンライン: ' + state.pinline.name;
   navigator.clipboard.writeText(text).then(function() {
     var toast = document.getElementById('share-toast');
     toast.classList.add('show');
@@ -632,7 +647,7 @@ document.getElementById('btn-share').addEventListener('click', function() {
 });
 
 document.getElementById('btn-save').addEventListener('click', function() {
-  var W = 1684, H = 1190, parts = ['blank','tip','thread','tipthread','reelseat','grip'];
+  var W = 1684, H = 1190, parts = ['blank','tip','thread','tipthread','reelseat','grip','pinline'];
   var canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   var ctx = canvas.getContext('2d');
@@ -647,7 +662,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
       var lc = layer.getContext('2d');
       lc.drawImage(imgs[k], 0, 0, W, H);
       lc.globalCompositeOperation = 'source-in';
-      lc.fillStyle = state[p].hex;
+      lc.fillStyle = state[p].id === 'none' ? 'rgba(0,0,0,0)' : state[p].hex;
       lc.fillRect(0, 0, W, H);
       ctx.drawImage(layer, 0, 0, W, H);
     });
@@ -672,6 +687,7 @@ document.getElementById('btn-order').addEventListener('click', function(e) {
     tip: state.tip.name,
     reelseat: state.reelseat.name,
     grip: state.grip.name,
+    pinline: state.pinline.name,
   });
   window.location.href = 'order.html?' + params.toString();
 });
