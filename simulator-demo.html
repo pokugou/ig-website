@@ -72,7 +72,13 @@
     .rod-card { background:#f2f2f0; border-radius:12px; padding:2rem 1.5rem 1rem; margin-bottom:2rem; overflow:hidden; border:1px solid var(--wborder); }
     .rod-card-label { font-size:0.62rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#888; margin-bottom:1rem; }
     #rod-diagram-container { width:100%; position:relative; border-radius:4px; overflow:hidden; line-height:0; background:#fff; }
-    #rod-svg { position:absolute; top:0; left:0; width:100%; height:100%; }
+    #rod-svg { position:absolute; inset:0; }
+    .part-layer { position:absolute; inset:0; -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
+    .part-layer[data-part="blank"] { -webkit-mask-image:url(sim-masks/blank.png); mask-image:url(sim-masks/blank.png); }
+    .part-layer[data-part="tip"] { -webkit-mask-image:url(sim-masks/tip.png); mask-image:url(sim-masks/tip.png); }
+    .part-layer[data-part="thread"] { -webkit-mask-image:url(sim-masks/thread.png); mask-image:url(sim-masks/thread.png); }
+    .part-layer[data-part="tipthread"] { -webkit-mask-image:url(sim-masks/tipthread.png); mask-image:url(sim-masks/tipthread.png); }
+    .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png); mask-image:url(sim-masks/reelseat.png); }
     #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
     /* PART TABS */
@@ -224,28 +230,13 @@
   <div class="rod-card">
     <div class="rod-card-label">PREVIEW — ロッドカラープレビュー</div>
     <div id="rod-diagram-container">
-      <svg id="rod-svg" viewBox="0 0 842 595" xmlns="http://www.w3.org/2000/svg">
-        <!-- TOP VIEW: rod tapers y≈185..193 at tip, y≈182..196 at butt -->
-        <rect class="svg-blank"     fill="#cc0018" x="265" y="182" width="577" height="15"/>
-        <rect class="svg-tip"       fill="#c8d400" x="0"   y="184" width="272" height="10"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="287" y="182" width="16"  height="15"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="356" y="182" width="16"  height="15"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="462" y="182" width="16"  height="15"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="636" y="182" width="16"  height="15"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="778" y="182" width="16"  height="15"/>
-        <rect class="svg-tipthread" fill="#f1f3f3" x="22"  y="184" width="14"  height="10"/>
-        <rect class="svg-tipthread" fill="#f1f3f3" x="88"  y="184" width="14"  height="10"/>
-        <rect class="svg-tipthread" fill="#f1f3f3" x="148" y="184" width="14"  height="10"/>
-        <rect class="svg-tipthread" fill="#f1f3f3" x="215" y="184" width="14"  height="10"/>
-        <!-- BOTTOM VIEW: left blank y≈304..314 -->
-        <rect class="svg-blank"     fill="#cc0018" x="0"   y="304" width="285" height="11"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="47"  y="304" width="14"  height="11"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="145" y="304" width="14"  height="11"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="502" y="303" width="16"  height="13"/>
-        <rect class="svg-thread"    fill="#f1f3f3" x="527" y="303" width="16"  height="13"/>
-        <rect class="svg-reelseat"  fill="#6a7880" x="340" y="270" width="115" height="100"/>
-        <rect class="svg-reelseat"  fill="#6a7880" x="378" y="332" width="58"  height="40"/>
-      </svg>
+      <div id="rod-svg">
+        <div class="part-layer" data-part="blank"></div>
+        <div class="part-layer" data-part="tip"></div>
+        <div class="part-layer" data-part="thread"></div>
+        <div class="part-layer" data-part="tipthread"></div>
+        <div class="part-layer" data-part="reelseat"></div>
+      </div>
       <img src="rod-diagram.png" alt="rod diagram"/>
     </div>
     <svg style="display:none">
@@ -568,20 +559,8 @@ function partLabel(part) {
 }
 
 function renderSVG() {
-  document.querySelectorAll('.svg-blank').forEach(function(el) {
-    el.setAttribute('fill', state.blank.hex);
-  });
-  document.querySelectorAll('.svg-tip').forEach(function(el) {
-    el.setAttribute('fill', state.tip.hex);
-  });
-  document.querySelectorAll('.svg-thread').forEach(function(el) {
-    el.setAttribute('fill', state.thread.hex);
-  });
-  document.querySelectorAll('.svg-tipthread').forEach(function(el) {
-    el.setAttribute('fill', state.tipthread.hex);
-  });
-  document.querySelectorAll('.svg-reelseat').forEach(function(el) {
-    el.setAttribute('fill', state.reelseat.hex);
+  document.querySelectorAll('.part-layer').forEach(function(el) {
+    el.style.backgroundColor = state[el.dataset.part].hex;
   });
 }
 
@@ -669,33 +648,32 @@ document.getElementById('btn-share').addEventListener('click', function() {
 });
 
 document.getElementById('btn-save').addEventListener('click', function() {
-  var W = 842, H = 595;
-  var svg = document.getElementById('rod-svg');
-  var svgData = new XMLSerializer().serializeToString(svg);
-  var svgBlob = new Blob([svgData], {type:'image/svg+xml;charset=utf-8'});
-  var svgUrl = URL.createObjectURL(svgBlob);
+  var W = 842, H = 595, parts = ['blank','tip','thread','tipthread','reelseat'];
   var canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   var ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
-  var svgImg = new Image();
-  svgImg.onload = function() {
-    ctx.drawImage(svgImg, 0, 0, W, H);
-    URL.revokeObjectURL(svgUrl);
-    var rodImg = new Image();
-    rodImg.onload = function() {
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.drawImage(rodImg, 0, 0, W, H);
-      ctx.globalCompositeOperation = 'source-over';
-      var link = document.createElement('a');
-      link.download = 'IG_rod_color.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    };
-    rodImg.src = 'rod-diagram.png';
-  };
-  svgImg.src = svgUrl;
+  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png'; }).concat(['rod-diagram.png']);
+  var imgs = srcs.map(function(s){ var i = new Image(); i.src = s; return i; });
+  Promise.all(imgs.map(function(i){ return i.decode(); })).then(function() {
+    parts.forEach(function(p, k) {
+      var layer = document.createElement('canvas');
+      layer.width = W; layer.height = H;
+      var lc = layer.getContext('2d');
+      lc.drawImage(imgs[k], 0, 0);
+      lc.globalCompositeOperation = 'source-in';
+      lc.fillStyle = state[p].hex;
+      lc.fillRect(0, 0, W, H);
+      ctx.drawImage(layer, 0, 0);
+    });
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.drawImage(imgs[parts.length], 0, 0);
+    var link = document.createElement('a');
+    link.download = 'IG_rod_color.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
 });
 
 document.getElementById('btn-order').addEventListener('click', function(e) {

@@ -75,7 +75,13 @@
     .sim-preview { background:#f0f0ee; border-radius:14px; padding:2rem 1.5rem 1.5rem; margin-bottom:2rem; border:1px solid var(--wborder); }
     .sim-preview-label { font-size:0.6rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#999; margin-bottom:1rem; }
     #rod-diagram-container { width:100%; position:relative; border-radius:4px; overflow:hidden; line-height:0; background:#fff; }
-    #rod-svg { position:absolute; top:0; left:0; width:100%; height:100%; }
+    #rod-svg { position:absolute; inset:0; }
+    .part-layer { position:absolute; inset:0; -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
+    .part-layer[data-part="blank"] { -webkit-mask-image:url(sim-masks/blank.png); mask-image:url(sim-masks/blank.png); }
+    .part-layer[data-part="tip"] { -webkit-mask-image:url(sim-masks/tip.png); mask-image:url(sim-masks/tip.png); }
+    .part-layer[data-part="thread"] { -webkit-mask-image:url(sim-masks/thread.png); mask-image:url(sim-masks/thread.png); }
+    .part-layer[data-part="tipthread"] { -webkit-mask-image:url(sim-masks/tipthread.png); mask-image:url(sim-masks/tipthread.png); }
+    .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png); mask-image:url(sim-masks/reelseat.png); }
     #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
     /* CUSTOMIZER */
@@ -245,71 +251,13 @@
     <div id="rod-diagram-container">
       <!-- Colored regions layer (behind the line drawing) -->
       <!-- rod-diagram.png is 842×595px; coordinates match that image -->
-      <svg id="rod-svg" viewBox="0 0 842 595" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <!-- TOP VIEW: tip tapers to a near-point at x=0, widens to junction at x=270 -->
-          <clipPath id="clip-tip-top">
-            <polygon points="0,189 270,184 270,194"/>
-          </clipPath>
-          <!-- TOP VIEW: blank section is a trapezoid from junction (x=264) to butt (x=842) -->
-          <clipPath id="clip-blank-top">
-            <polygon points="264,183 842,180.5 842,197.5 264,195"/>
-          </clipPath>
-          <!-- BOTTOM VIEW: left blank before grip (slight taper toward grip) -->
-          <clipPath id="clip-blank-bot">
-            <polygon points="0,303 285,302 285,315 0,316"/>
-          </clipPath>
-          <!-- BOTTOM VIEW: thread area between reel seat and rear grip -->
-          <clipPath id="clip-thread-bot-r">
-            <rect x="495" y="301" width="55" height="15"/>
-          </clipPath>
-        </defs>
-
-        <!-- ===== TOP VIEW ===== -->
-        <!-- Blank body (clipped to tapered blank outline) -->
-        <g clip-path="url(#clip-blank-top)">
-          <rect class="svg-blank" fill="#cc0018" x="260" y="160" width="590" height="60"/>
-        </g>
-        <!-- Thread wraps on blank (drawn on top, same clip) -->
-        <g clip-path="url(#clip-blank-top)">
-          <rect class="svg-thread" fill="#f1f3f3" x="287" y="160" width="16" height="60"/>
-          <rect class="svg-thread" fill="#f1f3f3" x="356" y="160" width="16" height="60"/>
-          <rect class="svg-thread" fill="#f1f3f3" x="462" y="160" width="16" height="60"/>
-          <rect class="svg-thread" fill="#f1f3f3" x="636" y="160" width="16" height="60"/>
-          <rect class="svg-thread" fill="#f1f3f3" x="778" y="160" width="16" height="60"/>
-        </g>
-        <!-- Tip (clipped to triangular taper outline) -->
-        <g clip-path="url(#clip-tip-top)">
-          <rect class="svg-tip" fill="#c8d400" x="0" y="160" width="275" height="60"/>
-        </g>
-        <!-- Tip thread wraps -->
-        <g clip-path="url(#clip-tip-top)">
-          <rect class="svg-tipthread" fill="#f1f3f3" x="22"  y="160" width="14" height="60"/>
-          <rect class="svg-tipthread" fill="#f1f3f3" x="88"  y="160" width="14" height="60"/>
-          <rect class="svg-tipthread" fill="#f1f3f3" x="148" y="160" width="14" height="60"/>
-          <rect class="svg-tipthread" fill="#f1f3f3" x="215" y="160" width="14" height="60"/>
-        </g>
-
-        <!-- ===== BOTTOM VIEW ===== -->
-        <!-- Left blank section -->
-        <g clip-path="url(#clip-blank-bot)">
-          <rect class="svg-blank" fill="#cc0018" x="0" y="295" width="290" height="30"/>
-        </g>
-        <!-- Thread wraps on left blank -->
-        <g clip-path="url(#clip-blank-bot)">
-          <rect class="svg-thread" fill="#f1f3f3" x="47"  y="295" width="14" height="30"/>
-          <rect class="svg-thread" fill="#f1f3f3" x="145" y="295" width="14" height="30"/>
-        </g>
-        <!-- Right blank + thread wraps between grip sections -->
-        <g clip-path="url(#clip-thread-bot-r)">
-          <rect class="svg-blank"  fill="#cc0018" x="490" y="295" width="70" height="30"/>
-          <rect class="svg-thread" fill="#f1f3f3" x="502" y="295" width="16" height="30"/>
-          <rect class="svg-thread" fill="#f1f3f3" x="527" y="295" width="16" height="30"/>
-        </g>
-        <!-- Reel seat hardware -->
-        <rect class="svg-reelseat" fill="#6a7880" x="340" y="270" width="115" height="100"/>
-        <rect class="svg-reelseat" fill="#6a7880" x="378" y="332" width="58"  height="40"/>
-      </svg>
+      <div id="rod-svg">
+        <div class="part-layer" data-part="blank"></div>
+        <div class="part-layer" data-part="tip"></div>
+        <div class="part-layer" data-part="thread"></div>
+        <div class="part-layer" data-part="tipthread"></div>
+        <div class="part-layer" data-part="reelseat"></div>
+      </div>
 
       <!-- Rod line drawing on top — multiply blend preserves black outlines perfectly -->
       <img src="rod-diagram.png" alt="rod diagram"/>
@@ -493,20 +441,8 @@ var panelOpen = false;
 
 // ===== SVG ROD PREVIEW =====
 function renderSVG() {
-  document.querySelectorAll('.svg-blank').forEach(function(el) {
-    el.setAttribute('fill', state.blank.hex);
-  });
-  document.querySelectorAll('.svg-tip').forEach(function(el) {
-    el.setAttribute('fill', state.tip.hex);
-  });
-  document.querySelectorAll('.svg-thread').forEach(function(el) {
-    el.setAttribute('fill', state.thread.hex);
-  });
-  document.querySelectorAll('.svg-tipthread').forEach(function(el) {
-    el.setAttribute('fill', state.tipthread.hex);
-  });
-  document.querySelectorAll('.svg-reelseat').forEach(function(el) {
-    el.setAttribute('fill', state.reelseat.hex);
+  document.querySelectorAll('.part-layer').forEach(function(el) {
+    el.style.backgroundColor = state[el.dataset.part].hex;
   });
 }
 
@@ -607,33 +543,32 @@ document.getElementById('btn-share').addEventListener('click', function() {
 });
 
 document.getElementById('btn-save').addEventListener('click', function() {
-  var W = 842, H = 595;
-  var svg = document.getElementById('rod-svg');
-  var svgData = new XMLSerializer().serializeToString(svg);
-  var svgBlob = new Blob([svgData], {type:'image/svg+xml;charset=utf-8'});
-  var svgUrl = URL.createObjectURL(svgBlob);
+  var W = 842, H = 595, parts = ['blank','tip','thread','tipthread','reelseat'];
   var canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   var ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
-  var svgImg = new Image();
-  svgImg.onload = function() {
-    ctx.drawImage(svgImg, 0, 0, W, H);
-    URL.revokeObjectURL(svgUrl);
-    var rodImg = new Image();
-    rodImg.onload = function() {
-      ctx.globalCompositeOperation = 'multiply';
-      ctx.drawImage(rodImg, 0, 0, W, H);
-      ctx.globalCompositeOperation = 'source-over';
-      var link = document.createElement('a');
-      link.download = 'IG_rod_color.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    };
-    rodImg.src = 'rod-diagram.png';
-  };
-  svgImg.src = svgUrl;
+  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png'; }).concat(['rod-diagram.png']);
+  var imgs = srcs.map(function(s){ var i = new Image(); i.src = s; return i; });
+  Promise.all(imgs.map(function(i){ return i.decode(); })).then(function() {
+    parts.forEach(function(p, k) {
+      var layer = document.createElement('canvas');
+      layer.width = W; layer.height = H;
+      var lc = layer.getContext('2d');
+      lc.drawImage(imgs[k], 0, 0);
+      lc.globalCompositeOperation = 'source-in';
+      lc.fillStyle = state[p].hex;
+      lc.fillRect(0, 0, W, H);
+      ctx.drawImage(layer, 0, 0);
+    });
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.drawImage(imgs[parts.length], 0, 0);
+    var link = document.createElement('a');
+    link.download = 'IG_rod_color.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
 });
 
 document.getElementById('btn-order').addEventListener('click', function(e) {
