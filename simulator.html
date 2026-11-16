@@ -96,7 +96,7 @@
     .part-layer[data-part="tip"] { -webkit-mask-image:url(sim-masks/tip.png); mask-image:url(sim-masks/tip.png); }
     .part-layer[data-part="thread"] { -webkit-mask-image:url(sim-masks/thread.png); mask-image:url(sim-masks/thread.png); }
     .part-layer[data-part="tipthread"] { -webkit-mask-image:url(sim-masks/tipthread.png); mask-image:url(sim-masks/tipthread.png); }
-    .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png?v=3); mask-image:url(sim-masks/reelseat.png?v=3); }
+    .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png?v=4); mask-image:url(sim-masks/reelseat.png?v=4); }
     .part-layer[data-part="grip"] { -webkit-mask-image:url(sim-masks/grip.png); mask-image:url(sim-masks/grip.png); }
     #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
@@ -634,7 +634,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
   var ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
-  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=3'; }).concat(['rod-diagram.png']);
+  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=4'; }).concat(['rod-diagram.png']);
   var imgs = srcs.map(function(s){ var i = new Image(); i.src = s; return i; });
   Promise.all(imgs.map(function(i){ return i.decode(); })).then(function() {
     parts.forEach(function(p, k) {
