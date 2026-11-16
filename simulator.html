@@ -74,7 +74,22 @@
     /* PREVIEW */
     .sim-preview { background:#f0f0ee; border-radius:14px; padding:2rem 1.5rem 1.5rem; margin-bottom:2rem; border:1px solid var(--wborder); }
     .sim-preview-label { font-size:0.6rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#999; margin-bottom:1rem; }
-    #rod-diagram-container { width:100%; position:relative; border-radius:4px; overflow:hidden; line-height:0; background:#fff; }
+    #rod-diagram-container, .rod-clone { position:absolute; line-height:0; background:#fff; transition:width .5s ease, left .5s ease, top .5s ease; }
+    .rod-clone img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
+    .rod-viewer { display:grid; grid-template-columns:1fr 150px; gap:12px; align-items:start; }
+    .rod-frame { position:relative; overflow:hidden; aspect-ratio:842/230; background:#fff; border-radius:4px; }
+    .rod-thumbs { display:flex; flex-direction:column; gap:8px; }
+    .rod-thumb { display:block; padding:0; border:2px solid transparent; border-radius:6px; background:none; cursor:pointer; font-family:inherit; text-align:left; transition:border-color .2s; }
+    .rod-thumb .rod-frame { pointer-events:none; }
+    .rod-thumb-label { display:block; font-size:0.66rem; font-weight:700; letter-spacing:0.08em; color:#555; padding:4px 4px 2px; }
+    .rod-thumb:hover { border-color:#ccc; }
+    .rod-thumb.active { border-color:#c0282d; }
+    .rod-thumb.active .rod-thumb-label { color:#c0282d; }
+    @media (max-width:700px) {
+      .rod-viewer { grid-template-columns:1fr; }
+      .rod-thumbs { flex-direction:row; }
+      .rod-thumb { flex:1; min-width:0; }
+    }
     #rod-svg { position:absolute; inset:0; }
     .part-layer { position:absolute; inset:0; -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
     .part-layer[data-part="blank"] { -webkit-mask-image:url(sim-masks/blank.png); mask-image:url(sim-masks/blank.png); }
@@ -249,6 +264,8 @@
   <!-- PREVIEW -->
   <div class="sim-preview">
     <div class="sim-preview-label">PREVIEW — ロッドカラープレビュー</div>
+    <div class="rod-viewer">
+      <div class="rod-frame" id="rod-main">
     <div id="rod-diagram-container">
       <!-- Colored regions layer (behind the line drawing) -->
       <!-- rod-diagram.png is 842×595px; coordinates match that image -->
@@ -263,6 +280,14 @@
 
       <!-- Rod line drawing on top — multiply blend preserves black outlines perfectly -->
       <img src="rod-diagram.png" alt="rod diagram"/>
+    </div>
+      </div>
+      <div class="rod-thumbs" id="rod-thumbs">
+        <button class="rod-thumb active" data-view="all"><span class="rod-thumb-label">全体</span><div class="rod-frame"></div></button>
+        <button class="rod-thumb" data-view="tip"><span class="rod-thumb-label">ティップ</span><div class="rod-frame"></div></button>
+        <button class="rod-thumb" data-view="blank"><span class="rod-thumb-label">ブランク</span><div class="rod-frame"></div></button>
+        <button class="rod-thumb" data-view="handle"><span class="rod-thumb-label">ハンドル</span><div class="rod-frame"></div></button>
+      </div>
     </div>
   </div>
 
@@ -482,6 +507,7 @@ function renderCircles() {
 
 function openPanel(part) {
   activePart = part;
+  setView(PART_VIEW[part]);
   panelOpen = true;
   PARTS.forEach(function(p) {
     var btn = document.getElementById('circle-' + p);
@@ -518,6 +544,46 @@ function closePanel() {
     if (btn) btn.classList.remove('active');
   });
 }
+
+// ===== ZOOM VIEWS (image coords, all at 842:230 aspect) =====
+var VIEWS = {
+  all:    [0, 140, 842, 230],
+  tip:    [0, 148, 300, 82],
+  blank:  [250, 109, 592, 162],
+  handle: [280, 245, 520, 142],
+};
+var PART_VIEW = { tip:'tip', tipthread:'tip', blank:'all', thread:'all', reelseat:'handle', grip:'handle' };
+
+function applyView(el, name) {
+  var v = VIEWS[name];
+  el.style.width = (842 / v[2] * 100) + '%';
+  el.style.left  = (-v[0] / v[2] * 100) + '%';
+  el.style.top   = (-v[1] / v[3] * 100) + '%';
+}
+
+function setView(name) {
+  applyView(document.getElementById('rod-diagram-container'), name);
+  document.querySelectorAll('.rod-thumb').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.view === name);
+  });
+}
+
+(function initThumbs() {
+  var src = document.getElementById('rod-diagram-container');
+  document.querySelectorAll('.rod-thumb').forEach(function(t) {
+    var c = src.cloneNode(true);
+    c.removeAttribute('id');
+    c.className = 'rod-clone';
+    c.querySelectorAll('[id]').forEach(function(n){ n.removeAttribute('id'); });
+    t.querySelector('.rod-frame').appendChild(c);
+    applyView(c, t.dataset.view);
+  });
+  document.getElementById('rod-thumbs').addEventListener('click', function(e) {
+    var t = e.target.closest('.rod-thumb');
+    if (t) setView(t.dataset.view);
+  });
+  setView('all');
+})();
 
 function selectColor(colorId) {
   var info = getColors(activePart);
