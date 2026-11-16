@@ -94,7 +94,7 @@
     .part-layer[data-part="tip"] { -webkit-mask-image:url(sim-masks/tip.png); mask-image:url(sim-masks/tip.png); }
     .part-layer[data-part="thread"] { -webkit-mask-image:url(sim-masks/thread.png); mask-image:url(sim-masks/thread.png); }
     .part-layer[data-part="tipthread"] { -webkit-mask-image:url(sim-masks/tipthread.png); mask-image:url(sim-masks/tipthread.png); }
-    .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png?v=8); mask-image:url(sim-masks/reelseat.png?v=8); }
+    .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png?v=10); mask-image:url(sim-masks/reelseat.png?v=10); }
     .part-layer[data-part="grip"] { -webkit-mask-image:url(sim-masks/grip.png); mask-image:url(sim-masks/grip.png); }
     #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
@@ -256,8 +256,8 @@
         <div class="part-layer" data-part="tipthread"></div>
         <div class="part-layer" data-part="reelseat"></div>
         <div class="part-layer" data-part="grip"></div>
-        <div class="fx-layer" style="background-image:url(sim-masks/shade.png?v=8);mix-blend-mode:multiply"></div>
-        <div class="fx-layer" style="background-image:url(sim-masks/gloss.png?v=8);mix-blend-mode:screen"></div>
+        <div class="fx-layer" style="background-image:url(sim-masks/shade.png?v=10);mix-blend-mode:multiply"></div>
+        <div class="fx-layer" style="background-image:url(sim-masks/gloss.png?v=10);mix-blend-mode:screen"></div>
       </div>
       <img src="rod-diagram@4x.png" alt="rod diagram"/>
     </div>
@@ -745,7 +745,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
   var ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
-  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=8'; }).concat(['sim-masks/shade.png?v=8','sim-masks/gloss.png?v=8','rod-diagram@4x.png']);
+  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=10'; }).concat(['sim-masks/shade.png?v=10','sim-masks/gloss.png?v=10','rod-diagram@4x.png']);
   var imgs = srcs.map(function(s){ var i = new Image(); i.src = s; return i; });
   Promise.all(imgs.map(function(i){ return i.decode(); })).then(function() {
     parts.forEach(function(p, k) {
