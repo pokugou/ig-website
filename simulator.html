@@ -96,7 +96,7 @@
     .part-layer[data-part="tip"] { -webkit-mask-image:url(sim-masks/tip.png); mask-image:url(sim-masks/tip.png); }
     .part-layer[data-part="thread"] { -webkit-mask-image:url(sim-masks/thread.png); mask-image:url(sim-masks/thread.png); }
     .part-layer[data-part="tipthread"] { -webkit-mask-image:url(sim-masks/tipthread.png); mask-image:url(sim-masks/tipthread.png); }
-    .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png?v=2); mask-image:url(sim-masks/reelseat.png?v=2); }
+    .part-layer[data-part="reelseat"] { -webkit-mask-image:url(sim-masks/reelseat.png?v=3); mask-image:url(sim-masks/reelseat.png?v=3); }
     .part-layer[data-part="grip"] { -webkit-mask-image:url(sim-masks/grip.png); mask-image:url(sim-masks/grip.png); }
     #rod-diagram-container img { display:block; width:100%; mix-blend-mode:multiply; position:relative; z-index:1; }
 
@@ -394,56 +394,57 @@
 <script>
 // ===== COLOR DATA =====
 var BLANK_COLORS = [
-  { id:'c001', name:'001 ホワイト',   hex:'#d0d8da', cat:'フラット通常色' },
-  { id:'c002', name:'002 ブラック',   hex:'#181818', cat:'フラット通常色' },
-  { id:'c003', name:'003 ブルー',     hex:'#2070cc', cat:'フラット通常色' },
-  { id:'c004', name:'004 レッド',     hex:'#cc0018', cat:'フラット通常色' },
-  { id:'c005', name:'005 イエロー',   hex:'#c8d400', cat:'フラット通常色' },
-  { id:'c006', name:'006 グリーン',   hex:'#1a4a3a', cat:'フラット通常色' },
-  { id:'c007', name:'007 シルバー',   hex:'#6a7880', cat:'フラットメタリック色' },
-  { id:'c008', name:'008 ゴールド',   hex:'#b49800', cat:'フラットメタリック色' },
-  { id:'c009', name:'009 ブルー',     hex:'#0060b0', cat:'フラットメタリック色' },
-  { id:'c010', name:'010 レッド',     hex:'#c02038', cat:'フラットメタリック色' },
-  { id:'c011', name:'011 グリーン',   hex:'#008840', cat:'フラットメタリック色' },
-  { id:'c012', name:'012 オレンジ',   hex:'#c86000', cat:'フラットメタリック色' },
-  { id:'c013', name:'013 グリーン',   hex:'#2cc800', cat:'フラット蛍光色' },
-  { id:'c014', name:'014 イエロー',   hex:'#c4e000', cat:'フラット蛍光色' },
-  { id:'c015', name:'015 ピンク',     hex:'#ee1880', cat:'フラット蛍光色' },
-  { id:'c016', name:'016 オレンジ',   hex:'#ee4400', cat:'フラット蛍光色' },
+  { id:'c001', name:'001 ホワイト', hex:'#c3cacd', cat:'フラット通常色（¥8,000UP）' },
+  { id:'c002', name:'002 ブラック', hex:'#19191b', cat:'フラット通常色（¥8,000UP）' },
+  { id:'c003', name:'003 ブルー', hex:'#2b70c9', cat:'フラット通常色（¥8,000UP）' },
+  { id:'c004', name:'004 レッド', hex:'#ab121e', cat:'フラット通常色（¥8,000UP）' },
+  { id:'c005', name:'005 イエロー', hex:'#d3d628', cat:'フラット通常色（¥8,000UP）' },
+  { id:'c006', name:'006 グリーン', hex:'#0d3328', cat:'フラット通常色（¥8,000UP）' },
+  { id:'c007', name:'007 シルバー', hex:'#aeb3b5', cat:'フラットメタリック色（¥9,500UP）' },
+  { id:'c008', name:'008 ゴールド', hex:'#9f8c19', cat:'フラットメタリック色（¥9,500UP）' },
+  { id:'c009', name:'009 ブルー', hex:'#044d8b', cat:'フラットメタリック色（¥9,500UP）' },
+  { id:'c010', name:'010 レッド', hex:'#771415', cat:'フラットメタリック色（¥9,500UP）' },
+  { id:'c011', name:'011 グリーン', hex:'#096c45', cat:'フラットメタリック色（¥9,500UP）' },
+  { id:'c012', name:'012 オレンジ', hex:'#be5607', cat:'フラットメタリック色（¥9,500UP）' },
+  { id:'c013', name:'013 グリーン', hex:'#60cc37', cat:'フラット蛍光色（¥9,000UP）' },
+  { id:'c014', name:'014 イエロー', hex:'#d0e71f', cat:'フラット蛍光色（¥9,000UP）' },
+  { id:'c015', name:'015 ピンク', hex:'#ee2e8e', cat:'フラット蛍光色（¥9,000UP）' },
+  { id:'c016', name:'016 オレンジ', hex:'#eb560b', cat:'フラット蛍光色（¥9,000UP）' },
 ];
 
 var THREAD_COLORS = [
-  { id:'t101',   name:'101 ホワイト',      hex:'#f1f3f3', cat:'ダル' },
-  { id:'t102',   name:'102 ブラック',      hex:'#152036', cat:'ダル' },
-  { id:'t112',   name:'112 ダークグレー',  hex:'#74767a', cat:'ダル' },
-  { id:'t118lg', name:'118 ライトグレー',  hex:'#ced3d5', cat:'ダル' },
-  { id:'t103',   name:'103 レッド',        hex:'#bd2f22', cat:'ダル' },
-  { id:'t104',   name:'104 オレンジ',      hex:'#d86531', cat:'ダル' },
-  { id:'t105',   name:'105 イエロー',      hex:'#e9e663', cat:'ダル' },
-  { id:'t106',   name:'106 ネイビー',      hex:'#13223a', cat:'ダル' },
-  { id:'t107',   name:'107 ピンク',        hex:'#d5a2bd', cat:'ダル' },
-  { id:'t109',   name:'109 ターコイズ',    hex:'#63b8c9', cat:'ダル' },
-  { id:'t118b',  name:'118 ブルー',        hex:'#2960a8', cat:'ダル' },
-  { id:'t145',   name:'145 ライトブルー',  hex:'#8bbbdc', cat:'ダル' },
-  { id:'t166',   name:'166 パープル',      hex:'#7c327f', cat:'ダル' },
-  { id:'t172',   name:'172 ライトグリーン',hex:'#4ea75c', cat:'ダル' },
-  { id:'t202g',  name:'202 グリーン',      hex:'#33673e', cat:'ダル' },
-  { id:'t201',   name:'201 シルバー',      hex:'#a9aaa3', cat:'メタリック' },
-  { id:'t202go', name:'202 ゴールド',      hex:'#ac935d', cat:'メタリック' },
-  { id:'t203',   name:'203 レッド',        hex:'#c14337', cat:'メタリック' },
-  { id:'t206',   name:'206 ディープピンク',hex:'#962245', cat:'メタリック' },
-  { id:'t207',   name:'207 パープル',      hex:'#471b54', cat:'メタリック' },
-  { id:'t208',   name:'208 ブルー',        hex:'#1f4185', cat:'メタリック' },
-  { id:'t209',   name:'209 ライトブルー',  hex:'#4691b5', cat:'メタリック' },
-  { id:'t210',   name:'210 グリーン',      hex:'#295b36', cat:'メタリック' },
-  { id:'t211',   name:'211 カッパー',      hex:'#9f4d2f', cat:'メタリック' },
-  { id:'t213',   name:'213 ブロンズ',      hex:'#362c2b', cat:'メタリック' },
-  { id:'t237',   name:'237 ピンク',        hex:'#a6748a', cat:'メタリック' },
-  { id:'t301',   name:'301 イエロー',      hex:'#e9e663', cat:'NCP' },
-  { id:'t302',   name:'302 オレンジ',      hex:'#dd792f', cat:'NCP' },
-  { id:'t303',   name:'303 グリーン',      hex:'#86be87', cat:'NCP' },
-  { id:'t304',   name:'304 レッド',        hex:'#cd3b26', cat:'NCP' },
-  { id:'t305',   name:'305 ピンク',        hex:'#d65170', cat:'NCP' },
+  { id:'t101', name:'101 ホワイト', hex:'#f1f3f2', cat:'ダルスレッド' },
+  { id:'t102', name:'102 ブラック', hex:'#152037', cat:'ダルスレッド' },
+  { id:'t112', name:'112 ダークグレー', hex:'#75787b', cat:'ダルスレッド' },
+  { id:'t118lg', name:'118 ライトグレー', hex:'#cfd4d7', cat:'ダルスレッド' },
+  { id:'t172', name:'172 ライトグリーン', hex:'#4da75b', cat:'ダルスレッド' },
+  { id:'t202g', name:'202 グリーン', hex:'#356a3f', cat:'ダルスレッド' },
+  { id:'t103', name:'103 レッド', hex:'#be3022', cat:'ダルスレッド' },
+  { id:'t104', name:'104 オレンジ', hex:'#d96632', cat:'ダルスレッド' },
+  { id:'t166', name:'166 パープル', hex:'#7d3380', cat:'ダルスレッド' },
+  { id:'t109', name:'109 ターコイズ', hex:'#63b9ca', cat:'ダルスレッド' },
+  { id:'t145', name:'145 ライトブルー', hex:'#8abbdd', cat:'ダルスレッド' },
+  { id:'t118b', name:'118 ブルー', hex:'#2960a9', cat:'ダルスレッド' },
+  { id:'t105', name:'105 イエロー', hex:'#e9e662', cat:'ダルスレッド' },
+  { id:'t106', name:'106 ネイビー', hex:'#14223a', cat:'ダルスレッド' },
+  { id:'t107', name:'107 ピンク', hex:'#d6a3be', cat:'ダルスレッド' },
+  { id:'t201', name:'201 シルバー', hex:'#abaca4', cat:'メタリックカラー' },
+  { id:'t202go', name:'202 ゴールド', hex:'#ac935c', cat:'メタリックカラー' },
+  { id:'t237', name:'237 ピンク', hex:'#a67388', cat:'メタリックカラー' },
+  { id:'t203', name:'203 レッド', hex:'#c03c32', cat:'メタリックカラー' },
+  { id:'t206', name:'206 Dピンク', hex:'#942244', cat:'メタリックカラー' },
+  { id:'t207', name:'207 パープル', hex:'#471a53', cat:'メタリックカラー' },
+  { id:'t208', name:'208 ブルー', hex:'#1a397e', cat:'メタリックカラー' },
+  { id:'t209', name:'209 ライトブルー', hex:'#438eb3', cat:'メタリックカラー' },
+  { id:'t210', name:'210 グリーン', hex:'#25562f', cat:'メタリックカラー' },
+  { id:'t211', name:'211 カッパー', hex:'#9b492d', cat:'メタリックカラー' },
+  { id:'t212', name:'212 ブラウン', hex:'#3a2320', cat:'メタリックカラー' },
+  { id:'t213', name:'213 ブロンズ', hex:'#362c2a', cat:'メタリックカラー' },
+  { id:'t301', name:'301 イエロー', hex:'#e9e662', cat:'蛍光色' },
+  { id:'t302', name:'302 オレンジ', hex:'#dd7a2f', cat:'蛍光色' },
+  { id:'t303', name:'303 グリーン', hex:'#85be85', cat:'蛍光色' },
+  { id:'t304', name:'304 レッド', hex:'#ce3b26', cat:'蛍光色' },
+  { id:'t305', name:'305 ピンク', hex:'#d65171', cat:'蛍光色' },
 ];
 
 var GRIP_COLORS = [
@@ -456,11 +457,11 @@ var REELSEAT_COLORS = BLANK_COLORS;
 // ===== STATE =====
 var activePart = 'blank';
 var state = {
-  blank:     { id:'c004', name:'004 レッド',    hex:'#cc0018', cat:'フラット通常色' },
-  thread:    { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
-  tipthread: { id:'t101', name:'101 ホワイト',  hex:'#f1f3f3' },
-  tip:       { id:'c005', name:'005 イエロー',  hex:'#c8d400', cat:'フラット通常色' },
-  reelseat:  { id:'c007', name:'007 シルバー',  hex:'#6a7880', cat:'フラットメタリック色' },
+  blank: { id:'c004', name:'004 レッド', hex:'#ab121e', cat:'フラット通常色（¥8,000UP）' },
+  thread:    { id:'t101', name:'101 ホワイト', hex:'#f1f3f2', cat:'ダルスレッド' },
+  tipthread: { id:'t101', name:'101 ホワイト', hex:'#f1f3f2', cat:'ダルスレッド' },
+  tip: { id:'c005', name:'005 イエロー', hex:'#d3d628', cat:'フラット通常色（¥8,000UP）' },
+  reelseat: { id:'c007', name:'007 シルバー', hex:'#aeb3b5', cat:'フラットメタリック色（¥9,500UP）' },
   grip:      { id:'g-black', name:'ブラック', hex:'#2b2b2b', cat:'グリップ' },
 };
 
@@ -633,7 +634,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
   var ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
-  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=2'; }).concat(['rod-diagram.png']);
+  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=3'; }).concat(['rod-diagram.png']);
   var imgs = srcs.map(function(s){ var i = new Image(); i.src = s; return i; });
   Promise.all(imgs.map(function(i){ return i.decode(); })).then(function() {
     parts.forEach(function(p, k) {
