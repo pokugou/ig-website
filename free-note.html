@@ -38,7 +38,7 @@
 
   .head-meta .optchk { font-size: 0.7rem; }
   .head-meta .optchk input { width: auto; }
-  body.no-author .au { opacity: 0.35; }
+  body.no-author .au, body.no-date .dt { opacity: 0.35; }
   .blk { margin-top: 0.9rem; position: relative; }
   .blk-bar { display: flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; color: var(--sub); margin-bottom: 0.2rem; flex-wrap: wrap; }
   .blk-bar .kind { font-weight: 700; letter-spacing: 0.08em; background: #eee; padding: 0.1rem 0.5rem; margin-right: auto; }
@@ -47,11 +47,18 @@
   .blk-bar button.danger:hover { background: var(--red); border-color: var(--red); }
 
   .b-heading input { font-size: 1.25rem; font-weight: 900; padding: 0.3rem 0.1rem; border-bottom: 2px solid var(--ink); }
-  .b-text textarea { line-height: 1.7; padding: 0.3rem 0.1rem; min-height: 3.4em; }
-  .fs0 textarea { font-size: 0.85rem; }
-  .fs1 textarea { font-size: 1rem; }
-  .fs2 textarea { font-size: 1.25rem; }
-  .fs3 textarea { font-size: 1.6rem; }
+  .b-text textarea, .b-text .rt { line-height: 1.7; padding: 0.3rem 0.1rem; min-height: 3.4em; }
+  .fs0 textarea, .fs0 .rt { font-size: 0.85rem; }
+  .fs1 textarea, .fs1 .rt { font-size: 1rem; }
+  .fs2 textarea, .fs2 .rt { font-size: 1.25rem; }
+  .fs3 textarea, .fs3 .rt { font-size: 1.6rem; }
+  /* 文章ブロック：一部だけ太字・下線にできる入力欄 */
+  .rt { white-space: pre-wrap; word-break: break-word; outline: none; font-weight: 400; }
+  .rt:focus { background: #fff8e0; }
+  .rt:empty::before { content: attr(data-ph); color: #aaa; }
+  .rt b, .rt strong { font-weight: 700; }
+  .pdf-capture .rt:empty::before { content: ''; }
+  .pdf-capture .rt:focus { background: none; }
 
   table.tbl { width: 100%; border-collapse: collapse; table-layout: fixed; }
   table.tbl td { border: 1.5px solid var(--ink); padding: 0; vertical-align: middle; }
@@ -101,7 +108,8 @@
   .pdf-capture .im.sel { outline: none; }
   .pdf-capture table.tbl td.sel { box-shadow: none; }
   .pdf-capture .head-meta input { border-bottom: none; }
-  .pdf-capture .optchk, .pdf-capture.no-author .au { display: none; }
+  .pdf-capture .optchk, .pdf-capture.no-author .au, .pdf-capture.no-date .dt { display: none; }
+  .pdf-capture.no-date.no-author .head-meta { display: none; }
 
   @media print {
     body { background: #fff; padding: 0; }
@@ -111,7 +119,8 @@
     table.tbl td.sel { box-shadow: none; }
     .sheet { width: 100%; border: none; padding: 0; }
     .head-meta input { border-bottom: none; }
-    .optchk, body.no-author .au { display: none; }
+    .optchk, body.no-author .au, body.no-date .dt { display: none; }
+    .rt:empty::before { content: ''; }
     .blk { break-inside: avoid; }
     @page { size: A4; margin: 1.2cm; }
   }
@@ -127,13 +136,14 @@
     <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
-  <p class="hint">下のボタンで「見出し・文章・表・画像」を好きな順に追加できます。各ブロックの↑↓で順番を入れ替え、×で削除。PDFは内容が長い場合、自動で複数ページになります。</p>
+  <p class="hint">下のボタンで「見出し・文章・表・画像」を好きな順に追加できます。各ブロックの↑↓で順番を入れ替え、×で削除。PDFは内容が長い場合、自動で複数ページになります。文章の一部だけ太字・下線にしたいときは、その文字をなぞって選んでから「太字」「下線」を押してください。</p>
 
   <div class="sheet" id="sheet">
     <div class="blk head" id="head">
       <input type="text" class="head-title" id="f-title" placeholder="タイトル（例：打ち合わせメモ）">
       <div class="head-meta">
-        <label>日付<input type="date" id="f-date"></label>
+        <label class="dt">日付<input type="date" id="f-date"></label>
+        <label class="optchk"><input type="checkbox" id="opt-date" checked>PDFに日付を載せる</label>
         <label class="au">作成者<input type="text" class="author" id="f-author" value="石谷 豪"></label>
         <label class="optchk"><input type="checkbox" id="opt-author" checked>PDFに作成者を載せる</label>
       </div>
@@ -470,6 +480,86 @@
     next.setSelectionRange(pos, pos);
   }
 
+  // ---- 文章ブロック：なぞった部分だけ太字・下線にできる入力欄 ----
+  function escHtml(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  // 貼り付けや編集で入った余計なタグを落とし、太字(b)・下線(u)・改行だけを残す
+  function cleanRich(root) {
+    var out = '';
+    (function walk(n, inBlockStart) {
+      Array.prototype.forEach.call(n.childNodes, function (c, i) {
+        if (c.nodeType === 3) { out += escHtml(c.nodeValue); return; }
+        if (c.nodeType !== 1) return;
+        var tag = c.tagName, st = c.getAttribute('style') || '';
+        if (tag === 'BR') { out += '<br>'; return; }
+        var block = tag === 'DIV' || tag === 'P';
+        if (block && out && !/<br>$/.test(out)) out += '<br>';
+        var bold = tag === 'B' || tag === 'STRONG' || /font-weight:\s*(bold|[6-9]00)/.test(st);
+        var und = tag === 'U' || /text-decoration[^;]*underline/.test(st);
+        if (bold) out += '<b>';
+        if (und) out += '<u>';
+        walk(c);
+        if (und) out += '</u>';
+        if (bold) out += '</b>';
+      });
+    })(root);
+    return out.replace(/<b><\/b>|<u><\/u>/g, '');
+  }
+  function richFromText(t) { return escHtml(t || '').replace(/\n/g, '<br>'); }
+
+  function buildRichText(b) {
+    var el = document.createElement('div');
+    el.className = 'rt'; el.contentEditable = 'true'; el.setAttribute('data-ph', '自由に書き込めます');
+    el.innerHTML = b.html != null ? b.html : richFromText(b.text);
+    if (b.ta) el.style.textAlign = b.ta;
+    if (b.bd) el.style.fontWeight = '700';
+    if (b.ul) el.style.textDecoration = 'underline';
+    function sync() {
+      b.html = cleanRich(el);
+      b.text = el.innerText.replace(/\n$/, '');
+      if (el.innerHTML === '<br>') { el.innerHTML = ''; b.html = ''; b.text = ''; }
+      saveDraft();
+    }
+    el.addEventListener('input', sync);
+    el.addEventListener('blur', function () { var h = cleanRich(el); if (h !== el.innerHTML) el.innerHTML = h; });
+    el.addEventListener('paste', function (e) {
+      var t = e.clipboardData && e.clipboardData.getData('text/plain');
+      e.preventDefault(); // 画像の貼り付けは下の共通処理（画像ブロックへ追加）に任せる
+      if (!t) return;
+      e.stopPropagation();
+      document.execCommand('insertText', false, t);
+    });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.isComposing && !e.shiftKey) { e.preventDefault(); document.execCommand('insertLineBreak'); }
+    });
+    return el;
+  }
+
+  // ボタンを押しても文章の選択が外れないようにする（パソコンは mousedown、iPhone はタッチした瞬間の選択を覚える）
+  var btnSel = null, btnSelTimer = null;
+  function keepSelection(btn) {
+    btn.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    btn.addEventListener('touchstart', function () {
+      var s = window.getSelection();
+      btnSel = s && s.rangeCount && !s.isCollapsed ? s.getRangeAt(0).cloneRange() : null;
+      clearTimeout(btnSelTimer); btnSelTimer = setTimeout(function () { btnSel = null; }, 2000);
+    }, { passive: true });
+  }
+  // 文章の中に選択範囲があれば、その部分だけ太字/下線を切り替えて true を返す
+  function rtFormat(wrap, cmd) {
+    var el = wrap.querySelector('.rt'); if (!el) return false;
+    var s = window.getSelection(), r = s && s.rangeCount ? s.getRangeAt(0) : null;
+    if (!r || r.collapsed || !el.contains(r.commonAncestorContainer)) {
+      r = btnSel;
+      if (!r || r.collapsed || !el.contains(r.commonAncestorContainer)) return false;
+      el.focus(); s.removeAllRanges(); s.addRange(r);
+    }
+    btnSel = null;
+    try { document.execCommand('styleWithCSS', false, false); } catch (e) {}
+    document.execCommand(cmd);
+    el.dispatchEvent(new Event('input'));
+    return true;
+  }
+
   function renderBlocks() {
     blocksEl.innerHTML = '';
     blocks.forEach(function (b, idx) {
@@ -485,8 +575,12 @@
       if (b.type === 'heading' || b.type === 'text') alignButtons(bar, b, 'ta');
       if (b.type === 'heading' || b.type === 'text') {
         var bdOn = b.type === 'heading' ? b.bd !== false : !!b.bd;
-        var bb = barBtn('太字', function () { b.bd = !bdOn; renderBlocks(); saveDraft(); }, 'al-btn' + (bdOn ? ' on' : '')); bb.style.fontWeight = '900'; bb.title = 'この' + (b.type === 'heading' ? '見出し' : '文章') + '全体の太字を切り替え';
-        var ubb = barBtn('下線', function () { b.ul = !b.ul; renderBlocks(); saveDraft(); }, 'al-btn' + (b.ul ? ' on' : '')); ubb.style.textDecoration = 'underline'; ubb.title = 'この' + (b.type === 'heading' ? '見出し' : '文章') + '全体の下線を切り替え';
+        var isText = b.type === 'text';
+        var bb = barBtn('太字', function () { if (isText && rtFormat(wrap, 'bold')) return; b.bd = !bdOn; renderBlocks(); saveDraft(); }, 'al-btn' + (bdOn ? ' on' : '')); bb.style.fontWeight = '900';
+        bb.title = isText ? '文字をなぞって選んでから押すと、その部分だけ太字（選択なしなら文章全体）' : 'この見出し全体の太字を切り替え';
+        var ubb = barBtn('下線', function () { if (isText && rtFormat(wrap, 'underline')) return; b.ul = !b.ul; renderBlocks(); saveDraft(); }, 'al-btn' + (b.ul ? ' on' : '')); ubb.style.textDecoration = 'underline';
+        ubb.title = isText ? '文字をなぞって選んでから押すと、その部分だけ下線（選択なしなら文章全体）' : 'この見出し全体の下線を切り替え';
+        if (isText) [bb, ubb].forEach(keepSelection);
         bar.appendChild(bb); bar.appendChild(ubb);
       }
       if (b.type === 'text') {
@@ -560,11 +654,7 @@
         wrap.appendChild(hi);
       } else if (b.type === 'text') {
         wrap.classList.add('fs' + (b.fs == null ? 1 : b.fs));
-        var ta = document.createElement('textarea'); ta.placeholder = '自由に書き込めます'; ta.value = b.text || ''; if (b.ta) ta.style.textAlign = b.ta;
-        if (b.bd) ta.style.fontWeight = '700';
-        if (b.ul) ta.style.textDecoration = 'underline';
-        ta.addEventListener('input', function () { b.text = ta.value; grow(ta); saveDraft(); });
-        wrap.appendChild(ta);
+        wrap.appendChild(buildRichText(b));
       } else if (b.type === 'table') {
         var tbl = document.createElement('table'); tbl.className = 'tbl' + (b.header ? ' hdr' : '');
         if (!b.align) b.align = [];
@@ -629,7 +719,7 @@
   }
 
   function snapshot() {
-    return { id: currentId, title: document.getElementById('f-title').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, showAuthor: document.getElementById('opt-author').checked, blocks: blocks };
+    return { id: currentId, title: document.getElementById('f-title').value, date: document.getElementById('f-date').value, author: document.getElementById('f-author').value, showAuthor: document.getElementById('opt-author').checked, showDate: document.getElementById('opt-date').checked, blocks: blocks };
   }
 
   function saveDraft() {
@@ -649,6 +739,8 @@
     document.getElementById('f-author').value = d.author != null ? d.author : '石谷 豪';
     document.getElementById('opt-author').checked = d.showAuthor !== false;
     document.body.classList.toggle('no-author', d.showAuthor === false);
+    document.getElementById('opt-date').checked = d.showDate !== false;
+    document.body.classList.toggle('no-date', d.showDate === false);
     blocks = normalizeBlocks((d.blocks || []).map(function (b) { return JSON.parse(JSON.stringify(b)); }));
     if (!blocks.length) blocks = [{ type: 'text', text: '', fs: 1 }];
     renderBlocks();
@@ -692,6 +784,7 @@
     b.addEventListener('click', function () { addBlock(b.dataset.add); });
   });
   document.getElementById('opt-author').addEventListener('change', function () { document.body.classList.toggle('no-author', !this.checked); saveDraft(); });
+  document.getElementById('opt-date').addEventListener('change', function () { document.body.classList.toggle('no-date', !this.checked); saveDraft(); });
   ['f-title', 'f-date', 'f-author'].forEach(function (id) { document.getElementById(id).addEventListener('input', saveDraft); });
 
   var draft = null;
@@ -711,7 +804,7 @@
   document.getElementById('btn-reset').addEventListener('click', function () {
     if (!confirm('新しいページを始めますか？今の入力内容は消えます（保存一覧の記録は消えません）。')) return;
     currentId = null;
-    restore({ author: document.getElementById('f-author').value });
+    restore({ author: document.getElementById('f-author').value, showAuthor: document.getElementById('opt-author').checked, showDate: document.getElementById('opt-date').checked });
     saveDraft();
   });
 
