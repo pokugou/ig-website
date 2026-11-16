@@ -91,6 +91,7 @@
       .rod-thumb { flex:1; min-width:0; }
     }
     #rod-svg { position:absolute; inset:0; }
+    .fx-layer { position:absolute; inset:0; background-size:100% 100%; background-repeat:no-repeat; pointer-events:none; }
     .part-layer { position:absolute; inset:0; -webkit-mask-size:100% 100%; mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
     .part-layer[data-part="blank"] { -webkit-mask-image:url(sim-masks/blank.png); mask-image:url(sim-masks/blank.png); }
     .part-layer[data-part="tip"] { -webkit-mask-image:url(sim-masks/tip.png); mask-image:url(sim-masks/tip.png); }
@@ -276,6 +277,8 @@
         <div class="part-layer" data-part="tipthread"></div>
         <div class="part-layer" data-part="reelseat"></div>
         <div class="part-layer" data-part="grip"></div>
+        <div class="fx-layer" style="background-image:url(sim-masks/shade.png?v=5);mix-blend-mode:multiply"></div>
+        <div class="fx-layer" style="background-image:url(sim-masks/gloss.png?v=5);mix-blend-mode:screen"></div>
       </div>
 
       <!-- Rod line drawing on top — multiply blend preserves black outlines perfectly -->
@@ -635,7 +638,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
   var ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, W, H);
-  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=4'; }).concat(['rod-diagram.png']);
+  var srcs = parts.map(function(p){ return 'sim-masks/' + p + '.png?v=4'; }).concat(['sim-masks/shade.png?v=5','sim-masks/gloss.png?v=5','rod-diagram.png']);
   var imgs = srcs.map(function(s){ var i = new Image(); i.src = s; return i; });
   Promise.all(imgs.map(function(i){ return i.decode(); })).then(function() {
     parts.forEach(function(p, k) {
@@ -650,6 +653,10 @@ document.getElementById('btn-save').addEventListener('click', function() {
     });
     ctx.globalCompositeOperation = 'multiply';
     ctx.drawImage(imgs[parts.length], 0, 0);
+    ctx.globalCompositeOperation = 'screen';
+    ctx.drawImage(imgs[parts.length + 1], 0, 0);
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.drawImage(imgs[parts.length + 2], 0, 0);
     var link = document.createElement('a');
     link.download = 'IG_rod_color.png';
     link.href = canvas.toDataURL('image/png');
