@@ -659,10 +659,10 @@
         row.style.display = 'none';
       });
     });
-    // 希望納期を記入していないシートは、PDFに「希望納期」の欄ごと出さない
+    // 希望納期は当面PDFに出さない（入力は生産スケジュールの納期に使う）
     root.querySelectorAll('.due-date').forEach(function (inp) {
       var item = inp.closest('.meta-item');
-      if (inp.value || !item) return;
+      if (!item) return;
       hiddenRows.push({ el: item, overlay: document.createElement('span'), prevDisplay: item.style.display });
       item.style.display = 'none';
     });
