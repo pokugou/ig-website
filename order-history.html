@@ -35,10 +35,29 @@
 
   .select-bar { display: none; background: var(--paper); border: 1px solid var(--line); padding: 0.7rem 1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; }
   .select-bar.active { display: flex; }
-  .select-bar span { font-size: 0.8rem; color: var(--sub); }
+  .select-bar span { font-size: 0.8rem; color: var(--sub); white-space: nowrap; }
   .select-bar-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
   .select-bar button { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: #fff; background: var(--ink); border: 1px solid var(--ink); padding: 0.55rem 1.1rem; cursor: pointer; white-space: nowrap; }
   .select-bar button:hover { background: var(--red); border-color: var(--red); }
+
+  /* まとめて編集 */
+  .bulk-edit { display: none; background: var(--paper); border: 2px solid var(--ink); padding: 0.9rem 1rem; margin: -0.6rem 0 1rem; }
+  .bulk-edit.open { display: block; }
+  .bulk-edit .be-title { font-size: 0.85rem; font-weight: 900; margin-bottom: 0.6rem; }
+  .bulk-edit .be-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.55rem; }
+  .bulk-edit .be-row > label { font-size: 0.78rem; font-weight: 700; color: var(--sub); width: 3.2rem; flex-shrink: 0; }
+  .bulk-edit select, .bulk-edit input[type="text"], .bulk-edit input[type="date"], .bulk-edit input[type="number"], .bulk-edit textarea { flex: 1; min-width: 0; font-family: inherit; font-size: 1rem; border: 1px solid var(--line); background: #fff; padding: 0.5rem 0.6rem; }
+  .bulk-edit textarea { min-height: 4.5em; resize: vertical; }
+  .bulk-edit #be-value-wrap { flex: 1; display: flex; min-width: 0; }
+  .bulk-edit .be-clear { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; margin: 0 0 0.7rem 3.8rem; cursor: pointer; }
+  .bulk-edit .be-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .bulk-edit .be-actions button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; cursor: pointer; border: 1px solid var(--ink); background: var(--ink); color: #fff; }
+  .bulk-edit .be-actions button:hover { background: var(--red); border-color: var(--red); }
+  .bulk-edit .be-actions button.secondary { background: #fff; color: var(--ink); border-color: var(--line); }
+  .bulk-edit .be-note { font-size: 0.72rem; color: var(--sub); margin-top: 0.6rem; }
+  @media (max-width: 640px) {
+    .bulk-edit .be-clear { margin-left: 0; }
+  }
 
   .order-card { background: var(--paper); border: 1px solid var(--line); margin-bottom: 0.3rem; }
   .order-summary { display: flex; justify-content: space-between; align-items: center; gap: 0.7rem; padding: 0.45rem 0.9rem; line-height: 1.35; cursor: pointer; }
@@ -137,9 +156,22 @@
     <div class="select-bar" id="select-bar">
       <span id="select-count">0件選択中</span>
       <div class="select-bar-actions">
+        <button type="button" id="btn-bulk-edit">選択した内容をまとめて編集</button>
         <button type="button" id="btn-pdf">選択した内容をまとめてPDF保存</button>
         <button type="button" id="btn-bulk-delete" class="delete-btn">選択した内容を削除</button>
       </div>
+    </div>
+
+    <div class="bulk-edit" id="bulk-edit">
+      <div class="be-title" id="be-title">まとめて編集</div>
+      <div class="be-row"><label for="be-field">項目</label><select id="be-field"></select></div>
+      <div class="be-row"><label>内容</label><span id="be-value-wrap"></span></div>
+      <label class="be-clear"><input type="checkbox" id="be-clear">この項目を空欄にする</label>
+      <div class="be-actions">
+        <button type="button" id="be-apply">反映する</button>
+        <button type="button" id="be-cancel" class="secondary">やめる</button>
+      </div>
+      <p class="be-note">選んだ受注シートのこの項目だけを書き換えます。ほかの項目はそのままです。</p>
     </div>
 
     <div id="list"></div>
@@ -582,6 +614,9 @@
     var bar = document.getElementById('select-bar');
     bar.classList.toggle('active', count > 0);
     document.getElementById('select-count').textContent = count + '件選択中';
+    var be = document.getElementById('bulk-edit');
+    if (!count) be.classList.remove('open');
+    else document.getElementById('be-title').textContent = 'まとめて編集（' + count + '件）';
   }
 
   function cleanArchive() {
@@ -803,6 +838,131 @@
       container.innerHTML = '';
       btn.disabled = false;
       btn.textContent = originalLabel;
+    }
+  });
+
+  // ---- まとめて編集：チェックした受注シートの1項目だけを書き換える ----
+  var BULK_FIELDS = (function () {
+    var tpl = document.getElementById('sheet-template').content, out = [];
+    tpl.querySelectorAll('.meta-item, .row').forEach(function (c) {
+      var l = c.querySelector('label'), el = c.querySelector('input, select, textarea');
+      if (!l || !el) return;
+      var key = l.textContent.trim();
+      if (/（入力）$/.test(key) || out.some(function (o) { return o.key === key; })) return;
+      out.push({ key: key, el: el });
+    });
+    var memo = tpl.querySelector('.memo-box textarea');
+    if (memo) out.push({ key: 'こだわり・備考', el: memo });
+    return out;
+  })();
+  var beField = document.getElementById('be-field'), beWrap = document.getElementById('be-value-wrap'), beClear = document.getElementById('be-clear');
+  BULK_FIELDS.forEach(function (f, i) { var o = document.createElement('option'); o.value = i; o.textContent = f.key; beField.appendChild(o); });
+  beField.value = String(Math.max(0, BULK_FIELDS.findIndex(function (f) { return f.key === '希望納期'; })));
+  var beInput = null;
+  function buildBulkInput() {
+    var f = BULK_FIELDS[+beField.value], src = f.el, inp;
+    if (src.tagName === 'SELECT') {
+      inp = document.createElement('select');
+      Array.prototype.forEach.call(src.querySelectorAll('option'), function (o) {
+        var v = o.value !== undefined && o.hasAttribute('value') ? o.value : o.textContent;
+        if (!v || v === '入力' || v === 'その他') return;
+        var n = document.createElement('option'); n.textContent = o.textContent; n.value = o.textContent; inp.appendChild(n);
+      });
+    } else if (src.tagName === 'TEXTAREA') {
+      inp = document.createElement('textarea');
+    } else {
+      inp = document.createElement('input');
+      inp.type = src.type === 'date' ? 'date' : src.type === 'number' ? 'number' : 'text';
+      if (inp.type === 'number') inp.min = '1';
+    }
+    beWrap.innerHTML = ''; beWrap.appendChild(inp); beInput = inp;
+    inp.disabled = beClear.checked;
+  }
+  beField.addEventListener('change', function () { beClear.checked = false; buildBulkInput(); });
+  beClear.addEventListener('change', function () { if (beInput) beInput.disabled = beClear.checked; });
+  buildBulkInput();
+
+  function openBulkEdit() {
+    var n = Object.keys(selected).length;
+    if (!n) return;
+    document.getElementById('be-title').textContent = 'まとめて編集（' + n + '件）';
+    document.getElementById('bulk-edit').classList.add('open');
+    document.getElementById('bulk-edit').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function closeBulkEdit() { document.getElementById('bulk-edit').classList.remove('open'); }
+  document.getElementById('btn-bulk-edit').addEventListener('click', openBulkEdit);
+  document.getElementById('be-cancel').addEventListener('click', closeBulkEdit);
+
+  function plainRecord(r) { var c = {}; Object.keys(r).forEach(function (k) { if (k.indexOf('__') !== 0) c[k] = r[k]; }); return c; }
+  function isoToSlash(v) { var p = String(v || '').split('-'); return p.length === 3 ? p[0] + '/' + Number(p[1]) + '/' + Number(p[2]) : v; }
+
+  // 生産スケジュールに出ている行（受注シートから作られたもの）にも同じ変更を反映する
+  async function reflectToSchedule(key, val, clear, recs) {
+    var map = { '希望納期': 'date', 'お名前': 'customer', '本数': 'qty', 'こだわり・備考': 'note', 'モデル選択': 'item' };
+    if (!map[key]) return '';
+    if (key === '希望納期' && clear) return '（希望納期を空欄にしても、生産スケジュールの納期はそのままです）';
+    var sids = {}; recs.forEach(function (r) { if (r._sid) sids[r._sid] = true; });
+    if (!Object.keys(sids).length) return '';
+    try {
+      var res = await fetch(SYNC_API + '/schedule?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var rows = await res.json(), hit = 0;
+      rows.forEach(function (row) {
+        if (!sids[row.id]) return;
+        var v = clear ? '' : val;
+        if (key === '本数') v = Number(v) || 1;
+        row[map[key]] = v; hit++;
+      });
+      if (!hit) return '';
+      var put = await fetch(SYNC_API + '/schedule', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(rows) });
+      if (!put.ok) throw new Error('save failed');
+      return '（生産スケジュールの ' + hit + ' 行にも反映しました）';
+    } catch (e) {
+      console.error(e);
+      return '（生産スケジュールへの反映には失敗しました）';
+    }
+  }
+
+  document.getElementById('be-apply').addEventListener('click', async function () {
+    var f = BULK_FIELDS[+beField.value], key = f.key, clear = beClear.checked, val = '';
+    if (!clear) {
+      val = beInput.value;
+      if (beInput.type === 'date') val = isoToSlash(val);
+      if (!String(val).trim()) { alert('内容を入れてください。\n空欄にしたいときは「この項目を空欄にする」にチェックしてください。'); return; }
+    }
+    var targets = allRecords.filter(function (r) { return selected[r.__id]; });
+    if (!targets.length) return;
+    var what = clear ? '空欄' : '「' + val + '」';
+    if (!confirm(targets.length + '件の「' + key + '」を' + what + 'にします。よろしいですか？')) return;
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '反映中…';
+    try {
+      var res = await fetch(SYNC_API + '/orders?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var latest = await res.json(), changed = [], missing = 0;
+      targets.forEach(function (t) {
+        var idx = t._sid ? latest.findIndex(function (x) { return x._sid === t._sid; }) : -1;
+        if (idx < 0) { var js = JSON.stringify(plainRecord(t)); idx = latest.findIndex(function (x) { return JSON.stringify(x) === js; }); }
+        if (idx < 0) { missing++; return; }
+        var rec = latest[idx];
+        if (clear) delete rec[key]; else rec[key] = val;
+        if (key === 'モデル選択' && !clear) delete rec['モデル（入力）'];
+        changed.push(rec);
+      });
+      if (!changed.length) throw new Error('対象の受注シートが見つかりませんでした（ほかの端末で変更・削除された可能性があります）');
+      var put = await fetch(SYNC_API + '/orders', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(latest) });
+      if (!put.ok) throw new Error('save failed');
+      var extra = await reflectToSchedule(key, val, clear, changed);
+      allRecords = latest.slice().reverse();
+      allRecords.forEach(function (r, i) { r.__id = i; });
+      selected = {};
+      closeBulkEdit(); updateSelectBar(); render();
+      alert(changed.length + '件の「' + key + '」を' + what + 'にしました。' + (missing ? '\n' + missing + '件は見つからなかったので変更していません。' : '') + extra);
+    } catch (e) {
+      console.error(e);
+      alert('まとめて編集に失敗しました。もう一度お試しください。\n' + (e && e.message || ''));
+    } finally {
+      btn.disabled = false; btn.textContent = label;
     }
   });
 
