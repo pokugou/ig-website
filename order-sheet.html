@@ -112,7 +112,6 @@
     .sheet-no { font-size: 1.2rem; margin-bottom: 0.3rem; }
     .sheet-head .brand { font-size: 0.85rem; }
     .meta-grid { display: block; margin-bottom: 0.7rem; }
-    .meta-item:has(.due-date) { display: none !important; } /* 希望納期は当面印刷しない */
     .meta-item { display: inline-block; margin: 0 1.6rem 0.3rem 0; vertical-align: baseline; }
     .meta-item label { display: inline; font-size: 0.87rem; margin-bottom: 0; margin-right: 0.4rem; white-space: nowrap; }
     .meta-item input, .meta-item select { display: inline; font-size: 1.18rem; padding: 0.15rem 0.1rem; width: auto; }
@@ -373,10 +372,10 @@
         row.style.display = 'none';
       });
     });
-    // 希望納期は当面PDFに出さない（入力は生産スケジュールの納期に使う）
+    // 希望納期は記入したときだけPDFに出す（空欄なら欄ごと出さない）
     document.querySelectorAll('.due-date').forEach(function (inp) {
       var item = inp.closest('.meta-item');
-      if (!item) return;
+      if (inp.value || !item) return;
       hiddenRows.push({ el: item, overlay: document.createElement('span'), prevDisplay: item.style.display });
       item.style.display = 'none';
     });
@@ -417,11 +416,11 @@
     return swaps.concat(hiddenRows);
   }
 
-  // 印刷するときも、希望納期は欄ごと隠す
+  // 印刷するときも、希望納期が空欄のシートは欄ごと隠す
   window.addEventListener('beforeprint', function () {
     document.querySelectorAll('.due-date').forEach(function (inp) {
       var item = inp.closest('.meta-item');
-      if (item) { item.dataset.dueHidden = '1'; item.style.display = 'none'; }
+      if (item && !inp.value) { item.dataset.dueHidden = '1'; item.style.display = 'none'; }
     });
   });
   window.addEventListener('afterprint', function () {

@@ -659,10 +659,10 @@
         row.style.display = 'none';
       });
     });
-    // 希望納期は当面PDFに出さない（入力は生産スケジュールの納期に使う）
+    // 希望納期は記入したときだけPDFに出す（空欄なら欄ごと出さない）
     root.querySelectorAll('.due-date').forEach(function (inp) {
       var item = inp.closest('.meta-item');
-      if (!item) return;
+      if (inp.value || !item) return;
       hiddenRows.push({ el: item, overlay: document.createElement('span'), prevDisplay: item.style.display });
       item.style.display = 'none';
     });
