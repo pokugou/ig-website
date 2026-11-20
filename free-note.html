@@ -157,7 +157,7 @@
     <button type="button" data-add="table">＋ 表</button>
     <button type="button" data-add="image">＋ 画像</button>
   </div>
-  <input type="file" id="f-img" accept="image/*" multiple>
+  <input type="file" id="f-img" accept="image/*,.heic,.heif" multiple>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -746,35 +746,74 @@
     renderBlocks();
   }
 
-  function addImageFile(file, target) {
-    if (!file || !/^image\//.test(file.type)) return;
-    var reader = new FileReader();
-    reader.onload = function () {
-      var im = new Image();
-      im.onload = function () {
-        var MAX = 1400, k = Math.min(1, MAX / Math.max(im.width, im.height));
-        var c = document.createElement('canvas');
-        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
-        var ctx = c.getContext('2d');
-        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
-        ctx.drawImage(im, 0, 0, c.width, c.height);
-        var blk = target || (activeArea && blocks.indexOf(activeArea) >= 0 ? activeArea : null);
-        if (!blk) { blk = { type: 'image', h: 0.5, imgs: [] }; blocks.push(blk); }
-        var n = blk.imgs.length, w = blk.imgs.length ? 0.4 : 0.6;
-        blk.imgs.push({ src: c.toDataURL('image/jpeg', 0.85), x: Math.min(0.03 * n, 1 - w), y: 0.03 * n, w: w, ar: c.height / c.width });
-        activeArea = blk;
-        selImg = { b: blk, i: blk.imgs.length - 1 };
-        renderBlocks(); saveDraft();
-      };
-      im.src = reader.result;
-    };
-    reader.readAsDataURL(file);
+  // iPhoneの写真（HEIC/HEIF）は、Macの Chrome などでは読めないので、そのときだけ変換ライブラリを読み込んでJPEGにする
+  function isHeic(file) { return /hei[cf]/i.test(file.type || '') || /\.hei[cf]$/i.test(file.name || ''); }
+  var heicLib = null;
+  function loadHeicLib() {
+    if (window.heic2any) return Promise.resolve();
+    if (!heicLib) heicLib = new Promise(function (resolve, reject) {
+      var sc = document.createElement('script');
+      sc.src = 'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';
+      sc.onload = function () { resolve(); };
+      sc.onerror = function () { heicLib = null; reject(new Error('HEIC変換の読み込みに失敗しました')); };
+      document.head.appendChild(sc);
+    });
+    return heicLib;
+  }
+  function decodeImage(blob) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(blob), im = new Image();
+      im.onload = function () { URL.revokeObjectURL(url); resolve(im); };
+      im.onerror = function () { URL.revokeObjectURL(url); reject(new Error('画像を読み込めませんでした')); };
+      im.src = url;
+    });
   }
 
-  document.getElementById('f-img').addEventListener('change', function (e) {
+  async function addImageFile(file, target) {
+    if (!file) return;
+    var heic = isHeic(file);
+    if (!heic && !/^image\//.test(file.type)) return;
+    var im;
+    try {
+      im = await decodeImage(file);   // Safari（iPhone・Mac）は HEIC もそのまま読める
+    } catch (e) {
+      if (!heic) { alert('この画像は読み込めませんでした：' + (file.name || '')); return; }
+      var note = document.createElement('div');
+      note.textContent = 'HEIC画像を変換中…（数秒かかります）';
+      note.style.cssText = 'position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%);background:#111;color:#fff;font-size:0.85rem;font-weight:700;padding:0.6rem 1.1rem;z-index:9999;';
+      document.body.appendChild(note);
+      try {
+        await loadHeicLib();
+        var out = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+        im = await decodeImage(Array.isArray(out) ? out[0] : out);
+        note.remove();
+      } catch (e2) {
+        note.remove();
+        console.error(e2);
+        alert('HEIC画像を変換できませんでした：' + (file.name || '') + '\nJPEGに書き出してから添付してください。');
+        return;
+      }
+    }
+    var MAX = 1400, k = Math.min(1, MAX / Math.max(im.width, im.height));
+    var c = document.createElement('canvas');
+    c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(im, 0, 0, c.width, c.height);
+    var blk = target || (activeArea && blocks.indexOf(activeArea) >= 0 ? activeArea : null);
+    if (!blk) { blk = { type: 'image', h: 0.5, imgs: [] }; blocks.push(blk); }
+    var n = blk.imgs.length, w = blk.imgs.length ? 0.4 : 0.6;
+    blk.imgs.push({ src: c.toDataURL('image/jpeg', 0.85), x: Math.min(0.03 * n, 1 - w), y: 0.03 * n, w: w, ar: c.height / c.width });
+    activeArea = blk;
+    selImg = { b: blk, i: blk.imgs.length - 1 };
+    renderBlocks(); saveDraft();
+  }
+
+  document.getElementById('f-img').addEventListener('change', async function (e) {
     var target = pendingArea; pendingArea = null;
-    Array.prototype.forEach.call(e.target.files, function (f) { addImageFile(f, target); });
+    var files = Array.prototype.slice.call(e.target.files);
     e.target.value = '';
+    for (var i = 0; i < files.length; i++) await addImageFile(files[i], target);  // 選んだ順に並べる
   });
   document.addEventListener('paste', function (e) {
     var items = (e.clipboardData && e.clipboardData.items) || [];
