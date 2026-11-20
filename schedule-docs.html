@@ -110,8 +110,8 @@
   fetch(API + '/paint?_=' + Date.now())
     .then(function (r) { return r.ok ? r.json() : []; })
     .then(function (all) {
-      lists = all.filter(function (r) { return r.__delivery; }); runSearch();
-      var rows = all.filter(function (r) { return r.__delivery; }).sort(function (a, b) { return String(b.savedAt || '').localeCompare(String(a.savedAt || '')); }).slice(0, 4);
+      lists = all.filter(function (r) { return r.__delivery && (/^dl-/.test(r.id || '') || (!!r.rows && !r.items)); }); runSearch();
+      var rows = all.filter(function (r) { return r.__delivery && (/^dl-/.test(r.id || '') || (!!r.rows && !r.items)); }).sort(function (a, b) { return String(b.savedAt || '').localeCompare(String(a.savedAt || '')); }).slice(0, 4);
       if (!rows.length) return;
       var box = document.getElementById('recent-list');
       rows.forEach(function (r) {

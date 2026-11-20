@@ -121,6 +121,8 @@
   document.getElementById('new-btn').href = DOC.editor;
   document.getElementById('new-btn').textContent = '＋ 新しい' + DOC.title;
   var term = '', month = '', status = '';
+  function isScheduleList(r) { return /^dl-/.test(r.id || '') || (!!r.rows && !r.items); } // 納期希望リスト（納品書と同じ __delivery 印で保存されている）
+  function isMine(r) { return KIND === 'delivery' ? r.__delivery && !isScheduleList(r) : r.__invoice; }
   var selected = {};
 
   // 全角の数字・記号（日本語入力オンのまま入力した場合）も半角にして読む
@@ -152,14 +154,14 @@
   async function deleteRecord(id) {
     var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
     if (!res.ok) throw new Error('load failed');
-    var all = (await res.json()).filter(function (r) { return !(r[DOC.tag] && r.id === id); });
+    var all = (await res.json()).filter(function (r) { return !(isMine(r) && r.id === id); });
     if (KIND === 'invoice') {
       // 削除した請求書に含まれていた納品書は「未請求」に戻す
       all.forEach(function (r) { if (r.__delivery && r.billedBy === id) { delete r.billedBy; delete r.billedNumber; } });
     }
     var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
     if (!put.ok) throw new Error('save failed');
-    invoices = all.filter(function (r) { return r[DOC.tag]; });
+    invoices = all.filter(isMine);
     invoices.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')) || String(b.number || '').localeCompare(String(a.number || '')); });
   }
 
@@ -316,7 +318,7 @@
   fetch(SYNC_API + '/paint?_=' + Date.now())
     .then(function (r) { if (!r.ok) throw new Error('not ready'); return r.json(); })
     .then(function (data) {
-      invoices = data.filter(function (r) { return r[DOC.tag]; });
+      invoices = data.filter(isMine);
       invoices.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')) || String(b.number || '').localeCompare(String(a.number || '')); });
       buildMonths(); render();
     })

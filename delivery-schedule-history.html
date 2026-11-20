@@ -92,7 +92,8 @@
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var specs = [];
-  function isDoc(r) { return r.__delivery; }
+  // 納期希望リストだけ（同じ __delivery 印の納品書は除く）
+  function isDoc(r) { return r.__delivery && (/^dl-/.test(r.id || '') || (!!r.rows && !r.items)); }
   var term = '';
   var selected = {};
 

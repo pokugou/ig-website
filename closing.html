@@ -325,7 +325,7 @@
   fetch(SYNC_API + '/paint?_=' + Date.now())
     .then(function (r) { if (!r.ok) throw new Error('load failed'); return r.json(); })
     .then(function (all) {
-      deliveries = all.filter(function (r) { return r.__delivery; });
+      deliveries = all.filter(function (r) { return r.__delivery && !(/^dl-/.test(r.id || '') || (!!r.rows && !r.items)); }); // 納期希望リストは除く
       all.filter(function (r) { return r.__client && r.name; }).forEach(function (r) { registered[r.name] = r; });
       invoices = all.filter(function (r) { return r.__invoice; });
       buildClientMenu();
