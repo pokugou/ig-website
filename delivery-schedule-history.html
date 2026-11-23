@@ -171,7 +171,7 @@
       btn: this, format: 'a4', margin: 0,
       items: specs.filter(function (o) { return selected[o.id]; }),
       renderOne: function (o) { return BulkPdf.viaFrame('delivery-schedule.html?embed=1', 'delivery-reload', JSON.stringify(o), function (w) { return w.captureForBulk(); }); },
-      name: function (items) { return bulkStamp() + '希望納期リスト' + (items.length > 1 ? '_' + items.length + '件' : '') + '.pdf'; }
+      name: function (items) { return bulkStamp() + '納期希望リスト' + (items.length > 1 ? '_' + items.length + '件' : '') + '.pdf'; }
     });
   });
 
@@ -246,5 +246,21 @@
     .catch(function () { document.getElementById('status-line').textContent = '読み込めませんでした。通信状況を確認して再読み込みしてください'; });
 </script>
 
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (/[?&]embed=1/.test(location.search)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        var h = 0; for (var i = 0; i < t[1].length; i++) h = (h * 31 + t[1].charCodeAt(i)) | 0; h = String(h);
+        // 新しい版が出るたびに1回だけ読み込み直す（同じ版で何度も読み直さない）
+        if (t[0] !== t[1] && sessionStorage.getItem(k) !== h) { sessionStorage.setItem(k, h); fetch(p, { cache: 'reload' }).then(function () { location.reload(); }); }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
 </body>
 </html>

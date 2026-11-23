@@ -509,7 +509,7 @@
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       canvases.forEach(function (c, i) { if (i > 0) pdf.addPage(); pdf.addImage(c.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297); });
       var now = new Date();
-      var name = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0') + '希望納期リスト.pdf';   // 例：20261123希望納期リスト.pdf（保存した日の日付）
+      var name = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0') + '納期希望リスト.pdf';   // 例：20261123納期希望リスト.pdf（保存した日の日付）
       if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       btn.textContent = '一覧に保存中…';
@@ -528,12 +528,14 @@
   (function () {
     try {
       var p = location.pathname + location.search, k = 'fresh:' + p;
-      if (sessionStorage.getItem(k) || /[?&]embed=1/.test(location.search)) return;
+      if (/[?&]embed=1/.test(location.search)) return;
       Promise.all([
         fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
         fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
       ]).then(function (t) {
-        if (t[0] !== t[1]) { sessionStorage.setItem(k, '1'); fetch(p, { cache: 'reload' }).then(function () { location.reload(); }); }
+        var h = 0; for (var i = 0; i < t[1].length; i++) h = (h * 31 + t[1].charCodeAt(i)) | 0; h = String(h);
+        // 新しい版が出るたびに1回だけ読み込み直す（同じ版で何度も読み直さない）
+        if (t[0] !== t[1] && sessionStorage.getItem(k) !== h) { sessionStorage.setItem(k, h); fetch(p, { cache: 'reload' }).then(function () { location.reload(); }); }
       }).catch(function () {});
     } catch (e) {}
   })();
