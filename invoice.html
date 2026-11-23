@@ -868,7 +868,7 @@
       if (imgH > pageH) { imgH = pageH; imgW = imgH * canvas.width / canvas.height; }
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', (pageW - imgW) / 2, 0, imgW, imgH);
       pdf.setProperties({ title: fileName().replace(/\.pdf$/, '') });
-      if (previewWindow) showPdfWithSave(previewWindow, pdf);
+      if (previewWindow) { if (window.openPdfIn) openPdfIn(previewWindow, pdf, fileName()); else showPdfWithSave(previewWindow, pdf); }
       else pdf.save(fileName());
     } catch (e) {
       console.error(e);

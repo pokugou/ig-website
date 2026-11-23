@@ -75,7 +75,7 @@
   </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js"></script>
+<script src="pdf-download.js?v=2"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var quotes = [];
@@ -187,7 +187,7 @@
       var d = new Date();
       var stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
       var name = records.length === 1 ? 'オーダーシート_' + (records[0].customer || '見積') + '.pdf' : 'オーダーシート_' + records.length + '件_' + stamp + '.pdf';
-      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
     } catch (e) {
       console.error(e);

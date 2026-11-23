@@ -120,7 +120,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js"></script>
+<script src="pdf-download.js?v=2"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var STORE_KEY = 'solid-order-draft';
@@ -342,7 +342,7 @@
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       var t = $('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || 'ソリッド発注図';
       var name = ($('f-date').value || todayIso()).replace(/-/g, '') + t + '.pdf';
-      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       undo();
       btn.textContent = '一覧に保存中…';

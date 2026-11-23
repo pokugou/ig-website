@@ -208,7 +208,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js"></script>
+<script src="pdf-download.js?v=2"></script>
 <script>
   var rowsBody = document.getElementById('price-rows');
 
@@ -406,7 +406,7 @@
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
       var customer = document.getElementById('f-customer').value.trim() || '見積';
       if (previewWindow) {
-        previewWindow.location.href = pdf.output('bloburl');
+        (window.openPdfIn ? openPdfIn(previewWindow, pdf, 'オーダーシート_' + customer + '.pdf') : (previewWindow.location.href = pdf.output('bloburl')));
       } else {
         pdf.save('オーダーシート_' + customer + '.pdf');
       }

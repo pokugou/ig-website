@@ -174,7 +174,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js"></script>
+<script src="pdf-download.js?v=2"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var rowsBody = document.getElementById('rows-body');
@@ -383,7 +383,7 @@
       }
       var d = new Date();
       var name = '生産スケジュール_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.pdf';
-      if (win) { win.location.href = pdf.output('bloburl'); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
     } catch (e) {
       console.error(e);

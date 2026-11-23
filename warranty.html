@@ -191,7 +191,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js"></script>
+<script src="pdf-download.js?v=2"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var STORE_KEY = 'warranty-draft';
@@ -314,7 +314,7 @@
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: B5 });
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, B5[0], B5[1]);
       var name = '保証書_' + ($('f-product').value.trim().replace(/[\\/:*?"<>|]/g, '') || '無題') + '_B5.pdf';
-      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       btn.textContent = '一覧に保存中…';
       await saveToHistory(false);

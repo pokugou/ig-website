@@ -68,7 +68,7 @@
       }
       if (!pdf) throw new Error('出力するページがありません');
       var name = opts.name(items);
-      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (win) { if (window.openPdfIn) openPdfIn(win, pdf, name); else win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
     } catch (e) {
       console.error(e);

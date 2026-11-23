@@ -31,6 +31,27 @@
     } catch (e) { console.error(e); }
   };
 
+  // 先に開いておいたタブ（win）にPDFを表示し、上に「この名前で保存」ボタンを付ける。
+  // ブラウザのPDF画面から保存すると「dec9f77e-….pdf」のような名前になってしまうため。
+  window.openPdfIn = function (win, pdf, name) {
+    var url;
+    try { url = URL.createObjectURL(pdf.output('blob')); } catch (e) { url = pdf.output('bloburl'); }
+    try {
+      try { pdf.setProperties({ title: String(name || '').replace(/\.pdf$/, '') }); } catch (e0) {}
+      var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+      win.document.open();
+      win.document.write('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(name) + '</title>' +
+        '<style>html,body{margin:0;height:100%;font-family:sans-serif;background:#555}.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:#111;color:#fff}' +
+        '.bar a{font-weight:700;text-decoration:none;padding:9px 16px;font-size:15px}.bar a.dl{background:#cc2200;color:#fff}.bar a.op{border:1px solid #fff;color:#fff}.bar span{font-size:13px;opacity:.85;word-break:break-all}' +
+        'iframe{display:block;width:100%;height:calc(100% - 60px);border:0;background:#fff}</style>' +
+        '<div class="bar"><a class="dl" href="' + url + '" download="' + esc(name) + '">⬇ この名前で保存</a><a class="op" href="' + url + '">全ページを開く</a><span>' + esc(name) + '</span></div>' +
+        '<iframe src="' + url + '#view=FitH" title="PDF"></iframe>');
+      win.document.close();
+    } catch (e) {
+      win.location.href = url;
+    }
+  };
+
   // 「保存のみ」ボタン（PDFは作らず、一覧にだけ保存する）。fn は成功で true を返す関数
   window.wireSaveOnly = function (btn, fn) {
     if (!btn) return;

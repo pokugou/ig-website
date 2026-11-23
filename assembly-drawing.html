@@ -278,7 +278,7 @@ Line(PE):~4 product by GZ JAPAN</textarea>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js"></script>
+<script src="pdf-download.js?v=2"></script>
 <script>
   var sheetsEl = document.getElementById('sheets');
   var template = document.querySelector('.sheet');
@@ -558,7 +558,7 @@ Line(PE):~4 product by GZ JAPAN</textarea>
       });
       var first = (document.querySelector('.f-model').value || '').trim().replace(/[\\/:*?"<>|]/g, '') || '組立図';
       var name = '組立図_' + first + '_' + todayISO().replace(/-/g, '') + '.pdf';
-      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       btn.textContent = '一覧に保存中…';
       await saveToHistory(false);

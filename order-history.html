@@ -353,7 +353,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js"></script>
+<script src="pdf-download.js?v=2"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
 
@@ -819,7 +819,7 @@
       var d = new Date();
       var pdfName = '受注シート一覧_' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.pdf';
       if (previewWindow) {
-        previewWindow.location.href = pdf.output('bloburl');
+        (window.openPdfIn ? openPdfIn(previewWindow, pdf, pdfName) : (previewWindow.location.href = pdf.output('bloburl')));
       } else {
         pdf.save(pdfName);
       }

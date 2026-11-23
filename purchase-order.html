@@ -184,7 +184,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js"></script>
+<script src="pdf-download.js?v=2"></script>
 <script>
   var rowsEl = document.getElementById('rows');
 
@@ -587,7 +587,7 @@
       // ファイル名：保存した日の日付＋発注先＋御中＋注文書（例：20261123株式会社ファイブコア御中_注文書.pdf）
       var to = document.getElementById('f-to').value.trim().replace(/[\\/:*?"<>|]/g, '');
       var name = (function (n) { return n.getFullYear() + String(n.getMonth() + 1).padStart(2, '0') + String(n.getDate()).padStart(2, '0'); })(new Date()) + (to ? to + '御中_' : '') + '注文書.pdf';
-      if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       if (!DEMO) await saveToHistory();
     } catch (e) {
