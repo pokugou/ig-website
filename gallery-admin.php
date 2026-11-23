@@ -2,7 +2,7 @@
 session_start();
 
 // ===== 設定 =====
-define('ADMIN_PASSWORD', 'igrod2024');
+define('ADMIN_PASSWORD', 'jokers333');
 define('GALLERY_HTML',   __DIR__ . '/gallery.html');
 define('GALLERY_DATA',   __DIR__ . '/gallery-data.json');
 define('UPLOAD_DIR',     __DIR__ . '/');
