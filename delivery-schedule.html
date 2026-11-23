@@ -79,6 +79,13 @@
   .pdf-capture .t-head h1 input, .pdf-capture .t-head h1 div { font-size: 2.1rem; }
   .pdf-capture table.dl th { font-size: 1.05rem; padding: 0.7rem 0.3rem; }
   .pdf-capture table.dl td textarea, .pdf-capture table.dl td div { font-size: 1rem; }
+  /* PDFでは列幅を中身に合わせる（本数は狭く、アイテム・備考は広く） */
+  .pdf-capture table.dl th:nth-child(2) { width: 16%; }
+  .pdf-capture table.dl th:nth-child(3) { width: 22%; }
+  .pdf-capture table.dl th:nth-child(4) { width: 7%; }
+  .pdf-capture table.dl th:nth-child(5) { width: 13%; }
+  .pdf-capture table.dl th:nth-child(6) { width: 13%; }
+  .pdf-capture table.dl th:nth-child(7) { width: 29%; }
 
   @media print {
     body { background: #fff; padding: 0; }
@@ -101,7 +108,7 @@
     <button type="button" id="btn-save">PDFとして保存</button>
   </div>
   <div class="editing-badge" id="editing-badge">✎ 保存済みの納期希望リストを編集中（保存すると上書きされます）</div>
-  <p class="hint">各マスにそのまま入力できます（↑↓←→キーで移動）。行の左の「＋」で下に行を足し、「×」で削除します。内容が長いときは、PDFが自動で複数ページになり、各ページに見出しが付きます。</p>
+  <p class="hint">各マスにそのまま入力できます（↑↓←→キーで移動）。行の左の「＋」で下に行を足し、「×」で削除します。PDFはなるべくA4 1枚に収まるよう、行が多いときは文字や行間を自動で小さくします。それでも入らないほど多いときは、複数ページになり各ページに見出しが付きます。</p>
 
   <div class="link-bar" id="link-bar">
     <b>🔗 生産スケジュールと連動</b>
@@ -380,7 +387,7 @@
       var cs = getComputedStyle(el), o = document.createElement('div');
       o.textContent = text || ' ';
       var inline = el.type === 'date' || el.closest('.t-meta');
-      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.45' : '1.3') + ';white-space:pre-wrap;word-break:break-word;' + (inline ? 'display:inline-block;width:auto;' : 'width:100%;') + (el.tagName === 'TEXTAREA' ? 'min-height:2.6rem;' : '');
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';letter-spacing:' + cs.letterSpacing + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (el.tagName === 'TEXTAREA' ? '1.45' : '1.3') + ';white-space:pre-wrap;word-break:break-word;' + (inline ? 'display:inline-block;width:auto;' : 'width:100%;') + (el.tagName === 'TEXTAREA' ? 'min-height:2.6rem;display:flex;align-items:center;justify-content:center;' : '');
       var prev = el.style.display;
       el.style.display = 'none';
       el.insertAdjacentElement('afterend', o);
@@ -389,10 +396,59 @@
     return swaps;
   }
 
+  // PDF用に差し替えた表を、全体の縮小率 k で縮めて1ページに入るか試す。
+  // 戻り値 { k, padT, padB, padV, reset() }（k=1 なら縮めていない）
+  function fitOnePage(rows, PAGE_H) {
+    var sheet = $('sheet'), head = $('t-head'), thead = $('dl').querySelector('thead');
+    var scs = getComputedStyle(sheet), padT0 = parseFloat(scs.paddingTop), padB0 = parseFloat(scs.paddingBottom);
+    var touched = [];
+    function remember(el, props) {
+      var cs = getComputedStyle(el), o = { el: el, inline: el.getAttribute('style') || '' };
+      props.forEach(function (p) { o[p] = parseFloat(cs[p]) || 0; });
+      touched.push(o); return o;
+    }
+    var cells = [];
+    rows.forEach(function (tr) { tr.querySelectorAll('td:not(.ctl-cell):not(.sel-cell) > div').forEach(function (d) { cells.push(remember(d, ['fontSize', 'paddingTop', 'paddingBottom', 'minHeight'])); }); });
+    var ths = Array.prototype.map.call(thead.querySelectorAll('th:not(.ctl-cell):not(.sel-cell)'), function (th) { return remember(th, ['fontSize', 'paddingTop', 'paddingBottom']); });
+    var title = head.querySelector('h1 div'), meta = head.querySelector('.t-meta');
+    var heads = [];
+    if (title) heads.push(remember(title, ['fontSize']));
+    if (meta) heads.push(remember(meta, ['fontSize', 'marginTop', 'marginBottom']));
+    function apply(k) {
+      var lh = Math.max(1.2, 1.45 - (1 - k) * 0.6), kh = Math.max(0.7, k), kp = Math.max(0.5, k);
+      cells.forEach(function (c) {
+        c.el.style.fontSize = (c.fontSize * k) + 'px';
+        c.el.style.paddingTop = (c.paddingTop * kp) + 'px'; c.el.style.paddingBottom = (c.paddingBottom * kp) + 'px';
+        c.el.style.minHeight = (c.minHeight * k) + 'px'; c.el.style.lineHeight = String(lh);
+      });
+      ths.forEach(function (t) { t.el.style.fontSize = (t.fontSize * Math.max(0.75, k)) + 'px'; t.el.style.paddingTop = (t.paddingTop * kp) + 'px'; t.el.style.paddingBottom = (t.paddingBottom * kp) + 'px'; });
+      heads.forEach(function (h) {
+        h.el.style.fontSize = (h.fontSize * kh) + 'px';
+        if (h.marginBottom != null) { h.el.style.marginTop = (h.marginTop * kp) + 'px'; h.el.style.marginBottom = (h.marginBottom * kp) + 'px'; }
+      });
+    }
+    function reset() { touched.forEach(function (t) { t.el.setAttribute('style', t.inline); }); }
+    function need(k) {
+      var padT = padT0 * Math.max(0.5, k), padB = padB0 * Math.max(0.5, k);
+      var h = head.getBoundingClientRect().height + thead.getBoundingClientRect().height;
+      rows.forEach(function (tr) { h += tr.getBoundingClientRect().height; });
+      return { h: h, cap: Math.round(794 * 297 / 210) - padT - padB - 6, padT: padT, padB: padB };
+    }
+    var k = 1, m = need(1);
+    if (m.h <= m.cap) return { k: 1, padT: m.padT, padB: m.padB, padV: m.padT + m.padB, reset: reset };
+    for (k = 0.95; k >= 0.549; k = Math.round((k - 0.05) * 100) / 100) {
+      apply(k); m = need(k);
+      if (m.h <= m.cap) return { k: k, padT: m.padT, padB: m.padB, padV: m.padT + m.padB, reset: reset };
+    }
+    reset();   // 縮めても入らない → 元の大きさで複数ページに
+    m = need(1);
+    return { k: 1, padT: m.padT, padB: m.padB, padV: m.padT + m.padB, reset: reset };
+  }
+
   async function renderPageCanvases() {
     document.body.classList.add('pdf-capture');
     var swaps = swapFields();
-    var wrappers = [];
+    var wrappers = [], fit = null;
     try {
       var sheet = $('sheet'), W = 794, PAGE_H = Math.round(W * 297 / 210);
       var head = $('t-head'), table = $('dl'), thead = table.querySelector('thead');
@@ -403,6 +459,13 @@
       var lastFilled = -1;
       trs.forEach(function (tr, i) { if (Array.prototype.some.call(tr.querySelectorAll('td:not(.ctl-cell) div'), function (d) { return d.textContent.trim(); })) lastFilled = i; });
       var use = trs.slice(0, Math.max(lastFilled + 1, 1));
+      // なるべくA4 1枚に収める：入りきらないときは、文字サイズ・行間・余白を少しずつ縮める
+      // （55%まで縮めても入らないほど行が多いときだけ、元の大きさのまま2枚目以降へ）
+      var fit = fitOnePage(use, PAGE_H);
+      if (fit.k < 1) {
+        padV = fit.padV;
+        headH = head.getBoundingClientRect().height; theadH = thead.getBoundingClientRect().height;
+      }
       var pages = [], cur = [], used = headH + theadH, cap = PAGE_H - padV - 6;
       use.forEach(function (tr) {
         var h = tr.getBoundingClientRect().height;
@@ -415,6 +478,7 @@
         var w = document.createElement('div');
         w.className = 'sheet';
         w.style.cssText = 'position:fixed;left:-10000px;top:0;width:' + W + 'px;height:' + PAGE_H + 'px;max-width:none;border:none;margin:0;overflow:hidden;background:#fff;';
+        if (fit.k < 1) { w.style.paddingTop = fit.padT + 'px'; w.style.paddingBottom = fit.padB + 'px'; }
         if (p === 0) w.appendChild(head.cloneNode(true));
         var t = document.createElement('table'); t.className = 'dl';
         t.appendChild(thead.cloneNode(true));
@@ -426,6 +490,7 @@
       }
       return out;
     } finally {
+      if (fit) fit.reset();
       wrappers.forEach(function (w) { w.remove(); });
       swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
       document.body.classList.remove('pdf-capture');
