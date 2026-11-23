@@ -179,7 +179,7 @@
     if (!visible.length) { list.innerHTML = '<p class="empty">' + (term ? '一致するソリッド発注図がありません' : 'まだ保存したソリッド発注図がありません') + '</p>'; return; }
     visible.forEach(function (o) {
       
-      var items = (o.drawings || []).filter(function (r) { return r.len || r.qty || r.tip || r.butt; });
+      var items = (o.drawings || []).filter(function (r) { return r.len || r.qty || r.tip || r.butt || r.material; });
       var card = document.createElement('div'); card.className = 'card';
       var s = document.createElement('div'); s.className = 'summary';
       s.innerHTML = '<span class="who"></span><span class="total"></span><span class="when"></span><span class="arrow">▶</span>';
@@ -221,7 +221,7 @@
       if (o.to) d.appendChild(row('発注先', o.to));
       var C = function (n) { return n < 20 ? String.fromCharCode(0x2460 + n) : '(' + (n + 1) + ')'; };
       items.forEach(function (r, i) {
-        var bits = [r.len ? '全長 ' + r.len : '', r.straight ? 'ストレート ' + r.straight : '', r.tip ? '先径 ' + r.tip + (r.tipNote || '') : '', r.mid ? '径 ' + r.mid : '', r.butt ? '元径 ' + r.butt : ''].concat((r.points || []).map(function (p) { return '先端から' + p.at + 'mmで径 ' + p.dia; })).filter(Boolean).join('　');
+        var bits = [r.material ? '素材 ' + r.material : '', r.len ? '全長 ' + r.len : '', r.straight ? 'ストレート ' + r.straight : '', r.tip ? '先径 ' + r.tip + (r.tipNote || '') : '', r.mid ? '径 ' + r.mid : '', r.butt ? '元径 ' + r.butt : ''].concat((r.points || []).map(function (p) { return '先端から' + p.at + 'mmで径 ' + p.dia; })).filter(Boolean).join('　');
         d.appendChild(row(C(i) + (r.qty ? '　' + r.qty + '本' : ''), bits));
       });
       if (o.notes) d.appendChild(row('備考', o.notes));

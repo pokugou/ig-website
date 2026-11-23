@@ -46,6 +46,7 @@
   .ctl label { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: 700; color: var(--sub); gap: 0.1rem; }
   .ctl label input { width: 5.4rem; font-size: 0.95rem; font-weight: 700; padding: 0.3rem 0.35rem; border: 1px solid var(--line2); background: #fff; color: var(--ink); text-align: right; }
   .ctl label.wide input { width: 8.5rem; text-align: left; font-weight: 500; }
+  .ctl label.mat input { width: 14rem; font-weight: 700; }
   .ctl .tools { margin-left: auto; display: flex; gap: 0.25rem; }
   .ctl .tools button { font-family: inherit; font-size: 0.75rem; font-weight: 700; height: 1.9rem; min-width: 1.9rem; padding: 0 0.5rem; border: 1px solid var(--line); background: #fff; color: var(--sub); cursor: pointer; }
   .ctl .tools button:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
@@ -62,7 +63,7 @@
   .add-rod { margin-top: 0.7rem; width: 100%; font-family: inherit; font-size: 0.82rem; font-weight: 700; padding: 0.6rem; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
   .add-rod:hover { border-color: var(--ink); color: var(--ink); border-style: solid; }
 
-  .foot { display: grid; grid-template-columns: 14rem 1fr; gap: 1.5rem; margin-top: 0.8rem; align-items: start; }
+  .foot { display: grid; grid-template-columns: 20rem 1fr; gap: 1.5rem; margin-top: 0.8rem; align-items: start; }
   .foot .qty { font-size: 0.9rem; line-height: 1.9; padding-left: 0.4rem; }
   .foot textarea { font-size: 0.9rem; line-height: 1.8; height: 3.7rem; }
   .notes { margin-top: 0.6rem; border: 1px solid var(--line2); padding: 0.4rem 0.6rem; }
@@ -83,7 +84,7 @@
   .pdf-capture .sheet { width: 1050px; max-width: none; margin: 0; border: none; padding: 1.8rem 2.4rem 1.8rem; }
   .pdf-capture .ctl, .pdf-capture .add-rod, .pdf-capture .noprint { display: none !important; }
   .pdf-capture .head { grid-template-columns: 1fr 17rem; }
-  .pdf-capture .foot { grid-template-columns: 14rem 1fr; gap: 1.5rem; }
+  .pdf-capture .foot { grid-template-columns: 20rem 1fr; gap: 1.5rem; }
   .pdf-capture .notes.empty { display: none; }
 
   @media print {
@@ -164,8 +165,15 @@
     // 途中の径の寸法線を入れる分だけ、図を下にずらす
     var OFF = pts.length * 34;
     var X0 = 120, X1 = 955, CY = 112 + OFF, THICK = 34;
-    svg.setAttribute('viewBox', '0 0 1000 ' + (220 + OFF));
+    var mat = String(d.material || '').trim(), TOP = mat ? 34 : 0;
+    svg.setAttribute('viewBox', '0 0 1000 ' + (220 + OFF + TOP));
     var maxD = Math.max.apply(null, [tip, mid, butt].concat(pts.map(function (p) { return p.dia; })));
+    // 素材名（いちばん上）。あるときは図面全体をその分下げる
+    if (mat) {
+      svg.appendChild(el('text', { x: 20, y: 28, 'font-size': 23, 'font-weight': 700 }, '素材：' + mat));
+      var g = el('g', { transform: 'translate(0,' + TOP + ')' });
+      svg.appendChild(g); svg = g;
+    }
     // 番号
     svg.appendChild(el('circle', { cx: 52, cy: CY, r: 25, fill: 'none', stroke: INK, 'stroke-width': 1.6 }));
     svg.appendChild(el('text', { x: 52, y: CY + 11, 'text-anchor': 'middle', 'font-size': 30 }, String(idx + 1)));
@@ -230,7 +238,8 @@
     var lines = [];
     rodsEl.querySelectorAll('.rod').forEach(function (r, i) {
       var q = r.querySelector('.f-qty').value.trim();
-      if (q) lines.push(circled(i) + 'を' + toHalf(q) + ' 本');
+      var m = r.querySelector('.f-material').value.trim();
+      if (q) lines.push(circled(i) + (m ? '（' + m + '）' : '') + 'を' + toHalf(q) + ' 本');
     });
     $('qty-lines').innerHTML = '';
     lines.forEach(function (t) { var d = document.createElement('div'); d.textContent = t; $('qty-lines').appendChild(d); });
@@ -239,6 +248,7 @@
     var d = {};
     PARTS.forEach(function (p) { d[p[0]] = r.querySelector('.f-' + p[0]).value; });
     d.tipNote = r.querySelector('.f-tipNote').value;
+    d.material = r.querySelector('.f-material').value;
     d.qty = r.querySelector('.f-qty').value;
     d.points = Array.prototype.map.call(r.querySelectorAll('.pt'), function (pt) { return { at: pt.querySelector('.p-at').value, dia: pt.querySelector('.p-dia').value }; })
       .filter(function (p) { return String(p.at).trim() || String(p.dia).trim(); });
@@ -262,6 +272,7 @@
     r.innerHTML =
       '<div class="ctl"><span class="no"></span>' +
       PARTS.map(function (p) { return '<label>' + p[1] + '（mm）<input type="text" class="f-' + p[0] + '" inputmode="decimal"></label>'; }).join('') +
+      '<label class="wide mat">素材名<input type="text" class="f-material" placeholder="例：24Tカーボンソリッド"></label>' +
       '<label class="wide">先径のメモ<input type="text" class="f-tipNote" placeholder="例：（変更なし）"></label>' +
       '<label>本数<input type="text" class="f-qty" inputmode="numeric"></label>' +
       '<span class="tools"><button type="button" class="up" title="上へ">▲</button><button type="button" class="dn" title="下へ">▼</button><button type="button" class="dup" title="複製">複製</button><button type="button" class="del" title="削除">✕</button></span>' +
@@ -269,6 +280,7 @@
       '<svg class="fig" viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg"></svg>';
     PARTS.forEach(function (p) { r.querySelector('.f-' + p[0]).value = d[p[0]] || ''; });
     r.querySelector('.f-tipNote').value = d.tipNote || '';
+    r.querySelector('.f-material').value = d.material || '';
     r.querySelector('.f-qty').value = d.qty || '';
     (d.points || []).forEach(function (p) { addPoint(r, p); });
     r.querySelector('.add-pt').addEventListener('click', function () { addPoint(r, {}).querySelector('.p-at').focus(); renumber(); });
@@ -277,7 +289,7 @@
     r.querySelector('.dn').addEventListener('click', function () { var n = r.nextElementSibling; if (n) { rodsEl.insertBefore(n, r); renumber(); saveDraft(); } });
     r.querySelector('.dup').addEventListener('click', function () { addRod(readRod(r), r); saveDraft(); });
     r.querySelector('.del').addEventListener('click', function () {
-      if (rodsEl.children.length <= 1) { PARTS.concat([['tipNote'], ['qty']]).forEach(function (p) { r.querySelector('.f-' + p[0]).value = ''; }); r.querySelectorAll('.pt').forEach(function (pt) { pt.remove(); }); }
+      if (rodsEl.children.length <= 1) { PARTS.concat([['tipNote'], ['material'], ['qty']]).forEach(function (p) { r.querySelector('.f-' + p[0]).value = ''; }); r.querySelectorAll('.pt').forEach(function (pt) { pt.remove(); }); }
       else { r.remove(); }
       renumber(); saveDraft();
     });
