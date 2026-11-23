@@ -33,6 +33,12 @@
 
   // 先に開いておいたタブ（win）にPDFを表示し、上に「この名前で保存」ボタンを付ける。
   // ブラウザのPDF画面から保存すると「dec9f77e-….pdf」のような名前になってしまうため。
+  function isDesktop() {
+    var ua = navigator.userAgent || '';
+    if (/iPhone|iPad|iPod|Android/i.test(ua)) return false;
+    if (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) return false; // iPad（パソコン表示）
+    return true;
+  }
   window.openPdfIn = function (win, pdf, name) {
     var url;
     try { url = URL.createObjectURL(pdf.output('blob')); } catch (e) { url = pdf.output('bloburl'); }
@@ -44,9 +50,13 @@
         '<style>html,body{margin:0;height:100%;font-family:sans-serif;background:#555}.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:#111;color:#fff}' +
         '.bar a{font-weight:700;text-decoration:none;padding:9px 16px;font-size:15px}.bar a.dl{background:#cc2200;color:#fff}.bar a.op{border:1px solid #fff;color:#fff}.bar span{font-size:13px;opacity:.85;word-break:break-all}' +
         'iframe{display:block;width:100%;height:calc(100% - 60px);border:0;background:#fff}</style>' +
-        '<div class="bar"><a class="dl" href="' + url + '" download="' + esc(name) + '">⬇ この名前で保存</a><a class="op" href="' + url + '">全ページを開く</a><span>' + esc(name) + '</span></div>' +
+        '<div class="bar"><a class="dl" id="dl" href="' + url + '" download="' + esc(name) + '">⬇ この名前で保存</a><span>' + esc(name) + '<br>※下のPDF画面の保存ボタンを使うと、名前が英数字に変わります</span></div>' +
         '<iframe src="' + url + '#view=FitH" title="PDF"></iframe>');
       win.document.close();
+      // パソコンでは、この名前のファイルとしてすぐ保存する（保存先を聞く設定なら、名前入りの保存画面が出る）
+      if (isDesktop()) {
+        setTimeout(function () { try { win.document.getElementById('dl').click(); } catch (e2) {} }, 300);
+      }
     } catch (e) {
       win.location.href = url;
     }
