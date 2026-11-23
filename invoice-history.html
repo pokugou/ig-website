@@ -174,7 +174,7 @@
   function pdfName(items) {
     if (items.length === 1) {
       var r = items[0], who = String(r.customer || '').trim().replace(/[\\/:*?"<>|]/g, '');
-      return bulkStamp() + (who ? who + '_' : '') + DOC.title + '.pdf';   // 例：20261123アマノ釣具_請求書.pdf（保存した日の日付）
+      return bulkStamp() + (who ? who + (r.honor || '様') + '_' : '') + DOC.title + '.pdf';   // 例：20261123アマノ釣具御中_請求書.pdf（保存した日の日付）
     }
     return bulkStamp() + DOC.title + '_' + items.length + '件.pdf';
   }

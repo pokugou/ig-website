@@ -826,12 +826,12 @@
     return fillers;
   }
 
-  // ファイル名：保存した日の日付＋お客様名＋書類名（例：20261123アマノ釣具_請求書.pdf／20261123アマノ釣具_納品書.pdf）
+  // ファイル名：保存した日の日付＋お客様名＋敬称（宛名の横で選んだ様／御中）＋書類名（例：20261123アマノ釣具御中_請求書.pdf）
   function fileName() {
     var d = todayIso().replace(/-/g, '');
     var who = $('f-customer').value.trim().replace(/[\\/:*?"<>|]/g, '');
     var kind = KIND === 'delivery' ? '納品書' : '請求書';
-    return d + (who ? who + '_' : '') + kind + '.pdf';
+    return d + (who ? who + ($('f-honor').value || '') + '_' : '') + kind + '.pdf';
   }
 
   // PDFを新しいタブに表示し、上に「この名前で保存」ボタンを付ける（ブラウザの保存だと名前が付かないため）
