@@ -50,6 +50,13 @@
   .ctl .tools button { font-family: inherit; font-size: 0.75rem; font-weight: 700; height: 1.9rem; min-width: 1.9rem; padding: 0 0.5rem; border: 1px solid var(--line); background: #fff; color: var(--sub); cursor: pointer; }
   .ctl .tools button:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
   .ctl .tools button.del:hover { background: var(--red); border-color: var(--red); }
+  /* 途中の径（先端から○mmの位置で径○mm） */
+  .ctl .pts { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.8rem; font-size: 0.72rem; color: var(--sub); }
+  .ctl .pts .pt { display: inline-flex; align-items: center; gap: 0.25rem; background: #fff; border: 1px solid var(--line2); padding: 0.2rem 0.3rem 0.2rem 0.5rem; }
+  .ctl .pts .pt input { width: 4.2rem; font-size: 0.9rem; font-weight: 700; padding: 0.2rem 0.3rem; border: 1px solid var(--line2); text-align: right; }
+  .ctl .pts button { font-family: inherit; font-size: 0.72rem; font-weight: 700; border: 1px solid var(--line); background: #fff; color: var(--sub); padding: 0.25rem 0.55rem; cursor: pointer; }
+  .ctl .pts button:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .ctl .pts .pt button { border: none; padding: 0.1rem 0.35rem; }
   .fig { display: block; width: 100%; height: auto; margin-top: 0.2rem; }
   .fig text { font-family: 'Noto Sans JP', sans-serif; fill: #222; }
   .add-rod { margin-top: 0.7rem; width: 100%; font-family: inherit; font-size: 0.82rem; font-weight: 700; padding: 0.6rem; border: 1px dashed var(--line); background: transparent; color: var(--sub); cursor: pointer; }
@@ -147,10 +154,18 @@
   }
   function drawFigure(svg, d, idx) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
-    var X0 = 120, X1 = 955, CY = 112, THICK = 34, INK = '#222';
+    var INK = '#222';
     var len = num(d.len), str = Math.min(num(d.straight), len), tip = num(d.tip), butt = num(d.butt);
     var mid = String(d.mid).trim() === '' ? butt : num(d.mid);
-    var maxD = Math.max(tip, mid, butt);
+    // 途中の径（先端からの位置と径）。全長の内側にあるものだけ、先端に近い順
+    var pts = (d.points || []).map(function (p) { return { at: num(p.at), dia: num(p.dia), atT: String(p.at || '').trim(), diaT: String(p.dia || '').trim() }; })
+      .filter(function (p) { return p.atT !== '' && p.at > 0 && (!(len > 0) || p.at < len); })
+      .sort(function (a, b) { return a.at - b.at; });
+    // 途中の径の寸法線を入れる分だけ、図を下にずらす
+    var OFF = pts.length * 34;
+    var X0 = 120, X1 = 955, CY = 112 + OFF, THICK = 34;
+    svg.setAttribute('viewBox', '0 0 1000 ' + (220 + OFF));
+    var maxD = Math.max.apply(null, [tip, mid, butt].concat(pts.map(function (p) { return p.dia; })));
     // 番号
     svg.appendChild(el('circle', { cx: 52, cy: CY, r: 25, fill: 'none', stroke: INK, 'stroke-width': 1.6 }));
     svg.appendChild(el('text', { x: 52, y: CY + 11, 'text-anchor': 'middle', 'font-size': 30 }, String(idx + 1)));
@@ -158,25 +173,51 @@
     // 全長は実寸の比率。ストレートは短くても寸法が読めるよう、図の幅の22%を下限にして描く
     var xs = X1 - Math.max(str / len, 0.22) * (X1 - X0);
     if (!(str > 0)) xs = X1;
+    var taperLen = len - (str > 0 ? str : 0);
+    // 先端からの距離（mm）→ 図の横位置。テーパー部とストレート部は別々の縮尺
+    function posX(at) {
+      if (at <= taperLen || !(str > 0)) return X0 + (taperLen > 0 ? at / taperLen : 0) * (xs - X0);
+      return xs + (at - taperLen) / str * (X1 - xs);
+    }
     function h(dia) { return maxD > 0 ? Math.max(dia, 0) / maxD * THICK : 0; }
-    // 表示の太さ：径・元径は0.4倍、先径は0.7倍（先径は径より太くは描かない）
+    // 表示の太さ：径・元径・途中の径は0.4倍、先径は0.7倍（先径は径より太くは描かない）
     var hm = h(mid) * 0.4, hb = h(butt) * 0.4, ht = Math.min(h(tip) * 0.7, hm || h(tip) * 0.7);
-    // 竿の外形
-    svg.appendChild(el('polygon', { points: [[X0, CY - ht / 2], [xs, CY - hm / 2], [X1, CY - hb / 2], [X1, CY + hb / 2], [xs, CY + hm / 2], [X0, CY + ht / 2]].map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '), fill: 'none', stroke: INK, 'stroke-width': 1.4, 'stroke-linejoin': 'round' }));
-    function line(x1, y1, x2, y2) { svg.appendChild(el('line', { x1: x1, y1: y1, x2: x2, y2: y2, stroke: INK, 'stroke-width': 1 })); }
+    // 竿の外形（先端 → 途中の径 → ストレートの始まり → 元）
+    var outline = [[X0, ht]];
+    pts.forEach(function (p) { if (p.diaT !== '') outline.push([posX(p.at), Math.max(ht, Math.min(h(p.dia) * 0.4, Math.max(hm, hb)))]); });
+    outline.push([xs, hm], [X1, hb]);
+    outline.sort(function (a, b) { return a[0] - b[0]; });
+    var top = outline.map(function (p) { return [p[0], CY - p[1] / 2]; }), bottom = outline.slice().reverse().map(function (p) { return [p[0], CY + p[1] / 2]; });
+    svg.appendChild(el('polygon', { points: top.concat(bottom).map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '), fill: 'none', stroke: INK, 'stroke-width': 1.4, 'stroke-linejoin': 'round' }));
+    function line(x1, y1, x2, y2, extra) { var a = { x1: x1, y1: y1, x2: x2, y2: y2, stroke: INK, 'stroke-width': 1 }; Object.keys(extra || {}).forEach(function (k) { a[k] = extra[k]; }); svg.appendChild(el('line', a)); }
+    function arrow(x, y, dir) { svg.appendChild(el('polygon', { points: [[x, y], [x - dir * 10, y - 4], [x - dir * 10, y + 4]].map(function (p) { return p.join(','); }).join(' '), fill: INK })); }
     // 全長（上）
-    line(X0, 18, X0, 84); line(X1, 18, X1, 84); line(X0, 46, X1, 46);
+    line(X0, 18, X0, CY - 28); line(X1, 18, X1, CY - 28); line(X0, 46, X1, 46);
     svg.appendChild(el('text', { x: (X0 + X1) / 2, y: 34, 'text-anchor': 'middle', 'font-size': 22 }, '全長 ' + mm(d.len)));
+    // 途中の径：先端からその位置までの寸法線（矢印つき）と、その位置の径
+    pts.forEach(function (p, i) {
+      var x = posX(p.at), y = 78 + i * 34;
+      line(X0, y, x, y); arrow(X0, y, -1); arrow(x, y, 1);
+      line(x, y - 10, x, CY, { 'stroke-dasharray': '3 3' });
+      if (x - X0 < 190) {
+        // 矢印が短いときは、右側にまとめて書く
+        svg.appendChild(el('text', { x: x + 8, y: y + 6, 'font-size': 19 }, '先端から ' + mm(p.atT) + (p.diaT !== '' ? '　径 ' + mm(p.diaT) : '')));
+      } else {
+        // 長さの文字は矢印の終わり寄せ（何か所あっても重ならないように）
+        svg.appendChild(el('text', { x: x - 16, y: y - 6, 'text-anchor': 'end', 'font-size': 18 }, '先端から ' + mm(p.atT)));
+        if (p.diaT !== '') svg.appendChild(el('text', { x: x + 8, y: y + 6, 'font-size': 19 }, '径 ' + mm(p.diaT)));
+      }
+    });
     // 下の寸法線と目印
-    line(X0, 132, X0, 176); line(X1, 132, X1, 176);
+    line(X0, CY + 20, X0, CY + 64); line(X1, CY + 20, X1, CY + 64);
     if (str > 0) {
-      line(xs, 132, xs, 176); line(xs, 154, X1, 154);
-      svg.appendChild(el('text', { x: (xs + X1) / 2, y: 148, 'text-anchor': 'middle', 'font-size': 22 }, 'ストレート ' + mm(d.straight)));
+      line(xs, CY + 20, xs, CY + 64); line(xs, CY + 42, X1, CY + 42);
+      svg.appendChild(el('text', { x: (xs + X1) / 2, y: CY + 36, 'text-anchor': 'middle', 'font-size': (X1 - xs) < 220 ? 19 : 22 }, 'ストレート ' + mm(d.straight)));
     }
     // 各部の太さ
-    if (String(d.tip).trim() !== '') svg.appendChild(el('text', { x: X0 - 70, y: 204, 'font-size': 20 }, '先径 ' + mm(d.tip) + (d.tipNote || '')));
-    if (str > 0 && String(d.mid).trim() !== '') svg.appendChild(el('text', { x: xs, y: 204, 'text-anchor': 'middle', 'font-size': 24 }, '径 ' + mm(d.mid)));
-    if (String(d.butt).trim() !== '') svg.appendChild(el('text', { x: X1 + 38, y: 204, 'text-anchor': 'end', 'font-size': 20 }, '元径 ' + mm(d.butt)));
+    if (String(d.tip).trim() !== '') svg.appendChild(el('text', { x: X0 - 70, y: CY + 92, 'font-size': 20 }, '先径 ' + mm(d.tip) + (d.tipNote || '')));
+    if (str > 0 && String(d.mid).trim() !== '') svg.appendChild(el('text', { x: xs, y: CY + 92, 'text-anchor': 'middle', 'font-size': 24 }, '径 ' + mm(d.mid)));
+    if (String(d.butt).trim() !== '') svg.appendChild(el('text', { x: X1 + 38, y: CY + 92, 'text-anchor': 'end', 'font-size': 20 }, '元径 ' + mm(d.butt)));
   }
 
   /* ---------- 図面ブロック ---------- */
@@ -199,7 +240,21 @@
     PARTS.forEach(function (p) { d[p[0]] = r.querySelector('.f-' + p[0]).value; });
     d.tipNote = r.querySelector('.f-tipNote').value;
     d.qty = r.querySelector('.f-qty').value;
+    d.points = Array.prototype.map.call(r.querySelectorAll('.pt'), function (pt) { return { at: pt.querySelector('.p-at').value, dia: pt.querySelector('.p-dia').value }; })
+      .filter(function (p) { return String(p.at).trim() || String(p.dia).trim(); });
     return d;
+  }
+  // 途中の径の入力（先端から○mmの位置で径○mm）
+  function addPoint(r, p) {
+    p = p || {};
+    var pt = document.createElement('span'); pt.className = 'pt';
+    pt.innerHTML = '先端から<input type="text" class="p-at" inputmode="decimal">mmの位置で 径<input type="text" class="p-dia" inputmode="decimal">mm<button type="button" title="この径を消す">✕</button>';
+    pt.querySelector('.p-at').value = p.at || '';
+    pt.querySelector('.p-dia').value = p.dia || '';
+    pt.querySelector('button').addEventListener('click', function () { pt.remove(); renumber(); saveDraft(); });
+    var box = r.querySelector('.pts');
+    box.insertBefore(pt, box.querySelector('.add-pt'));
+    return pt;
   }
   function addRod(d, afterEl) {
     d = d || {};
@@ -209,17 +264,20 @@
       PARTS.map(function (p) { return '<label>' + p[1] + '（mm）<input type="text" class="f-' + p[0] + '" inputmode="decimal"></label>'; }).join('') +
       '<label class="wide">先径のメモ<input type="text" class="f-tipNote" placeholder="例：（変更なし）"></label>' +
       '<label>本数<input type="text" class="f-qty" inputmode="numeric"></label>' +
-      '<span class="tools"><button type="button" class="up" title="上へ">▲</button><button type="button" class="dn" title="下へ">▼</button><button type="button" class="dup" title="複製">複製</button><button type="button" class="del" title="削除">✕</button></span></div>' +
+      '<span class="tools"><button type="button" class="up" title="上へ">▲</button><button type="button" class="dn" title="下へ">▼</button><button type="button" class="dup" title="複製">複製</button><button type="button" class="del" title="削除">✕</button></span>' +
+      '<div class="pts"><span>途中の径</span><button type="button" class="add-pt">＋ 先端から○mmの位置の径を追加</button></div></div>' +
       '<svg class="fig" viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg"></svg>';
     PARTS.forEach(function (p) { r.querySelector('.f-' + p[0]).value = d[p[0]] || ''; });
     r.querySelector('.f-tipNote').value = d.tipNote || '';
     r.querySelector('.f-qty').value = d.qty || '';
+    (d.points || []).forEach(function (p) { addPoint(r, p); });
+    r.querySelector('.add-pt').addEventListener('click', function () { addPoint(r, {}).querySelector('.p-at').focus(); renumber(); });
     r.addEventListener('input', renumber);
     r.querySelector('.up').addEventListener('click', function () { var p = r.previousElementSibling; if (p) { rodsEl.insertBefore(r, p); renumber(); saveDraft(); } });
     r.querySelector('.dn').addEventListener('click', function () { var n = r.nextElementSibling; if (n) { rodsEl.insertBefore(n, r); renumber(); saveDraft(); } });
     r.querySelector('.dup').addEventListener('click', function () { addRod(readRod(r), r); saveDraft(); });
     r.querySelector('.del').addEventListener('click', function () {
-      if (rodsEl.children.length <= 1) { PARTS.concat([['tipNote'], ['qty']]).forEach(function (p) { r.querySelector('.f-' + p[0]).value = ''; }); }
+      if (rodsEl.children.length <= 1) { PARTS.concat([['tipNote'], ['qty']]).forEach(function (p) { r.querySelector('.f-' + p[0]).value = ''; }); r.querySelectorAll('.pt').forEach(function (pt) { pt.remove(); }); }
       else { r.remove(); }
       renumber(); saveDraft();
     });

@@ -221,7 +221,7 @@
       if (o.to) d.appendChild(row('発注先', o.to));
       var C = function (n) { return n < 20 ? String.fromCharCode(0x2460 + n) : '(' + (n + 1) + ')'; };
       items.forEach(function (r, i) {
-        var bits = [r.len ? '全長 ' + r.len : '', r.straight ? 'ストレート ' + r.straight : '', r.tip ? '先径 ' + r.tip + (r.tipNote || '') : '', r.mid ? '径 ' + r.mid : '', r.butt ? '元径 ' + r.butt : ''].filter(Boolean).join('　');
+        var bits = [r.len ? '全長 ' + r.len : '', r.straight ? 'ストレート ' + r.straight : '', r.tip ? '先径 ' + r.tip + (r.tipNote || '') : '', r.mid ? '径 ' + r.mid : '', r.butt ? '元径 ' + r.butt : ''].concat((r.points || []).map(function (p) { return '先端から' + p.at + 'mmで径 ' + p.dia; })).filter(Boolean).join('　');
         d.appendChild(row(C(i) + (r.qty ? '　' + r.qty + '本' : ''), bits));
       });
       if (o.notes) d.appendChild(row('備考', o.notes));
