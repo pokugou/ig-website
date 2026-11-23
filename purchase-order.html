@@ -584,9 +584,9 @@
         if (i > 0) pdf.addPage();
         pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, imgH);
       });
-      var to = document.getElementById('f-to').value.trim() || '注文書';
-      var d = document.getElementById('f-date').value.replace(/-/g, '');
-      var name = d + to.replace(/[\\/:*?"<>|]/g, '') + '_注文書.pdf';
+      // ファイル名：保存した日の日付＋発注先＋注文書（例：20261123ファイブコア_注文書.pdf）
+      var to = document.getElementById('f-to').value.trim().replace(/[\\/:*?"<>|]/g, '');
+      var name = (function (n) { return n.getFullYear() + String(n.getMonth() + 1).padStart(2, '0') + String(n.getDate()).padStart(2, '0'); })(new Date()) + (to ? to + '_' : '') + '注文書.pdf';
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       if (!DEMO) await saveToHistory();

@@ -133,7 +133,7 @@
       btn: this, storageKey: 'po-reload',
       items: orders.filter(function (o) { return selected[o.id]; }),
       renderOne: function (o) { return BulkPdf.viaFrame('purchase-order.html?embed=1', 'po-reload', JSON.stringify(o), function (w) { return w.captureForBulk(); }); },
-      name: function (items) { return items.length === 1 ? (items[0].to || '注文書') + '_注文書.pdf' : '注文書_' + items.length + '件_' + bulkStamp() + '.pdf'; }
+      name: function (items) { var to = String(items[0].to || '').trim().replace(/[\\/:*?"<>|]/g, ''); return items.length === 1 ? bulkStamp() + (to ? to + '_' : '') + '注文書.pdf' : bulkStamp() + '注文書_' + items.length + '件.pdf'; }
     });
   });
 

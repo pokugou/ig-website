@@ -174,9 +174,9 @@
   function pdfName(items) {
     if (items.length === 1) {
       var r = items[0], who = String(r.customer || '').trim().replace(/[\\/:*?"<>|]/g, '');
-      return String(r.date || '').replace(/-/g, '') + (KIND === 'delivery' ? '納品書' : '') + (who ? who + '様' : DOC.title) + '.pdf';
+      return bulkStamp() + (who ? who + '_' : '') + DOC.title + '.pdf';   // 例：20261123アマノ釣具_請求書.pdf（保存した日の日付）
     }
-    return DOC.title + '_' + items.length + '件_' + bulkStamp() + '.pdf';
+    return bulkStamp() + DOC.title + '_' + items.length + '件.pdf';
   }
   function makePdf(items, btn) {
     BulkPdf.run({
