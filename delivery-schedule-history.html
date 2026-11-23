@@ -171,7 +171,7 @@
       btn: this, format: 'a4', margin: 0,
       items: specs.filter(function (o) { return selected[o.id]; }),
       renderOne: function (o) { return BulkPdf.viaFrame('delivery-schedule.html?embed=1', 'delivery-reload', JSON.stringify(o), function (w) { return w.captureForBulk(); }); },
-      name: function (items) { return items.length === 1 ? (items[0].title || '納期希望リスト') + '_' + (items[0].date || '').replace(/-/g, '') + '.pdf' : '納期希望リスト_' + items.length + '件_' + bulkStamp() + '.pdf'; }
+      name: function (items) { return bulkStamp() + '希望納期リスト' + (items.length > 1 ? '_' + items.length + '件' : '') + '.pdf'; }
     });
   });
 

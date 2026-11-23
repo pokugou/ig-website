@@ -508,7 +508,8 @@
       var canvases = await renderPageCanvases();
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       canvases.forEach(function (c, i) { if (i > 0) pdf.addPage(); pdf.addImage(c.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297); });
-      var name = ($('f-title').value.trim().replace(/[\\/:*?"<>|]/g, '') || '納期希望リスト') + '_' + $('f-date').value.replace(/-/g, '') + '.pdf';
+      var now = new Date();
+      var name = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0') + '希望納期リスト.pdf';   // 例：20261123希望納期リスト.pdf（保存した日の日付）
       if (win) { win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       btn.textContent = '一覧に保存中…';
