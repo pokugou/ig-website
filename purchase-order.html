@@ -65,11 +65,12 @@
   table.items th:nth-child(5) { width: 6rem; }
   table.items th:nth-child(6) { width: 7.4rem; }
   /* 行の操作（上へ・下へ・削除）。PDFと印刷には出さない */
-  table.items th.ctl { width: 4.6rem; background: #fff; }
+  table.items th.ctl { width: 6rem; background: #fff; }
   table.items td.ctl { white-space: nowrap; text-align: center; background: #fff !important; border-bottom-color: transparent; }
   .row-btn { border: 1px solid transparent; background: none; color: #999; cursor: pointer; font-size: 0.8rem; width: 1.4rem; height: 1.5rem; line-height: 1; padding: 0; }
   .row-btn:hover { color: var(--ink); border-color: var(--line2); background: #fff; }
   .row-btn.del:hover { color: var(--red); }
+  .row-btn.ins { color: #1a7a3c; font-weight: 700; }
   .row-btn:disabled { visibility: hidden; }
   .pdf-capture .ctl { display: none; }
   @media print { .ctl { display: none; } }
@@ -180,7 +181,7 @@
     </div>
   </div>
 
-  <div class="add-row"><button type="button" id="btn-add">＋ 行を追加</button></div>
+  <div class="add-row"><button type="button" id="btn-add">＋ 行を追加（一番下）</button></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -290,7 +291,8 @@
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
 
-  function addRow(v) {
+  // afterTr を渡すと、その行のすぐ下に入れる
+  function addRow(v, afterTr) {
     v = v || {};
     var tr = document.createElement('tr');
     tr.innerHTML =
@@ -300,7 +302,7 @@
       '<td class="price"><input type="text" class="r-price"></td>' +
       '<td class="jan"><input type="text" class="r-jan"></td>' +
       '<td class="due"><input type="text" class="r-due"></td>' +
-      '<td class="ctl"><button type="button" class="row-btn up" title="上へ移動">▲</button><button type="button" class="row-btn down" title="下へ移動">▼</button><button type="button" class="row-btn del" title="この行を削除">✕</button></td>';
+      '<td class="ctl"><button type="button" class="row-btn up" title="上へ移動">▲</button><button type="button" class="row-btn down" title="下へ移動">▼</button><button type="button" class="row-btn ins" title="この行の下に1行追加">＋</button><button type="button" class="row-btn del" title="この行を削除">✕</button></td>';
     tr.querySelector('.r-name').value = v.name || '';
     tr.querySelector('.r-qty').value = v.qty || '';
     tr.querySelector('.r-price').value = v.price || '';
@@ -315,8 +317,10 @@
     tr.querySelector('.up').addEventListener('click', function () { moveRow(tr, -1); });
     tr.querySelector('.down').addEventListener('click', function () { moveRow(tr, 1); });
     tr.querySelector('.del').addEventListener('click', function () { deleteRow(tr); });
-    rowsEl.appendChild(tr);
+    tr.querySelector('.ins').addEventListener('click', function () { var n = addRow(null, tr); saveDraft(); n.querySelector('.r-name').focus(); });
+    if (afterTr && afterTr.parentNode === rowsEl) rowsEl.insertBefore(tr, afterTr.nextSibling); else rowsEl.appendChild(tr);
     renumber();
+    return tr;
   }
 
   var MIN_ROWS = 15;
