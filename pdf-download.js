@@ -31,7 +31,7 @@
     } catch (e) { console.error(e); }
   };
 
-  // 先に開いておいたタブ（win）にPDFを表示し、上に「この名前で保存」ボタンを付ける。
+  // 先に開いておいたタブ（win）にPDFを表示し、上に「この名前で保存」ボタンを付ける（自動では保存しない）。
   // ブラウザのPDF画面から保存すると「dec9f77e-….pdf」のような名前になってしまうため。
   function isDesktop() {
     var ua = navigator.userAgent || '';
@@ -40,8 +40,8 @@
     return true;
   }
   window.openPdfIn = function (win, pdf, name) {
-    var url;
-    try { url = URL.createObjectURL(pdf.output('blob')); } catch (e) { url = pdf.output('bloburl'); }
+    var url, blob = null;
+    try { blob = pdf.output('blob'); url = URL.createObjectURL(blob); } catch (e) { url = pdf.output('bloburl'); }
     try {
       try { pdf.setProperties({ title: String(name || '').replace(/\.pdf$/, '') }); } catch (e0) {}
       var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -53,9 +53,22 @@
         '<div class="bar"><a class="dl" id="dl" href="' + url + '" download="' + esc(name) + '">⬇ この名前で保存</a><span>' + esc(name) + '<br>※下のPDF画面の保存ボタンを使うと、名前が英数字に変わります</span></div>' +
         '<iframe src="' + url + '#view=FitH" title="PDF"></iframe>');
       win.document.close();
-      // パソコンでは、この名前のファイルとしてすぐ保存する（保存先を聞く設定なら、名前入りの保存画面が出る）
-      if (isDesktop()) {
-        setTimeout(function () { try { win.document.getElementById('dl').click(); } catch (e2) {} }, 300);
+      // PDFを見て確認してから「この名前で保存」。パソコンの Chrome などでは、名前入りの保存画面（保存先も選べる）を出す
+      var dl = win.document.getElementById('dl');
+      if (dl && blob && isDesktop() && typeof win.showSaveFilePicker === 'function') {
+        dl.addEventListener('click', async function (e) {
+          e.preventDefault();
+          try {
+            var handle = await win.showSaveFilePicker({ suggestedName: name, types: [{ description: 'PDF', accept: { 'application/pdf': ['.pdf'] } }] });
+            var w = await handle.createWritable();
+            await w.write(blob); await w.close();
+            dl.textContent = '✓ 保存しました';
+          } catch (err) {
+            if (err && err.name === 'AbortError') return;   // 保存画面でキャンセルした
+            console.error(err);
+            var a = win.document.createElement('a'); a.href = url; a.download = name; win.document.body.appendChild(a); a.click(); a.remove();
+          }
+        });
       }
     } catch (e) {
       win.location.href = url;
