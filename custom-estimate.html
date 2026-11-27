@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>特注見積書 | IG Rod Planning</title>
+<meta name="robots" content="noindex, nofollow" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --ink: #111; --sub: #555; --line: #999; --line2: #d6d6d6; --red: #cc2200; --bg: #f2f2f0; --paper: #fff; --head: #e6e6e3; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding: 1.6rem 1rem 4rem; }
+
+  .toolbar { max-width: 794px; margin: 0 auto 0.6rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .toolbar .back { font-size: 0.82rem; font-weight: 700; color: var(--sub); text-decoration: none; margin-right: auto; }
+  .toolbar .back:hover { color: var(--red); }
+  .toolbar .history-link { display: inline-flex; align-items: center; font-size: 0.85rem; font-weight: 700; color: var(--ink); text-decoration: none; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: #fff; }
+  .toolbar .history-link:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .toolbar button { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .toolbar button:hover { background: var(--red); border-color: var(--red); }
+  .toolbar button.secondary { background: #fff; color: var(--ink); }
+  .toolbar button.secondary:hover { background: #eee; color: var(--ink); border-color: var(--ink); }
+  .options { max-width: 794px; margin: 0 auto 0.9rem; display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.78rem; color: var(--sub); align-items: center; }
+  .options label { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+  .editing-badge { display: none; font-weight: 700; color: var(--red); }
+  .editing .editing-badge { display: inline; }
+
+  .sheet { width: 794px; max-width: 100%; margin: 0 auto; background: var(--paper); border: 1px solid #ddd; padding: 2.2rem 2.4rem 2rem; }
+  .sheet input, .sheet select, .sheet textarea { font-family: inherit; color: inherit; background: transparent; border: none; width: 100%; font-size: inherit; }
+  .sheet input:focus, .sheet select:focus, .sheet textarea:focus { outline: none; background: #fff8e0; }
+  .sheet ::placeholder { color: #bbb; }
+  .sheet textarea { resize: none; display: block; overflow: hidden; }
+
+  .doc-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 0.5rem; margin-bottom: 1.2rem; }
+  .doc-head h1 { font-size: 1.9rem; font-weight: 900; letter-spacing: 0.25em; }
+  .doc-head .date input { text-align: right; font-size: 0.88rem; width: 9.5rem; }
+
+  .top { display: grid; grid-template-columns: 1fr 15.5rem; gap: 1.8rem; align-items: start; }
+  .to { display: flex; align-items: baseline; gap: 0.5rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.1rem; }
+  .to input { font-size: 1.35rem; font-weight: 900; padding: 0.1rem 0.15rem; }
+  .to select { width: auto; flex: none; font-size: 1.05rem; font-weight: 700; cursor: pointer; }
+  .subject { display: flex; align-items: baseline; gap: 0.7rem; border-bottom: 1px solid var(--line); margin-top: 0.7rem; padding-bottom: 0.05rem; }
+  .subject .k { font-size: 0.78rem; color: var(--sub); white-space: nowrap; }
+  .subject input { font-size: 1rem; font-weight: 700; padding: 0.1rem 0.15rem; }
+  .greet { font-size: 0.8rem; line-height: 1.7; margin-top: 0.7rem; }
+  /* 御見積金額（いちばん目立つところ） */
+  .grand-box { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; border: 2.5px solid var(--ink); padding: 0.55rem 1rem; margin-top: 0.9rem; }
+  .grand-box .k { font-size: 0.95rem; font-weight: 700; white-space: nowrap; }
+  .grand-box .v { font-size: 1.8rem; font-weight: 900; letter-spacing: 0.02em; white-space: nowrap; }
+  .grand-box .t { font-size: 0.75rem; font-weight: 500; margin-left: 0.3rem; }
+
+  .side { position: relative; font-size: 0.8rem; line-height: 1.65; }
+  .side .co input { font-size: 1.2rem; font-weight: 900; padding: 0.1rem 0; }
+  .side .line { display: flex; gap: 0.5rem; align-items: baseline; }
+  .side .line span { white-space: nowrap; flex: none; color: var(--sub); }
+  .side .line input { padding: 0.02rem 0; }
+  .side .co input { width: 70%; }
+  .side #f-address { width: calc(100% - 3.6rem); flex: none; }   /* 社印と重ならないように */
+  .seal { position: absolute; right: 0; top: -0.7rem; width: 56px; height: 56px; opacity: 0.88; pointer-events: none; }
+  .no-seal .seal { display: none; }
+
+  .sec { margin-top: 1.4rem; }
+  .sec-title { font-size: 0.82rem; font-weight: 900; letter-spacing: 0.15em; background: var(--ink); color: #fff; display: inline-block; padding: 0.15rem 0.8rem; }
+  /* 自由記入欄 */
+  .free { border: 1.5px solid var(--ink); padding: 0.7rem 0.9rem; }
+  .free textarea { font-size: 0.92rem; line-height: 1.85; min-height: 14rem; }
+
+  /* 金額の表 */
+  table.items { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 0.88rem; }
+  table.items th { background: var(--ink); color: #fff; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em; padding: 0.35rem 0.3rem; border: 1px solid var(--ink); }
+  table.items td { border: 1px solid var(--ink); padding: 0; height: 2.1rem; }
+  table.items tbody tr:nth-child(even) td { background: #f7f7f5; }
+  table.items td input { padding: 0.3rem 0.5rem; font-size: 0.92rem; }
+  table.items .c-no { width: 2.3rem; text-align: center; font-size: 0.75rem; color: var(--sub); }
+  table.items .c-qty { width: 4.6rem; }
+  table.items td.c-qty input { text-align: center; }
+  table.items .c-price { width: 7.6rem; }
+  table.items td.c-price input { text-align: right; }
+  table.items .c-amt { width: 8.4rem; }
+  table.items td.c-amt { text-align: right; padding: 0 0.6rem; font-weight: 700; font-size: 0.95rem; }
+  table.items .c-ctl { width: 3.6rem; border: none !important; background: none !important; text-align: center; white-space: nowrap; }
+  .row-btn { font-family: inherit; font-size: 0.75rem; width: 1.5rem; height: 1.5rem; border: 1px solid var(--line2); background: #fff; color: var(--sub); cursor: pointer; padding: 0; }
+  .row-btn.ins { color: #1a7a3c; font-weight: 700; }
+  .row-btn:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .add-row-btn { margin-top: 0.5rem; font-family: inherit; font-size: 0.78rem; font-weight: 700; color: var(--sub); background: none; border: 1px dashed var(--line); padding: 0.45rem 0.9rem; cursor: pointer; width: calc(100% - 3.6rem); }
+  .add-row-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+  .totals { margin: 0.7rem 3.6rem 0 auto; width: 19rem; }
+  .totals .r { display: flex; justify-content: space-between; align-items: baseline; padding: 0.3rem 0.6rem; border-bottom: 1px solid var(--line2); font-size: 0.9rem; }
+  .totals .r b { font-weight: 700; }
+  .totals .r.grand { border: 2px solid var(--ink); margin-top: 0.3rem; font-size: 1.05rem; }
+  .totals .r.grand b { font-size: 1.35rem; font-weight: 900; }
+  .no-tax .tax-row { display: none; }
+
+  .notes { margin-top: 1.1rem; font-size: 0.8rem; }
+  .notes textarea { font-size: 0.8rem; line-height: 1.7; min-height: 2.2rem; }
+
+  @media screen and (max-width: 800px) {
+    body { padding: 1rem 0.5rem 3rem; }
+    .sheet { padding: 1.2rem 0.8rem 1.4rem; }
+    .doc-head h1 { font-size: 1.4rem; letter-spacing: 0.12em; }
+    .top { grid-template-columns: 1fr; gap: 1rem; }
+    .grand-box .v { font-size: 1.4rem; }
+    .items-wrap { overflow-x: auto; }
+    table.items { min-width: 600px; }
+    .totals { width: auto; margin-right: 0; }
+    .add-row-btn { width: 100%; }
+  }
+
+  .pdf-capture .toolbar, .pdf-capture .options { visibility: hidden; }
+  .pdf-capture .sheet { width: 794px; max-width: none; margin: 0; border: none; padding: 2.2rem 2.4rem 2rem; }
+  .pdf-capture .doc-head h1 { font-size: 1.9rem; letter-spacing: 0.25em; }
+  .pdf-capture .top { grid-template-columns: 1fr 15.5rem; gap: 1.8rem; }
+  .pdf-capture .grand-box .v { font-size: 1.8rem; }
+  .pdf-capture .add-row-btn, .pdf-capture .c-ctl { display: none; }
+  .pdf-capture .items-wrap { overflow: visible; }
+  .pdf-capture table.items { min-width: 0; }
+  .pdf-capture table.items .c-qty { width: 4.6rem; }
+  .pdf-capture table.items .c-price { width: 7.6rem; }
+  .pdf-capture table.items .c-amt { width: 8.4rem; }
+  .pdf-capture table.items td.c-amt { padding: 0 0.6rem; font-size: 0.95rem; }
+  .pdf-capture .totals { width: 19rem; margin-right: 0; }
+  .pdf-capture tr.spare { display: none; }
+  .pdf-capture .notes.empty { display: none; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .options, .add-row-btn, .c-ctl { display: none !important; }
+    .sheet { width: 100%; border: none; padding: 0; }
+    .totals { margin-right: 0; }
+    table.items th, table.items tbody tr:nth-child(even) td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4; margin: 1.2cm; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a class="back" href="tools.html#documents">← 書類トップ</a>
+    <a class="history-link" href="custom-estimate-history.html">📋 特注見積書一覧 →</a>
+    <button type="button" class="secondary" id="btn-reset">新規（クリア）</button>
+    <button type="button" class="secondary" id="btn-print">印刷</button>
+    <button type="button" class="secondary" id="btn-save-only">保存のみ</button>
+    <button type="button" id="btn-save">PDFとして保存</button>
+  </div>
+  <div class="options" id="options">
+    <label><input type="checkbox" id="opt-tax" checked> 消費税（10%）を加える</label>
+    <label><input type="checkbox" id="opt-seal" checked> 社印を表示</label>
+    <span class="editing-badge">✎ 保存済みの特注見積書を編集中（保存すると上書きされます）</span>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="doc-head">
+      <h1>特注見積書</h1>
+      <div class="date"><input type="date" id="f-date"></div>
+    </div>
+
+    <div class="top">
+      <div class="left">
+        <div class="to">
+          <input type="text" id="f-customer" placeholder="お客様名・会社名" autocomplete="off" list="client-list">
+          <datalist id="client-list"></datalist>
+          <select id="f-honor"><option>様</option><option>御中</option></select>
+        </div>
+        <div class="subject"><span class="k">件名</span><input type="text" id="f-subject" placeholder="例：オリジナル特注ロッド"></div>
+        <div class="greet">下記の通り御見積申し上げます。ご検討の程よろしくお願い致します。</div>
+        <div class="grand-box"><span class="k">御見積金額</span><span><span class="v" id="v-grand-top">¥0</span><span class="t" id="v-grand-note">（税込）</span></span></div>
+      </div>
+      <div class="side">
+        <div class="co"><input type="text" id="f-co" value="IG Rod Planning"></div>
+        <div class="line"><input type="text" id="f-address" value="〒188-0004 東京都西東京市西原町5-3-30-301"></div>
+        <div class="line"><span>TEL</span><input type="text" id="f-tel" value="090-1798-5613"></div>
+        <div class="line"><span>担当</span><input type="text" id="f-person" value="石谷"></div>
+        <div class="line"><span>有効期限</span><input type="text" id="f-valid" value="発行日より2カ月"></div>
+        <img class="seal" src="seal.png" alt="">
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">ご提案内容・仕様</div>
+      <div class="free"><textarea id="f-free" placeholder="自由に書き込めます（ロッドの仕様、カラー、パーツ、納期の目安など）"></textarea></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">お見積金額の内訳</div>
+      <div class="items-wrap"><table class="items">
+        <thead><tr><th class="c-no">No.</th><th>項目</th><th class="c-qty">数量</th><th class="c-price">単価（税抜）</th><th class="c-amt">金額（税抜）</th><th class="c-ctl"></th></tr></thead>
+        <tbody id="item-rows"></tbody>
+      </table></div>
+      <button type="button" class="add-row-btn" id="btn-add-row">＋ 行を追加（一番下）</button>
+      <div class="totals">
+        <div class="r"><span>小計（税抜）</span><b id="v-sub">¥0</b></div>
+        <div class="r tax-row"><span>消費税（10%）</span><b id="v-tax">¥0</b></div>
+        <div class="r grand"><span id="v-grand-label">合計（税込）</span><b id="v-grand">¥0</b></div>
+      </div>
+    </div>
+
+    <div class="notes" id="notes-box"><textarea id="f-notes" placeholder="備考（例：※送料は別途となります）"></textarea></div>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="pdf-download.js?v=5"></script>
+<script>
+  var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
+  var DEFAULT_ROWS = 5;
+  var STORE_KEY = 'custom-est-draft';
+  var RELOAD_KEY = 'custom-est-reload';
+  var TAG = '__customEstimate';
+  var rowsBody = document.getElementById('item-rows');
+  var currentId = null;
+  var clients = {};
+
+  function $(id) { return document.getElementById(id); }
+  function toHalf(s) { return String(s == null ? '' : s).replace(/[０-９．，－]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[ー−‐]/g, '-'); }
+  function num(s) { var v = parseFloat(toHalf(s).replace(/[^0-9.-]/g, '')); return isNaN(v) ? 0 : v; }
+  function commas(s) { if (String(s).trim() === '') return ''; return Math.round(num(s)).toLocaleString('ja-JP'); }
+  function yen(n) { return '¥' + Math.round(n).toLocaleString('ja-JP'); }
+  function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function slashDate(iso) { if (!iso) return ''; var p = iso.split('-'); return p[0] + '/' + Number(p[1]) + '/' + Number(p[2]); }
+  function grow(ta) { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+
+  // 1行の入力欄は、文字があふれる場合に折り返さず文字サイズを縮めて1行に収める
+  var fitCanvas = document.createElement('canvas').getContext('2d');
+  function fitOneLine(el) {
+    if (!el || el.tagName !== 'INPUT' || el.type !== 'text' || !el.closest('.sheet')) return;
+    el.style.fontSize = '';
+    var cs = getComputedStyle(el), base = parseFloat(cs.fontSize);
+    var avail = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+    if (!el.value || avail <= 0) return;
+    fitCanvas.font = cs.fontWeight + ' ' + base + 'px ' + cs.fontFamily;
+    var w = fitCanvas.measureText(el.value).width;
+    if (w > avail) el.style.fontSize = Math.max(base * 0.45, Math.floor(base * avail / w * 10) / 10) + 'px';
+  }
+  function fitAll() { document.querySelectorAll('.sheet input[type="text"]').forEach(fitOneLine); document.querySelectorAll('.sheet textarea').forEach(grow); }
+  document.addEventListener('input', function (e) { fitOneLine(e.target); if (e.target.tagName === 'TEXTAREA') grow(e.target); });
+  window.addEventListener('resize', fitAll);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+
+  /* ---------- 金額の表 ---------- */
+  function rowAmount(tr) {
+    var p = tr.querySelector('.f-price').value.trim(), q = tr.querySelector('.f-qty').value.trim();
+    if (!p) return null;
+    return num(p) * (q === '' ? 1 : num(q));
+  }
+  function recalc() {
+    var sub = 0;
+    rowsBody.querySelectorAll('tr').forEach(function (tr) {
+      var a = rowAmount(tr);
+      tr.querySelector('.c-amt').textContent = a == null ? '' : yen(a);
+      if (a != null) sub += a;
+    });
+    var withTax = $('opt-tax').checked, tax = withTax ? Math.floor(sub * 0.1) : 0, grand = sub + tax;
+    $('v-sub').textContent = yen(sub);
+    $('v-tax').textContent = yen(tax);
+    $('v-grand').textContent = yen(grand);
+    $('v-grand-top').textContent = yen(grand);
+    $('v-grand-label').textContent = withTax ? '合計（税込）' : '合計';
+    $('v-grand-note').textContent = withTax ? '（税込）' : '';
+    document.body.classList.toggle('no-tax', !withTax);
+    return { sub: sub, tax: tax, total: grand };
+  }
+  function renumber() { rowsBody.querySelectorAll('tr').forEach(function (tr, i) { tr.querySelector('.c-no').textContent = i + 1; }); }
+  function addRow(it, afterTr) {
+    it = it || {};
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="c-no"></td>' +
+      '<td class="c-name"><input type="text" class="f-name"></td>' +
+      '<td class="c-qty"><input type="text" class="f-qty" inputmode="decimal"></td>' +
+      '<td class="c-price"><input type="text" class="f-price" inputmode="numeric"></td>' +
+      '<td class="c-amt"></td>' +
+      '<td class="c-ctl"><button type="button" class="row-btn ins" title="この行の下に1行追加">＋</button> <button type="button" class="row-btn del" title="この行を削除">✕</button></td>';
+    var f = function (c) { return tr.querySelector('.' + c); };
+    f('f-name').value = it.name || '';
+    f('f-qty').value = it.qty || '';
+    f('f-price').value = commas(it.price || '');
+    f('f-price').addEventListener('blur', function () { this.value = commas(this.value); });
+    f('f-qty').addEventListener('blur', function () { this.value = toHalf(this.value); });
+    tr.addEventListener('input', recalc);
+    f('ins').addEventListener('click', function () { addRow(null, tr).querySelector('.f-name').focus(); saveDraft(); });
+    f('del').addEventListener('click', function () {
+      if (rowsBody.children.length <= 1) { ['f-name', 'f-qty', 'f-price'].forEach(function (c) { f(c).value = ''; }); }
+      else tr.remove();
+      renumber(); recalc(); saveDraft();
+    });
+    if (afterTr && afterTr.parentNode === rowsBody) rowsBody.insertBefore(tr, afterTr.nextSibling); else rowsBody.appendChild(tr);
+    renumber(); recalc();
+    return tr;
+  }
+  $('btn-add-row').addEventListener('click', function () { addRow().querySelector('.f-name').focus(); });
+
+  $('opt-tax').addEventListener('change', function () { recalc(); saveDraft(); });
+  $('opt-seal').addEventListener('change', function () { applyOptions(); saveDraft(); });
+  function applyOptions() { document.body.classList.toggle('no-seal', !$('opt-seal').checked); }
+
+  /* ---------- 取引先の候補（保存済みの書類から） ---------- */
+  function buildClients(all) {
+    clients = {};
+    all.filter(function (r) { return (r[TAG] || r.__estimate || r.__quotation || r.__invoice || r.__delivery) && r.customer && String(r.customer).trim(); })
+      .sort(function (a, b) { return String(a.savedAt || '').localeCompare(String(b.savedAt || '')); })
+      .forEach(function (r) { var c = clients[String(r.customer).trim()] = clients[String(r.customer).trim()] || {}; if (r.honor) c.honor = r.honor; });
+    var dl = $('client-list'); dl.innerHTML = '';
+    Object.keys(clients).sort(function (a, b) { return a.localeCompare(b, 'ja'); }).forEach(function (n) { var o = document.createElement('option'); o.value = n; dl.appendChild(o); });
+  }
+  $('f-customer').addEventListener('change', function () { var c = clients[this.value.trim()]; if (c && c.honor) $('f-honor').value = c.honor; saveDraft(); });
+
+  /* ---------- 保存データ ---------- */
+  var FIELDS = { date: 'f-date', customer: 'f-customer', honor: 'f-honor', subject: 'f-subject', free: 'f-free', co: 'f-co', address: 'f-address', tel: 'f-tel', person: 'f-person', valid: 'f-valid', notes: 'f-notes' };
+  var DEFAULTS = { honor: '様', co: 'IG Rod Planning', address: '〒188-0004 東京都西東京市西原町5-3-30-301', tel: '090-1798-5613', person: '石谷', valid: '発行日より2カ月' };
+
+  function collect() {
+    var t = recalc();
+    var q = { id: currentId || ('ce-' + Date.now()), savedAt: new Date().toISOString(), seal: $('opt-seal').checked, tax: $('opt-tax').checked, items: [], subtotal: t.sub, taxAmount: t.tax, total: t.total };
+    Object.keys(FIELDS).forEach(function (k) { q[k] = $(FIELDS[k]).value; });
+    rowsBody.querySelectorAll('tr').forEach(function (tr) {
+      var it = { name: tr.querySelector('.f-name').value, qty: tr.querySelector('.f-qty').value, price: tr.querySelector('.f-price').value };
+      if (it.name || it.qty || it.price) q.items.push(it);
+    });
+    q[TAG] = true;
+    return q;
+  }
+  function populate(q) {
+    currentId = q.id || null;
+    Object.keys(FIELDS).forEach(function (k) { $(FIELDS[k]).value = q[k] != null ? q[k] : (DEFAULTS[k] || ''); });
+    $('opt-seal').checked = q.seal !== false;
+    $('opt-tax').checked = q.tax !== false;
+    rowsBody.innerHTML = '';
+    (q.items || []).forEach(function (it) { addRow(it); });
+    while (rowsBody.children.length < DEFAULT_ROWS) addRow();
+    document.body.classList.toggle('editing', !!currentId);
+    applyOptions(); recalc(); fitAll();
+  }
+  function saveDraft() { try { var d = collect(); d.id = currentId; localStorage.setItem(STORE_KEY, JSON.stringify(d)); } catch (e) {} }
+  document.addEventListener('input', saveDraft);
+  function resetForm() { populate({ date: todayIso() }); currentId = null; document.body.classList.remove('editing'); }
+
+  (function init() {
+    var data = null, isCopy = false;
+    try {
+      var raw = localStorage.getItem(RELOAD_KEY);
+      if (raw) { localStorage.removeItem(RELOAD_KEY); data = JSON.parse(raw); isCopy = !!data.__copy; }
+    } catch (e) {}
+    if (!data) { try { data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (data) data.date = todayIso(); } catch (e) {} }
+    if (data) { if (isCopy) { delete data.id; data.date = todayIso(); } populate(data); }
+    else resetForm();
+    if (!$('f-date').value) $('f-date').value = todayIso();
+    fetch(SYNC_API + '/paint?_=' + Date.now()).then(function (r) { return r.ok ? r.json() : []; }).then(buildClients).catch(function () {});
+  })();
+
+  $('btn-reset').addEventListener('click', function () { if (!confirm('入力内容をすべてクリアしますか？')) return; resetForm(); saveDraft(); });
+  $('btn-print').addEventListener('click', function () { window.print(); });
+
+  async function saveToHistory(saveOnly) {
+    var q = collect();
+    try {
+      var res = await fetch(SYNC_API + '/paint?_=' + Date.now());
+      if (!res.ok) throw new Error('load failed');
+      var all = await res.json();
+      var idx = all.findIndex(function (r) { return r[TAG] && r.id === q.id; });
+      if (idx >= 0) all[idx] = q; else all.push(q);
+      var put = await fetch(SYNC_API + '/paint', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(all) });
+      if (!put.ok) throw new Error('save failed');
+      currentId = q.id;
+      document.body.classList.add('editing');
+      saveDraft();
+      return true;
+    } catch (e) {
+      console.error(e);
+      alert((saveOnly ? '' : 'PDFは作成しましたが、') + '特注見積書一覧への保存に失敗しました。');
+      return false;
+    }
+  }
+
+  /* ---------- PDF（A4縦） ---------- */
+  function swapFields() {
+    var swaps = [];
+    document.querySelectorAll('.sheet input[type="text"], .sheet input[type="date"], .sheet select, .sheet textarea').forEach(function (el) {
+      var text = el.value;
+      if (el.type === 'date') text = slashDate(el.value);
+      if (el.tagName === 'SELECT') text = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+      if (el.classList.contains('f-price')) text = commas(text);
+      var cs = getComputedStyle(el), o = document.createElement('div'), isSel = el.tagName === 'SELECT', isTa = el.tagName === 'TEXTAREA';
+      o.textContent = text || ' ';
+      o.style.cssText = 'font-family:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight + ';color:' + cs.color + ';text-align:' + cs.textAlign + ';padding:' + cs.padding + ';line-height:' + (isTa ? cs.lineHeight : '1.4') + ';white-space:' + (isSel ? 'nowrap' : 'pre-wrap') + ';word-break:break-word;' + (isSel ? 'display:inline-block;width:auto;flex:none;' : 'width:100%;') + 'min-height:' + (isTa ? cs.minHeight : '0') + ';';
+      var prev = el.style.display;
+      el.style.display = 'none';
+      el.insertAdjacentElement('afterend', o);
+      swaps.push({ el: el, o: o, prev: prev });
+    });
+    return swaps;
+  }
+  // 内容のない行は、最後の入力行の次の1行だけ残して省く
+  function prepCapture() {
+    document.body.classList.add('pdf-capture');
+    var trs = Array.prototype.slice.call(rowsBody.querySelectorAll('tr')), last = -1;
+    trs.forEach(function (tr, i) { if (['f-name', 'f-qty', 'f-price'].some(function (c) { return tr.querySelector('.' + c).value.trim(); })) last = i; });
+    trs.forEach(function (tr, i) { if (i > last + 1) tr.classList.add('spare'); });
+    $('notes-box').classList.toggle('empty', !$('f-notes').value.trim());
+    recalc();
+    var sw = swapFields();
+    return function () {
+      sw.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; });
+      rowsBody.querySelectorAll('tr.spare').forEach(function (tr) { tr.classList.remove('spare'); });
+      document.body.classList.remove('pdf-capture');
+      fitAll();
+    };
+  }
+  function fileName() {
+    var d = new Date(), stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    var who = $('f-customer').value.trim().replace(/[\\/:*?"<>|]/g, '');
+    return stamp + (who ? who + $('f-honor').value + '_' : '') + '特注見積書.pdf';
+  }
+
+  // 一覧の「PDF保存」用：保存済みの特注見積書をこのページで描く
+  window.captureForBulk = async function () {
+    var undo = prepCapture();
+    try { return await html2canvas($('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 }); }
+    finally { undo(); }
+  };
+
+  wireSaveOnly($('btn-save-only'), function () { return saveToHistory(true); });
+
+  $('btn-save').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    btn.disabled = true; btn.textContent = '作成中…';
+    var win = window.pdfMobile ? null : window.open('', '_blank');
+    try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
+    if (window.pdfMobile && window.pdfBusy) pdfBusy('PDFを作成中です…');
+    var undo = prepCapture(), undone = false;
+    function restore() { if (!undone) { undone = true; undo(); } }
+    try {
+      var canvas = await html2canvas($('sheet'), { scale: 2, backgroundColor: '#ffffff', windowWidth: 1000 });
+      var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight(), margin = 8;
+      var imgW = pageW - margin * 2, imgH = imgW * canvas.height / canvas.width;
+      if (imgH > pageH - margin * 2) { imgH = pageH - margin * 2; imgW = imgH * canvas.width / canvas.height; }
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', (pageW - imgW) / 2, margin, imgW, imgH);
+      var name = fileName();
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else if (!window.pdfMobile) { pdf.save(name); }
+      if (window.showPdfDownload) showPdfDownload(pdf, name);
+      restore();
+      btn.textContent = '一覧に保存中…';
+      await saveToHistory();
+    } catch (e) {
+      console.error(e);
+      if (window.pdfBusy) pdfBusy('');
+      try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。元の画面に戻ってもう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
+      alert('PDFの作成に失敗しました。もう一度お試しください。');
+    } finally {
+      restore();
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+</script>
+<script>
+  (function () {
+    try {
+      var p = location.pathname + location.search, k = 'fresh:' + p;
+      if (/[?&]embed=1/.test(location.search)) return;
+      Promise.all([
+        fetch(p, { cache: 'force-cache' }).then(function (r) { return r.text(); }),
+        fetch(p + (p.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); })
+      ]).then(function (t) {
+        var h = 0; for (var i = 0; i < t[1].length; i++) h = (h * 31 + t[1].charCodeAt(i)) | 0; h = String(h);
+        // 新しい版が出るたびに1回だけ読み込み直す（同じ版で何度も読み直さない）
+        if (t[0] !== t[1] && sessionStorage.getItem(k) !== h) { sessionStorage.setItem(k, h); fetch(p, { cache: 'reload' }).then(function () { location.reload(); }); }
+      }).catch(function () {});
+    } catch (e) {}
+  })();
+</script>
+<script src="arrow-nav.js"></script>
+</body>
+</html>

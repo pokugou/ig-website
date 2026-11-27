@@ -169,7 +169,7 @@
       </a>
     </div>
 
-    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書・御見積書・ソリッド発注図・締め請求</span></div>
+    <div class="sec" id="documents"><h2>書類作成</h2><span>請求書・納品書・注文書・御見積書・特注見積書・ソリッド発注図・締め請求</span></div>
 
     <div class="grid">
       <div class="doc">
@@ -213,6 +213,17 @@
         <div class="btns">
           <a class="primary" href="estimate.html">新しく作る</a>
           <a class="secondary" href="estimate-history.html">保存一覧</a>
+        </div>
+      </div>
+
+      <div class="doc">
+        <span class="icon">✍️</span>
+        <h2>特注見積書</h2>
+        <p>A4縦。上は自由記入でご提案内容を書き、下の表で項目ごとの金額と合計（税込）をわかりやすく出せます。</p>
+        <div class="recent" id="recent-custom-est">読み込み中…</div>
+        <div class="btns">
+          <a class="primary" href="custom-estimate.html">新しく作る</a>
+          <a class="secondary" href="custom-estimate-history.html">保存一覧</a>
         </div>
       </div>
 
@@ -283,12 +294,13 @@
       showRecent('recent-invoice', all.filter(function (r) { return r.__invoice; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
       showRecent('recent-delivery', all.filter(function (r) { return r.__delivery && !(/^dl-/.test(r.id || '') || (!!r.rows && !r.items)); }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
       showRecent('recent-estimate', all.filter(function (r) { return r.__estimate; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '御中') : ''; });
+      showRecent('recent-custom-est', all.filter(function (r) { return r.__customEstimate; }), function (r) { return r.customer ? r.customer + ' ' + (r.honor || '様') : ''; });
       showRecent('recent-solid', all.filter(function (r) { return r.__solid; }), function (r) { return r.title || ''; });
       showRecent('recent-po', all.filter(function (r) { return r.__po; }), function (r) { return r.to || ''; });
       showUnbilled(all.filter(function (r) { return r.__delivery && !/^dl-/.test(r.id || '') && !r.billedBy && r.customer; }));
     })
     .catch(function () {
-      ['recent-invoice', 'recent-delivery', 'recent-po', 'recent-estimate', 'recent-solid', 'unbilled'].forEach(function (id) { document.getElementById(id).textContent = ''; });
+      ['recent-invoice', 'recent-delivery', 'recent-po', 'recent-estimate', 'recent-custom-est', 'recent-solid', 'unbilled'].forEach(function (id) { document.getElementById(id).textContent = ''; });
     });
 </script>
 <script>
