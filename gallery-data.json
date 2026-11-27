@@ -1,44 +1,37 @@
 [
     {
-        "file": "gallery-photo-90.png",
-        "caption": "tesi",
+        "file": "gallery-photo-98.png",
+        "caption": "下巻きメタリックレッド \r\n上巻きブラック",
         "tag": "カラーカスタム",
+        "type": "wide",
+        "section": "build"
+    },
+    {
+        "file": "gallery-photo-99.png",
+        "caption": "ブランクス:蛍光ピンク\r\nスレッド:ターコイズブルー\r\nピンライン:ホワイト",
+        "tag": "ロッド",
         "type": "normal",
-        "section": "gallery"
-    },
-    {
-        "file": "gallery-photo-91.png",
-        "caption": "最高！",
-        "tag": "カラーカスタム",
-        "type": "normal",
         "section": "build"
     },
     {
-        "file": "gallery-photo-92.png",
-        "caption": "クエ竿",
-        "tag": "カラーカスタム",
-        "type": "tall",
-        "section": "build"
-    },
-    {
-        "file": "gallery-photo-93.png",
-        "caption": "クエ竿",
-        "tag": "カラーカスタム",
-        "type": "tall",
-        "section": "build"
-    },
-    {
-        "file": "gallery-photo-94.png",
+        "file": "gallery-photo-101.png",
         "caption": "",
         "tag": "カラーカスタム",
-        "type": "tall",
-        "section": "gallery"
+        "type": "normal",
+        "section": "build"
     },
     {
-        "file": "gallery-photo-95.png",
-        "caption": "テスト",
+        "file": "gallery-photo-102.png",
+        "caption": "",
         "tag": "カラーカスタム",
         "type": "normal",
-        "section": "gallery"
+        "section": "build"
+    },
+    {
+        "file": "gallery-photo-103.png",
+        "caption": "",
+        "tag": "カラーカスタム",
+        "type": "normal",
+        "section": "build"
     }
 ]
