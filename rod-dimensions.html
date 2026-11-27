@@ -160,7 +160,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js?v=4"></script>
+<script src="pdf-download.js?v=5"></script>
 <script>
   var rowsEl = document.getElementById('rows');
   var STORE_KEY = 'rod-dimensions-draft';
@@ -396,7 +396,7 @@
   document.getElementById('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
     btn.disabled = true; btn.textContent = '作成中…';
-    var win = window.open('', '_blank');
+    var win = window.pdfMobile ? null : window.open('', '_blank');
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
     document.body.classList.add('pdf-capture');
     var swaps = swapFields();
@@ -409,7 +409,7 @@
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, imgW, imgH);
       var model = document.getElementById('f-model').value.trim().replace(/[\\/:*?"<>|]/g, '') || 'ロッド仕様書';
       var name = model + '_仕様書_' + todayISO().replace(/-/g, '') + '.pdf';
-      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else if (!window.pdfMobile) { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       swaps.forEach(function (s) { s.o.remove(); s.el.style.display = s.prev; }); swaps = [];
       document.body.classList.remove('pdf-capture');

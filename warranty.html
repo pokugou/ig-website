@@ -191,7 +191,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js?v=4"></script>
+<script src="pdf-download.js?v=5"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var STORE_KEY = 'warranty-draft';
@@ -307,14 +307,14 @@
   $('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
     btn.disabled = true; btn.textContent = '作成中…';
-    var win = window.open('', '_blank');
+    var win = window.pdfMobile ? null : window.open('', '_blank');
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
     try {
       var canvas = await capture();
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: B5 });
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, B5[0], B5[1]);
       var name = '保証書_' + ($('f-product').value.trim().replace(/[\\/:*?"<>|]/g, '') || '無題') + '_B5.pdf';
-      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else if (!window.pdfMobile) { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       btn.textContent = '一覧に保存中…';
       await saveToHistory(false);

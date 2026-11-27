@@ -347,7 +347,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js?v=4"></script>
+<script src="pdf-download.js?v=5"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var sheetsEl = document.getElementById('sheets');
@@ -775,7 +775,7 @@
     btn.textContent = '作成中…';
     // Open synchronously (still inside the click gesture) so mobile Safari doesn't
     // block it once the async html2canvas work below pushes past the gesture window.
-    var previewWindow = window.open('', '_blank');
+    var previewWindow = window.pdfMobile ? null : window.open('', '_blank');
     try { if (previewWindow) { previewWindow.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); previewWindow.document.close(); } } catch (e) {}
     document.body.classList.add('pdf-capture');
     var fieldSwaps = swapFieldsForCapture();
@@ -801,7 +801,7 @@
       if (previewWindow) {
         (window.openPdfIn ? openPdfIn(previewWindow, pdf, pdfName) : (previewWindow.location.href = pdf.output('bloburl')));
       } else {
-        pdf.save(pdfName);
+        if (!window.pdfMobile) pdf.save(pdfName);
       }
       if (window.showPdfDownload) showPdfDownload(pdf, pdfName);
       await downloadArchive();

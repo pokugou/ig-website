@@ -41,7 +41,9 @@
     if (!items.length) return;
     var btn = opts.btn, label = btn.textContent;
     btn.disabled = true;
-    var win = window.open('', '_blank');
+    var win = window.pdfMobile ? null : window.open('', '_blank');
+    var busy = function (t) { if (window.pdfMobile && window.pdfBusy) window.pdfBusy(t); };
+    busy('PDFを作成中です…');
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…件数が多いと時間がかかります</p>'); win.document.close(); } } catch (e) {}
     try {
       var pdf = null, margin = opts.margin != null ? opts.margin : 8, fmt = opts.format || 'a4';
@@ -63,18 +65,20 @@
       } else {
         for (var i = 0; i < items.length; i++) {
           btn.textContent = '作成中 ' + (i + 1) + '/' + items.length;
+          busy('PDFを作成中です… ' + (i + 1) + '/' + items.length);
           (await opts.renderOne(items[i])).forEach(addCanvas);
         }
       }
       if (!pdf) throw new Error('出力するページがありません');
       var name = opts.name(items);
-      if (win) { if (window.openPdfIn) openPdfIn(win, pdf, name); else win.location.href = pdf.output('bloburl'); } else { pdf.save(name); }
+      if (win) { if (window.openPdfIn) openPdfIn(win, pdf, name); else win.location.href = pdf.output('bloburl'); } else if (!window.pdfMobile) { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
     } catch (e) {
       console.error(e);
       try { if (win) win.document.body.innerHTML = '<p style="font:16px sans-serif;padding:2rem">PDFの作成に失敗しました。もう一度お試しください。<br><small>' + String(e && e.message || e) + '</small></p>'; } catch (e2) {}
       alert('PDFの作成に失敗しました。もう一度お試しください。');
     } finally {
+      busy('');
       if (opts.storageKey) localStorage.removeItem(opts.storageKey);
       btn.disabled = false; btn.textContent = label;
     }

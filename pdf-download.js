@@ -1,9 +1,52 @@
 // Shows a "download PDF" bar after a PDF is generated. Mobile browsers block downloads started
 // after async work, but a tap on a real link is always allowed.
 (function () {
+  function isDesktop() {
+    var ua = navigator.userAgent || '';
+    if (/iPhone|iPad|iPod|Android/i.test(ua)) return false;
+    if (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) return false; // iPad（パソコン表示）
+    return true;
+  }
+  // スマホでは、PDFを作る前に新しい画面を開かない（iPhoneは裏に回った画面の処理を止めてしまい、作成が進まなくなるため）。
+  // 今の画面のままPDFを作り、できたら画面中央に「開いて確認」「この名前で保存」を出す。
+  window.pdfMobile = !isDesktop();
+
+  // 作成中の表示（スマホ用。text を空にすると消える）
+  window.pdfBusy = function (text) {
+    var el = document.getElementById('pdf-busy');
+    if (!text) { if (el) el.remove(); return; }
+    if (!el) {
+      el = document.createElement('div'); el.id = 'pdf-busy';
+      el.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:24px';
+      el.innerHTML = '<div style="background:#fff;color:#111;font:700 16px/1.6 sans-serif;padding:22px 26px;max-width:320px;text-align:center"></div>';
+      document.body.appendChild(el);
+    }
+    el.firstChild.textContent = text;
+  };
+
+  function showPdfSheet(url, name) {
+    var old = document.getElementById('pdf-dl-bar');
+    if (old) old.remove();
+    var wrap = document.createElement('div');
+    wrap.id = 'pdf-dl-bar';
+    wrap.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px';
+    var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    wrap.innerHTML = '<div style="background:#fff;color:#111;width:100%;max-width:360px;padding:20px 18px 16px;font-family:sans-serif;text-align:center">' +
+      '<div style="font-weight:900;font-size:18px;margin-bottom:6px">PDFができました</div>' +
+      '<div style="font-size:13px;color:#555;word-break:break-all;margin-bottom:16px">' + esc(name) + '</div>' +
+      '<a id="pdf-sheet-open" href="' + url + '" target="_blank" style="display:block;border:2px solid #111;color:#111;font-weight:700;font-size:16px;padding:12px;text-decoration:none;margin-bottom:10px">PDFを開いて確認</a>' +
+      '<a id="pdf-sheet-save" href="' + url + '" download="' + esc(name) + '" style="display:block;background:#cc2200;color:#fff;font-weight:700;font-size:16px;padding:13px;text-decoration:none;margin-bottom:12px">⬇ この名前で保存</a>' +
+      '<div style="font-size:11px;color:#777;line-height:1.6;margin-bottom:10px">確認した画面の共有・保存を使うと、名前が英数字に変わります。<br>保存はこの赤いボタンから。</div>' +
+      '<button type="button" style="font:700 14px sans-serif;background:none;border:1px solid #ccc;padding:8px 22px;color:#555">閉じる</button></div>';
+    wrap.querySelector('button').addEventListener('click', function () { wrap.remove(); });
+    document.body.appendChild(wrap);
+  }
+
   window.showPdfDownload = function (pdf, name) {
     try {
       var url = URL.createObjectURL(pdf.output('blob'));
+      if (window.pdfBusy) window.pdfBusy('');
+      if (window.pdfMobile) { showPdfSheet(url, name); return; }
       var old = document.getElementById('pdf-dl-bar');
       if (old) old.remove();
       var style = document.getElementById('pdf-dl-style');
@@ -33,12 +76,6 @@
 
   // 先に開いておいたタブ（win）にPDFを表示し、上に「この名前で保存」ボタンを付ける（自動では保存しない）。
   // ブラウザのPDF画面から保存すると「dec9f77e-….pdf」のような名前になってしまうため。
-  function isDesktop() {
-    var ua = navigator.userAgent || '';
-    if (/iPhone|iPad|iPod|Android/i.test(ua)) return false;
-    if (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) return false; // iPad（パソコン表示）
-    return true;
-  }
   window.openPdfIn = function (win, pdf, name) {
     var url, blob = null;
     try { blob = pdf.output('blob'); url = URL.createObjectURL(blob); } catch (e) { url = pdf.output('bloburl'); }

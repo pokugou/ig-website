@@ -137,7 +137,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js?v=4"></script>
+<script src="pdf-download.js?v=5"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var STORE_KEY = 'delivery-schedule-draft';
@@ -502,7 +502,7 @@
   $('btn-save').addEventListener('click', async function () {
     var btn = this, label = btn.textContent;
     btn.disabled = true; btn.textContent = '作成中…';
-    var win = window.open('', '_blank');
+    var win = window.pdfMobile ? null : window.open('', '_blank');
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); win.document.close(); } } catch (e) {}
     try {
       var canvases = await renderPageCanvases();
@@ -510,7 +510,7 @@
       canvases.forEach(function (c, i) { if (i > 0) pdf.addPage(); pdf.addImage(c.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297); });
       var now = new Date();
       var name = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0') + '納期希望リスト.pdf';   // 例：20261123納期希望リスト.pdf（保存した日の日付）
-      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else if (!window.pdfMobile) { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
       btn.textContent = '一覧に保存中…';
       await saveToHistory(false);

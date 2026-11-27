@@ -853,7 +853,7 @@
     var btn = this, originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = '作成中…';
-    var previewWindow = window.open('', '_blank');
+    var previewWindow = window.pdfMobile ? null : window.open('', '_blank');
     try { if (previewWindow) { previewWindow.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' + fileName() + '</title><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…数秒お待ちください</p>'); previewWindow.document.close(); } } catch (e) {}
     $('memo-box').classList.toggle('empty', !$('f-notes').value.trim());
     document.body.classList.add('pdf-capture');
@@ -869,6 +869,7 @@
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', (pageW - imgW) / 2, 0, imgW, imgH);
       pdf.setProperties({ title: fileName().replace(/\.pdf$/, '') });
       if (previewWindow) { if (window.openPdfIn) openPdfIn(previewWindow, pdf, fileName()); else showPdfWithSave(previewWindow, pdf); }
+      else if (window.pdfMobile && window.showPdfDownload) showPdfDownload(pdf, fileName());
       else pdf.save(fileName());
     } catch (e) {
       console.error(e);

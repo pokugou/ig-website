@@ -91,7 +91,7 @@
   </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="pdf-download.js?v=4"></script>
+<script src="pdf-download.js?v=5"></script>
 <script>
   var SYNC_API = 'https://ig-sync.pokugou.workers.dev';
   var orders = [];
@@ -201,7 +201,7 @@
     if (!records.length) return;
     var btn = this, label = btn.textContent;
     btn.disabled = true;
-    var win = window.open('', '_blank');
+    var win = window.pdfMobile ? null : window.open('', '_blank');
     try { if (win) { win.document.write('<meta charset="utf-8"><meta name="viewport" content="width=device-width"><p style="font:16px sans-serif;padding:2rem">PDFを作成中です…件数が多いと時間がかかります</p>'); win.document.close(); } } catch (e) {}
     try {
       var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
@@ -217,7 +217,7 @@
       var d = new Date();
       var stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
       var name = records.length === 1 ? 'ディープカバー_' + (records[0].customer || 'オーダーシート') + '.pdf' : 'ディープカバー_' + records.length + '件_' + stamp + '.pdf';
-      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else { pdf.save(name); }
+      if (win) { (window.openPdfIn ? openPdfIn(win, pdf, name) : (win.location.href = pdf.output('bloburl'))); } else if (!window.pdfMobile) { pdf.save(name); }
       if (window.showPdfDownload) showPdfDownload(pdf, name);
     } catch (e) {
       console.error(e);
